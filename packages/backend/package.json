@@ -1,0 +1,33 @@
+{
+  "name": "@orpington-news/backend",
+  "version": "0.0.0",
+  "author": "Sebastian Frysztak <sebastian@frysztak.dev>",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "dev": "ts-node src/server.ts",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "fastify": "^3.24.1",
+    "fastify-auth": "^1.1.0",
+    "fastify-bearer-auth": "^6.0.0",
+    "fastify-jwt": "^4.1.1",
+    "fastify-schedule": "^1.0.0",
+    "fastify-swagger": "^4.12.6",
+    "toad-scheduler": "^1.6.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
+    "@types/jest": "^27.0.3",
+    "@types/node": "^16.11.12",
+    "babel-jest": "^27.4.4",
+    "jest": "^27.4.4",
+    "prisma": "^3.6.0",
+    "ts-node": "^10.4.0"
+  }
+}

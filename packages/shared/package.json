@@ -1,0 +1,22 @@
+{
+  "name": "@orpington-news/shared",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Sebastian Frysztak <sebastian@frysztak.dev>",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
+    "@types/jest": "^27.0.3",
+    "babel-jest": "^27.4.4",
+    "jest": "^27.4.4",
+    "rambda": "^6.9.0",
+    "ts-node": "^10.4.0"
+  }
+}
