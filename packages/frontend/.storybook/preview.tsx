@@ -17,6 +17,7 @@ export const parameters = {
   docs: {
     theme: themes.dark,
   },
+  layout: 'fullscreen',
 };
 
 const DarkModeProvider = () => {

@@ -6,6 +6,7 @@ import {
 } from '@chakra-ui/react';
 import { textStyles } from './textStyles';
 import { fonts } from './fonts';
+import { Button, Menu } from './components';
 
 const styles = {
   global: {
@@ -32,6 +33,10 @@ export const theme = extendTheme(
     styles,
     fontSizes,
     textStyles,
+    components: {
+      Menu,
+      Button,
+    },
   },
   withDefaultColorScheme({ colorScheme: 'purple' }),
   withDefaultSize({
