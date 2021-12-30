@@ -17,6 +17,7 @@ module.exports = {
     emotionAlias: false,
     postcss: false,
   },
+  typescript: { reactDocgen: false },
   webpackFinal: async (config) => {
     [].push.apply(config.resolve.plugins, [
       new TsconfigPathsPlugin({ extensions: config.resolve.extensions }),
