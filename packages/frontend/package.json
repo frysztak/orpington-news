@@ -25,9 +25,12 @@
     "framer-motion": "^4",
     "next": "12.0.7",
     "rambda": "^6.9.0",
+    "re-resizable": "^6.9.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
+    "react-virtual": "^2.10.0",
+    "string-to-color": "^2.2.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -40,14 +43,17 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@types/faker": "^5.5.9",
     "@types/node": "16.11.12",
     "@types/react": "17.0.37",
     "babel-loader": "^8.2.3",
     "eslint": "8.4.1",
     "eslint-config-next": "12.0.7",
     "eslint-plugin-storybook": "^0.5.3",
+    "faker": "^5.5.3",
     "jest": "^27.4.3",
     "react-test-renderer": "^17.0.2",
+    "slugify": "^1.6.4",
     "storybook-dark-mode": "^1.0.8",
     "tsconfig-paths-webpack-plugin": "^3.5.2"
   }

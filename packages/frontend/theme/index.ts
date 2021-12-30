@@ -13,10 +13,10 @@ const styles = {
     '*': {
       scrollbarWidth: 'thin',
     },
-    '*::-webkit-scrollbar': {
-      width: 1,
-      height: 1,
-    },
+    //'*::-webkit-scrollbar': {
+    //  width: "12px",
+    //  height: "12px",
+    //},
   },
 };
 
