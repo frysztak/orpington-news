@@ -15,8 +15,8 @@
     "@babel/preset-typescript": "^7.16.0",
     "@types/jest": "^27.0.3",
     "babel-jest": "^27.4.4",
-    "jest": "^27.4.4",
-    "rambda": "^6.9.0",
+    "jest": "^27.4.5",
+    "rambda": "^7.0.1",
     "ts-node": "^10.4.0"
   }
 }
