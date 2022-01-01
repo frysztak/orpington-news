@@ -11,9 +11,9 @@ import {
   BoxProps,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { FeedItemProps } from '../../types';
+import { CollectionItemProps } from '../../types';
 
-export type MagazineItemProps = FeedItemProps & BoxProps;
+export type MagazineItemProps = CollectionItemProps & BoxProps;
 
 export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
   const { item, ...rest } = props;

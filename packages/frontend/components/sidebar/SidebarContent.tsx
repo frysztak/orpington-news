@@ -13,18 +13,21 @@ import { BsBookmarks } from 'react-icons/bs';
 import { RiAddBoxFill, RiSettingsLine } from 'react-icons/ri';
 import { CgReorder } from 'react-icons/cg';
 import { SidebarItem } from './SidebarItem';
-import { FeedList, FeedListProps } from './FeedList';
+import { Collections, CollectionsProps } from './Collections';
 import { SiRss } from 'react-icons/si';
 
 type MenuItem = 'home' | 'readingList' | 'addFeed' | 'organize' | 'settings';
 
-export type SidebarContentProps = FeedListProps & {
+export type SidebarContentProps = Omit<
+  CollectionsProps,
+  'activeCollectionId'
+> & { activeCollectionId: string | number } & {
   onMenuItemClicked: (menuAction: MenuItem) => void;
 };
 
 export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
-  const { onMenuItemClicked, ...feedListProps } = props;
-  const { activeFeedId } = feedListProps;
+  const { onMenuItemClicked, ...collectionsProps } = props;
+  const { activeCollectionId } = collectionsProps;
 
   const handleClick = useCallback(
     (menuAction: MenuItem) => () => {
@@ -47,14 +50,14 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
       <SidebarItem
         title="Home"
         icon={AiOutlineHome}
-        isActive={activeFeedId === 'home'}
+        isActive={activeCollectionId === 'home'}
         onClick={handleClick('home')}
       />
 
       <SidebarItem
         title="Reading List"
         icon={BsBookmarks}
-        isActive={activeFeedId === 'readingList'}
+        isActive={activeCollectionId === 'readingList'}
         onClick={handleClick('readingList')}
       />
 
@@ -67,21 +70,28 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
 
       <Divider />
 
-      {feedListProps && (
-        <FeedList {...feedListProps} activeFeedId={activeFeedId} />
+      {collectionsProps && (
+        <Collections
+          {...collectionsProps}
+          activeCollectionId={
+            typeof activeCollectionId === 'number'
+              ? activeCollectionId
+              : undefined
+          }
+        />
       )}
 
       <Box w="full" style={{ marginTop: 'auto' }} pb={6}>
         <SidebarItem
           title="Organize"
           icon={CgReorder}
-          isActive={activeFeedId === 'organize'}
+          isActive={activeCollectionId === 'organize'}
           onClick={handleClick('organize')}
         />
         <SidebarItem
           title="Settings"
           icon={RiSettingsLine}
-          isActive={activeFeedId === 'settings'}
+          isActive={activeCollectionId === 'settings'}
           onClick={handleClick('settings')}
         />
       </Box>

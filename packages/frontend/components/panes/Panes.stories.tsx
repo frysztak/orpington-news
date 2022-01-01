@@ -8,7 +8,7 @@ import { Panes, PanesProps } from './Panes';
 import {
   generateSampleCollection,
   generateSampleCollectionItem,
-} from '@components/feed/sampleData';
+} from '@components/collection/sampleData';
 
 export default {
   title: 'Components/Panes/Panes',
@@ -33,10 +33,11 @@ export const Default = Template.bind({});
 Default.args = {
   sidebar: (
     <SidebarContent
-      feeds={[]}
-      onFeedClicked={action('onFeedClicked')}
+      collections={[]}
+      onCollectionClicked={action('onCollectionClicked')}
       onChevronClicked={action('onChevronClicked')}
       onMenuItemClicked={action('onMenuItemClicked')}
+      activeCollectionId={collection.id}
     />
   ),
   collectionItems,

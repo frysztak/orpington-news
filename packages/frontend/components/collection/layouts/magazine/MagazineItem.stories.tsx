@@ -2,14 +2,14 @@ import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import * as faker from 'faker';
 import { MagazineItem, MagazineItemProps } from './MagazineItem';
-import { CollectionItem } from '../../types';
 import {
   generateSampleCollection,
   generateSampleCollectionItem,
 } from '../../sampleData';
+import { CollectionItem } from '@orpington-news/shared/dist/types';
 
 export default {
-  title: 'Components/Feed/Layouts/Magazine/Item',
+  title: 'Components/Collection/Layouts/Magazine',
   component: MagazineItem,
 } as Meta;
 

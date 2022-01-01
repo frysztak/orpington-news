@@ -14,12 +14,12 @@ import {
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
 import { IoReturnUpBack } from 'react-icons/io5';
-import { FeedHeader } from '@components/feed/header';
-import { Collection, CollectionItem } from '@components/feed/types';
+import { Collection, CollectionItem } from '@orpington-news/shared/dist/types';
+import { CollectionHeader } from '@components/collection/header';
 import {
   CollectionList,
   CollectionListProps,
-} from '@components/feed/collection';
+} from '@components/collection/list';
 import { EmptyMain } from './EmptyMain';
 
 export interface PanesProps {
@@ -134,7 +134,7 @@ export const Panes: React.FC<PanesProps> = (props) => {
           onResizeStop={handleCollectionItemsResize}
         >
           <VStack spacing={0} h="full" w="full">
-            <FeedHeader
+            <CollectionHeader
               collection={activeCollection}
               hideMenuButton
               menuButtonRef={drawerButtonRef}
@@ -165,7 +165,7 @@ export const Panes: React.FC<PanesProps> = (props) => {
           </VStack>
         ) : (
           <VStack spacing={0} h="full" w="full">
-            <FeedHeader
+            <CollectionHeader
               collection={activeCollection}
               menuButtonRef={drawerButtonRef}
               onMenuClicked={onToggle}

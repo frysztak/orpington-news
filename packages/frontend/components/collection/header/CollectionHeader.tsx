@@ -3,9 +3,10 @@ import { Box, Heading, HStack, IconButton, VStack } from '@chakra-ui/react';
 import { CgMenuLeftAlt, CgSearch } from 'react-icons/cg';
 import { BsLayoutWtf } from 'react-icons/bs';
 import { IoRefresh } from 'react-icons/io5';
-import { Collection, LayoutType } from '../types';
+import { Collection } from '@orpington-news/shared/dist/types';
+import { LayoutType } from '../types';
 
-export interface FeedHeaderProps {
+export interface CollectionHeaderProps {
   collection: Collection;
   menuButtonRef?: React.MutableRefObject<HTMLButtonElement | null>;
   hideMenuButton?: boolean;
@@ -15,7 +16,7 @@ export interface FeedHeaderProps {
   onChangeLayout?: (layout: LayoutType) => void;
 }
 
-export const FeedHeader: React.FC<FeedHeaderProps> = (props) => {
+export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
   const {
     collection,
     menuButtonRef,

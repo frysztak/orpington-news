@@ -1,20 +1,23 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
-import { FeedHeader, FeedHeaderProps } from './FeedHeader';
+import { CollectionHeader, CollectionHeaderProps } from './CollectionHeader';
 
 export default {
-  title: 'Components/Feed/Header',
-  component: FeedHeader,
+  title: 'Components/Collection/Header',
+  component: CollectionHeader,
 } as Meta;
 
-const Template: Story<FeedHeaderProps> = (props) => <FeedHeader {...props} />;
+const Template: Story<CollectionHeaderProps> = (props) => (
+  <CollectionHeader {...props} />
+);
 
 export const Default = Template.bind({});
 Default.args = {
   collection: {
-    id: 'id01',
+    id: 1,
     name: 'Fun Blog',
     slug: 'fun-blog',
+    unreadCount: 9,
   },
 };
 

@@ -15,42 +15,53 @@ const Template: Story<SidebarContentProps> = (props) => (
 );
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  collections: [],
+};
 
 export const WithActiveHome = Template.bind({});
 WithActiveHome.args = {
-  activeFeedId: 'home',
+  collections: [],
+  activeCollectionId: 'home',
 };
 
 export const WithFeedList = Template.bind({});
 WithFeedList.args = {
-  activeFeedId: 'feed04',
-  feeds: [
-    { id: 'feed01', label: 'Feed 01', unreadCount: 9, icon: 'React' },
+  activeCollectionId: 4,
+  collections: [
+    { id: 1, name: 'Feed 01', slug: 'feed-01', unreadCount: 9, icon: 'React' },
     {
-      id: 'feed02',
-      label: 'Feed 02',
+      id: 2,
+      name: 'Feed 02',
+      slug: 'feed-02',
       unreadCount: 10,
       icon: 'TypeScript',
       children: [],
     },
     {
-      id: 'feed03',
-      label: 'Category 01',
+      id: 3,
+      name: 'Category 01',
+      slug: 'category-01',
       unreadCount: 11,
       children: [
-        { id: 'feed03-01', label: 'Feed 03-01', unreadCount: 112 },
+        { id: 301, name: 'Feed 03-01', slug: 'feed-03-01', unreadCount: 112 },
         {
-          id: 'feed03-02',
-          label: 'Category 02',
+          id: 302,
+          name: 'Category 02',
+          slug: 'feed-03-02',
           unreadCount: 113,
           children: [
-            { id: 'feed03-02-01', label: 'Feed 03-02-01', unreadCount: 114 },
+            {
+              id: 30201,
+              name: 'Feed 03-02-01',
+              slug: 'feed-03-02-01',
+              unreadCount: 114,
+            },
           ],
         },
       ],
     },
-    { id: 'feed04', label: 'Feed 04', unreadCount: 9 },
+    { id: 4, name: 'Feed 04', slug: 'feed-04', unreadCount: 9 },
   ],
-  expandedFeedIDs: ['feed03'],
+  expandedCollectionIDs: [3],
 };

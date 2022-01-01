@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { Box, BoxProps, SkeletonText } from '@chakra-ui/react';
 import { useVirtual } from '@utils/useVirtual';
 import { last } from 'rambda';
-import { CollectionItem, LayoutType } from '../types';
+import { CollectionItem } from '@orpington-news/shared/dist/types';
+import { LayoutType } from '../types';
 import { MagazineItem } from '../layouts';
 
 export interface CollectionListProps {

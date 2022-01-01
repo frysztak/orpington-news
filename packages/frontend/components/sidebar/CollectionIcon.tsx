@@ -40,61 +40,13 @@ import {
   SiUbuntu,
   SiWordpress,
 } from 'react-icons/si';
+import { CollectionIconType } from '@orpington-news/shared/dist/types';
 
-export const FeedIcons = [
-  'Android',
-  'Angular',
-  'Apple',
-  'Archlinux',
-  'Chrome',
-  'Clojure',
-  'Code',
-  'CodeBadge',
-  'Database',
-  'Debian',
-  'Deno',
-  'Django',
-  'Docker',
-  'Dotnet',
-  'Erlang',
-  'Firefox',
-  'Fsharp',
-  'Git',
-  'Github',
-  'GNU',
-  'Golang',
-  'HackerNews',
-  'Haskell',
-  'HTML',
-  'Java',
-  'JavaScript',
-  'Linux',
-  'Markdown',
-  'Mozilla',
-  'NextJS',
-  'NPM',
-  'PHP',
-  'Python',
-  'RaspberryPI',
-  'React',
-  'Redux',
-  'Rust',
-  'StackOverflow',
-  'Swift',
-  'Terminal',
-  'TypeScript',
-  'Ubuntu',
-  'Vim',
-  'Wordpress',
-] as const;
-
-export type FeedIconType = typeof FeedIcons[number];
-
-export interface FeedIconProps {
-  icon?: FeedIconType;
+export interface CollectionIconProps {
+  icon?: CollectionIconType;
 }
 
-const icons: Record<FeedIconType, React.FC> = {
+const icons: Record<CollectionIconType, React.FC> = {
   Android: DiAndroid,
   Angular: SiAngular,
   Apple: SiApple,
@@ -141,6 +93,6 @@ const icons: Record<FeedIconType, React.FC> = {
   Wordpress: SiWordpress,
 };
 
-export const getFeedIcon = (iconType?: FeedIconType): React.FC => {
+export const getCollectionIcon = (iconType?: CollectionIconType): React.FC => {
   return icons[iconType ?? 'Code'];
 };

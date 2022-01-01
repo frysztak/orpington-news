@@ -9,7 +9,7 @@ import {
 import { genN } from '@orpington-news/shared';
 
 export default {
-  title: 'Components/Feed/Collection/List',
+  title: 'Components/Collection/List',
   component: CollectionList,
   parameters: { actions: { argTypesRegex: '' } },
 } as Meta;
