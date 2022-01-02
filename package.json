@@ -5,7 +5,7 @@
     "prepare": "husky install",
     "dev": "lerna run dev --stream --parallel",
     "test": "lerna run test --stream --parallel",
-    "build": "lerna run build --stream --parallel"
+    "build": "lerna run build --stream"
   },
   "devDependencies": {
     "husky": ">=6",
