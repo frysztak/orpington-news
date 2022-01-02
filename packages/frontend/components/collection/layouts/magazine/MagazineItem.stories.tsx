@@ -6,7 +6,7 @@ import {
   generateSampleCollection,
   generateSampleCollectionItem,
 } from '../../sampleData';
-import { CollectionItem } from '@orpington-news/shared/dist/types';
+import { CollectionItem } from '@orpington-news/shared';
 
 export default {
   title: 'Components/Collection/Layouts/Magazine',

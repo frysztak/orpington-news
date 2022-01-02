@@ -1,4 +1,4 @@
-import { CollectionItem } from '@orpington-news/shared/dist/types';
+import { CollectionItem } from '@orpington-news/shared';
 
 export interface CollectionItemProps {
   item: CollectionItem;

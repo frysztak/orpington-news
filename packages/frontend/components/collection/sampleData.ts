@@ -1,6 +1,6 @@
 import faker from 'faker';
 import slugify from 'slugify';
-import { Collection, CollectionItem } from './types';
+import { Collection, CollectionItem } from '@orpington-news/shared';
 
 export const generateSampleCollectionItem = (
   collection: Collection
@@ -8,7 +8,7 @@ export const generateSampleCollectionItem = (
   const title = faker.hacker.phrase();
 
   return {
-    id: faker.datatype.uuid(),
+    id: faker.datatype.number(),
     url: faker.internet.url(),
     summary: faker.lorem.words(30),
     datePublished: faker.date.recent(),
@@ -25,8 +25,9 @@ export const generateSampleCollectionItem = (
 export const generateSampleCollection = (name?: string): Collection => {
   const n = name || faker.company.companyName();
   return {
-    id: faker.datatype.uuid(),
+    id: faker.datatype.number(),
     name: n,
     slug: slugify(n),
+    unreadCount: faker.datatype.number(),
   };
 };

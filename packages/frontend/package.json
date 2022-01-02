@@ -11,7 +11,7 @@
     "analyze": "cross-env ANALYZE=true next build",
     "storybook": "start-storybook -p 6006 --ci",
     "build-storybook": "build-storybook",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@chakra-ui/react": "^1.7.2",

@@ -5,7 +5,7 @@ import { IoCheckmarkDone, IoRefresh } from 'react-icons/io5';
 import { AiTwotoneEdit } from 'react-icons/ai';
 import { SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
-import { ID, Collection } from '@orpington-news/shared/dist/types';
+import { ID, Collection } from '@orpington-news/shared';
 
 export type CollectionMenuAction = 'markAsRead' | 'refresh' | 'edit' | 'delete';
 

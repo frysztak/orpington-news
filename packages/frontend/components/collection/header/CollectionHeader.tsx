@@ -3,7 +3,7 @@ import { Box, Heading, HStack, IconButton, VStack } from '@chakra-ui/react';
 import { CgMenuLeftAlt, CgSearch } from 'react-icons/cg';
 import { BsLayoutWtf } from 'react-icons/bs';
 import { IoRefresh } from 'react-icons/io5';
-import { Collection } from '@orpington-news/shared/dist/types';
+import { Collection } from '@orpington-news/shared';
 import { LayoutType } from '../types';
 
 export interface CollectionHeaderProps {

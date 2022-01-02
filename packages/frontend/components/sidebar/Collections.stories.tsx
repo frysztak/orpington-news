@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { Collections, CollectionsProps } from './Collections';
-import { Collection } from '@orpington-news/shared/dist/types';
+import { Collection } from '@orpington-news/shared';
 import { action } from '@storybook/addon-actions';
 
 export default {

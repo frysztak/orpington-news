@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
 import { IoReturnUpBack } from 'react-icons/io5';
-import { Collection, CollectionItem } from '@orpington-news/shared/dist/types';
+import { Collection, CollectionItem } from '@orpington-news/shared';
 import { CollectionHeader } from '@components/collection/header';
 import {
   CollectionList,

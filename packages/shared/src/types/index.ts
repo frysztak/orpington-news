@@ -48,6 +48,7 @@ export const CollectionIcons = [
 ] as const;
 
 export type CollectionIconType = typeof CollectionIcons[number];
+export const defaultIcon: CollectionIconType = 'Code';
 
 export interface Collection {
   id: ID;
@@ -55,7 +56,12 @@ export interface Collection {
   name: string;
   unreadCount: number;
   icon?: CollectionIconType;
+  parentId?: ID;
   children?: Collection[];
+
+  description?: string;
+  url?: string;
+  dateUpdated?: number;
 }
 
 export interface CollectionItem {
@@ -67,7 +73,6 @@ export interface CollectionItem {
   fullText: string;
   thumbnailUrl?: string;
   datePublished: Date;
-  dateUpdated?: Date;
   categories?: string[];
   comments?: string;
 

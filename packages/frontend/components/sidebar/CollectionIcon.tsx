@@ -40,7 +40,7 @@ import {
   SiUbuntu,
   SiWordpress,
 } from 'react-icons/si';
-import { CollectionIconType } from '@orpington-news/shared/dist/types';
+import { CollectionIconType } from '@orpington-news/shared';
 
 export interface CollectionIconProps {
   icon?: CollectionIconType;
