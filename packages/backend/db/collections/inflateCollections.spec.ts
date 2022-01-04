@@ -83,7 +83,7 @@ describe('inflateCollections', () => {
     expect(inflateCollections(data)).toEqual([
       {
         id: 1,
-        title: 'Feed 01',
+        name: 'Feed 01',
         slug: 'feed-01',
         icon: 'React',
         url: 'https://feed-01.com/rss.xml',
@@ -93,10 +93,9 @@ describe('inflateCollections', () => {
       },
       {
         id: 2,
-        title: 'Feed 02',
+        name: 'Feed 02',
         slug: 'feed-02',
         icon: 'Linux',
-        description: null,
         url: 'https://feed-02.com/rss.xml',
         dateUpdated: 1641058764932,
         unreadCount: 10,
@@ -104,30 +103,25 @@ describe('inflateCollections', () => {
       },
       {
         id: 3,
-        title: 'Collection 03',
+        name: 'Collection 03',
         slug: 'collection-03',
         icon: 'Haskell',
-        description: null,
-        url: null,
         dateUpdated: 1641058850881,
         unreadCount: 10,
         children: [
           {
             id: 4,
-            title: 'Collection 03-01',
+            name: 'Collection 03-01',
             slug: 'collection-03-01',
             icon: 'Haskell',
-            description: null,
-            url: null,
             dateUpdated: 1641058920330,
             unreadCount: 10,
             children: [
               {
                 id: 6,
-                title: 'Feed 03-01-01',
+                name: 'Feed 03-01-01',
                 slug: 'feed-03-01-01',
                 icon: 'Haskell',
-                description: null,
                 url: 'https://feed-03-01-01.com/rss.xml',
                 dateUpdated: 1641059005051,
                 unreadCount: 10,
@@ -137,10 +131,9 @@ describe('inflateCollections', () => {
           },
           {
             id: 5,
-            title: 'Feed 03-02',
+            name: 'Feed 03-02',
             slug: 'feed-03-02',
             icon: 'Haskell',
-            description: null,
             url: 'https://feed-03-02.com/rss.xml',
             dateUpdated: 1641058961198,
             unreadCount: 10,
