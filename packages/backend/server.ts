@@ -1,7 +1,12 @@
 import Fastify from 'fastify';
 import fastifySwagger from 'fastify-swagger';
+import fastifyCookie from 'fastify-cookie';
+import fastifySession from '@fastify/session';
 import closeWithGrace from 'close-with-grace';
-import collections from 'routes/collections';
+import fastifyAuth from 'fastify-auth';
+
+import { auth, collections } from '@routes';
+import { fastifyVerifySession } from '@plugins';
 
 const fastify = Fastify({
   logger: true,
@@ -19,7 +24,7 @@ fastify.register(fastifySwagger, {
       title: 'Orpington News API',
       version: '0.1.0',
     },
-    tags: [{ name: 'Collections' }],
+    tags: [{ name: 'Collections' }, { name: 'Auth' }],
   },
   uiConfig: {
     docExpansion: 'full',
@@ -38,6 +43,24 @@ fastify.register(fastifySwagger, {
   exposeRoute: true,
 });
 
+if (!process.env.COOKIE_SECRET) {
+  throw new Error(`COOKIE_SECRET not set!`);
+}
+
+fastify.register(fastifyAuth);
+fastify.register(fastifyVerifySession);
+fastify.register(fastifyCookie);
+fastify.register(fastifySession, {
+  secret: process.env.COOKIE_SECRET,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV !== 'development',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+  },
+  rolling: true,
+});
+
+fastify.register(auth, { prefix: '/auth' });
 fastify.register(collections, { prefix: '/collections' });
 
 const closeListeners = closeWithGrace(

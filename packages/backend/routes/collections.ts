@@ -42,10 +42,12 @@ const MoveCollection = Type.Object({
 });
 type MoveCollectionType = Static<typeof MoveCollection>;
 
-const collections: FastifyPluginAsync = async (
+export const collections: FastifyPluginAsync = async (
   fastify,
   opts
 ): Promise<void> => {
+  fastify.addHook('preHandler', fastify.auth([fastify.verifySession]));
+
   fastify.get<{ Reply: Array<Collection> }>(
     '/',
     {
@@ -123,5 +125,3 @@ const collections: FastifyPluginAsync = async (
     }
   );
 };
-
-export default collections;

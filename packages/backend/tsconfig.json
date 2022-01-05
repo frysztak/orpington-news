@@ -23,7 +23,10 @@
       "@db/*": ["db/*"],
 
       "@plugins": ["plugins/index.ts"],
-      "@plugins/*": ["plugins/*"]
+      "@plugins/*": ["plugins/*"],
+
+      "@routes": ["routes/index.ts"],
+      "@routes/*": ["routes/*"]
     }
   }
 }
