@@ -1,7 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
-import { noop } from '@orpington-news/shared';
-import { isLoginDisabled } from '@utils';
+import { isLoginDisabled, noop } from '@orpington-news/shared';
 
 const PostLogin = Type.Object({
   username: Type.String(),

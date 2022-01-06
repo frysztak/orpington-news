@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { isLoginDisabled } from '@utils';
+import { isLoginDisabled } from '@orpington-news/shared';
 
 function verifySession(
   request: FastifyRequest,

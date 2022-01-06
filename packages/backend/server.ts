@@ -4,6 +4,7 @@ import fastifyCookie from 'fastify-cookie';
 import fastifySession from '@fastify/session';
 import closeWithGrace from 'close-with-grace';
 import fastifyAuth from 'fastify-auth';
+import fastifyCors from 'fastify-cors';
 
 import { auth, collections } from '@routes';
 import { fastifyVerifySession } from '@plugins';
@@ -47,6 +48,14 @@ if (!process.env.COOKIE_SECRET) {
   throw new Error(`COOKIE_SECRET not set!`);
 }
 
+if (!process.env.APP_URL) {
+  throw new Error(`APP_URL not set!`);
+}
+
+fastify.register(fastifyCors, {
+  credentials: true,
+  origin: [process.env.APP_URL],
+});
 fastify.register(fastifyAuth);
 fastify.register(fastifyVerifySession);
 fastify.register(fastifyCookie);

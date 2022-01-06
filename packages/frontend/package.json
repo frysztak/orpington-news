@@ -4,7 +4,7 @@
   "private": true,
   "author": "Sebastian Frysztak <sebastian@frysztak.dev>",
   "scripts": {
-    "dev": "next dev",
+    "dev": "cpy ../../.env . && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -20,7 +20,6 @@
     "@next/bundle-analyzer": "^12.0.7",
     "@orpington-news/shared": "^0.0.0",
     "beautiful-react-hooks": "^1.0.2",
-    "cross-env": "^7.0.3",
     "formik": "^2.2.9",
     "framer-motion": "^4",
     "next": "12.0.7",
@@ -29,8 +28,10 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
+    "react-query": "^3.34.7",
     "react-virtual": "^2.10.0",
     "string-to-color": "^2.2.2",
+    "wretch": "^1.7.7",
     "yup": "^0.32.11"
   },
   "devDependencies": {
