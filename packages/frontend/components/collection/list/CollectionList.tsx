@@ -59,46 +59,50 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
 
   return (
     <Box ref={parentRef} overflow="auto" w="full" h="full" {...rest}>
-      <Box
-        position="relative"
-        w="full"
-        style={{
-          height: `${rowVirtualizer.totalSize}px`,
-        }}
-      >
-        {rowVirtualizer.virtualItems.map((virtualRow) => {
-          const isLoaderRow = virtualRow.index > items.length - 1;
-          return (
-            <Box
-              key={virtualRow.index}
-              data-key={virtualRow.index}
-              ref={virtualRow.measureRef}
-              py={2}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              {isLoaderRow ? (
-                <Box>
-                  <SkeletonText
-                    mt="4"
-                    noOfLines={1}
-                    spacing="4"
-                    skeletonHeight={4}
-                  />
-                  <SkeletonText mt="4" noOfLines={2} spacing="4" />
-                </Box>
-              ) : (
-                <MagazineItem item={items[virtualRow.index]} py={2} />
-              )}
-            </Box>
-          );
-        })}
-      </Box>
+      {items.length === 0 && !isFetchingMoreItems ? (
+        'No items'
+      ) : (
+        <Box
+          position="relative"
+          w="full"
+          style={{
+            height: `${rowVirtualizer.totalSize}px`,
+          }}
+        >
+          {rowVirtualizer.virtualItems.map((virtualRow) => {
+            const isLoaderRow = virtualRow.index > items.length - 1;
+            return (
+              <Box
+                key={virtualRow.index}
+                data-key={virtualRow.index}
+                ref={virtualRow.measureRef}
+                py={2}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                {isLoaderRow ? (
+                  <Box>
+                    <SkeletonText
+                      mt="4"
+                      noOfLines={1}
+                      spacing="4"
+                      skeletonHeight={4}
+                    />
+                    <SkeletonText mt="4" noOfLines={2} spacing="4" />
+                  </Box>
+                ) : (
+                  <MagazineItem item={items[virtualRow.index]} py={2} />
+                )}
+              </Box>
+            );
+          })}
+        </Box>
+      )}
     </Box>
   );
 };

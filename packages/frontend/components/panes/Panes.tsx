@@ -21,6 +21,7 @@ import {
   CollectionListProps,
 } from '@components/collection/list';
 import { EmptyMain } from './EmptyMain';
+import { ClientRender } from '@utils';
 
 export interface PanesProps {
   sidebar: JSX.Element;
@@ -79,15 +80,17 @@ export const Panes: React.FC<PanesProps> = (props) => {
 
   const items = useMemo(
     () => (
-      <CollectionList
-        layout="magazine"
-        items={collectionItems}
-        px={3}
-        mt={3}
-        flex="1 1 0"
-        h="full"
-        {...collectionListProps}
-      />
+      <ClientRender>
+        <CollectionList
+          layout="magazine"
+          items={collectionItems}
+          px={3}
+          mt={3}
+          flex="1 1 0"
+          h="full"
+          {...collectionListProps}
+        />
+      </ClientRender>
     ),
     [collectionItems, collectionListProps]
   );

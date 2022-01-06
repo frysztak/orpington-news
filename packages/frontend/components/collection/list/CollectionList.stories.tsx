@@ -22,6 +22,12 @@ const collection = generateSampleCollection('Fun Blog');
 const items2 = genN(2).map((_) => generateSampleCollectionItem(collection));
 const items100 = genN(100).map((_) => generateSampleCollectionItem(collection));
 
+export const Empty = Template.bind({});
+Empty.args = {
+  items: [],
+  layout: 'magazine',
+};
+
 export const TwoItems = Template.bind({});
 TwoItems.args = {
   layout: 'magazine',
