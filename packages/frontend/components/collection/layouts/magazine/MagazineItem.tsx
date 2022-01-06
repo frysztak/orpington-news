@@ -43,7 +43,7 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
           </NextLink>
           <Text noOfLines={[2, 3]}>{summary}</Text>
           <Text color="gray.500">
-            by {collection.name} • {readingTime} min
+            by {collection.title} • {readingTime} min
           </Text>
         </VStack>
       </HStack>
