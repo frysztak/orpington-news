@@ -1,6 +1,6 @@
 import React from 'react';
 import type { AppProps } from 'next/app';
-import { ChakraProvider } from '@chakra-ui/react';
+import { Box, ChakraProvider, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { theme } from '../theme';
@@ -13,7 +13,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <ChakraProvider theme={theme}>
         <Global styles={fontFaces} />
-        <Component {...pageProps} />
+
+        <Flex minH="100vh" direction="column">
+          <Component {...pageProps} />
+        </Flex>
       </ChakraProvider>
     </QueryClientProvider>
   );

@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import {
   Box,
+  BoxProps,
   Divider,
   Drawer,
   DrawerBody,
@@ -44,7 +45,7 @@ export interface PanesProps {
   onGoBackClicked?: () => void;
 }
 
-export const Panes: React.FC<PanesProps> = (props) => {
+export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
   const {
     sidebar,
     collectionItems,
@@ -60,6 +61,8 @@ export const Panes: React.FC<PanesProps> = (props) => {
     onCollectionItemsWidthChanged,
 
     onGoBackClicked,
+
+    ...rest
   } = props;
 
   const { isOpen, onClose, onToggle } = useDisclosure();
@@ -110,6 +113,7 @@ export const Panes: React.FC<PanesProps> = (props) => {
         alignItems="stretch"
         h="full"
         display={{ base: 'none', lg: 'flex' }}
+        {...rest}
       >
         <Resizable
           enable={{ right: true }}
@@ -148,13 +152,13 @@ export const Panes: React.FC<PanesProps> = (props) => {
           </VStack>
         </Resizable>
 
-        <Divider orientation="vertical" />
+        <Divider orientation="vertical" h="auto" />
 
         <Box flexGrow={1}>{mainContent ?? <EmptyMain />}</Box>
       </HStack>
 
       {/* Mobile view */}
-      <Box display={{ base: 'flex', lg: 'none' }}>
+      <Box display={{ base: 'flex', lg: 'none' }} {...rest}>
         {mainContent ? (
           <VStack h="full" w="full">
             <IconButton
