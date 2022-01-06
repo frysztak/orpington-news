@@ -50,6 +50,7 @@ export const collections: FastifyPluginAsync = async (
 
   fastify.get<{ Reply: Array<Collection> }>(
     '/',
+
     {
       schema: {
         tags: ['Collections'],

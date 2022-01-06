@@ -50,7 +50,7 @@ export const auth: FastifyPluginAsync = async (
         password === process.env.APP_PASSWORD
       ) {
         reply.status(200);
-        request.session.set('authenticated', true);
+        request.session.authenticated = true;
         return { statusCode: 200 };
       } else {
         reply.status(401);

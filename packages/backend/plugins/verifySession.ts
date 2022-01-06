@@ -12,7 +12,7 @@ function verifySession(
     return done();
   }
 
-  const isAuthenticated = Boolean(request.session.get('authenticated'));
+  const isAuthenticated = Boolean(request.session.authenticated);
   if (!isAuthenticated) {
     reply.status(401).send();
     return done();
@@ -33,5 +33,9 @@ export const fastifyVerifySession = fastifyPlugin(plugin, {
 declare module 'fastify' {
   interface FastifyInstance {
     verifySession: typeof verifySession;
+  }
+
+  interface Session {
+    authenticated: boolean;
   }
 }
