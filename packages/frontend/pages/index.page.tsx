@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box } from '@chakra-ui/react';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { isLoginDisabled } from '@orpington-news/shared';
+import { ConnectedPanes } from './ConnectedPanes';
 
 const Home: NextPage = () => {
   return (
@@ -10,7 +10,8 @@ const Home: NextPage = () => {
       <Head>
         <title>Orpington News</title>
       </Head>
-      <Box>Hello</Box>
+
+      <ConnectedPanes />
     </>
   );
 };
