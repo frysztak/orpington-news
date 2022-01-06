@@ -6,7 +6,7 @@
   "typings": "dist/index.d.ts",
   "license": "ISC",
   "scripts": {
-    "dev": "cpy ../../.env . && concurrently \"rollup -c -w\" \"nodemon --delay 10 dist/server.js\"",
+    "dev": "cpy ../../.env . && NODE_ENV=development concurrently \"rollup -c -w\" \"nodemon --delay 10 dist/server.js\"",
     "build": "rimraf dist && rollup -c",
     "start": "node dist/server.js",
     "migrate": "node dist/db/db/migrate.js",
