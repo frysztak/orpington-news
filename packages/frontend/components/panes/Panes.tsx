@@ -128,7 +128,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
           {sidebar}
         </Resizable>
 
-        <Divider orientation="vertical" />
+        <Divider orientation="vertical" h="auto" />
 
         <Resizable
           enable={{ right: true }}
