@@ -28,7 +28,7 @@ export interface PanesProps {
   sidebar: JSX.Element;
 
   collectionItems: CollectionItem[];
-  activeCollection: Collection;
+  activeCollection?: Collection;
   collectionListProps: Pick<
     CollectionListProps,
     'isFetchingMoreItems' | 'canFetchMoreItems' | 'onFetchMoreItems'
