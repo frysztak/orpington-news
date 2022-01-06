@@ -14,8 +14,13 @@ function verifySession(
 
   const isAuthenticated = Boolean(request.session.authenticated);
   if (!isAuthenticated) {
-    reply.status(401).send();
-    return done();
+    request.destroySession(() => {
+      reply
+        .status(401)
+        .clearCookie('sessionId')
+        .send({ statusCode: 401, message: 'Unauthorized' });
+      done();
+    });
   }
 
   return done();
