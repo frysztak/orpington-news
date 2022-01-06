@@ -7,7 +7,7 @@ import { Collection } from '@orpington-news/shared';
 import { LayoutType } from '../types';
 
 export interface CollectionHeaderProps {
-  collection: Collection;
+  collection?: Collection;
   menuButtonRef?: React.MutableRefObject<HTMLButtonElement | null>;
   hideMenuButton?: boolean;
 
@@ -38,25 +38,33 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
           />
         )}
 
-        <Box>
-          <IconButton
-            icon={<IoRefresh />}
-            aria-label="Refresh"
-            variant="ghost"
-            onClick={onRefresh}
-          />
-          <IconButton icon={<CgSearch />} aria-label="Search" variant="ghost" />
-          <IconButton
-            icon={<BsLayoutWtf />}
-            aria-label="Layout"
-            variant="ghost"
-          />
-        </Box>
+        {collection && (
+          <Box>
+            <IconButton
+              icon={<IoRefresh />}
+              aria-label="Refresh"
+              variant="ghost"
+              onClick={onRefresh}
+            />
+            <IconButton
+              icon={<CgSearch />}
+              aria-label="Search"
+              variant="ghost"
+            />
+            <IconButton
+              icon={<BsLayoutWtf />}
+              aria-label="Layout"
+              variant="ghost"
+            />
+          </Box>
+        )}
       </HStack>
 
-      <HStack w="full" justify="flex-start">
-        <Heading pl={4}>{collection.title}</Heading>
-      </HStack>
+      {collection && (
+        <HStack w="full" justify="flex-start">
+          <Heading pl={4}>{collection.title}</Heading>
+        </HStack>
+      )}
     </VStack>
   );
 };

@@ -15,7 +15,7 @@ export const Default = Template.bind({});
 Default.args = {
   collection: {
     id: 1,
-    name: 'Fun Blog',
+    title: 'Fun Blog',
     slug: 'fun-blog',
     unreadCount: 9,
   },
@@ -25,4 +25,10 @@ export const NoMenuButton = Template.bind({});
 NoMenuButton.args = {
   ...Default.args,
   hideMenuButton: true,
+};
+
+export const NoCollection = Template.bind({});
+NoCollection.args = {
+  ...Default.args,
+  collection: undefined,
 };
