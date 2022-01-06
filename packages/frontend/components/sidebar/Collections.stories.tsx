@@ -55,6 +55,13 @@ const sampleCollections: Collection[] = [
   { id: 4, title: 'Feed 04', slug: 'feed-04', unreadCount: 9 },
 ];
 
+export const Error = Template.bind({});
+Error.args = {
+  ...Empty.args,
+  collections: [],
+  isError: true,
+};
+
 export const SomeFeeds = Template.bind({});
 SomeFeeds.args = {
   ...Empty.args,

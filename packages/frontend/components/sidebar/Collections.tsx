@@ -1,8 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Box, MenuDivider, MenuItem, VStack } from '@chakra-ui/react';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  Box,
+  Icon,
+  MenuDivider,
+  Text,
+  MenuItem,
+  VStack,
+} from '@chakra-ui/react';
 import { CgRemove } from 'react-icons/cg';
 import { IoCheckmarkDone, IoRefresh } from 'react-icons/io5';
 import { AiTwotoneEdit } from 'react-icons/ai';
+import { BiMessageAltError } from 'react-icons/bi';
 import { SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
 import { ID, Collection } from '@orpington-news/shared';
@@ -113,6 +121,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
 };
 
 export interface CollectionsProps {
+  isError?: boolean;
   collections: Collection[];
   activeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
@@ -127,6 +136,7 @@ export interface CollectionsProps {
 
 export const Collections: React.FC<CollectionsProps> = (props) => {
   const {
+    isError = false,
     collections,
     activeCollectionId,
     expandedCollectionIDs,
@@ -137,17 +147,32 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
 
   return (
     <VStack w="full" spacing={1}>
-      {collections.map((collection: Collection) => (
-        <CollapsibleCollectionList
-          key={collection.id}
-          collection={collection}
-          activeCollectionId={activeCollectionId}
-          expandedCollectionIDs={expandedCollectionIDs}
-          onCollectionClicked={onCollectionClicked}
-          onChevronClicked={onChevronClicked}
-          onCollectionMenuActionClicked={onCollectionMenuActionClicked}
-        />
-      ))}
+      {isError ? (
+        <>
+          <Icon
+            as={BiMessageAltError}
+            boxSize={10}
+            color="red.400"
+            mt={4}
+            mb={2}
+          />
+          <Text fontSize="xl" fontWeight="bold">
+            Failed to fetch collections
+          </Text>
+        </>
+      ) : (
+        collections.map((collection: Collection) => (
+          <CollapsibleCollectionList
+            key={collection.id}
+            collection={collection}
+            activeCollectionId={activeCollectionId}
+            expandedCollectionIDs={expandedCollectionIDs}
+            onCollectionClicked={onCollectionClicked}
+            onChevronClicked={onChevronClicked}
+            onCollectionMenuActionClicked={onCollectionMenuActionClicked}
+          />
+        ))
+      )}
     </VStack>
   );
 };
