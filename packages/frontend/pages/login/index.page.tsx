@@ -4,16 +4,17 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { useMutation } from 'react-query';
 import { Heading, VStack, Container } from '@chakra-ui/react';
-import { api, useHandleError } from '@api';
+import { useApi, useHandleError } from '@api';
 import { LoginForm, LoginFormData } from './LoginForm';
 
 const LoginPage: NextPage = () => {
-  const { push } = useRouter();
+  const api = useApi();
+  const router = useRouter();
   const { onError } = useHandleError();
 
   const onSuccess = useCallback(() => {
-    push('/');
-  }, [push]);
+    router.push('/');
+  }, [router]);
 
   const { isLoading, mutate } = useMutation(
     (data: LoginFormData) => api.url('/auth/login').post(data).json(),
