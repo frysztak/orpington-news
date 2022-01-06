@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { AppProps } from 'next/app';
-import { Box, ChakraProvider, Flex } from '@chakra-ui/react';
+import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { theme } from '../theme';
 import { fontFaces } from '../theme/fonts';
 
-const queryClient = new QueryClient();
-
 function MyApp({ Component, pageProps }: AppProps) {
+  const [queryClient] = useState(() => new QueryClient());
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ChakraProvider theme={theme}>
-        <Global styles={fontFaces} />
+      <Hydrate state={pageProps.dehydratedState}>
+        <ChakraProvider theme={theme}>
+          <Global styles={fontFaces} />
 
-        <Flex minH="100vh" direction="column">
-          <Component {...pageProps} />
-        </Flex>
-      </ChakraProvider>
+          <Flex minH="100vh" direction="column">
+            <Component {...pageProps} />
+          </Flex>
+        </ChakraProvider>
+      </Hydrate>
     </QueryClientProvider>
   );
 }

@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query';
 import { Panes } from '@components/panes';
 import { SidebarContent } from '@components/sidebar';
-import { Collection, noop } from '@orpington-news/shared';
-import { useApi, useHandleError } from '@api';
+import { noop } from '@orpington-news/shared';
+import { getCollections, useApi, useHandleError } from '@api';
 
 export const ConnectedPanes: React.FC = (props) => {
   const api = useApi();
@@ -10,7 +10,7 @@ export const ConnectedPanes: React.FC = (props) => {
 
   const { data: collections, isError: collectionsError } = useQuery(
     ['collections'],
-    () => api.url('/collections').get().json<Collection[]>(),
+    () => getCollections(api),
     { onError }
   );
 
