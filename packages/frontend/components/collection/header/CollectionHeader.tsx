@@ -55,7 +55,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
       </HStack>
 
       <HStack w="full" justify="flex-start">
-        <Heading pl={4}>{collection.name}</Heading>
+        <Heading pl={4}>{collection.title}</Heading>
       </HStack>
     </VStack>
   );

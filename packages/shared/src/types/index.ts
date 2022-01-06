@@ -53,7 +53,7 @@ export const defaultIcon: CollectionIconType = 'Code';
 export interface Collection {
   id: ID;
   slug: string;
-  name: string;
+  title: string;
   unreadCount: number;
   icon?: CollectionIconType;
   parentId?: ID;

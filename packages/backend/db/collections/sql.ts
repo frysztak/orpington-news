@@ -6,11 +6,11 @@ import { getUnixTime } from 'date-fns';
 export const addCollection = (
   collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const { name, icon, parentId, description, url, dateUpdated } = collection;
+  const { title, icon, parentId, description, url, dateUpdated } = collection;
 
   const values = [
-    name,
-    slugify(name),
+    title,
+    slugify(title),
     icon ?? defaultIcon,
     0,
     parentId ?? null,
@@ -31,11 +31,11 @@ export const deleteCollection = (collectionId: ID) => {
 export const updateCollection = (
   collection: Omit<Collection, 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const { id, name, icon, parentId, description, url } = collection;
+  const { id, title, icon, parentId, description, url } = collection;
 
   return sql`UPDATE collections
-  SET title = ${name},
-      slug = ${slugify(name)},
+  SET title = ${title},
+      slug = ${slugify(title)},
       icon = ${icon ?? defaultIcon},
       parent_id = ${parentId ?? null},
       description = ${description ?? null},

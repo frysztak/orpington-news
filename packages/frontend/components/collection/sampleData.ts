@@ -26,7 +26,7 @@ export const generateSampleCollection = (name?: string): Collection => {
   const n = name || faker.company.companyName();
   return {
     id: faker.datatype.number(),
-    name: n,
+    title: n,
     slug: slugify(n),
     unreadCount: faker.datatype.number(),
   };

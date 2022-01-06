@@ -12,7 +12,7 @@ import {
 import { Collection, CollectionIcons } from '@orpington-news/shared';
 
 const PostCollection = Type.Object({
-  name: Type.String(),
+  title: Type.String(),
   icon: Type.Optional(
     Type.Union(CollectionIcons.map((icon) => Type.Literal(icon)))
   ),

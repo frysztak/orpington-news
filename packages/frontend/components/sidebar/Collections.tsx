@@ -33,7 +33,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
     onChevronClicked,
     onCollectionMenuActionClicked,
   } = props;
-  const { id, name, unreadCount, children } = collection;
+  const { id, title, unreadCount, children } = collection;
 
   const hasChildren = Boolean(children) && children?.length !== 0;
   const isOpen = expandedCollectionIDs?.includes(id) ?? false;
@@ -57,7 +57,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
   return (
     <>
       <SidebarItem
-        title={name}
+        title={title}
         isActive={activeCollectionId === id}
         icon={icon}
         counter={unreadCount}
