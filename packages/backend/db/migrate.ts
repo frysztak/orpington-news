@@ -1,4 +1,5 @@
 import { SlonikMigrator } from '@slonik/migrator';
+import { join } from 'path';
 import { pool } from './db';
 
 if (!process.env.DATABASE_URL) {
@@ -6,7 +7,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 const migrator = new SlonikMigrator({
-  migrationsPath: __dirname + '/migrations',
+  migrationsPath: join(process.cwd(), '/db/migrations'),
   migrationTableName: 'migration',
   slonik: pool,
   logger: console,
