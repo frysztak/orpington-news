@@ -2,18 +2,20 @@ import Fastify from 'fastify';
 import fastifySwagger from 'fastify-swagger';
 import fastifyCookie from 'fastify-cookie';
 import fastifySession from '@fastify/session';
-import closeWithGrace from 'close-with-grace';
 import fastifyAuth from 'fastify-auth';
 import fastifyCors from 'fastify-cors';
+import fastifySchedule from 'fastify-schedule';
+import closeWithGrace from 'close-with-grace';
 
 import { auth, collections } from '@routes';
 import { fastifyVerifySession } from '@plugins';
+import { fetchRSSJob } from '@tasks/fetchRSS';
 
 const fastify = Fastify({
   logger: true,
   ajv: {
     customOptions: {
-      coerceTypes: false,
+      coerceTypes: true,
     },
   },
 });
@@ -68,9 +70,19 @@ fastify.register(fastifySession, {
   },
   rolling: true,
 });
+fastify.register(fastifySchedule);
 
 fastify.register(auth, { prefix: '/auth' });
 fastify.register(collections, { prefix: '/collections' });
+
+fastify.ready().then(
+  () => {
+    fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
+  },
+  (err) => {
+    console.error(err);
+  }
+);
 
 const closeListeners = closeWithGrace(
   { delay: 500 },

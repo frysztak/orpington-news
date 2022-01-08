@@ -10,13 +10,14 @@ import {
   updateCollection,
 } from 'db/collections';
 import { Collection, CollectionIcons } from '@orpington-news/shared';
+import { DBCollectionItem, getCollectionItems } from '@db/collectionItems';
 
 const PostCollection = Type.Object({
   title: Type.String(),
   icon: Type.Optional(
     Type.Union(CollectionIcons.map((icon) => Type.Literal(icon)))
   ),
-  parentId: Type.Optional(Type.Number()),
+  parentId: Type.Optional(Type.Integer()),
   description: Type.Optional(Type.String()),
   url: Type.Optional(Type.String()),
 });
@@ -26,19 +27,19 @@ type PostCollectionType = Static<typeof PostCollection>;
 const PutCollection = Type.Intersect([
   PostCollection,
   Type.Object({
-    id: Type.Number(),
+    id: Type.Integer(),
   }),
 ]);
 type PutCollectionType = Static<typeof PutCollection>;
 
-const DeleteCollection = Type.Object({
-  id: Type.Number(),
+const CollectionId = Type.Object({
+  id: Type.Integer(),
 });
-type DeleteCollectionType = Static<typeof DeleteCollection>;
+type CollectionIdType = Static<typeof CollectionId>;
 
 const MoveCollection = Type.Object({
-  id: Type.Number(),
-  newParentId: Type.Union([Type.Number(), Type.Null()]),
+  id: Type.Integer(),
+  newParentId: Type.Union([Type.Integer(), Type.Null()]),
 });
 type MoveCollectionType = Static<typeof MoveCollection>;
 
@@ -50,7 +51,6 @@ export const collections: FastifyPluginAsync = async (
 
   fastify.get<{ Reply: Array<Collection> }>(
     '/',
-
     {
       schema: {
         tags: ['Collections'],
@@ -109,11 +109,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.delete<{ Params: DeleteCollectionType }>(
+  fastify.delete<{ Params: CollectionIdType }>(
     '/:id',
     {
       schema: {
-        params: DeleteCollection,
+        params: CollectionId,
         tags: ['Collections'],
       },
     },
@@ -123,6 +123,23 @@ export const collections: FastifyPluginAsync = async (
       } = request;
       await pool.any(deleteCollection(id));
       return true;
+    }
+  );
+
+  fastify.get<{ Params: CollectionIdType; Reply: readonly DBCollectionItem[] }>(
+    '/:id/items',
+    {
+      schema: {
+        params: CollectionId,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        params: { id },
+      } = request;
+
+      return await pool.any(getCollectionItems(id));
     }
   );
 };

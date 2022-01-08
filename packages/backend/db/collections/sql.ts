@@ -79,3 +79,35 @@ export const getCollections = () => {
   ORDER BY level ASC
   `;
 };
+
+export const getCollectionChildrenIds = (rootId: ID) => {
+  return sql<{ childrenId: ID }>`
+  WITH RECURSIVE tree AS
+  (
+    SELECT id, '{}'::integer[] AS ancestors FROM collections WHERE parent_id = ${rootId}
+
+    UNION ALL
+
+    SELECT collections.id, tree.ancestors || collections.parent_id
+    FROM collections, tree
+    WHERE collections.parent_id = tree.id
+  )
+  SELECT ${rootId} as childrenId
+  UNION
+  SELECT id as childrenId FROM tree`;
+};
+
+export const getCollectionsToRefresh = () => {
+  return sql<DBCollection>`
+  SELECT * FROM collections
+  WHERE
+    url IS NOT NULL
+    AND
+    date_updated + refresh_interval * interval '1 minute' <= now();`;
+};
+
+export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
+  return sql`UPDATE collections
+  SET date_updated = TO_TIMESTAMP(${date})
+  WHERE id = ${collectionId}`;
+};

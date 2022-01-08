@@ -13,6 +13,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "strictNullChecks": true,
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
@@ -26,7 +27,10 @@
       "@plugins/*": ["plugins/*"],
 
       "@routes": ["routes/index.ts"],
-      "@routes/*": ["routes/*"]
+      "@routes/*": ["routes/*"],
+
+      "@tasks": ["tasks/index.ts"],
+      "@tasks/*": ["tasks/*"]
     }
   }
 }
