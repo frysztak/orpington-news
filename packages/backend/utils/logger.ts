@@ -1,10 +1,12 @@
-import { createLogger, transports, format } from 'winston';
+import pino from 'pino';
 
-export const logger = createLogger({
-  transports: [new transports.Console()],
-  format: format.combine(
-    format.colorize({ all: true }),
-    format.timestamp(),
-    format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`)
-  ),
+export const logger = pino({
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      ignore: 'pid,hostname',
+      translateTime: true,
+    },
+  },
 });

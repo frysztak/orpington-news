@@ -11,10 +11,10 @@ import closeWithGrace from 'close-with-grace';
 import { auth, collections } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob } from '@tasks/fetchRSS';
-import { defaultAjv } from '@utils';
+import { defaultAjv, logger } from '@utils';
 
 const fastify = Fastify({
-  logger: true,
+  logger: logger,
 });
 
 fastify.register(fastifySwagger, {
