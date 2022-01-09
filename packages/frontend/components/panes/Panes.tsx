@@ -159,7 +159,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
       </HStack>
 
       {/* Mobile view */}
-      <Box display={{ base: 'flex', lg: 'none' }} {...rest}>
+      <Box display={{ base: 'flex', lg: 'none' }} h="100vh" {...rest}>
         {mainContent ? (
           <VStack h="full" w="full">
             <IconButton
