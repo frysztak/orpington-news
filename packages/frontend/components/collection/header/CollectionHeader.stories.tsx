@@ -14,10 +14,8 @@ const Template: Story<CollectionHeaderProps> = (props) => (
 export const Default = Template.bind({});
 Default.args = {
   collection: {
-    id: 1,
+    id: 90,
     title: 'Fun Blog',
-    slug: 'fun-blog',
-    unreadCount: 9,
   },
 };
 

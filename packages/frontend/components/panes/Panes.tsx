@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
 import { IoReturnUpBack } from 'react-icons/io5';
-import { Collection, CollectionItem } from '@orpington-news/shared';
+import { CollectionItem } from '@orpington-news/shared';
 import { CollectionHeader } from '@components/collection/header';
 import {
   CollectionList,
@@ -23,12 +23,13 @@ import {
 } from '@components/collection/list';
 import { EmptyMain } from './EmptyMain';
 import { ClientRender } from '@utils';
+import { ActiveCollection } from '@components/collection/types';
 
 export interface PanesProps {
   sidebar: JSX.Element;
 
   collectionItems: CollectionItem[];
-  activeCollection?: Collection;
+  activeCollection?: ActiveCollection;
   collectionListProps: Pick<
     CollectionListProps,
     'isFetchingMoreItems' | 'canFetchMoreItems' | 'onFetchMoreItems'

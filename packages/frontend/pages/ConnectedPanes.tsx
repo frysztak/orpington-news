@@ -9,17 +9,19 @@ import {
   useApi,
   useHandleError,
 } from '@api';
+import { ActiveCollection } from '@components/collection/types';
 
 export const ConnectedPanes: React.FC = (props) => {
-  const [activeCollectionId, setActiveCollectionId] = useState<string | ID>(
-    'home'
-  );
+  const [activeCollection, setActiveCollection] = useState<ActiveCollection>({
+    id: 'home',
+    title: 'Home',
+  });
   const handleCollectionClicked = useCallback((collection: Collection) => {
-    setActiveCollectionId(collection.id);
+    setActiveCollection({ id: collection.id, title: collection.title });
   }, []);
   const handleMenuItemClicked = useCallback((item: MenuItem) => {
     if (item === 'home') {
-      setActiveCollectionId('home');
+      setActiveCollection({ id: 'home', title: 'Home' });
     }
   }, []);
 
@@ -39,15 +41,13 @@ export const ConnectedPanes: React.FC = (props) => {
     isLoading: collectionItemsLoading,
     hasNextPage,
   } = useInfiniteQuery(
-    ['collectionItems', { activeCollectionId }] as const,
+    ['collectionItems', { collectionId: activeCollection.id }] as const,
     ({ pageParam = 0, queryKey }) => {
-      const [_, { activeCollectionId }] = queryKey;
-      return getCollectionItems(api, activeCollectionId, pageParam).then(
-        (items) => ({
-          items,
-          pageParam,
-        })
-      );
+      const [_, { collectionId }] = queryKey;
+      return getCollectionItems(api, collectionId, pageParam).then((items) => ({
+        items,
+        pageParam,
+      }));
     },
     {
       getNextPageParam: (lastPage) =>
@@ -70,9 +70,10 @@ export const ConnectedPanes: React.FC = (props) => {
           onCollectionClicked={handleCollectionClicked}
           onChevronClicked={noop}
           onMenuItemClicked={handleMenuItemClicked}
-          activeCollectionId={activeCollectionId}
+          activeCollectionId={activeCollection.id}
         />
       }
+      activeCollection={activeCollection}
       collectionItems={collectionItems}
       collectionListProps={{
         isFetchingMoreItems: collectionItemsLoading || isFetchingNextPage,
