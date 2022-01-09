@@ -1,5 +1,6 @@
 import faker from 'faker';
 import slugify from 'slugify';
+import { getUnixTime } from 'date-fns';
 import { Collection, CollectionItem } from '@orpington-news/shared';
 
 export const generateSampleCollectionItem = (
@@ -8,16 +9,17 @@ export const generateSampleCollectionItem = (
   const title = faker.hacker.phrase();
 
   return {
-    id: faker.datatype.number(),
-    url: faker.internet.url(),
+    id: faker.datatype.uuid(),
+    link: faker.internet.url(),
     summary: faker.lorem.words(30),
-    datePublished: faker.date.recent(),
+    datePublished: getUnixTime(faker.date.recent()),
+    dateUpdated: getUnixTime(faker.date.recent()),
     title,
     slug: slugify(title),
     fullText: `<b>${title}</b><br/>${faker.lorem.sentences(10)}`,
 
     collection,
-    readingTime: faker.datatype.number(25),
+    readingTime: faker.datatype.float({ min: 0.1, max: 25, precision: 3 }),
     onReadingList: faker.datatype.boolean(),
   };
 };
