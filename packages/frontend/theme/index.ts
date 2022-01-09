@@ -13,10 +13,30 @@ const styles = {
     '*': {
       scrollbarWidth: 'thin',
     },
-    //'*::-webkit-scrollbar': {
-    //  width: "12px",
-    //  height: "12px",
-    //},
+    '*::-webkit-scrollbar': {
+      width: 2,
+    },
+    '*::-webkit-scrollbar-track': {
+      borderRadius: 'md',
+      '@media (prefers-color-scheme: dark)': {
+        bgColor: 'gray.700',
+      },
+      '@media (prefers-color-scheme: light)': {
+        bgColor: 'gray.200',
+      },
+    },
+    '*::-webkit-scrollbar-thumb': {
+      borderRadius: 'md',
+      '@media (prefers-color-scheme: dark)': {
+        bgColor: 'gray.500',
+      },
+      '@media (prefers-color-scheme: light)': {
+        bgColor: 'gray.300',
+      },
+    },
+    '*::-webkit-scrollbar-button': {
+      display: 'none',
+    },
   },
 };
 
