@@ -1,10 +1,28 @@
-import { useQuery } from 'react-query';
+import { useCallback, useMemo, useState } from 'react';
+import { useInfiniteQuery, useQuery } from 'react-query';
 import { Panes } from '@components/panes';
-import { SidebarContent } from '@components/sidebar';
-import { noop } from '@orpington-news/shared';
-import { getCollections, useApi, useHandleError } from '@api';
+import { MenuItem, SidebarContent } from '@components/sidebar';
+import { Collection, ID, noop } from '@orpington-news/shared';
+import {
+  getCollectionItems,
+  getCollections,
+  useApi,
+  useHandleError,
+} from '@api';
 
 export const ConnectedPanes: React.FC = (props) => {
+  const [activeCollectionId, setActiveCollectionId] = useState<string | ID>(
+    'home'
+  );
+  const handleCollectionClicked = useCallback((collection: Collection) => {
+    setActiveCollectionId(collection.id);
+  }, []);
+  const handleMenuItemClicked = useCallback((item: MenuItem) => {
+    if (item === 'home') {
+      setActiveCollectionId('home');
+    }
+  }, []);
+
   const api = useApi();
   const { onError } = useHandleError();
 
@@ -14,6 +32,34 @@ export const ConnectedPanes: React.FC = (props) => {
     { onError }
   );
 
+  const {
+    data: collectionItemsPages,
+    fetchNextPage,
+    isFetchingNextPage,
+    isLoading: collectionItemsLoading,
+    hasNextPage,
+  } = useInfiniteQuery(
+    ['collectionItems', { activeCollectionId }] as const,
+    ({ pageParam = 0, queryKey }) => {
+      const [_, { activeCollectionId }] = queryKey;
+      return getCollectionItems(api, activeCollectionId, pageParam).then(
+        (items) => ({
+          items,
+          pageParam,
+        })
+      );
+    },
+    {
+      getNextPageParam: (lastPage) =>
+        lastPage.items.length === 0 ? undefined : lastPage.pageParam + 1,
+      onError,
+    }
+  );
+
+  const collectionItems = useMemo(() => {
+    return collectionItemsPages?.pages.flatMap((page) => [...page.items]) || [];
+  }, [collectionItemsPages]);
+
   return (
     <Panes
       flexGrow={1}
@@ -21,14 +67,18 @@ export const ConnectedPanes: React.FC = (props) => {
         <SidebarContent
           isError={collectionsError}
           collections={collections ?? []}
-          onCollectionClicked={noop}
+          onCollectionClicked={handleCollectionClicked}
           onChevronClicked={noop}
-          onMenuItemClicked={noop}
-          activeCollectionId={'home'}
+          onMenuItemClicked={handleMenuItemClicked}
+          activeCollectionId={activeCollectionId}
         />
       }
-      collectionItems={[]}
-      collectionListProps={{}}
+      collectionItems={collectionItems}
+      collectionListProps={{
+        isFetchingMoreItems: collectionItemsLoading || isFetchingNextPage,
+        onFetchMoreItems: fetchNextPage,
+        canFetchMoreItems: hasNextPage,
+      }}
     />
   );
 };

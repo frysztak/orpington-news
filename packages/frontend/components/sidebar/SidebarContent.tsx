@@ -16,7 +16,12 @@ import { SidebarItem } from './SidebarItem';
 import { Collections, CollectionsProps } from './Collections';
 import { SiRss } from 'react-icons/si';
 
-type MenuItem = 'home' | 'readingList' | 'addFeed' | 'organize' | 'settings';
+export type MenuItem =
+  | 'home'
+  | 'readingList'
+  | 'addFeed'
+  | 'organize'
+  | 'settings';
 
 export type SidebarContentProps = Omit<
   CollectionsProps,
