@@ -11,6 +11,7 @@ import {
 } from 'db/collections';
 import { Collection, CollectionIcons } from '@orpington-news/shared';
 import { DBCollectionItem, getCollectionItems } from '@db/collectionItems';
+import { disableCoercionAjv } from '@utils';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -83,6 +84,11 @@ export const collections: FastifyPluginAsync = async (
       schema: {
         body: MoveCollection,
         tags: ['Collections'],
+      },
+      config: {
+        schemaValidators: {
+          params: disableCoercionAjv,
+        },
       },
     },
     async (request, reply) => {

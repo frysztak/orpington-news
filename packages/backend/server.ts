@@ -5,19 +5,16 @@ import fastifySession from '@fastify/session';
 import fastifyAuth from 'fastify-auth';
 import fastifyCors from 'fastify-cors';
 import fastifySchedule from 'fastify-schedule';
+import fastifySplitValidator from 'fastify-split-validator';
 import closeWithGrace from 'close-with-grace';
 
 import { auth, collections } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob } from '@tasks/fetchRSS';
+import { defaultAjv } from '@utils';
 
 const fastify = Fastify({
   logger: true,
-  ajv: {
-    customOptions: {
-      coerceTypes: true,
-    },
-  },
 });
 
 fastify.register(fastifySwagger, {
@@ -71,6 +68,7 @@ fastify.register(fastifySession, {
   rolling: true,
 });
 fastify.register(fastifySchedule);
+fastify.register(fastifySplitValidator, { defaultValidator: defaultAjv });
 
 fastify.register(auth, { prefix: '/auth' });
 fastify.register(collections, { prefix: '/collections' });

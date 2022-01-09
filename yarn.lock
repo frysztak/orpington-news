@@ -5104,7 +5104,7 @@ ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.11.0, ajv@^6.12.2, ajv@^6.12.3, ajv
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.1.0, ajv@^8.8.2:
+ajv@^8.0.0, ajv@^8.1.0, ajv@^8.6.3, ajv@^8.8.2:
   version "8.8.2"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.8.2.tgz#01b4fef2007a28bf75f0b7fc009f62679de4abbb"
   integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
@@ -8710,6 +8710,14 @@ fastify-schedule@^1.0.0:
   resolved "https://registry.yarnpkg.com/fastify-schedule/-/fastify-schedule-1.0.0.tgz#26dcd8ab2399d79aeaca0fa540c30948b587fbd2"
   integrity sha512-oghFkqIKhhSD1m8iSXFR3B6NjvatT65E1BttVVV2YTcXeytm7kLnTyaTUtnsdmApXKELnszxpah+JOs5qtY5og==
   dependencies:
+    fastify-plugin "^3.0.0"
+
+fastify-split-validator@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/fastify-split-validator/-/fastify-split-validator-1.0.2.tgz#577d23403135d72400c39edbc10ba91fb9771b3d"
+  integrity sha512-JjM9R2oFjgutEyecTWMdv5MNdG5S0cvOeqcdp4lsJnlG2c45ciRX6CThYe1QlsqnHG+JLc14KHMcPqc8WkmejQ==
+  dependencies:
+    ajv "^8.6.3"
     fastify-plugin "^3.0.0"
 
 fastify-static@^4.0.0:

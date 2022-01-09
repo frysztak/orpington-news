@@ -2,8 +2,10 @@ import Fastify, { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import fastifyCookie from 'fastify-cookie';
 import fastifySession from '@fastify/session';
 import fastifyAuth from 'fastify-auth';
+import fastifySplitValidator from 'fastify-split-validator';
 import { auth } from './auth';
 import { fastifyVerifySession } from '@plugins/verifySession';
+import { defaultAjv } from '@utils';
 
 const authRoutes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.get(
@@ -19,6 +21,7 @@ function build() {
   const fastify = Fastify();
   fastify.register(fastifyAuth);
   fastify.register(fastifyVerifySession);
+  fastify.register(fastifySplitValidator, { defaultValidator: defaultAjv });
   fastify.register(auth, { prefix: '/auth' });
   fastify.register(authRoutes, { prefix: '/routes' });
   fastify.register(fastifyCookie);
@@ -96,7 +99,7 @@ describe('/auth', () => {
       });
 
       expect(res.statusCode).toBe(400);
-      expect(res.json()).toHaveProperty('message', 'body should be object');
+      expect(res.json()).toHaveProperty('message', 'body must be object');
     });
 
     test('POST /login returns 500 for missing username/password in process.env', async () => {
