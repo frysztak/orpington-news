@@ -1,8 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useInfiniteQuery, useQuery } from 'react-query';
 import { Panes } from '@components/panes';
 import { MenuItem, SidebarContent } from '@components/sidebar';
-import { Collection, ID, noop } from '@orpington-news/shared';
+import { Collection, noop } from '@orpington-news/shared';
 import {
   getCollectionItems,
   getCollections,
@@ -10,20 +10,28 @@ import {
   useHandleError,
 } from '@api';
 import { ActiveCollection } from '@components/collection/types';
+import { useLocalStorage } from 'beautiful-react-hooks';
 
 export const ConnectedPanes: React.FC = (props) => {
-  const [activeCollection, setActiveCollection] = useState<ActiveCollection>({
-    id: 'home',
-    title: 'Home',
-  });
-  const handleCollectionClicked = useCallback((collection: Collection) => {
-    setActiveCollection({ id: collection.id, title: collection.title });
-  }, []);
-  const handleMenuItemClicked = useCallback((item: MenuItem) => {
-    if (item === 'home') {
-      setActiveCollection({ id: 'home', title: 'Home' });
-    }
-  }, []);
+  const [activeCollection, setActiveCollection] =
+    useLocalStorage<ActiveCollection>('activeCollection', {
+      id: 'home',
+      title: 'Home',
+    });
+  const handleCollectionClicked = useCallback(
+    (collection: Collection) => {
+      setActiveCollection({ id: collection.id, title: collection.title });
+    },
+    [setActiveCollection]
+  );
+  const handleMenuItemClicked = useCallback(
+    (item: MenuItem) => {
+      if (item === 'home') {
+        setActiveCollection({ id: 'home', title: 'Home' });
+      }
+    },
+    [setActiveCollection]
+  );
 
   const api = useApi();
   const { onError } = useHandleError();
