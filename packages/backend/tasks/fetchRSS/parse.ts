@@ -5,6 +5,7 @@ import { Static, Type } from '@sinclair/typebox';
 import truncate from 'truncate-html';
 import readingTime from 'reading-time';
 import striptags from 'striptags';
+import { decode } from 'html-entities';
 import { getUnixTime, parseISO } from 'date-fns';
 import { slugify } from '@utils';
 import { DBCollectionItem } from '@db/collectionItems';
@@ -72,8 +73,8 @@ export const mapFeedItems = (
         return null;
       }
 
-      const title = item.title.trim();
-      const content = item.content.trim();
+      const title = decode(item.title).trim();
+      const content = ((<any>item)['content:encoded'] || item.content).trim();
       const pureText = striptags(content);
 
       const stats = readingTime(pureText);
