@@ -49,7 +49,15 @@ export const fetchFeed = async (feedUrl: string) => {
 export const mapFeedItems = (
   feedItems: Array<any>
 ): Array<
-  Omit<DBCollectionItem, 'date_updated' | 'date_read' | 'collection_id'>
+  Omit<
+    DBCollectionItem,
+    | 'date_updated'
+    | 'date_read'
+    | 'collection_id'
+    | 'collection_title'
+    | 'collection_slug'
+    | 'collection_icon'
+  >
 > => {
   return feedItems
     .flatMap((item) => {

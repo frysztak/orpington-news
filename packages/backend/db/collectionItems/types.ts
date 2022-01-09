@@ -1,4 +1,4 @@
-import { ID } from '@orpington-news/shared';
+import { CollectionIconType, ID } from '@orpington-news/shared';
 
 export interface DBCollectionItem {
   id: string;
@@ -15,4 +15,7 @@ export interface DBCollectionItem {
   comments: string | null;
   reading_time: number;
   collection_id: ID;
+  collection_title: string;
+  collection_slug: string;
+  collection_icon: CollectionIconType;
 }

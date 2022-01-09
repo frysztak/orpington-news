@@ -9,9 +9,17 @@ import {
   moveCollection,
   updateCollection,
 } from 'db/collections';
-import { DBCollectionItem, getCollectionItems } from '@db/collectionItems';
+import {
+  DBCollectionItem,
+  getAllCollectionItems,
+  getCollectionItems,
+} from '@db/collectionItems';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
-import { Collection, CollectionIcons } from '@orpington-news/shared';
+import {
+  Collection,
+  CollectionIcons,
+  CollectionItem,
+} from '@orpington-news/shared';
 import { disableCoercionAjv } from '@utils';
 
 const PostCollection = Type.Object({
@@ -35,7 +43,7 @@ const PutCollection = Type.Intersect([
 type PutCollectionType = Static<typeof PutCollection>;
 
 const CollectionId = Type.Object({
-  id: Type.Integer(),
+  id: Type.Union([Type.Integer(), Type.Literal('home')]),
 });
 type CollectionIdType = Static<typeof CollectionId>;
 
@@ -128,6 +136,11 @@ export const collections: FastifyPluginAsync = async (
       const {
         params: { id },
       } = request;
+      if (id === 'home') {
+        reply.status(500);
+        return { errorCode: 500, message: 'Cannot DELETE home collection' };
+      }
+
       await pool.any(deleteCollection(id));
       return true;
     }
@@ -136,7 +149,7 @@ export const collections: FastifyPluginAsync = async (
   fastify.get<{
     Params: CollectionIdType;
     Querystring: PaginationParams;
-    Reply: readonly DBCollectionItem[];
+    Reply: readonly CollectionItem[];
   }>(
     '/:id/items',
     {
@@ -149,10 +162,35 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const { params, query: pagination } = request;
       const { id } = params;
-      const itemsQuery = getCollectionItems(id);
-
-      return await pool.any<DBCollectionItem>(
+      const itemsQuery =
+        id === 'home' ? getAllCollectionItems() : getCollectionItems(id);
+      const items = await pool.any<DBCollectionItem>(
         addPagination(pagination, itemsQuery)
+      );
+
+      return items.map(
+        (dbItem: DBCollectionItem): CollectionItem => ({
+          id: dbItem.id,
+          title: dbItem.title,
+          slug: dbItem.slug,
+          link: dbItem.link,
+          summary: dbItem.summary,
+          fullText: dbItem.full_text,
+          thumbnailUrl: dbItem.thumbnail_url ?? undefined,
+          datePublished: dbItem.date_published,
+          dateUpdated: dbItem.date_updated,
+          dateRead: dbItem.date_read ?? undefined,
+          categories: dbItem.categories ?? undefined,
+          comments: dbItem.comments ?? undefined,
+          readingTime: dbItem.reading_time,
+          collection: {
+            id: dbItem.collection_id,
+            title: dbItem.collection_title,
+            slug: dbItem.collection_slug,
+            icon: dbItem.collection_icon,
+          },
+          onReadingList: false, // TODO
+        })
       );
     }
   );

@@ -65,18 +65,20 @@ export interface Collection {
 }
 
 export interface CollectionItem {
-  id: ID;
+  id: string;
   title: string;
   slug: string;
-  url: string;
+  link: string;
   summary: string;
   fullText: string;
   thumbnailUrl?: string;
-  datePublished: Date;
+  datePublished: number;
+  dateUpdated: number;
+  dateRead?: number;
   categories?: string[];
   comments?: string;
 
-  collection: Collection;
+  collection: Pick<Collection, 'id' | 'title' | 'slug' | 'icon'>;
   readingTime: number;
   onReadingList: boolean;
 }

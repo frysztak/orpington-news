@@ -3,7 +3,10 @@ import { ID } from '@orpington-news/shared';
 import { getCollectionChildrenIds } from '@db/collections';
 import { DBCollectionItem } from './types';
 
-type InsertDBCollectionItem = Omit<DBCollectionItem, 'date_read'>;
+type InsertDBCollectionItem = Omit<
+  DBCollectionItem,
+  'date_read' | 'collection_title' | 'collection_slug' | 'collection_icon'
+>;
 
 export const insertCollectionItems = (items: Array<InsertDBCollectionItem>) => {
   return sql`
@@ -29,6 +32,17 @@ export const insertCollectionItems = (items: Array<InsertDBCollectionItem>) => {
 
 export const getCollectionItems = (collectionId: ID) => {
   return sql<DBCollectionItem>`
-  SELECT * from collection_items
-  WHERE collection_id = ANY(${getCollectionChildrenIds(collectionId)})`;
+  SELECT collection_items.*, collections.collection_title, collections.collection_slug, collections.collection_icon from collection_items
+  INNER JOIN (SELECT id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
+  ON collections.id = collection_id
+  WHERE collection_id = ANY(${getCollectionChildrenIds(collectionId)})
+  ORDER BY date_published DESC`;
+};
+
+export const getAllCollectionItems = () => {
+  return sql<DBCollectionItem>`
+  SELECT collection_items.*, collections.collection_title, collections.collection_slug, collections.collection_icon from collection_items
+  INNER JOIN (SELECT id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
+  ON collections.id = collection_id
+  ORDER BY date_published DESC`;
 };
