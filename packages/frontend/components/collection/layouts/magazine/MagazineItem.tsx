@@ -18,6 +18,7 @@ export type MagazineItemProps = CollectionItemProps & BoxProps;
 export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
   const { item, ...rest } = props;
   const { title, summary, slug, thumbnailUrl, collection, readingTime } = item;
+  const readingTimeRounded = Math.ceil(readingTime);
 
   return (
     <LinkBox as="article" ref={ref} {...rest}>
@@ -43,7 +44,7 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
           </NextLink>
           <Text noOfLines={[2, 3]}>{summary}</Text>
           <Text color="gray.500">
-            by {collection.title} • {readingTime} min
+            by {collection.title} • about {readingTimeRounded} min
           </Text>
         </VStack>
       </HStack>
