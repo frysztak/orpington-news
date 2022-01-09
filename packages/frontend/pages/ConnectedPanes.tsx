@@ -1,8 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useInfiniteQuery, useQuery } from 'react-query';
+import { useLocalStorage } from 'beautiful-react-hooks';
 import { Panes } from '@components/panes';
 import { MenuItem, SidebarContent } from '@components/sidebar';
-import { Collection, noop } from '@orpington-news/shared';
+import { Collection, ID } from '@orpington-news/shared';
 import {
   getCollectionItems,
   getCollections,
@@ -10,20 +11,13 @@ import {
   useHandleError,
 } from '@api';
 import { ActiveCollection } from '@components/collection/types';
-import { useLocalStorage } from 'beautiful-react-hooks';
 
 export const ConnectedPanes: React.FC = (props) => {
-  const [activeCollection, setActiveCollection] =
-    useLocalStorage<ActiveCollection>('activeCollection', {
-      id: 'home',
-      title: 'Home',
-    });
-  const handleCollectionClicked = useCallback(
-    (collection: Collection) => {
-      setActiveCollection({ id: collection.id, title: collection.title });
-    },
-    [setActiveCollection]
-  );
+  const { activeCollection, handleCollectionClicked, setActiveCollection } =
+    useActiveCollection();
+  const { expandedCollectionIDs, handleCollectionChevronClicked } =
+    useExpandedCollections();
+
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
       if (item === 'home') {
@@ -76,9 +70,10 @@ export const ConnectedPanes: React.FC = (props) => {
           isError={collectionsError}
           collections={collections ?? []}
           onCollectionClicked={handleCollectionClicked}
-          onChevronClicked={noop}
+          onChevronClicked={handleCollectionChevronClicked}
           onMenuItemClicked={handleMenuItemClicked}
           activeCollectionId={activeCollection.id}
+          expandedCollectionIDs={expandedCollectionIDs}
         />
       }
       activeCollection={activeCollection}
@@ -90,4 +85,45 @@ export const ConnectedPanes: React.FC = (props) => {
       }}
     />
   );
+};
+
+const useActiveCollection = () => {
+  const [activeCollection, setActiveCollection] =
+    useLocalStorage<ActiveCollection>('activeCollection', {
+      id: 'home',
+      title: 'Home',
+    });
+
+  const handleCollectionClicked = useCallback(
+    (collection: Collection) => {
+      setActiveCollection({ id: collection.id, title: collection.title });
+    },
+    [setActiveCollection]
+  );
+
+  return { activeCollection, handleCollectionClicked, setActiveCollection };
+};
+
+const useExpandedCollections = () => {
+  const [expandedCollectionIDs, setExpandedCollectionIDs] = useLocalStorage<
+    Array<ID>
+  >('expandedCollectionIDs', []);
+
+  const handleCollectionChevronClicked = useCallback(
+    (collection: Collection) => {
+      setExpandedCollectionIDs((collections) => {
+        const idx = collections.findIndex((id) => id === collection.id);
+        return idx !== -1
+          ? [...collections.slice(0, idx), ...collections.slice(idx + 1)]
+          : [...collections, collection.id];
+      });
+    },
+    [setExpandedCollectionIDs]
+  );
+
+  return {
+    expandedCollectionIDs,
+    handleCollectionChevronClicked,
+    setExpandedCollectionIDs,
+  };
 };

@@ -176,32 +176,3 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
     </VStack>
   );
 };
-
-const useExpandedCollections = (initialExpandedCollectionIDs?: Array<ID>) => {
-  const [expandedCollectionIDs, setExpandedCollectionIDs] = useState(
-    initialExpandedCollectionIDs || []
-  );
-
-  const onToggleCollection = useCallback((collection: Collection) => {
-    setExpandedCollectionIDs((collections) => {
-      const idx = collections.findIndex((id) => id === collection.id);
-      return idx !== -1
-        ? [...collections.slice(0, idx), ...collections.slice(idx + 1)]
-        : [...collections, collection.id];
-    });
-  }, []);
-
-  return { expandedCollectionIDs, onToggleCollection };
-};
-
-const useActiveCollection = (initialActiveCollectionId?: ID) => {
-  const [activeCollectionId, setActiveCollectionID] = useState(
-    initialActiveCollectionId
-  );
-
-  const onClickCollection = useCallback((collection: Collection) => {
-    setActiveCollectionID(collection.id);
-  }, []);
-
-  return { activeCollectionId, onClickCollection };
-};
