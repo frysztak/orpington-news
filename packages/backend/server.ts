@@ -73,15 +73,6 @@ fastify.register(fastifySplitValidator, { defaultValidator: defaultAjv });
 fastify.register(auth, { prefix: '/auth' });
 fastify.register(collections, { prefix: '/collections' });
 
-fastify.ready().then(
-  () => {
-    fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
-  },
-  (err) => {
-    console.error(err);
-  }
-);
-
 const closeListeners = closeWithGrace(
   { delay: 500 },
   async function ({ err }: { err?: any }) {
@@ -103,3 +94,12 @@ fastify.listen(5000, (err, address) => {
     process.exit(1);
   }
 });
+
+fastify.ready().then(
+  () => {
+    fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
+  },
+  (err) => {
+    console.error(err);
+  }
+);

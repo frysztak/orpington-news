@@ -9,6 +9,7 @@ import {
 import { fetchFeed, mapFeedItems } from './parse';
 import { logger } from '@utils/logger';
 import { insertCollectionItems } from '@db/collectionItems';
+import { isRejected } from '@orpington-news/shared';
 
 const fetchAndInsertCollection = (collection: DBCollection) => {
   if (!collection.url) {
@@ -41,19 +42,18 @@ const task = new AsyncTask(
     logger.info(`Starting to update feeds...`);
     return pool
       .any(getCollectionsToRefresh())
-      .then((collections) =>
-        Promise.allSettled(collections.map(fetchAndInsertCollection))
-      )
+      .then((collections) => {
+        logger.info(`Found ${collections.length} feeds to update...`);
+        return Promise.allSettled(collections.map(fetchAndInsertCollection));
+      })
       .then((results) => {
-        const failures = results.filter(({ status }) => status === 'rejected');
+        const failures = results.filter(isRejected);
         if (failures.length === 0) {
           logger.info(`Feeds updated successfully!`);
         } else {
           logger.info(`Feed updated, but with following errors:`);
           for (const failure of failures) {
-            if (failure.status === 'rejected') {
-              logger.error(failure.reason);
-            }
+            logger.error(failure.reason);
           }
         }
       });
