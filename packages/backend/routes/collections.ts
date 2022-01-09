@@ -9,8 +9,9 @@ import {
   moveCollection,
   updateCollection,
 } from 'db/collections';
-import { Collection, CollectionIcons } from '@orpington-news/shared';
 import { DBCollectionItem, getCollectionItems } from '@db/collectionItems';
+import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
+import { Collection, CollectionIcons } from '@orpington-news/shared';
 import { disableCoercionAjv } from '@utils';
 
 const PostCollection = Type.Object({
@@ -132,20 +133,27 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.get<{ Params: CollectionIdType; Reply: readonly DBCollectionItem[] }>(
+  fastify.get<{
+    Params: CollectionIdType;
+    Querystring: PaginationParams;
+    Reply: readonly DBCollectionItem[];
+  }>(
     '/:id/items',
     {
       schema: {
         params: CollectionId,
+        querystring: PaginationSchema,
         tags: ['Collections'],
       },
     },
     async (request, reply) => {
-      const {
-        params: { id },
-      } = request;
+      const { params, query: pagination } = request;
+      const { id } = params;
+      const itemsQuery = getCollectionItems(id);
 
-      return await pool.any(getCollectionItems(id));
+      return await pool.any<DBCollectionItem>(
+        addPagination(pagination, itemsQuery)
+      );
     }
   );
 };
