@@ -28,6 +28,13 @@ Empty.args = {
   layout: 'magazine',
 };
 
+export const EmptyFetching = Template.bind({});
+EmptyFetching.args = {
+  items: [],
+  layout: 'magazine',
+  isFetchingMoreItems: true,
+};
+
 export const TwoItems = Template.bind({});
 TwoItems.args = {
   layout: 'magazine',
