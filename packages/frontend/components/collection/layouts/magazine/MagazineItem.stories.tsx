@@ -34,3 +34,11 @@ WithImage.args = {
     thumbnailUrl: faker.image.cats(),
   },
 };
+
+export const Read = Template.bind({});
+Read.args = {
+  item: {
+    ...sampleItem,
+    dateRead: 666,
+  },
+};

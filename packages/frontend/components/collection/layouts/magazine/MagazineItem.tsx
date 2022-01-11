@@ -17,7 +17,15 @@ export type MagazineItemProps = CollectionItemProps & BoxProps;
 
 export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
   const { item, ...rest } = props;
-  const { title, summary, slug, thumbnailUrl, collection, readingTime } = item;
+  const {
+    title,
+    summary,
+    slug,
+    thumbnailUrl,
+    collection,
+    readingTime,
+    dateRead,
+  } = item;
   const readingTimeRounded = Math.ceil(readingTime);
 
   return (
@@ -39,7 +47,12 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
         <VStack align="flex-start">
           <NextLink href={`${collection.slug}/${slug}`} passHref>
             <LinkOverlay>
-              <Heading fontSize={['lg', '2xl']}>{title}</Heading>
+              <Heading
+                fontSize={['lg', '2xl']}
+                fontWeight={Boolean(dateRead) ? 500 : 700}
+              >
+                {title}
+              </Heading>
             </LinkOverlay>
           </NextLink>
           <Text noOfLines={[2, 3]}>{summary}</Text>
