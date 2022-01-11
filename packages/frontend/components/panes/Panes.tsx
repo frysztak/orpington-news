@@ -82,10 +82,26 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     },
     [onCollectionItemsWidthChanged]
   );
+  const injectOnCloseDrawer = useCallback(
+    (f: Function) =>
+      (...args: unknown[]) => {
+        onClose();
+        f(...args);
+      },
+    [onClose]
+  );
 
   const sidebar = useMemo(
-    () => <SidebarContent {...sidebarProps} />,
-    [sidebarProps]
+    () => (
+      <SidebarContent
+        {...sidebarProps}
+        onCollectionClicked={injectOnCloseDrawer(
+          sidebarProps.onCollectionClicked
+        )}
+        onMenuItemClicked={injectOnCloseDrawer(sidebarProps.onMenuItemClicked)}
+      />
+    ),
+    [injectOnCloseDrawer, sidebarProps]
   );
 
   const items = useMemo(
