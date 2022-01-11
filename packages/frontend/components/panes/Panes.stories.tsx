@@ -31,15 +31,13 @@ const collectionItems2 = genN(2).map((_) =>
 
 export const Default = Template.bind({});
 Default.args = {
-  sidebar: (
-    <SidebarContent
-      collections={[]}
-      onCollectionClicked={action('onCollectionClicked')}
-      onChevronClicked={action('onChevronClicked')}
-      onMenuItemClicked={action('onMenuItemClicked')}
-      activeCollectionId={collection.id}
-    />
-  ),
+  sidebarProps: {
+    collections: [],
+    onCollectionClicked: action('onCollectionClicked'),
+    onChevronClicked: action('onChevronClicked'),
+    onMenuItemClicked: action('onMenuItemClicked'),
+    activeCollectionId: collection.id,
+  },
   collectionItems,
   activeCollection: collection,
 };

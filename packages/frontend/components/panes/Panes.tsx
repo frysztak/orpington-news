@@ -16,6 +16,7 @@ import {
 import { Resizable, ResizeCallback } from 're-resizable';
 import { IoReturnUpBack } from 'react-icons/io5';
 import { CollectionItem } from '@orpington-news/shared';
+import { SidebarContent, SidebarContentProps } from '@components/sidebar';
 import { CollectionHeader } from '@components/collection/header';
 import {
   CollectionList,
@@ -26,7 +27,7 @@ import { ClientRender } from '@utils';
 import { ActiveCollection } from '@components/collection/types';
 
 export interface PanesProps {
-  sidebar: JSX.Element;
+  sidebarProps: SidebarContentProps;
 
   collectionItems: CollectionItem[];
   activeCollection?: ActiveCollection;
@@ -48,7 +49,7 @@ export interface PanesProps {
 
 export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
   const {
-    sidebar,
+    sidebarProps,
     collectionItems,
     activeCollection,
     collectionListProps = {},
@@ -80,6 +81,11 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
       onCollectionItemsWidthChanged?.(elementRef.clientWidth);
     },
     [onCollectionItemsWidthChanged]
+  );
+
+  const sidebar = useMemo(
+    () => <SidebarContent {...sidebarProps} />,
+    [sidebarProps]
   );
 
   const items = useMemo(

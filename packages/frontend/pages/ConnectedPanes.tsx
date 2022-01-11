@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useInfiniteQuery, useQuery } from 'react-query';
 import { useLocalStorage } from 'beautiful-react-hooks';
 import { Panes } from '@components/panes';
-import { MenuItem, SidebarContent } from '@components/sidebar';
+import { MenuItem } from '@components/sidebar';
 import { Collection, ID } from '@orpington-news/shared';
 import {
   getCollectionItems,
@@ -65,17 +65,15 @@ export const ConnectedPanes: React.FC = (props) => {
   return (
     <Panes
       flexGrow={1}
-      sidebar={
-        <SidebarContent
-          isError={collectionsError}
-          collections={collections ?? []}
-          onCollectionClicked={handleCollectionClicked}
-          onChevronClicked={handleCollectionChevronClicked}
-          onMenuItemClicked={handleMenuItemClicked}
-          activeCollectionId={activeCollection.id}
-          expandedCollectionIDs={expandedCollectionIDs}
-        />
-      }
+      sidebarProps={{
+        isError: collectionsError,
+        collections: collections ?? [],
+        onCollectionClicked: handleCollectionClicked,
+        onChevronClicked: handleCollectionChevronClicked,
+        onMenuItemClicked: handleMenuItemClicked,
+        activeCollectionId: activeCollection.id,
+        expandedCollectionIDs: expandedCollectionIDs,
+      }}
       activeCollection={activeCollection}
       collectionItems={collectionItems}
       collectionListProps={{
