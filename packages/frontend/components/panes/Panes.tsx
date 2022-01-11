@@ -101,7 +101,14 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
 
   return (
     <>
-      <Drawer isOpen={isOpen} placement="left" size="full" onClose={onClose}>
+      <Drawer
+        isOpen={isOpen}
+        placement="left"
+        size="full"
+        autoFocus={false}
+        returnFocusOnClose={false}
+        onClose={onClose}
+      >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
