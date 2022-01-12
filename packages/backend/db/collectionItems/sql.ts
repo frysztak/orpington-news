@@ -31,8 +31,23 @@ export const insertCollectionItems = (items: Array<InsertDBCollectionItem>) => {
 };
 
 export const getCollectionItems = (collectionId: ID) => {
-  return sql<DBCollectionItem>`
-  SELECT collection_items.*, collections.collection_title, collections.collection_slug, collections.collection_icon from collection_items
+  return sql<Omit<DBCollectionItem, 'full_text'>>`
+SELECT collection_items.id,
+         collection_items.title,
+  	     collection_items.slug,
+  	     collection_items.link,
+  	     collection_items.summary,
+  	     collection_items.thumbnail_url,
+  	     collection_items.date_published,
+  	     collection_items.date_updated,
+  	     collection_items.date_read,
+  	     collection_items.categories,
+  	     collection_items.comments,
+  	     collection_items.reading_time,
+  	     collections.collection_title,
+  	     collections.collection_slug,
+  	     collections.collection_icon
+  FROM collection_items
   INNER JOIN (SELECT id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
   ON collections.id = collection_id
   WHERE collection_id = ANY(${getCollectionChildrenIds(collectionId)})
@@ -40,8 +55,23 @@ export const getCollectionItems = (collectionId: ID) => {
 };
 
 export const getAllCollectionItems = () => {
-  return sql<DBCollectionItem>`
-  SELECT collection_items.*, collections.collection_title, collections.collection_slug, collections.collection_icon from collection_items
+  return sql<Omit<DBCollectionItem, 'full_text'>>`
+  SELECT collection_items.id,
+         collection_items.title,
+  	     collection_items.slug,
+  	     collection_items.link,
+  	     collection_items.summary,
+  	     collection_items.thumbnail_url,
+  	     collection_items.date_published,
+  	     collection_items.date_updated,
+  	     collection_items.date_read,
+  	     collection_items.categories,
+  	     collection_items.comments,
+  	     collection_items.reading_time,
+  	     collections.collection_title,
+  	     collections.collection_slug,
+  	     collections.collection_icon
+  FROM collection_items
   INNER JOIN (SELECT id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
   ON collections.id = collection_id
   ORDER BY date_published DESC`;

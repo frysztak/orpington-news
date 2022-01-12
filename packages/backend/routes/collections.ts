@@ -149,7 +149,7 @@ export const collections: FastifyPluginAsync = async (
   fastify.get<{
     Params: CollectionIdType;
     Querystring: PaginationParams;
-    Reply: readonly CollectionItem[];
+    Reply: readonly Omit<CollectionItem, 'fullText'>[];
   }>(
     '/:id/items',
     {
@@ -164,34 +164,31 @@ export const collections: FastifyPluginAsync = async (
       const { id } = params;
       const itemsQuery =
         id === 'home' ? getAllCollectionItems() : getCollectionItems(id);
-      const items = await pool.any<DBCollectionItem>(
+      const items = await pool.any<Omit<DBCollectionItem, 'full_text'>>(
         addPagination(pagination, itemsQuery)
       );
 
-      return items.map(
-        (dbItem: DBCollectionItem): CollectionItem => ({
-          id: dbItem.id,
-          title: dbItem.title,
-          slug: dbItem.slug,
-          link: dbItem.link,
-          summary: dbItem.summary,
-          fullText: dbItem.full_text,
-          thumbnailUrl: dbItem.thumbnail_url ?? undefined,
-          datePublished: dbItem.date_published,
-          dateUpdated: dbItem.date_updated,
-          dateRead: dbItem.date_read ?? undefined,
-          categories: dbItem.categories ?? undefined,
-          comments: dbItem.comments ?? undefined,
-          readingTime: dbItem.reading_time,
-          collection: {
-            id: dbItem.collection_id,
-            title: dbItem.collection_title,
-            slug: dbItem.collection_slug,
-            icon: dbItem.collection_icon,
-          },
-          onReadingList: false, // TODO
-        })
-      );
+      return items.map((dbItem) => ({
+        id: dbItem.id,
+        title: dbItem.title,
+        slug: dbItem.slug,
+        link: dbItem.link,
+        summary: dbItem.summary,
+        thumbnailUrl: dbItem.thumbnail_url ?? undefined,
+        datePublished: dbItem.date_published,
+        dateUpdated: dbItem.date_updated,
+        dateRead: dbItem.date_read ?? undefined,
+        categories: dbItem.categories ?? undefined,
+        comments: dbItem.comments ?? undefined,
+        readingTime: dbItem.reading_time,
+        collection: {
+          id: dbItem.collection_id,
+          title: dbItem.collection_title,
+          slug: dbItem.collection_slug,
+          icon: dbItem.collection_icon,
+        },
+        onReadingList: false, // TODO
+      }));
     }
   );
 };
