@@ -23,6 +23,12 @@ module.exports = {
       new TsconfigPathsPlugin({ extensions: config.resolve.extensions }),
     ]);
 
+    config.module.rules.push({
+      test: /\.mjs$/,
+      include: /node_modules/,
+      type: 'javascript/auto',
+    });
+
     return config;
   },
 };
