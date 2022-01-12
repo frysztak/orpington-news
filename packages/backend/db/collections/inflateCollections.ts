@@ -1,5 +1,5 @@
 import { Collection, ID } from '@orpington-news/shared';
-import { sortBy, lensPath, view, set, values } from 'rambda';
+import { sum, sortBy, lensPath, view, set, values } from 'rambda';
 import { DBCollection } from './sql';
 
 type DBCollectionWithChildren = DBCollection & {
@@ -10,9 +10,20 @@ const flattenJSON = (
   json: Record<ID, DBCollectionWithChildren>
 ): Collection[] => {
   return sortBy((j) => j.order, values(json)).map((col): Collection => {
-    const { parents, level, order, children, ...rest } = col;
+    const {
+      parents,
+      level,
+      order,
+      children,
+      date_updated,
+      unread_count,
+      ...rest
+    } = col;
+
     return {
       ...rest,
+      dateUpdated: date_updated,
+      unreadCount: countUnread(col),
       children: children && flattenJSON(children),
     };
   });
@@ -49,4 +60,11 @@ export const inflateCollections = (
   }, {} as Record<ID, DBCollectionWithChildren>);
 
   return flattenJSON(json);
+};
+
+const countUnread = (collection: DBCollectionWithChildren): number => {
+  return sum([
+    collection.unread_count ?? 0,
+    ...Object.values(collection.children ?? []).map(countUnread),
+  ]);
 };

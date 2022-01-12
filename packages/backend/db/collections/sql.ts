@@ -47,10 +47,15 @@ export const moveCollection = (collectionId: ID, newParentId: ID | null) => {
   return sql`UPDATE collections SET parent_id = ${newParentId} WHERE id = ${collectionId}`;
 };
 
-export type DBCollection = Omit<Collection, 'children' | 'parentId'> & {
+export type DBCollection = Omit<
+  Collection,
+  'children' | 'parentId' | 'dateUpdated' | 'unreadCount'
+> & {
   parents: Array<ID>;
   order: number;
   level: number;
+  date_updated: number;
+  unread_count: number | null;
 };
 
 export const getCollections = () => {
@@ -58,26 +63,28 @@ export const getCollections = () => {
   WITH RECURSIVE collections_from_parents AS (
     SELECT
       id, title, slug, icon, "order", description, url, date_updated, '{}'::int[] AS parents, 0 AS level
-    FROM
-      collections
-    WHERE
-      parent_id IS NULL
+    FROM collections
+	  WHERE parent_id IS NULL
 
     UNION ALL
 
     SELECT
-      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, parents || c.parent_id, level +1
+      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, parents || c.parent_id, level + 1
     FROM
       collections_from_parents p
       JOIN collections c ON c.parent_id = p.id
     WHERE
-      NOT c.id = ANY (parents))
-  SELECT
-    id, title, slug, icon, "order", description, url, date_updated AS "dateUpdated", parents, level, 10 as "unreadCount"
-  FROM
-    collections_from_parents
-  ORDER BY level ASC
-  `;
+      NOT c.id = ANY (parents)
+  )
+SELECT
+  id, title, slug, icon, "order", description, url, date_updated, parents, level, unread_count
+FROM
+  collections_from_parents
+LEFT JOIN (SELECT collection_id, COUNT(date_read IS NULL) as unread_count
+           FROM collection_items
+           GROUP BY collection_id) with_unread_count
+  ON collections_from_parents.id = with_unread_count.collection_id
+ORDER BY level ASC, "order" ASC`;
 };
 
 export const getCollectionChildrenIds = (rootId: ID) => {
