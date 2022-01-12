@@ -155,10 +155,11 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
           }
           onResizeStop={handleSidebarResize}
         >
-          {sidebar}
+          <HStack h="full">
+            {sidebar}
+            <Divider orientation="vertical" h="full" />
+          </HStack>
         </Resizable>
-
-        <Divider orientation="vertical" h="auto" />
 
         <Resizable
           enable={{ right: true }}
@@ -170,19 +171,20 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
           }
           onResizeStop={handleCollectionItemsResize}
         >
-          <VStack spacing={0} h="full" w="full">
-            <CollectionHeader
-              collection={activeCollection}
-              hideMenuButton
-              menuButtonRef={drawerButtonRef}
-              onMenuClicked={onToggle}
-            />
+          <HStack h="full">
+            <VStack spacing={0} h="full" w="full">
+              <CollectionHeader
+                collection={activeCollection}
+                hideMenuButton
+                menuButtonRef={drawerButtonRef}
+                onMenuClicked={onToggle}
+              />
 
-            {items}
-          </VStack>
+              {items}
+            </VStack>
+            <Divider orientation="vertical" h="full" />
+          </HStack>
         </Resizable>
-
-        <Divider orientation="vertical" h="auto" />
 
         <Box flexGrow={1}>{mainContent ?? <EmptyMain />}</Box>
       </HStack>
