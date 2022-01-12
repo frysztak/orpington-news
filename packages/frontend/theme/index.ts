@@ -62,5 +62,5 @@ export const theme = extendTheme(
   withDefaultSize({
     size: 'lg',
     components: ['Button'],
-  })
+  } as any)
 );
