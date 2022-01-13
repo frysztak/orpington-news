@@ -4,6 +4,7 @@ import parse, {
   HTMLReactParserOptions,
 } from 'html-react-parser';
 import {
+  Box,
   Link,
   Code,
   Text,
@@ -87,6 +88,8 @@ const options: HTMLReactParserOptions = {
 
     const children = domToReact(domNode.children, options);
 
+    if (domNode.attribs?.class === 'gatsby-highlight') return <>{children}</>;
+
     switch (domNode.tagName) {
       case 'a': {
         const href = domNode.attribs['href'];
@@ -162,9 +165,9 @@ const options: HTMLReactParserOptions = {
         if (isChildCode) {
           const text: string = getNodeText(domNode);
           return (
-            <SyntaxHighlighterWithTheme wrapLongLines>
-              {text}
-            </SyntaxHighlighterWithTheme>
+            <Box maxW="full">
+              <SyntaxHighlighterWithTheme>{text}</SyntaxHighlighterWithTheme>
+            </Box>
           );
         }
       }
