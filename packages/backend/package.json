@@ -32,6 +32,7 @@
     "fastify-split-validator": "^1.0.2",
     "fastify-swagger": "^4.13.1",
     "html-entities": "^2.3.2",
+    "isomorphic-dompurify": "^0.17.0",
     "pino": "^7.6.3",
     "pino-pretty": "^7.3.0",
     "reading-time": "^1.5.0",

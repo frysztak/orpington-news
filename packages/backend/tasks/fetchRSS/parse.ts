@@ -6,6 +6,7 @@ import truncate from 'truncate-html';
 import readingTime from 'reading-time';
 import striptags from 'striptags';
 import { decode } from 'html-entities';
+import DOMPurify from 'isomorphic-dompurify';
 import { getUnixTime, parseISO } from 'date-fns';
 import { slugify } from '@utils';
 import { DBCollectionItem } from '@db/collectionItems';
@@ -92,7 +93,7 @@ export const mapFeedItems = (
         title: title,
         slug: slugify(title),
         link: item.link,
-        full_text: content,
+        full_text: DOMPurify.sanitize(content),
         summary:
           item.summary?.trim() || truncate(pureText, 20, { byWords: true }),
         thumbnail_url: extractThumbnailUrl(item),
