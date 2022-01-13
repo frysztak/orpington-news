@@ -15,6 +15,7 @@ const styles = {
     },
     '*::-webkit-scrollbar': {
       width: 2,
+      height: 2,
     },
     '*::-webkit-scrollbar-track': {
       borderRadius: 'md',
