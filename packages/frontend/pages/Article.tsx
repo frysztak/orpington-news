@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
-import { Box, CircularProgress, Heading, VStack } from '@chakra-ui/react';
+import { CircularProgress, VStack } from '@chakra-ui/react';
 import { useApi, useHandleError, getItemDetails } from '@api';
 import { ArticleContent, ArticleHeader } from '@components/article';
 
@@ -21,6 +21,12 @@ export const Article: React.FC<ArticleProps> = (props) => {
     { enabled: Boolean(collectionSlug) && Boolean(itemSlug), onError }
   );
 
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    ref.current?.scrollTo({ top: 0 });
+  }, [query.data?.fullText]);
+
   if (query.status === 'idle') {
     return null;
   }
@@ -28,7 +34,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
   return query.status === 'loading' ? (
     <CircularProgress isIndeterminate />
   ) : query.status === 'success' ? (
-    <VStack maxH="100vh" overflowY="scroll" spacing={6} px={4} pb={4}>
+    <VStack maxH="100vh" overflowY="scroll" spacing={6} px={4} pb={4} ref={ref}>
       <ArticleHeader article={query.data} />
       <ArticleContent html={query.data.fullText} />
     </VStack>
