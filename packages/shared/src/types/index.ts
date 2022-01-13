@@ -82,3 +82,8 @@ export interface CollectionItem {
   readingTime: number;
   onReadingList: boolean;
 }
+
+export type CollectionItemDetails = Omit<
+  CollectionItem,
+  'collection_id' | 'collection_title' | 'collection_slug' | 'collection_icon'
+>;

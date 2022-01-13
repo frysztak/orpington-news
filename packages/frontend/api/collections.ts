@@ -1,5 +1,10 @@
 import { Wretcher } from 'wretch';
-import { Collection, CollectionItem, ID } from '@orpington-news/shared';
+import {
+  Collection,
+  CollectionItem,
+  CollectionItemDetails,
+  ID,
+} from '@orpington-news/shared';
 
 export const getCollections = (api: Wretcher) =>
   api.url('/collections').get().json<Collection[]>();
@@ -14,3 +19,13 @@ export const getCollectionItems = (
     .query({ pageIndex })
     .get()
     .json<CollectionItem[]>();
+
+export const getItemDetails = (
+  api: Wretcher,
+  collectionSlug: string,
+  itemSlug: string
+) =>
+  api
+    .url(`/collections/details/${collectionSlug}/${itemSlug}`)
+    .get()
+    .json<CollectionItemDetails>();

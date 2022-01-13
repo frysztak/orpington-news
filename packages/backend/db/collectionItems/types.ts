@@ -19,3 +19,8 @@ export interface DBCollectionItem {
   collection_slug: string;
   collection_icon: CollectionIconType;
 }
+
+export type DBCollectionItemDetails = Omit<
+  DBCollectionItem,
+  'collection_title' | 'collection_slug' | 'collection_icon'
+>;

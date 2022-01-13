@@ -11,8 +11,13 @@ import {
   useHandleError,
 } from '@api';
 import { ActiveCollection } from '@components/collection/types';
+import { Article, ArticleProps } from './Article';
 
-export const ConnectedPanes: React.FC = (props) => {
+export type ConnectedPanesProps = ArticleProps;
+
+export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
+  const { collectionSlug, itemSlug } = props;
+
   const { activeCollection, handleCollectionClicked, setActiveCollection } =
     useActiveCollection();
   const { expandedCollectionIDs, handleCollectionChevronClicked } =
@@ -81,6 +86,12 @@ export const ConnectedPanes: React.FC = (props) => {
         onFetchMoreItems: fetchNextPage,
         canFetchMoreItems: hasNextPage,
       }}
+      mainContent={
+        itemSlug &&
+        collectionSlug && (
+          <Article collectionSlug={collectionSlug} itemSlug={itemSlug} />
+        )
+      }
     />
   );
 };

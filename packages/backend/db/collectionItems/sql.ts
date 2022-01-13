@@ -1,7 +1,7 @@
 import { sql } from 'slonik';
 import { ID } from '@orpington-news/shared';
 import { getCollectionChildrenIds } from '@db/collections';
-import { DBCollectionItem } from './types';
+import { DBCollectionItemDetails, DBCollectionItem } from './types';
 
 type InsertDBCollectionItem = Omit<
   DBCollectionItem,
@@ -75,4 +75,14 @@ export const getAllCollectionItems = () => {
   INNER JOIN (SELECT id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
   ON collections.id = collection_id
   ORDER BY date_published DESC`;
+};
+
+export const getItemDetails = (collectionSlug: string, itemSlug: string) => {
+  return sql<DBCollectionItemDetails>`
+  SELECT collection_items.*
+  FROM collections
+  INNER JOIN (SELECT * FROM collection_items) collection_items
+  ON collections.id = collection_items.collection_id
+  WHERE collections.slug = ${collectionSlug}
+   AND collection_items.slug = ${itemSlug}`;
 };

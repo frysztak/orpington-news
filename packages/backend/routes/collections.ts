@@ -1,6 +1,7 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
 import { pool } from 'db';
+import { DataIntegrityError, NotFoundError } from 'slonik';
 import {
   addCollection,
   deleteCollection,
@@ -13,6 +14,7 @@ import {
   DBCollectionItem,
   getAllCollectionItems,
   getCollectionItems,
+  getItemDetails,
 } from '@db/collectionItems';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
 import {
@@ -21,6 +23,8 @@ import {
   CollectionItem,
 } from '@orpington-news/shared';
 import { disableCoercionAjv } from '@utils';
+import { logger } from '@utils/logger';
+import { timestampMsToSeconds } from '@utils/time';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -52,6 +56,12 @@ const MoveCollection = Type.Object({
   newParentId: Type.Union([Type.Integer(), Type.Null()]),
 });
 type MoveCollectionType = Static<typeof MoveCollection>;
+
+const ItemDetailsParams = Type.Object({
+  collectionSlug: Type.String(),
+  itemSlug: Type.String(),
+});
+type ItemDetailsType = Static<typeof ItemDetailsParams>;
 
 export const collections: FastifyPluginAsync = async (
   fastify,
@@ -189,6 +199,62 @@ export const collections: FastifyPluginAsync = async (
         },
         onReadingList: false, // TODO
       }));
+    }
+  );
+
+  fastify.get<{
+    Params: ItemDetailsType;
+  }>(
+    '/details/:collectionSlug/:itemSlug',
+    {
+      schema: {
+        params: ItemDetailsParams,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const { params } = request;
+      const { collectionSlug, itemSlug } = params;
+
+      try {
+        const details = await pool.one(
+          getItemDetails(collectionSlug, itemSlug)
+        );
+        const {
+          full_text,
+          date_published,
+          date_read,
+          date_updated,
+          thumbnail_url,
+          reading_time,
+          collection_id,
+          ...rest
+        } = details;
+
+        return {
+          ...rest,
+          fullText: full_text,
+          datePublished: timestampMsToSeconds(date_published),
+          dateRead: timestampMsToSeconds(date_read),
+          date_updated: timestampMsToSeconds(date_updated),
+          thumbnailUrl: thumbnail_url,
+          readingTime: reading_time,
+        };
+      } catch (error) {
+        if (error instanceof NotFoundError) {
+          logger.error(
+            `Items details for collection '${collectionSlug}' and item '${itemSlug}' not found.`
+          );
+          reply
+            .status(404)
+            .send({ errorCode: 404, message: 'Item not found.' });
+        } else if (error instanceof DataIntegrityError) {
+          logger.error(
+            'There is more than one row matching the select criteria.'
+          );
+          reply.status(500).send({ errorCode: 500, message: 'Server error.' });
+        }
+      }
     }
   );
 };

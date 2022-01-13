@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
 import {
   Box,
   BoxProps,
@@ -36,7 +36,7 @@ export interface PanesProps {
     'isFetchingMoreItems' | 'canFetchMoreItems' | 'onFetchMoreItems'
   >;
 
-  mainContent?: JSX.Element;
+  mainContent?: ReactNode;
 
   sidebarWidth?: number;
   onSidebarWidthChanged?: (width: number) => void;
