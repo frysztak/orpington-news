@@ -94,8 +94,9 @@ export const mapFeedItems = (
         slug: slugify(title),
         link: item.link,
         full_text: DOMPurify.sanitize(content),
-        summary:
-          item.summary?.trim() || truncate(pureText, 20, { byWords: true }),
+        summary: decode(
+          item.summary?.trim() || truncate(pureText, 20, { byWords: true })
+        ),
         thumbnail_url: extractThumbnailUrl(item),
         date_published: getUnixTime(parseISO(item.isoDate)),
         categories: extractCategories(item),
