@@ -24,3 +24,12 @@ export const CodeBlock = Template.bind({});
 CodeBlock.args = {
   html: `<pre><code>yarn add</code></pre>`,
 };
+
+export const CodeBlockGatsby = Template.bind({});
+CodeBlockGatsby.args = {
+  html: `<pre class="language-jsx">
+  <code class="language-jsx">
+  <span class="token keyword">import</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+
+  </code></pre>`,
+};

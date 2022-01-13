@@ -27,8 +27,15 @@ export interface ArticleContentProps {
   html: string;
 }
 
-const getNodeText = (node: Element): string | undefined => {
-  return node.children[0]?.type === 'text' && (node.children[0] as any).data;
+const extractText = (node: any) =>
+  node.type === 'text' ? (node as any).data : '';
+
+const getNodeText = (node: Element): string => {
+  return (
+    node.children?.reduce((acc, child) => {
+      return acc + extractText(child) + getNodeText(child as any);
+    }, extractText(node)) || ''
+  );
 };
 
 type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5';
@@ -145,18 +152,20 @@ const options: HTMLReactParserOptions = {
         );
       }
       case 'code': {
-        const isParentPreTag = (domNode.parentNode as any)?.tagName === 'pre';
-        if (isParentPreTag) {
-          const text: string | undefined = getNodeText(domNode);
-          if (text) {
-            return (
-              <SyntaxHighlighterWithTheme wrapLongLines>
-                {text}
-              </SyntaxHighlighterWithTheme>
-            );
-          }
-        } else {
-          return <Code>{children}</Code>;
+        return <Code>{children}</Code>;
+      }
+      case 'pre': {
+        const isChildCode =
+          domNode.children.length === 1 &&
+          (domNode.children[0] as any).tagName === 'code';
+
+        if (isChildCode) {
+          const text: string = getNodeText(domNode);
+          return (
+            <SyntaxHighlighterWithTheme wrapLongLines>
+              {text}
+            </SyntaxHighlighterWithTheme>
+          );
         }
       }
     }
