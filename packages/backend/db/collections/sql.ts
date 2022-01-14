@@ -80,9 +80,10 @@ SELECT
   id, title, slug, icon, "order", description, url, date_updated, parents, level, unread_count
 FROM
   collections_from_parents
-LEFT JOIN (SELECT collection_id, COUNT(date_read IS NULL) as unread_count
-           FROM collection_items
-           GROUP BY collection_id) with_unread_count
+LEFT JOIN (SELECT collection_id, COUNT(*) as unread_count
+    FROM collection_items
+    WHERE date_read IS NULL
+    GROUP BY collection_id) with_unread_count
   ON collections_from_parents.id = with_unread_count.collection_id
 ORDER BY level ASC, "order" ASC`;
 };
