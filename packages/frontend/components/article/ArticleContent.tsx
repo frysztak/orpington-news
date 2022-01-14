@@ -88,7 +88,8 @@ const options: HTMLReactParserOptions = {
 
     const children = domToReact(domNode.children, options);
 
-    if (domNode.attribs?.class === 'gatsby-highlight') return <>{children}</>;
+    if (domNode.attribs?.class?.includes('gatsby-highlight'))
+      return <>{children}</>;
 
     switch (domNode.tagName) {
       case 'a': {
