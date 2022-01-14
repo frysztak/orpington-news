@@ -13,22 +13,34 @@ import { CollectionItemDetails } from '@orpington-news/shared';
 import { HiOutlineExternalLink } from 'react-icons/hi';
 import { BsBookmarkDash, BsBookmarkPlus } from 'react-icons/bs';
 import { CgCalendar, CgTime } from 'react-icons/cg';
+import { IoReturnUpBack } from 'react-icons/io5';
 import { format, fromUnixTime } from 'date-fns';
 
 export interface ArticleHeaderProps {
   article: CollectionItemDetails;
   onReadingListToggle?: () => void;
+  onGoBackClicked?: () => void;
 }
 
 export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
   const {
     article: { title, link, datePublished, readingTime, onReadingList },
     onReadingListToggle,
+    onGoBackClicked,
   } = props;
 
   return (
-    <VStack w="full" align="flex-start" spacing={1}>
+    <>
       <HStack w="full" justify="flex-end">
+        <IconButton
+          icon={<IoReturnUpBack />}
+          aria-label="Go back to collection"
+          variant="ghost"
+          mr="auto"
+          onClick={onGoBackClicked}
+          display={['inline-flex', 'none']}
+        />
+
         <IconButton
           icon={<HiOutlineExternalLink />}
           as={Link}
@@ -47,22 +59,24 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
         />
       </HStack>
 
-      <Heading>{title}</Heading>
-      <Box>
-        <Text color="gray.500" as={HStack}>
-          <Icon as={CgCalendar} mr={1} />
-          <>
-            published on{' '}
-            {format(fromUnixTime(datePublished), 'dd/MM/yyyy (EEE)')}
-          </>
-        </Text>
-        <Text color="gray.500" as={HStack}>
-          <Icon as={CgTime} mr={1} />
-          <>estimated reading time {Math.ceil(readingTime)} minutes</>
-        </Text>
-      </Box>
+      <VStack w="full" align="flex-start" spacing={1} px={4}>
+        <Heading>{title}</Heading>
+        <Box>
+          <Text color="gray.500" as={HStack}>
+            <Icon as={CgCalendar} mr={1} />
+            <>
+              published on{' '}
+              {format(fromUnixTime(datePublished), 'dd/MM/yyyy (EEE)')}
+            </>
+          </Text>
+          <Text color="gray.500" as={HStack}>
+            <Icon as={CgTime} mr={1} />
+            <>estimated reading time {Math.ceil(readingTime)} minutes</>
+          </Text>
+        </Box>
 
-      <Divider pt={3} />
-    </VStack>
+        <Divider pt={3} />
+      </VStack>
+    </>
   );
 };

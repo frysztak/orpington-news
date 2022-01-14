@@ -1,16 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
-import { CircularProgress, VStack } from '@chakra-ui/react';
+import { Box, CircularProgress, VStack } from '@chakra-ui/react';
 import { useApi, useHandleError, getItemDetails } from '@api';
 import { ArticleContent, ArticleHeader } from '@components/article';
 
 export interface ArticleProps {
   collectionSlug?: string;
   itemSlug?: string;
+
+  onGoBackClicked?: () => void;
 }
 
 export const Article: React.FC<ArticleProps> = (props) => {
-  const { collectionSlug, itemSlug } = props;
+  const { collectionSlug, itemSlug, onGoBackClicked } = props;
 
   const api = useApi();
   const { onError } = useHandleError();
@@ -34,17 +36,11 @@ export const Article: React.FC<ArticleProps> = (props) => {
   return query.status === 'loading' ? (
     <CircularProgress isIndeterminate />
   ) : query.status === 'success' ? (
-    <VStack
-      maxH="100vh"
-      overflowY="auto"
-      w="full"
-      spacing={6}
-      px={4}
-      pb={4}
-      ref={ref}
-    >
-      <ArticleHeader article={query.data} />
-      <ArticleContent html={query.data.fullText} />
+    <VStack maxH="100vh" overflowY="auto" w="full" spacing={1} ref={ref}>
+      <ArticleHeader article={query.data} onGoBackClicked={onGoBackClicked} />
+      <Box w="full" px={4} py={4}>
+        <ArticleContent html={query.data.fullText} />
+      </Box>
     </VStack>
   ) : null;
 };

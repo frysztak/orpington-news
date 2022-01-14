@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useInfiniteQuery, useQuery } from 'react-query';
 import { useLocalStorage } from 'beautiful-react-hooks';
+import { useRouter } from 'next/router';
 import { Panes } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
 import { Collection, ID } from '@orpington-news/shared';
@@ -17,6 +18,8 @@ export type ConnectedPanesProps = ArticleProps;
 
 export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
   const { collectionSlug, itemSlug } = props;
+
+  const router = useRouter();
 
   const { activeCollection, handleCollectionClicked, setActiveCollection } =
     useActiveCollection();
@@ -67,6 +70,10 @@ export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
     return collectionItemsPages?.pages.flatMap((page) => [...page.items]) || [];
   }, [collectionItemsPages]);
 
+  const handleGoBack = useCallback(() => {
+    router.back();
+  }, [router]);
+
   return (
     <Panes
       flexGrow={1}
@@ -89,7 +96,11 @@ export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
       mainContent={
         itemSlug &&
         collectionSlug && (
-          <Article collectionSlug={collectionSlug} itemSlug={itemSlug} />
+          <Article
+            collectionSlug={collectionSlug}
+            itemSlug={itemSlug}
+            onGoBackClicked={handleGoBack}
+          />
         )
       }
     />

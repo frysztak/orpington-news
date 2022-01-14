@@ -9,12 +9,10 @@ import {
   DrawerContent,
   DrawerOverlay,
   HStack,
-  IconButton,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
-import { IoReturnUpBack } from 'react-icons/io5';
 import { CollectionItem } from '@orpington-news/shared';
 import { SidebarContent, SidebarContentProps } from '@components/sidebar';
 import { CollectionHeader } from '@components/collection/header';
@@ -192,16 +190,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
       {/* Mobile view */}
       <Box display={{ base: 'flex', lg: 'none' }} h="100vh" {...rest}>
         {mainContent ? (
-          <VStack h="full" w="full">
-            <IconButton
-              icon={<IoReturnUpBack />}
-              aria-label="Go back to collection"
-              variant="ghost"
-              mr="auto"
-              onClick={onGoBackClicked}
-            />
-            {mainContent}
-          </VStack>
+          mainContent
         ) : (
           <VStack spacing={0} h="full" w="full">
             <CollectionHeader
