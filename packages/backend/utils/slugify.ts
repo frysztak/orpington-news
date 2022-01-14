@@ -1,6 +1,3 @@
-import * as s from 'slugify';
+import urlSlug from 'url-slug';
 
-export const slugify = (str: string): string =>
-  s.default(str, {
-    lower: true,
-  });
+export const slugify = (str: string): string => urlSlug(str);

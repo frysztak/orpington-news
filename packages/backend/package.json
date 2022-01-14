@@ -38,10 +38,10 @@
     "reading-time": "^1.5.0",
     "rss-parser": "^3.12.0",
     "slonik": "^27.1.0",
-    "slugify": "^1.6.5",
     "striptags": "^3.2.0",
     "toad-scheduler": "^1.6.0",
-    "truncate-html": "^1.0.4"
+    "truncate-html": "^1.0.4",
+    "url-slug": "^3.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
