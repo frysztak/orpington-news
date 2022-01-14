@@ -21,3 +21,4 @@ export const useApi = () => {
 
 export * from './useHandleError';
 export * from './collections';
+export * from './collectionItem';

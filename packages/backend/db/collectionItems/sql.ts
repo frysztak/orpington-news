@@ -86,3 +86,10 @@ export const getItemDetails = (collectionSlug: string, itemSlug: string) => {
   WHERE collections.slug = ${collectionSlug}
    AND collection_items.slug = ${itemSlug}`;
 };
+
+export const setItemDateRead = (itemId: string, dateRead: number | null) => {
+  return sql`
+  UPDATE collection_items
+  SET date_read = TO_TIMESTAMP(${dateRead})
+  WHERE id = ${itemId}`;
+};

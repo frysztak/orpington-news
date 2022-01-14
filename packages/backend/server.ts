@@ -8,7 +8,7 @@ import fastifySchedule from 'fastify-schedule';
 import fastifySplitValidator from 'fastify-split-validator';
 import closeWithGrace from 'close-with-grace';
 
-import { auth, collections } from '@routes';
+import { auth, collectionItem, collections } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob } from '@tasks/fetchRSS';
 import { defaultAjv, logger } from '@utils';
@@ -24,7 +24,11 @@ fastify.register(fastifySwagger, {
       title: 'Orpington News API',
       version: '0.1.0',
     },
-    tags: [{ name: 'Collections' }, { name: 'Auth' }],
+    tags: [
+      { name: 'Collections' },
+      { name: 'CollectionItem' },
+      { name: 'Auth' },
+    ],
   },
   uiConfig: {
     docExpansion: 'full',
@@ -72,6 +76,7 @@ fastify.register(fastifySplitValidator, { defaultValidator: defaultAjv });
 
 fastify.register(auth, { prefix: '/auth' });
 fastify.register(collections, { prefix: '/collections' });
+fastify.register(collectionItem, { prefix: '/collectionItem' });
 
 const closeListeners = closeWithGrace(
   { delay: 500 },

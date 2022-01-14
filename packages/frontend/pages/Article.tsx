@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Box, CircularProgress, VStack } from '@chakra-ui/react';
-import { useApi, useHandleError, getItemDetails } from '@api';
+import { getUnixTime } from 'date-fns';
+import { useApi, useHandleError, getItemDetails, setDateRead } from '@api';
 import { ArticleContent, ArticleHeader } from '@components/article';
 
 export interface ArticleProps {
@@ -17,10 +18,34 @@ export const Article: React.FC<ArticleProps> = (props) => {
   const api = useApi();
   const { onError } = useHandleError();
 
+  const queryClient = useQueryClient();
+  const dateReadMutation = useMutation(
+    ({ id, dateRead }: { id: string; dateRead: number | null }) =>
+      setDateRead(api, id, dateRead),
+    {
+      onError,
+      onSuccess: () => {
+        queryClient.invalidateQueries('collections');
+        queryClient.invalidateQueries('collectionItems');
+      },
+    }
+  );
+
   const query = useQuery(
     ['itemDetails', { collectionSlug, itemSlug }],
     () => getItemDetails(api, collectionSlug!, itemSlug!),
-    { enabled: Boolean(collectionSlug) && Boolean(itemSlug), onError }
+    {
+      enabled: Boolean(collectionSlug) && Boolean(itemSlug),
+      onError,
+      onSuccess: ({ id, dateRead }) => {
+        if (!dateRead) {
+          dateReadMutation.mutate({
+            id,
+            dateRead: getUnixTime(new Date()),
+          });
+        }
+      },
+    }
   );
 
   const ref = useRef<HTMLDivElement | null>(null);
