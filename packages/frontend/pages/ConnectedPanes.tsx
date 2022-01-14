@@ -71,7 +71,7 @@ export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
   }, [collectionItemsPages]);
 
   const handleGoBack = useCallback(() => {
-    router.back();
+    router.push('/');
   }, [router]);
 
   return (
