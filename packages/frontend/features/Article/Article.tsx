@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Box, CircularProgress, VStack } from '@chakra-ui/react';
+import { Box, CircularProgress, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import {
   ArticleContent,
@@ -19,6 +19,8 @@ export interface ArticleProps {
 export const Article: React.FC<ArticleProps> = (props) => {
   const { collectionId, itemSlug, onGoBackClicked } = props;
 
+  const toast = useToast();
+
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
     collectionId,
     itemSlug
@@ -36,14 +38,24 @@ export const Article: React.FC<ArticleProps> = (props) => {
     (action: ArticleMenuAction) => {
       if (action === 'markAsUnread') {
         if (query.data?.id) {
-          mutateDateRead({
-            id: query.data.id,
-            dateRead: null,
-          });
+          mutateDateRead(
+            {
+              id: query.data.id,
+              dateRead: null,
+            },
+            {
+              onSuccess: () => {
+                toast({
+                  status: 'success',
+                  description: 'Article marked as unread!',
+                });
+              },
+            }
+          );
         }
       }
     },
-    [mutateDateRead, query.data?.id]
+    [mutateDateRead, query.data?.id, toast]
   );
 
   const ref = useRef<HTMLDivElement | null>(null);

@@ -18,18 +18,18 @@ export const useArticleDateReadMutation = (
       setDateRead(api, id, dateRead),
     {
       onMutate: async ({ id, dateRead }) => {
+        // Optimistically update article
         await queryClient.cancelQueries(detailKey);
         const previousDetails = queryClient.getQueryData<
           CollectionItemDetails | undefined
         >(detailKey);
-        queryClient.setQueryData<CollectionItemDetails | undefined>(
-          detailKey,
-          (oldDetails) =>
-            oldDetails && {
-              ...oldDetails,
-              dateRead: dateRead ?? undefined,
-            }
-        );
+        if (previousDetails) {
+          queryClient.setQueryData(detailKey, {
+            ...previousDetails,
+            dateRead: dateRead ?? undefined,
+          });
+        }
+
         return { previousDetails };
       },
       onError: (err, { id, dateRead }, context) => {
@@ -40,9 +40,6 @@ export const useArticleDateReadMutation = (
         queryClient.invalidateQueries(collectionKeys.allForId(collectionId));
         queryClient.invalidateQueries(collectionKeys.tree);
         queryClient.invalidateQueries(collectionKeys.home);
-      },
-      onSuccess: () => {
-        // TODO: toast
       },
     }
   );
