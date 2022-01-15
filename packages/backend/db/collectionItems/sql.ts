@@ -44,13 +44,16 @@ SELECT collection_items.id,
   	     collection_items.categories,
   	     collection_items.comments,
   	     collection_items.reading_time,
+         collections.collection_id,
   	     collections.collection_title,
   	     collections.collection_slug,
   	     collections.collection_icon
   FROM collection_items
-  INNER JOIN (SELECT id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
-  ON collections.id = collection_id
-  WHERE collection_id = ANY(${getCollectionChildrenIds(collectionId)})
+  INNER JOIN (SELECT id as collection_id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
+  ON collections.collection_id = collection_items.collection_id
+  WHERE collection_items.collection_id = ANY(${getCollectionChildrenIds(
+    collectionId
+  )})
   ORDER BY date_published DESC`;
 };
 
@@ -68,12 +71,13 @@ export const getAllCollectionItems = () => {
   	     collection_items.categories,
   	     collection_items.comments,
   	     collection_items.reading_time,
+         collections.collection_id,
   	     collections.collection_title,
   	     collections.collection_slug,
   	     collections.collection_icon
   FROM collection_items
-  INNER JOIN (SELECT id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
-  ON collections.id = collection_id
+  INNER JOIN (SELECT id as collection_id, title as collection_title, slug as collection_slug, icon as collection_icon FROM collections) collections
+  ON collections.collection_id = collection_items.collection_id
   ORDER BY date_published DESC`;
 };
 
