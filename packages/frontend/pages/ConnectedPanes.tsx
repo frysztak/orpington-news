@@ -12,9 +12,12 @@ import {
   useHandleError,
 } from '@api';
 import { ActiveCollection } from '@components/collection/types';
-import { Article, ArticleProps } from './Article';
+import { Article } from './Article';
 
-export type ConnectedPanesProps = ArticleProps;
+export interface ConnectedPanesProps {
+  collectionSlug?: string;
+  itemSlug?: string;
+}
 
 export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
   const { collectionSlug, itemSlug } = props;

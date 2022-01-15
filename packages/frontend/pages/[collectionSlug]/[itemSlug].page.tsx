@@ -22,7 +22,9 @@ const ItemPage: NextPage = () => {
         <title>Orpington News</title>
       </Head>
 
-      <ConnectedPanes collectionSlug={collectionSlug} itemSlug={itemSlug} />
+      {collectionSlug && itemSlug && (
+        <ConnectedPanes collectionSlug={collectionSlug} itemSlug={itemSlug} />
+      )}
     </>
   );
 };

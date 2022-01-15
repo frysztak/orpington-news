@@ -26,7 +26,10 @@
       "@api": ["api/index.ts"],
       "@api/*": ["api/*"],
 
-      "@pages/*": ["pages/*"]
+      "@pages/*": ["pages/*"],
+
+      "@features": ["features/index.ts"],
+      "@features/*": ["features/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

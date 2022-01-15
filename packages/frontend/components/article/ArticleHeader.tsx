@@ -1,3 +1,4 @@
+import React, { useCallback } from 'react';
 import {
   Box,
   Icon,
@@ -8,26 +9,54 @@ import {
   Text,
   Link,
   VStack,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react';
 import { CollectionItemDetails } from '@orpington-news/shared';
 import { HiOutlineExternalLink } from 'react-icons/hi';
-import { BsBookmarkDash, BsBookmarkPlus } from 'react-icons/bs';
+import {
+  BsBookmarkDash,
+  BsBookmarkPlus,
+  BsThreeDotsVertical,
+} from 'react-icons/bs';
 import { CgCalendar, CgTime } from 'react-icons/cg';
-import { IoReturnUpBack } from 'react-icons/io5';
+import { IoReturnUpBack, IoCheckmarkDone } from 'react-icons/io5';
 import { format, fromUnixTime } from 'date-fns';
+
+export type ArticleMenuAction = 'markAsUnread';
 
 export interface ArticleHeaderProps {
   article: CollectionItemDetails;
-  onReadingListToggle?: () => void;
+
   onGoBackClicked?: () => void;
+  onReadingListToggle?: () => void;
+  onMenuItemClicked?: (action: ArticleMenuAction) => void;
 }
 
 export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
   const {
-    article: { title, link, datePublished, readingTime, onReadingList },
-    onReadingListToggle,
+    article: {
+      title,
+      link,
+      datePublished,
+      dateRead,
+      readingTime,
+      onReadingList,
+    },
+
     onGoBackClicked,
+    onReadingListToggle,
+    onMenuItemClicked,
   } = props;
+
+  const handleMenuItemClick = useCallback(
+    (action: ArticleMenuAction) => () => {
+      onMenuItemClicked?.(action);
+    },
+    [onMenuItemClicked]
+  );
 
   return (
     <>
@@ -57,6 +86,27 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           variant="ghost"
           onClick={onReadingListToggle}
         />
+
+        <Box>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label="Menu"
+              icon={<BsThreeDotsVertical />}
+              variant="ghost"
+              tabIndex={0}
+            />
+            <MenuList>
+              <MenuItem
+                icon={<IoCheckmarkDone />}
+                onClick={handleMenuItemClick('markAsUnread')}
+                isDisabled={!dateRead}
+              >
+                Mark as unread
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
       </HStack>
 
       <VStack w="full" align="flex-start" spacing={1} px={4}>
