@@ -45,7 +45,10 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
         )}
 
         <VStack align="flex-start">
-          <NextLink href={`/${collection.slug}/${slug}`} passHref>
+          <NextLink
+            href={`/collection/${collection.id}/article/${slug}`}
+            passHref
+          >
             <LinkOverlay>
               <Heading
                 fontSize={['lg', '2xl']}

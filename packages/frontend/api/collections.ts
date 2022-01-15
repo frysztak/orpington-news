@@ -22,10 +22,10 @@ export const getCollectionItems = (
 
 export const getItemDetails = (
   api: Wretcher,
-  collectionSlug: string,
+  collectionId: ID,
   itemSlug: string
 ) =>
   api
-    .url(`/collections/details/${collectionSlug}/${itemSlug}`)
+    .url(`/collections/${collectionId}/item/${itemSlug}`)
     .get()
     .json<CollectionItemDetails>();

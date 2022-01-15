@@ -3,17 +3,21 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { dehydrate, QueryClient } from 'react-query';
-import { ConnectedPanes } from '@pages/ConnectedPanes';
+import { Panes } from '@features/Panes';
 import { isLoginDisabled } from '@orpington-news/shared';
 import { api, getItemDetails } from '@api';
 import { getSessionIdFromRequest } from '@utils';
+import { collectionKeys } from '@features/queryKeys';
 
 const getString = (x: undefined | unknown): string | undefined =>
   typeof x === 'string' ? x : undefined;
 
+const getNumber = (x: undefined | unknown): number | undefined =>
+  typeof x === 'string' ? +x : undefined;
+
 const ItemPage: NextPage = () => {
   const router = useRouter();
-  const collectionSlug = getString(router.query?.collectionSlug);
+  const collectionId = getNumber(router.query?.collectionId);
   const itemSlug = getString(router.query?.itemSlug);
 
   return (
@@ -22,8 +26,8 @@ const ItemPage: NextPage = () => {
         <title>Orpington News</title>
       </Head>
 
-      {collectionSlug && itemSlug && (
-        <ConnectedPanes collectionSlug={collectionSlug} itemSlug={itemSlug} />
+      {collectionId !== undefined && itemSlug !== undefined && (
+        <Panes collectionId={collectionId} itemSlug={itemSlug} />
       )}
     </>
   );
@@ -46,17 +50,20 @@ export const getServerSideProps: GetServerSideProps = async ({
     }
   }
 
-  const collectionSlug = getString(query?.collectionSlug);
+  const collectionId = getNumber(query?.collectionId);
   const itemSlug = getString(query?.itemSlug);
+  if (collectionId === undefined || itemSlug === undefined) {
+    return { props: {} };
+  }
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery(
-    ['itemDetails', { collectionSlug, itemSlug }],
+    collectionKeys.detail(collectionId, itemSlug),
     () =>
       getItemDetails(
         api.headers(getSessionIdFromRequest(req)),
-        collectionSlug!,
-        itemSlug!
+        collectionId,
+        itemSlug
       )
   );
 

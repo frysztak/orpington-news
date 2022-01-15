@@ -81,13 +81,13 @@ export const getAllCollectionItems = () => {
   ORDER BY date_published DESC`;
 };
 
-export const getItemDetails = (collectionSlug: string, itemSlug: string) => {
+export const getItemDetails = (collectionId: ID, itemSlug: string) => {
   return sql<DBCollectionItemDetails>`
   SELECT collection_items.*
   FROM collections
   INNER JOIN (SELECT * FROM collection_items) collection_items
   ON collections.id = collection_items.collection_id
-  WHERE collections.slug = ${collectionSlug}
+  WHERE collections.id = ${collectionId}
    AND collection_items.slug = ${itemSlug}`;
 };
 

@@ -3,9 +3,10 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { dehydrate, QueryClient } from 'react-query';
 import { isLoginDisabled } from '@orpington-news/shared';
-import { ConnectedPanes } from './ConnectedPanes';
+import { Panes } from '../features/Panes/Panes';
 import { api, getCollections } from '@api';
 import { getSessionIdFromRequest } from '@utils';
+import { collectionKeys } from '@features';
 
 const Home: NextPage = () => {
   return (
@@ -14,7 +15,7 @@ const Home: NextPage = () => {
         <title>Orpington News</title>
       </Head>
 
-      <ConnectedPanes />
+      <Panes />
     </>
   );
 };
@@ -32,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   }
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(['collections'], () =>
+  await queryClient.prefetchQuery(collectionKeys.tree, () =>
     getCollections(api.headers(getSessionIdFromRequest(req)))
   );
 

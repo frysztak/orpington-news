@@ -6,27 +6,25 @@ import {
   ArticleHeader,
   ArticleMenuAction,
 } from '@components/article';
-import {
-  useArticleDateReadMutation,
-  useArticleDetails,
-} from '@features/Article';
+import { useArticleDateReadMutation, useArticleDetails } from './queries';
+import { ID } from '@orpington-news/shared';
 
 export interface ArticleProps {
-  collectionSlug: string;
+  collectionId: ID;
   itemSlug: string;
 
   onGoBackClicked?: () => void;
 }
 
 export const Article: React.FC<ArticleProps> = (props) => {
-  const { collectionSlug, itemSlug, onGoBackClicked } = props;
+  const { collectionId, itemSlug, onGoBackClicked } = props;
 
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
-    collectionSlug,
+    collectionId,
     itemSlug
   );
 
-  const query = useArticleDetails(collectionSlug, itemSlug);
+  const query = useArticleDetails(collectionId, itemSlug);
 
   useEffect(() => {
     if (query.data?.id) {

@@ -1,17 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getItemDetails, setDateRead, useApi, useHandleError } from '@api';
-import { CollectionItemDetails } from '@orpington-news/shared';
+import { CollectionItemDetails, ID } from '@orpington-news/shared';
 import { collectionKeys } from '@features';
 
 export const useArticleDateReadMutation = (
-  collectionSlug: string,
+  collectionId: ID,
   itemSlug: string
 ) => {
   const api = useApi();
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
 
-  const detailKey = collectionKeys.detail(collectionSlug, itemSlug);
+  const detailKey = collectionKeys.detail(collectionId, itemSlug);
 
   return useMutation(
     ({ id, dateRead }: { id: string; dateRead: number | null }) =>
@@ -37,24 +37,24 @@ export const useArticleDateReadMutation = (
         queryClient.setQueryData(detailKey, (context as any).previousDetails);
       },
       onSettled: () => {
-        queryClient.invalidateQueries(detailKey);
+        queryClient.invalidateQueries(collectionKeys.allForId(collectionId));
+        queryClient.invalidateQueries(collectionKeys.tree);
       },
       onSuccess: () => {
-        queryClient.invalidateQueries('collections');
-        queryClient.invalidateQueries('collectionItems');
+        // TODO: toast
       },
     }
   );
 };
 
-export const useArticleDetails = (collectionSlug: string, itemSlug: string) => {
+export const useArticleDetails = (collectionId: ID, itemSlug: string) => {
   const api = useApi();
   const { onError } = useHandleError();
 
-  const key = collectionKeys.detail(collectionSlug, itemSlug);
+  const key = collectionKeys.detail(collectionId, itemSlug);
 
-  return useQuery(key, () => getItemDetails(api, collectionSlug!, itemSlug!), {
-    enabled: Boolean(collectionSlug) && Boolean(itemSlug),
+  return useQuery(key, () => getItemDetails(api, collectionId!, itemSlug!), {
+    enabled: Boolean(collectionId) && Boolean(itemSlug),
     onError,
   });
 };

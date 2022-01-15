@@ -1,26 +1,20 @@
-import { useCallback, useMemo } from 'react';
-import { useInfiniteQuery, useQuery } from 'react-query';
+import { useCallback } from 'react';
 import { useLocalStorage } from 'beautiful-react-hooks';
 import { useRouter } from 'next/router';
-import { Panes } from '@components/panes';
+import { Panes as PanesComponent } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
 import { Collection, ID } from '@orpington-news/shared';
-import {
-  getCollectionItems,
-  getCollections,
-  useApi,
-  useHandleError,
-} from '@api';
 import { ActiveCollection } from '@components/collection/types';
-import { Article } from './Article';
+import { Article } from '@features/Article';
+import { useCollectionsTree, useCollectionItems } from './queries';
 
-export interface ConnectedPanesProps {
-  collectionSlug?: string;
+export interface PanesProps {
+  collectionId?: ID;
   itemSlug?: string;
 }
 
-export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
-  const { collectionSlug, itemSlug } = props;
+export const Panes: React.FC<PanesProps> = (props) => {
+  const { collectionId, itemSlug } = props;
 
   const router = useRouter();
 
@@ -38,47 +32,22 @@ export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
     [setActiveCollection]
   );
 
-  const api = useApi();
-  const { onError } = useHandleError();
-
-  const { data: collections, isError: collectionsError } = useQuery(
-    ['collections'],
-    () => getCollections(api),
-    { onError }
-  );
+  const { data: collections, isError: collectionsError } = useCollectionsTree();
 
   const {
-    data: collectionItemsPages,
     fetchNextPage,
     isFetchingNextPage,
     isLoading: collectionItemsLoading,
     hasNextPage,
-  } = useInfiniteQuery(
-    ['collectionItems', { collectionId: activeCollection.id }] as const,
-    ({ pageParam = 0, queryKey }) => {
-      const [_, { collectionId }] = queryKey;
-      return getCollectionItems(api, collectionId, pageParam).then((items) => ({
-        items,
-        pageParam,
-      }));
-    },
-    {
-      getNextPageParam: (lastPage) =>
-        lastPage.items.length === 0 ? undefined : lastPage.pageParam + 1,
-      onError,
-    }
-  );
-
-  const collectionItems = useMemo(() => {
-    return collectionItemsPages?.pages.flatMap((page) => [...page.items]) || [];
-  }, [collectionItemsPages]);
+    allItems,
+  } = useCollectionItems(activeCollection.id);
 
   const handleGoBack = useCallback(() => {
     router.push('/');
   }, [router]);
 
   return (
-    <Panes
+    <PanesComponent
       flexGrow={1}
       sidebarProps={{
         isError: collectionsError,
@@ -90,7 +59,7 @@ export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
         expandedCollectionIDs: expandedCollectionIDs,
       }}
       activeCollection={activeCollection}
-      collectionItems={collectionItems}
+      collectionItems={allItems}
       collectionListProps={{
         isFetchingMoreItems: collectionItemsLoading || isFetchingNextPage,
         onFetchMoreItems: fetchNextPage,
@@ -98,9 +67,9 @@ export const ConnectedPanes: React.FC<ConnectedPanesProps> = (props) => {
       }}
       mainContent={
         itemSlug &&
-        collectionSlug && (
+        collectionId && (
           <Article
-            collectionSlug={collectionSlug}
+            collectionId={collectionId}
             itemSlug={itemSlug}
             onGoBackClicked={handleGoBack}
           />

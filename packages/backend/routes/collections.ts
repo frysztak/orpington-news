@@ -58,7 +58,7 @@ const MoveCollection = Type.Object({
 type MoveCollectionType = Static<typeof MoveCollection>;
 
 const ItemDetailsParams = Type.Object({
-  collectionSlug: Type.String(),
+  id: Type.Integer(),
   itemSlug: Type.String(),
 });
 type ItemDetailsType = Static<typeof ItemDetailsParams>;
@@ -205,7 +205,7 @@ export const collections: FastifyPluginAsync = async (
   fastify.get<{
     Params: ItemDetailsType;
   }>(
-    '/details/:collectionSlug/:itemSlug',
+    '/:id/item/:itemSlug',
     {
       schema: {
         params: ItemDetailsParams,
@@ -214,12 +214,10 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const { params } = request;
-      const { collectionSlug, itemSlug } = params;
+      const { id, itemSlug } = params;
 
       try {
-        const details = await pool.one(
-          getItemDetails(collectionSlug, itemSlug)
-        );
+        const details = await pool.one(getItemDetails(id, itemSlug));
         const {
           full_text,
           date_published,
@@ -243,7 +241,7 @@ export const collections: FastifyPluginAsync = async (
       } catch (error) {
         if (error instanceof NotFoundError) {
           logger.error(
-            `Items details for collection '${collectionSlug}' and item '${itemSlug}' not found.`
+            `Items details for collection '${id}' and item '${itemSlug}' not found.`
           );
           reply
             .status(404)
