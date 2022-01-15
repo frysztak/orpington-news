@@ -39,6 +39,7 @@ export const useArticleDateReadMutation = (
       onSettled: () => {
         queryClient.invalidateQueries(collectionKeys.allForId(collectionId));
         queryClient.invalidateQueries(collectionKeys.tree);
+        queryClient.invalidateQueries(collectionKeys.home);
       },
       onSuccess: () => {
         // TODO: toast
