@@ -184,7 +184,9 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
           </HStack>
         </Resizable>
 
-        <Box flexGrow={1}>{mainContent ?? <EmptyMain />}</Box>
+        <Box flexGrow={1} overflow="auto">
+          {mainContent ?? <EmptyMain />}
+        </Box>
       </HStack>
 
       {/* Mobile view */}

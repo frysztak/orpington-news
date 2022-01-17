@@ -169,7 +169,7 @@ const options: HTMLReactParserOptions = {
         if (isChildCode) {
           const text: string = getNodeText(domNode);
           return (
-            <Box maxW="full">
+            <Box w="full">
               <SyntaxHighlighterWithTheme>{text}</SyntaxHighlighterWithTheme>
             </Box>
           );
