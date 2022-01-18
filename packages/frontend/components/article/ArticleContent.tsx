@@ -80,8 +80,9 @@ const options: HTMLReactParserOptions = {
     if (
       domNode.attribs?.class?.includes('highlight') &&
       domNode.tagName === 'div'
-    )
+    ) {
       return <>{children}</>;
+    }
 
     switch (domNode.tagName) {
       case 'a': {
@@ -148,7 +149,7 @@ const options: HTMLReactParserOptions = {
         );
       }
       case 'code': {
-        return <Code>{children}</Code>;
+        return <Code overflowWrap="anywhere">{children}</Code>;
       }
       case 'pre': {
         const isChildCode =
