@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
+import { Panes } from '@features/Panes';
 import { theme } from '../theme';
 import { fontFaces } from '../theme/fonts';
 
@@ -25,7 +26,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Global styles={fontFaces} />
 
           <Flex minH="100vh" direction="column">
-            <Component {...pageProps} />
+            <Panes>
+              <Component {...pageProps} />
+            </Panes>
           </Flex>
         </ChakraProvider>
       </Hydrate>

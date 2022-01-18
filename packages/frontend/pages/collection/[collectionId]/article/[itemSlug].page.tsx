@@ -1,34 +1,19 @@
 import React from 'react';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { dehydrate, QueryClient } from 'react-query';
-import { Panes } from '@features/Panes';
 import { isLoginDisabled } from '@orpington-news/shared';
 import { api, getItemDetails } from '@api';
 import { getSessionIdFromRequest } from '@utils';
 import { collectionKeys } from '@features/queryKeys';
-
-const getString = (x: undefined | unknown): string | undefined =>
-  typeof x === 'string' ? x : undefined;
-
-const getNumber = (x: undefined | unknown): number | undefined =>
-  typeof x === 'string' ? +x : undefined;
+import { getNumber, getString } from '@utils/router';
 
 const ItemPage: NextPage = () => {
-  const router = useRouter();
-  const collectionId = getNumber(router.query?.collectionId);
-  const itemSlug = getString(router.query?.itemSlug);
-
   return (
     <>
       <Head>
         <title>Orpington News</title>
       </Head>
-
-      {collectionId !== undefined && itemSlug !== undefined && (
-        <Panes collectionId={collectionId} itemSlug={itemSlug} />
-      )}
     </>
   );
 };

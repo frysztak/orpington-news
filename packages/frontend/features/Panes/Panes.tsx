@@ -7,16 +7,12 @@ import { Collection, ID } from '@orpington-news/shared';
 import { ActiveCollection } from '@components/collection/types';
 import { Article } from '@features/Article';
 import { useCollectionsTree, useCollectionItems } from './queries';
+import { getNumber, getString } from '@utils/router';
 
-export interface PanesProps {
-  collectionId?: ID;
-  itemSlug?: string;
-}
-
-export const Panes: React.FC<PanesProps> = (props) => {
-  const { collectionId, itemSlug } = props;
-
+export const Panes: React.FC = (props) => {
   const router = useRouter();
+  const collectionId = getNumber(router.query?.collectionId);
+  const itemSlug = getString(router.query?.itemSlug);
 
   const { activeCollection, handleCollectionClicked, setActiveCollection } =
     useActiveCollection();
