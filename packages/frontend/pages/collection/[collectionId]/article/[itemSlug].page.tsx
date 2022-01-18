@@ -1,18 +1,25 @@
 import React from 'react';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { dehydrate, QueryClient } from 'react-query';
 import { isLoginDisabled } from '@orpington-news/shared';
 import { api, getItemDetails } from '@api';
 import { getSessionIdFromRequest } from '@utils';
 import { collectionKeys } from '@features/queryKeys';
 import { getNumber, getString } from '@utils/router';
+import { useArticleDetails } from '@features/Article/queries';
 
 const ItemPage: NextPage = () => {
+  const router = useRouter();
+  const collectionId = getNumber(router.query?.collectionId);
+  const itemSlug = getString(router.query?.itemSlug);
+  const { data: { title } = {} } = useArticleDetails(collectionId!, itemSlug!);
+
   return (
     <>
       <Head>
-        <title>Orpington News</title>
+        <title>{title ? `${title} | Orpington News` : 'Orpington News'}</title>
       </Head>
     </>
   );
