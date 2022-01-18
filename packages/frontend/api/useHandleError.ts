@@ -23,6 +23,7 @@ export const useHandleError = () => {
         title,
         description,
         status: 'error',
+        isClosable: true,
       });
     },
     [toast]

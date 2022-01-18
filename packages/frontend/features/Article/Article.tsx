@@ -1,6 +1,14 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Box, CircularProgress, useToast, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  CircularProgress,
+  Heading,
+  Icon,
+  useToast,
+  VStack,
+} from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
+import { BiMessageAltError } from '@react-icons/all-files/bi/BiMessageAltError';
 import {
   ArticleContent,
   ArticleHeader,
@@ -64,8 +72,16 @@ export const Article: React.FC<ArticleProps> = (props) => {
     ref.current?.scrollTo({ top: 0 });
   }, [query.data?.fullText]);
 
-  if (query.status === 'idle') {
-    return null;
+  if (query.status === 'error') {
+    const status: number | undefined = query.error?.status;
+    return (
+      <VStack spacing={6} h="full" w="full" justify="center">
+        <Icon as={BiMessageAltError} w={16} h="auto" />
+        <Heading>
+          {status === 404 ? 'Article not found.' : 'Unexpected error'}
+        </Heading>
+      </VStack>
+    );
   }
 
   return query.status === 'loading' ? (

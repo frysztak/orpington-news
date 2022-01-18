@@ -53,6 +53,7 @@ export const useArticleDetails = (collectionId: ID, itemSlug: string) => {
 
   return useQuery(key, () => getItemDetails(api, collectionId!, itemSlug!), {
     enabled: Boolean(collectionId) && Boolean(itemSlug),
+    retry: false,
     onError,
   });
 };
