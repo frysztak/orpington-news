@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { dehydrate, QueryClient } from 'react-query';
 import { isLoginDisabled } from '@orpington-news/shared';
-import { api, getItemDetails } from '@api';
+import { api, getCollections, getItemDetails } from '@api';
 import { getSessionIdFromRequest } from '@utils';
 import { collectionKeys } from '@features/queryKeys';
 import { getNumber, getString } from '@utils/router';
@@ -49,15 +49,20 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(
-    collectionKeys.detail(collectionId, itemSlug),
-    () =>
-      getItemDetails(
-        api.headers(getSessionIdFromRequest(req)),
-        collectionId,
-        itemSlug
-      )
-  );
+  await Promise.all([
+    queryClient.prefetchQuery(collectionKeys.tree, () =>
+      getCollections(api.headers(getSessionIdFromRequest(req)))
+    ),
+    queryClient.prefetchQuery(
+      collectionKeys.detail(collectionId, itemSlug),
+      () =>
+        getItemDetails(
+          api.headers(getSessionIdFromRequest(req)),
+          collectionId,
+          itemSlug
+        )
+    ),
+  ]);
 
   return {
     props: {
