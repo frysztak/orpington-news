@@ -84,7 +84,7 @@ describe('RSS parser', () => {
         id: 'https://news.ycombinator.com/item?id=29852270',
         title:
           'Why do 70% of families lose their wealth in the 2nd generation? (2018)',
-        slug: 'why-do-70percent-of-families-lose-their-wealth-in-the-2nd-generation-(2018)',
+        slug: 'why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018',
         link: 'https://www.nasdaq.com/articles/generational-wealth%3A-why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018-10',
         date_published: 1641654219,
         full_text: `<p>Article URL: <a href=\"https://www.nasdaq.com/articles/generational-wealth%3A-why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018-10\">https://www.nasdaq.com/articles/generational-wealth%3A-why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018-10</a></p>

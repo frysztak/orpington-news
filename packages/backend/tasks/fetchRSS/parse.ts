@@ -8,10 +8,12 @@ import striptags from 'striptags';
 import { decode } from 'html-entities';
 import DOMPurify from 'isomorphic-dompurify';
 import { getUnixTime, parseISO } from 'date-fns';
+import { URL } from 'url';
 import { slugify } from '@utils';
 import { DBCollectionItem } from '@db/collectionItems';
 import { logger } from '@utils/logger';
 import { notEmpty } from '@orpington-news/shared';
+import { cleanHTML } from './htmlCleaner';
 
 export const parser = new Parser({
   customFields: {
@@ -83,7 +85,11 @@ export const mapFeedItems = (
       }
 
       const title = decode(item.title).trim();
-      const content = ((<any>item)['content:encoded'] || item.content).trim();
+      const rootUrl = new URL(item.link).origin;
+      const content = cleanHTML(
+        ((<any>item)['content:encoded'] || item.content).trim(),
+        rootUrl
+      );
       const pureText = striptags(content);
 
       const stats = readingTime(pureText);
