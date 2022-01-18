@@ -15,6 +15,7 @@ import {
   OrderedList,
   ListItem,
   Skeleton,
+  Image,
 } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import { Element } from 'domhandler';
@@ -150,6 +151,13 @@ const options: HTMLReactParserOptions = {
       }
       case 'code': {
         return <Code overflowWrap="anywhere">{children}</Code>;
+      }
+      case 'img': {
+        const { src, alt } = domNode.attribs;
+        if (!src) {
+          return <></>;
+        }
+        return <Image src={src} alt={alt} />;
       }
       case 'pre': {
         const isChildCode =
