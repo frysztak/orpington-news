@@ -14,15 +14,17 @@ import {
   UnorderedList,
   OrderedList,
   ListItem,
-  useColorModeValue,
+  Skeleton,
 } from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
 import { Element } from 'domhandler';
-import {
-  Light as SyntaxHighlighter,
-  SyntaxHighlighterProps,
-} from 'react-syntax-highlighter';
-import atomOneLight from 'react-syntax-highlighter/dist/cjs/styles/hljs/atom-one-light';
-import dracula from 'react-syntax-highlighter/dist/cjs/styles/hljs/dracula';
+
+const SyntaxHighlighterWithTheme = dynamic(
+  () => import('./SyntaxHighlighterWithTheme'),
+  {
+    loading: () => <Skeleton w="full" h={40} />,
+  }
+);
 
 export interface ArticleContentProps {
   html: string;
@@ -64,19 +66,6 @@ const Heading: React.FC<{
     >
       {children}
     </ChakraHeading>
-  );
-};
-
-const SyntaxHighlighterWithTheme: React.FC<SyntaxHighlighterProps> = ({
-  children,
-  ...rest
-}) => {
-  const style = useColorModeValue(atomOneLight, dracula);
-
-  return (
-    <SyntaxHighlighter style={style} {...rest}>
-      {children}
-    </SyntaxHighlighter>
   );
 };
 
