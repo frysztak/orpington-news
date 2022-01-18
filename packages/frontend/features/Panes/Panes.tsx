@@ -9,7 +9,7 @@ import { Article } from '@features/Article';
 import { useCollectionsTree, useCollectionItems } from './queries';
 import { getNumber, getString } from '@utils/router';
 
-export const Panes: React.FC = (props) => {
+export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
   const itemSlug = getString(router.query?.itemSlug);
@@ -43,35 +43,38 @@ export const Panes: React.FC = (props) => {
   }, [router]);
 
   return (
-    <PanesComponent
-      flexGrow={1}
-      sidebarProps={{
-        isError: collectionsError,
-        collections: collections ?? [],
-        onCollectionClicked: handleCollectionClicked,
-        onChevronClicked: handleCollectionChevronClicked,
-        onMenuItemClicked: handleMenuItemClicked,
-        activeCollectionId: activeCollection.id,
-        expandedCollectionIDs: expandedCollectionIDs,
-      }}
-      activeCollection={activeCollection}
-      collectionItems={allItems}
-      collectionListProps={{
-        isFetchingMoreItems: collectionItemsLoading || isFetchingNextPage,
-        onFetchMoreItems: fetchNextPage,
-        canFetchMoreItems: hasNextPage,
-      }}
-      mainContent={
-        itemSlug &&
-        collectionId && (
-          <Article
-            collectionId={collectionId}
-            itemSlug={itemSlug}
-            onGoBackClicked={handleGoBack}
-          />
-        )
-      }
-    />
+    <>
+      <PanesComponent
+        flexGrow={1}
+        sidebarProps={{
+          isError: collectionsError,
+          collections: collections ?? [],
+          onCollectionClicked: handleCollectionClicked,
+          onChevronClicked: handleCollectionChevronClicked,
+          onMenuItemClicked: handleMenuItemClicked,
+          activeCollectionId: activeCollection.id,
+          expandedCollectionIDs: expandedCollectionIDs,
+        }}
+        activeCollection={activeCollection}
+        collectionItems={allItems}
+        collectionListProps={{
+          isFetchingMoreItems: collectionItemsLoading || isFetchingNextPage,
+          onFetchMoreItems: fetchNextPage,
+          canFetchMoreItems: hasNextPage,
+        }}
+        mainContent={
+          itemSlug &&
+          collectionId && (
+            <Article
+              collectionId={collectionId}
+              itemSlug={itemSlug}
+              onGoBackClicked={handleGoBack}
+            />
+          )
+        }
+      />
+      {children}
+    </>
   );
 };
 
