@@ -15,7 +15,7 @@ import {
   useOutsideClick,
   VStack,
 } from '@chakra-ui/react';
-import { BsThreeDotsVertical } from 'react-icons/bs';
+import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { Chevron } from './Chevron';
 
 export interface SidebarItemProps {

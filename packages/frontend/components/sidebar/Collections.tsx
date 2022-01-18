@@ -7,10 +7,11 @@ import {
   MenuItem,
   VStack,
 } from '@chakra-ui/react';
-import { CgRemove } from 'react-icons/cg';
-import { IoCheckmarkDone, IoRefresh } from 'react-icons/io5';
-import { AiTwotoneEdit } from 'react-icons/ai';
-import { BiMessageAltError } from 'react-icons/bi';
+import { CgRemove } from '@react-icons/all-files/cg/CgRemove';
+import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
+import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
+import { AiTwotoneEdit } from '@react-icons/all-files/ai/AiTwotoneEdit';
+import { BiMessageAltError } from '@react-icons/all-files/bi/BiMessageAltError';
 import { SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
 import { ID, Collection } from '@orpington-news/shared';

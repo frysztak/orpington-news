@@ -1,5 +1,5 @@
 import React from 'react';
-import { HiCursorClick } from 'react-icons/hi';
+import { HiCursorClick } from '@react-icons/all-files/hi/HiCursorClick';
 import { Icon, VStack, Heading } from '@chakra-ui/react';
 
 export const EmptyMain: React.FC = (props) => {

@@ -15,14 +15,14 @@ import {
   MenuItem,
 } from '@chakra-ui/react';
 import { CollectionItemDetails } from '@orpington-news/shared';
-import { HiOutlineExternalLink } from 'react-icons/hi';
-import {
-  BsBookmarkDash,
-  BsBookmarkPlus,
-  BsThreeDotsVertical,
-} from 'react-icons/bs';
-import { CgCalendar, CgTime } from 'react-icons/cg';
-import { IoReturnUpBack, IoCheckmarkDone } from 'react-icons/io5';
+import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
+import { BsBookmarkDash } from '@react-icons/all-files/bs/BsBookmarkDash';
+import { BsBookmarkPlus } from '@react-icons/all-files/bs/BsBookmarkPlus';
+import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
+import { CgCalendar } from '@react-icons/all-files/cg/CgCalendar';
+import { CgTime } from '@react-icons/all-files/cg/CgTime';
+import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
+import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import { format, fromUnixTime } from 'date-fns';
 
 export type ArticleMenuAction = 'markAsUnread';

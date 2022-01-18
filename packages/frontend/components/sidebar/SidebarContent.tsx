@@ -8,13 +8,14 @@ import {
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react';
-import { AiOutlineHome } from 'react-icons/ai';
-import { BsBookmarks } from 'react-icons/bs';
-import { RiAddBoxFill, RiSettingsLine } from 'react-icons/ri';
-import { CgReorder } from 'react-icons/cg';
+import { AiOutlineHome } from '@react-icons/all-files/ai/AiOutlineHome';
+import { BsBookmarks } from '@react-icons/all-files/bs/BsBookmarks';
+import { RiAddBoxFill } from '@react-icons/all-files/ri/RiAddBoxFill';
+import { RiSettingsLine } from '@react-icons/all-files/ri/RiSettingsLine';
+import { CgReorder } from '@react-icons/all-files/cg/CgReorder';
 import { SidebarItem } from './SidebarItem';
 import { Collections, CollectionsProps } from './Collections';
-import { SiRss } from 'react-icons/si';
+import { SiRss } from '@react-icons/all-files/si/SiRss';
 
 export type MenuItem =
   | 'home'

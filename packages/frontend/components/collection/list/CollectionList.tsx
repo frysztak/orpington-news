@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { useVirtual } from '@utils/useVirtual';
 import { last } from 'rambda';
-import { CgSmileSad } from 'react-icons/cg';
+import { CgSmileSad } from '@react-icons/all-files/cg/CgSmileSad';
 import { CollectionItem, genN } from '@orpington-news/shared';
 import { LayoutType } from '../types';
 import { MagazineItem } from '../layouts';

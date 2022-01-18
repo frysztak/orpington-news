@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Heading, HStack, IconButton, VStack } from '@chakra-ui/react';
-import { CgMenuLeftAlt, CgSearch } from 'react-icons/cg';
-import { BsLayoutWtf } from 'react-icons/bs';
-import { IoRefresh } from 'react-icons/io5';
+import { CgMenuLeftAlt } from '@react-icons/all-files/cg/CgMenuLeftAlt';
+import { CgSearch } from '@react-icons/all-files/cg/CgSearch';
+import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
+import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { ActiveCollection, LayoutType } from '../types';
 
 export interface CollectionHeaderProps {

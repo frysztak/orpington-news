@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Icon, IconProps } from '@chakra-ui/react';
-import { BsChevronRight } from 'react-icons/bs';
+import { BsChevronRight } from '@react-icons/all-files/bs/BsChevronRight';
 
 export type ChevronProps = {
   pointTo: 'top' | 'bottom';
