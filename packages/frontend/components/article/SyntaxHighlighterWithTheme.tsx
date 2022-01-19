@@ -32,7 +32,15 @@ const SyntaxHighlighterWithTheme: React.FC<SyntaxHighlighterProps> = ({
   const style = useColorModeValue(atomOneLight, dracula);
 
   return (
-    <SyntaxHighlighter style={style} {...rest}>
+    <SyntaxHighlighter
+      {...rest}
+      style={style}
+      codeTagProps={{
+        style: {
+          fontFamily: 'var(--chakra-fonts-mono)',
+        },
+      }}
+    >
       {children}
     </SyntaxHighlighter>
   );
