@@ -19,7 +19,22 @@ export const fixImageSrc =
     return root;
   };
 
+export const fixRelativeHref =
+  (rootUrl: string): Cleaner =>
+  (root) => {
+    const as = root.getElementsByTagName('a');
+    for (const a of as) {
+      const href = a.getAttribute('href');
+      if (href && isRelativeUrl(href)) {
+        a.setAttribute('href', urlJoin(rootUrl, href));
+      }
+    }
+
+    return root;
+  };
+
 export const cleanHTML = (html: string, rootUrl: string): string => {
   const root = parse(html);
-  return pipe(fixImageSrc(rootUrl))(root).toString();
+  const cleaners = pipe(fixImageSrc(rootUrl), fixRelativeHref(rootUrl));
+  return cleaners(root).toString();
 };
