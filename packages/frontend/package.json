@@ -17,6 +17,7 @@
     "@chakra-ui/react": "^1.7.4",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@heroicons/react": "^1.0.5",
     "@next/bundle-analyzer": "^12.0.8",
     "@orpington-news/shared": "^0.0.0",
     "@react-icons/all-files": "^4.1.0",

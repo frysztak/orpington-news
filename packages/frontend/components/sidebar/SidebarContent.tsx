@@ -13,9 +13,9 @@ import { BsBookmarks } from '@react-icons/all-files/bs/BsBookmarks';
 import { RiAddBoxFill } from '@react-icons/all-files/ri/RiAddBoxFill';
 import { RiSettingsLine } from '@react-icons/all-files/ri/RiSettingsLine';
 import { CgReorder } from '@react-icons/all-files/cg/CgReorder';
+import RssIcon from '@heroicons/react/outline/RssIcon';
 import { SidebarItem } from './SidebarItem';
 import { Collections, CollectionsProps } from './Collections';
-import { SiRss } from '@react-icons/all-files/si/SiRss';
 
 export type MenuItem =
   | 'home'
@@ -47,7 +47,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
   return (
     <VStack w="full" h="full" align="flex-start">
       <HStack p={6} spacing={[4, 6]}>
-        <Icon as={SiRss} color={fg} w={[8, 10]} h="auto" />
+        <Icon as={RssIcon} color={fg} w={[8, 10]} h="auto" />
         <Heading fontWeight={700} color={fg} as="h1" fontSize={['2xl', '4xl']}>
           Orpington News
         </Heading>
