@@ -4,6 +4,7 @@ import {
   withDefaultColorScheme,
   withDefaultSize,
 } from '@chakra-ui/react';
+import 'focus-visible/dist/focus-visible';
 import { textStyles } from './textStyles';
 import { fonts } from './fonts';
 import { Button, Menu } from './components';
