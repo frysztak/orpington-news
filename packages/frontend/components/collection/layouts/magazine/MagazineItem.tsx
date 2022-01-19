@@ -38,7 +38,8 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
             flexShrink={0}
             w={[24, 40]}
             h={[24, 40]}
-            my="auto"
+            mt={1}
+            mb="auto"
             objectFit="cover"
             borderRadius={4}
           />
