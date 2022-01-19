@@ -145,7 +145,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
       >
         <Resizable
           enable={{ right: true }}
-          minWidth={260}
+          minWidth={275}
           defaultSize={
             sidebarWidth
               ? { width: sidebarWidth, height: 'auto' }

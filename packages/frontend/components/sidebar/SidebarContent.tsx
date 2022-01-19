@@ -46,9 +46,9 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
 
   return (
     <VStack w="full" h="full" align="flex-start">
-      <HStack p={6} spacing={[4, 6]}>
-        <Icon as={RssIcon} color={fg} w={[8, 10]} h="auto" />
-        <Heading fontWeight={700} color={fg} as="h1" fontSize={['2xl', '4xl']}>
+      <HStack py={6} px={4} spacing={2}>
+        <Icon as={RssIcon} color={fg} w={8} h="auto" />
+        <Heading fontWeight={700} color={fg} as="h1" fontSize={'2xl'}>
           Orpington News
         </Heading>
       </HStack>
