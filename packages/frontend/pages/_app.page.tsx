@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { AppProps } from 'next/app';
+import type { AppPropsWithLayout } from './types';
 import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
@@ -7,7 +7,7 @@ import { Panes } from '@features/Panes';
 import { theme } from '../theme';
 import { fontFaces } from '../theme/fonts';
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -19,6 +19,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       })
   );
 
+  const getLayout = Component.getLayout || ((page) => <Panes>{page}</Panes>);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
@@ -26,9 +28,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Global styles={fontFaces} />
 
           <Flex minH="100vh" direction="column">
-            <Panes>
-              <Component {...pageProps} />
-            </Panes>
+            {getLayout(<Component {...pageProps} />)}
           </Flex>
         </ChakraProvider>
       </Hydrate>
