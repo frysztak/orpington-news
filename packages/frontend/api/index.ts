@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
 import wretch from 'wretch';
+import getConfig from 'next/config';
 import { useHandleUnauthorized } from './useHandleUnauthorized';
+
+const { publicRuntimeConfig } = getConfig();
 
 export const makeApi = () =>
   wretch()
-    .url(`${process.env.NEXT_PUBLIC_API_URL}`)
+    .url(`${publicRuntimeConfig.API_URL}`)
     .options({ credentials: 'include', mode: 'cors' })
     .errorType('json');
 

@@ -100,12 +100,16 @@ fastify.addHook('onClose', async (instance, done) => {
 });
 
 migrator.up().then(() => {
-  fastify.listen(5000, (err, address) => {
-    if (err) {
-      fastify.log.error(err);
-      process.exit(1);
+  fastify.listen(
+    process.env.PORT || 5000,
+    process.env.HOST || '127.0.0.1',
+    (err, address) => {
+      if (err) {
+        fastify.log.error(err);
+        process.exit(1);
+      }
     }
-  });
+  );
 
   fastify.ready().then(
     () => {

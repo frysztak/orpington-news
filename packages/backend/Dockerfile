@@ -9,7 +9,7 @@ COPY package.json yarn.lock lerna.json ./
 COPY packages/shared/package.json /app/packages/shared/package.json
 COPY packages/frontend/package.json /app/packages/frontend/package.json
 COPY packages/backend/package.json /app/packages/backend/package.json
-RUN yarn install --frozen-lockfile
+RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --frozen-lockfile
 
 COPY . /app
 RUN yarn lerna run build --scope @orpington-news/backend --include-dependencies --stream
@@ -24,8 +24,6 @@ COPY --from=builder /app/packages/shared /app/packages/shared
 COPY --from=builder /app/packages/backend /app/packages/backend
 
 WORKDIR /app/packages/backend
-RUN yarn install --production --ignore-scripts --prefer-offline --ignore-optional --pure-lockfile && yarn cache clean
+RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --production --ignore-scripts --prefer-offline --ignore-optional --frozen-lockfile
 
-ENV NODE_ENV=production
-EXPOSE 5000
 CMD ["node", "dist/server.js"]
