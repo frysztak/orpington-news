@@ -25,6 +25,7 @@ import {
 import { disableCoercionAjv } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
+import { parser } from '@tasks/fetchRSS/parse';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -252,6 +253,39 @@ export const collections: FastifyPluginAsync = async (
           );
           reply.status(500).send({ errorCode: 500, message: 'Server error.' });
         }
+      }
+    }
+  );
+
+  const VerifyURLParams = Type.Object({
+    url: Type.String(),
+  });
+
+  fastify.post<{
+    Body: Static<typeof VerifyURLParams>;
+  }>(
+    '/verifyUrl',
+    {
+      schema: {
+        body: VerifyURLParams,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        body: { url },
+      } = request;
+
+      try {
+        const feed = await parser.parseURL(url);
+        reply.status(200).send({
+          title: feed.title,
+          description: feed.description || feed.subtitle,
+        });
+      } catch (err) {
+        reply
+          .status(418)
+          .send({ errorCode: 418, message: 'Invalid RSS/Atom feed.' });
       }
     }
   );

@@ -17,6 +17,7 @@ import { cleanHTML } from './htmlCleaner';
 
 export const parser = new Parser({
   customFields: {
+    feed: ['subtitle'],
     item: [
       ['media:thumbnail', 'thumbnail'],
       ['category', 'category', { keepArray: true }],
