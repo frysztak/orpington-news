@@ -12,6 +12,10 @@ import { auth, collectionItem, collections } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob } from '@tasks/fetchRSS';
 import { defaultAjv, logger } from '@utils';
+import { migrator } from '@db/migrator';
+import { isLoginDisabled } from '@orpington-news/shared';
+
+const disableAppLogin = isLoginDisabled();
 
 const fastify = Fastify({
   logger: logger,
@@ -47,8 +51,19 @@ fastify.register(fastifySwagger, {
   exposeRoute: true,
 });
 
-if (!process.env.COOKIE_SECRET) {
-  throw new Error(`COOKIE_SECRET not set!`);
+if (!disableAppLogin) {
+  if (!process.env.COOKIE_SECRET) {
+    throw new Error(`COOKIE_SECRET not set!`);
+  }
+  fastify.register(fastifySession, {
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+    },
+    rolling: true,
+  });
 }
 
 if (!process.env.APP_URL) {
@@ -62,15 +77,6 @@ fastify.register(fastifyCors, {
 fastify.register(fastifyAuth);
 fastify.register(fastifyVerifySession);
 fastify.register(fastifyCookie);
-fastify.register(fastifySession, {
-  secret: process.env.COOKIE_SECRET,
-  cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== 'development',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
-  },
-  rolling: true,
-});
 fastify.register(fastifySchedule);
 fastify.register(fastifySplitValidator, { defaultValidator: defaultAjv });
 
@@ -93,18 +99,24 @@ fastify.addHook('onClose', async (instance, done) => {
   done();
 });
 
-fastify.listen(5000, (err, address) => {
-  if (err) {
-    fastify.log.error(err);
-    process.exit(1);
-  }
-});
+migrator.up().then(() => {
+  fastify.listen(
+    process.env.PORT || 5000,
+    process.env.HOST || '127.0.0.1',
+    (err, address) => {
+      if (err) {
+        fastify.log.error(err);
+        process.exit(1);
+      }
+    }
+  );
 
-fastify.ready().then(
-  () => {
-    fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
-  },
-  (err) => {
-    console.error(err);
-  }
-);
+  fastify.ready().then(
+    () => {
+      fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
+    },
+    (err) => {
+      console.error(err);
+    }
+  );
+});
