@@ -64,6 +64,6 @@ const task = new AsyncTask(
 );
 
 export const fetchRSSJob = new SimpleIntervalJob(
-  { seconds: 60, runImmediately: true },
+  { minutes: 5, runImmediately: true },
   task
 );
