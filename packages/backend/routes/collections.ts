@@ -25,7 +25,7 @@ import {
 import { disableCoercionAjv } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
-import { parser } from '@tasks/fetchRSS/parse';
+import { fetchRSSJob, parser } from '@tasks/fetchRSS';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -95,6 +95,7 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const { body } = request;
       await pool.any(addCollection(body));
+      fetchRSSJob.start();
       return true;
     }
   );
