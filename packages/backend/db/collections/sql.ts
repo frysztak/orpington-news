@@ -111,7 +111,10 @@ export const getCollectionsToRefresh = () => {
   WHERE
     url IS NOT NULL
     AND
-    date_updated + refresh_interval * interval '1 minute' <= now();`;
+      (date_updated + refresh_interval * interval '1 minute' <= now()
+      OR
+      date_updated IS NULL
+      );`;
 };
 
 export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
