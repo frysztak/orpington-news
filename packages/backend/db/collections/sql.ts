@@ -1,12 +1,25 @@
 import { sql } from 'slonik';
-import { Collection, defaultIcon, ID } from '@orpington-news/shared';
+import {
+  Collection,
+  defaultIcon,
+  defaultRefreshInterval,
+  ID,
+} from '@orpington-news/shared';
 import { slugify } from 'utils/slugify';
 import { getUnixTime } from 'date-fns';
 
 export const addCollection = (
   collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const { title, icon, parentId, description, url, dateUpdated } = collection;
+  const {
+    title,
+    icon,
+    parentId,
+    description,
+    url,
+    dateUpdated,
+    refreshInterval,
+  } = collection;
 
   const values = [
     title,
@@ -17,8 +30,9 @@ export const addCollection = (
     description ?? null,
     url ?? null,
     dateUpdated ? getUnixTime(dateUpdated) : null,
+    refreshInterval ?? defaultRefreshInterval,
   ];
-  return sql`INSERT INTO collections("title", "slug", "icon", "order", "parent_id", "description", "url", "date_updated") VALUES (${sql.join(
+  return sql`INSERT INTO collections("title", "slug", "icon", "order", "parent_id", "description", "url", "date_updated", "refresh_interval") VALUES (${sql.join(
     values,
     sql`, `
   )})`;

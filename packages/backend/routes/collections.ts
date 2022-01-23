@@ -35,6 +35,7 @@ const PostCollection = Type.Object({
   parentId: Type.Optional(Type.Integer()),
   description: Type.Optional(Type.String()),
   url: Type.Optional(Type.String()),
+  refreshInterval: Type.Integer(),
 });
 
 type PostCollectionType = Static<typeof PostCollection>;
