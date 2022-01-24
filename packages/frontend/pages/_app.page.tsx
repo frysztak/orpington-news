@@ -4,6 +4,7 @@ import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { Panes } from '@features/Panes';
+import { ActiveCollectionContextProvider } from '@features/ActiveCollection';
 import { theme } from '../theme';
 import { fontFaces } from '../theme/fonts';
 
@@ -25,11 +26,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
         <ChakraProvider theme={theme}>
-          <Global styles={fontFaces} />
+          <ActiveCollectionContextProvider>
+            <Global styles={fontFaces} />
 
-          <Flex minH="100vh" direction="column">
-            {getLayout(<Component {...pageProps} />)}
-          </Flex>
+            <Flex minH="100vh" direction="column">
+              {getLayout(<Component {...pageProps} />)}
+            </Flex>
+          </ActiveCollectionContextProvider>
         </ChakraProvider>
       </Hydrate>
     </QueryClientProvider>

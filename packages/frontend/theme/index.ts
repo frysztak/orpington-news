@@ -46,6 +46,10 @@ const fontSizes = {
   '2xs': '8px',
 };
 
+const space = {
+  22: '5.5rem',
+};
+
 export const theme = extendTheme(
   {
     useSystemColorMode: true,
@@ -53,6 +57,8 @@ export const theme = extendTheme(
     fonts,
     colors,
     styles,
+    space,
+    sizes: { ...space },
     fontSizes,
     textStyles,
     components: {

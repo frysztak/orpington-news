@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import {
   Badge,
   Box,
+  Center,
   HStack,
   Icon,
   IconButton,
@@ -17,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { Chevron } from './Chevron';
+import { useIconFill } from '@utils/icon';
 
 export interface SidebarItemProps {
   isActive: boolean;
@@ -44,7 +46,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
     onChevronClick,
   } = props;
 
-  const fg = useColorModeValue('purple.700', 'white');
+  const fg = useIconFill();
   const bg = useColorModeValue('purple.50', 'gray.700');
   const hoverBg = useColorModeValue('purple.10', 'gray.600');
 
@@ -157,11 +159,13 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
         {isLoading && <Spinner />}
         {!isLoading && counter && !isOpen && (
           <Badge
+            w={6}
+            h={6}
             _groupHover={{
               display: menuItems ? 'none' : '',
             }}
           >
-            {counter > 999 ? '999+' : counter}
+            <Center h="full">{counter > 99 ? '99+' : counter}</Center>
           </Badge>
         )}
         {!isLoading && menuItems && (
@@ -178,7 +182,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
                 aria-label="Menu"
                 icon={<BsThreeDotsVertical />}
                 variant="ghost"
-                size="sm"
+                size="xs"
                 tabIndex={0}
               />
               <MenuList>{menuItems}</MenuList>

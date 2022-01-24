@@ -1,12 +1,21 @@
 import { sql } from 'slonik';
-import { Collection, defaultIcon, ID } from '@orpington-news/shared';
+import {
+  Collection,
+  defaultIcon,
+  defaultRefreshInterval,
+  ID,
+} from '@orpington-news/shared';
 import { slugify } from 'utils/slugify';
 import { getUnixTime } from 'date-fns';
+import { normalizeUrl } from '@utils';
 
 export const addCollection = (
   collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const { title, icon, parentId, description, url, dateUpdated } = collection;
+  const { title, icon, parentId, description, dateUpdated, refreshInterval } =
+    collection;
+
+  const url = collection.url && normalizeUrl(collection.url);
 
   const values = [
     title,
@@ -17,8 +26,9 @@ export const addCollection = (
     description ?? null,
     url ?? null,
     dateUpdated ? getUnixTime(dateUpdated) : null,
+    refreshInterval ?? defaultRefreshInterval,
   ];
-  return sql`INSERT INTO collections("title", "slug", "icon", "order", "parent_id", "description", "url", "date_updated") VALUES (${sql.join(
+  return sql`INSERT INTO collections("title", "slug", "icon", "order", "parent_id", "description", "url", "date_updated", "refresh_interval") VALUES (${sql.join(
     values,
     sql`, `
   )})`;
@@ -31,7 +41,10 @@ export const deleteCollection = (collectionId: ID) => {
 export const updateCollection = (
   collection: Omit<Collection, 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const { id, title, icon, parentId, description, url } = collection;
+  const { id, title, icon, parentId, description, refreshInterval } =
+    collection;
+
+  const url = collection.url && normalizeUrl(collection.url);
 
   return sql`UPDATE collections
   SET title = ${title},
@@ -39,7 +52,8 @@ export const updateCollection = (
       icon = ${icon ?? defaultIcon},
       parent_id = ${parentId ?? null},
       description = ${description ?? null},
-      url = ${url ?? null}
+      url = ${url ?? null},
+      refresh_interval = ${refreshInterval ?? defaultRefreshInterval}
   WHERE id = ${id}`;
 };
 
@@ -49,27 +63,28 @@ export const moveCollection = (collectionId: ID, newParentId: ID | null) => {
 
 export type DBCollection = Omit<
   Collection,
-  'children' | 'parentId' | 'dateUpdated' | 'unreadCount'
+  'children' | 'parentId' | 'dateUpdated' | 'unreadCount' | 'refreshInterval'
 > & {
   parents: Array<ID>;
   order: number;
   level: number;
   date_updated: number;
   unread_count: number | null;
+  refresh_interval: number;
 };
 
 export const getCollections = () => {
   return sql<DBCollection>`
   WITH RECURSIVE collections_from_parents AS (
     SELECT
-      id, title, slug, icon, "order", description, url, date_updated, '{}'::int[] AS parents, 0 AS level
+      id, title, slug, icon, "order", description, url, date_updated, refresh_interval, '{}'::int[] AS parents, 0 AS level
     FROM collections
 	  WHERE parent_id IS NULL
 
     UNION ALL
 
     SELECT
-      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, parents || c.parent_id, level + 1
+      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, c.refresh_interval, parents || c.parent_id, level + 1
     FROM
       collections_from_parents p
       JOIN collections c ON c.parent_id = p.id
@@ -77,7 +92,7 @@ export const getCollections = () => {
       NOT c.id = ANY (parents)
   )
 SELECT
-  id, title, slug, icon, "order", description, url, date_updated, parents, level, unread_count
+  id, title, slug, icon, "order", description, url, date_updated, refresh_interval, parents, level, unread_count
 FROM
   collections_from_parents
 LEFT JOIN (SELECT collection_id, COUNT(*) as unread_count
@@ -111,11 +126,19 @@ export const getCollectionsToRefresh = () => {
   WHERE
     url IS NOT NULL
     AND
-    date_updated + refresh_interval * interval '1 minute' <= now();`;
+      (date_updated + refresh_interval * interval '1 minute' <= now()
+      OR
+      date_updated IS NULL
+      );`;
 };
 
 export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
   return sql`UPDATE collections
   SET date_updated = TO_TIMESTAMP(${date})
   WHERE id = ${collectionId}`;
+};
+
+export const hasCollectionWithUrl = (url: string) => {
+  return sql`SELECT * FROM collections
+  WHERE url=${url}`;
 };

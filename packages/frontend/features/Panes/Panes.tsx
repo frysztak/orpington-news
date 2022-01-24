@@ -4,28 +4,50 @@ import { useRouter } from 'next/router';
 import { Panes as PanesComponent } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
 import { Collection, ID } from '@orpington-news/shared';
-import { ActiveCollection } from '@components/collection/types';
 import { Article } from '@features/Article';
 import { useCollectionsTree, useCollectionItems } from './queries';
 import { getNumber, getString } from '@utils/router';
+import { AddCollectionModal } from '@features/AddCollectionModal';
+import { useAddCollectionModal } from '@features/AddCollectionModal';
+import { useActiveCollection } from '@features/ActiveCollection';
+import { CollectionMenuAction } from '@components/sidebar/Collections';
 
 export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
   const itemSlug = getString(router.query?.itemSlug);
 
-  const { activeCollection, handleCollectionClicked, setActiveCollection } =
+  const { onOpenAddCollectionModal, ...addCollectionModalProps } =
+    useAddCollectionModal();
+
+  const { activeCollection, handleCollectionClicked, setActiveCollectionId } =
     useActiveCollection();
   const { expandedCollectionIDs, handleCollectionChevronClicked } =
     useExpandedCollections();
 
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
-      if (item === 'home') {
-        setActiveCollection({ id: 'home', title: 'Home' });
+      switch (item) {
+        case 'home': {
+          return setActiveCollectionId('home');
+        }
+        case 'addFeed': {
+          return onOpenAddCollectionModal();
+        }
       }
     },
-    [setActiveCollection]
+    [onOpenAddCollectionModal, setActiveCollectionId]
+  );
+
+  const handleCollectionMenuItemClicked = useCallback(
+    (collection: Collection, action: CollectionMenuAction) => {
+      switch (action) {
+        case 'edit': {
+          return onOpenAddCollectionModal(collection);
+        }
+      }
+    },
+    [onOpenAddCollectionModal]
   );
 
   const { data: collections, isError: collectionsError } = useCollectionsTree();
@@ -52,6 +74,7 @@ export const Panes: React.FC = ({ children }) => {
           onCollectionClicked: handleCollectionClicked,
           onChevronClicked: handleCollectionChevronClicked,
           onMenuItemClicked: handleMenuItemClicked,
+          onCollectionMenuActionClicked: handleCollectionMenuItemClicked,
           activeCollectionId: activeCollection.id,
           expandedCollectionIDs: expandedCollectionIDs,
         }}
@@ -73,26 +96,10 @@ export const Panes: React.FC = ({ children }) => {
           )
         }
       />
+      <AddCollectionModal {...addCollectionModalProps} />
       {children}
     </>
   );
-};
-
-const useActiveCollection = () => {
-  const [activeCollection, setActiveCollection] =
-    useLocalStorage<ActiveCollection>('activeCollection', {
-      id: 'home',
-      title: 'Home',
-    });
-
-  const handleCollectionClicked = useCallback(
-    (collection: Collection) => {
-      setActiveCollection({ id: collection.id, title: collection.title });
-    },
-    [setActiveCollection]
-  );
-
-  return { activeCollection, handleCollectionClicked, setActiveCollection };
 };
 
 const useExpandedCollections = () => {

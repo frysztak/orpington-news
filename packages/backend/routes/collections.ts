@@ -6,6 +6,7 @@ import {
   addCollection,
   deleteCollection,
   getCollections,
+  hasCollectionWithUrl,
   inflateCollections,
   moveCollection,
   updateCollection,
@@ -22,18 +23,18 @@ import {
   CollectionIcons,
   CollectionItem,
 } from '@orpington-news/shared';
-import { disableCoercionAjv } from '@utils';
+import { disableCoercionAjv, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
+import { fetchRSSJob, parser } from '@tasks/fetchRSS';
 
 const PostCollection = Type.Object({
   title: Type.String(),
-  icon: Type.Optional(
-    Type.Union(CollectionIcons.map((icon) => Type.Literal(icon)))
-  ),
+  icon: Type.Union(CollectionIcons.map((icon) => Type.Literal(icon))),
   parentId: Type.Optional(Type.Integer()),
   description: Type.Optional(Type.String()),
   url: Type.Optional(Type.String()),
+  refreshInterval: Type.Integer(),
 });
 
 type PostCollectionType = Static<typeof PostCollection>;
@@ -93,6 +94,7 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const { body } = request;
       await pool.any(addCollection(body));
+      fetchRSSJob.start();
       return true;
     }
   );
@@ -252,6 +254,50 @@ export const collections: FastifyPluginAsync = async (
           );
           reply.status(500).send({ errorCode: 500, message: 'Server error.' });
         }
+      }
+    }
+  );
+
+  const VerifyURLParams = Type.Object({
+    url: Type.String(),
+  });
+
+  fastify.post<{
+    Body: Static<typeof VerifyURLParams>;
+  }>(
+    '/verifyUrl',
+    {
+      schema: {
+        body: VerifyURLParams,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        body: { url },
+      } = request;
+
+      const normalizedUrl = normalizeUrl(url);
+
+      const isUrlAlreadyUsed = await pool.exists(
+        hasCollectionWithUrl(normalizedUrl)
+      );
+      if (isUrlAlreadyUsed) {
+        return reply
+          .status(418)
+          .send({ errorCode: 418, message: 'Duplicate feed URL.' });
+      }
+
+      try {
+        const feed = await parser.parseURL(normalizedUrl);
+        reply.status(200).send({
+          title: feed.title,
+          description: feed.description || feed.subtitle,
+        });
+      } catch (err) {
+        reply
+          .status(418)
+          .send({ errorCode: 418, message: 'Invalid RSS/Atom feed.' });
       }
     }
   );

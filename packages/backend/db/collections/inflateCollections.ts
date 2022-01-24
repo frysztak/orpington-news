@@ -1,5 +1,5 @@
 import { Collection, ID } from '@orpington-news/shared';
-import { sum, sortBy, lensPath, view, set, values } from 'rambda';
+import { sum, last, sortBy, lensPath, view, set, values } from 'rambda';
 import { DBCollection } from './sql';
 
 type DBCollectionWithChildren = DBCollection & {
@@ -17,14 +17,17 @@ const flattenJSON = (
       children,
       date_updated,
       unread_count,
+      refresh_interval,
       ...rest
     } = col;
 
     return {
       ...rest,
       dateUpdated: date_updated,
+      refreshInterval: refresh_interval,
       unreadCount: countUnread(col),
       children: children && flattenJSON(children),
+      parentId: last(parents),
     };
   });
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { Box } from '@chakra-ui/react';
 import { SidebarContent, SidebarContentProps } from './SidebarContent';
+import { defaultIcon } from '@orpington-news/shared';
 
 export default {
   title: 'Components/Sidebar/SidebarContent',
@@ -43,25 +44,41 @@ WithFeedList.args = {
       title: 'Category 01',
       slug: 'category-01',
       unreadCount: 11,
+      icon: defaultIcon,
       children: [
-        { id: 301, title: 'Feed 03-01', slug: 'feed-03-01', unreadCount: 112 },
+        {
+          id: 301,
+          title: 'Feed 03-01',
+          slug: 'feed-03-01',
+          unreadCount: 112,
+          icon: defaultIcon,
+        },
         {
           id: 302,
           title: 'Category 02',
           slug: 'feed-03-02',
           unreadCount: 113,
+          icon: defaultIcon,
           children: [
             {
               id: 30201,
               title: 'Feed 03-02-01',
               slug: 'feed-03-02-01',
               unreadCount: 114,
+              icon: defaultIcon,
             },
           ],
         },
       ],
     },
-    { id: 4, title: 'Feed 04', slug: 'feed-04', unreadCount: 9 },
+    {
+      id: 4,
+      title: 'Feed 04',
+      slug: 'feed-04',
+      unreadCount: 9,
+
+      icon: defaultIcon,
+    },
   ],
   expandedCollectionIDs: [3],
 };

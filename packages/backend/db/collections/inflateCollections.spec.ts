@@ -19,6 +19,7 @@ describe('inflateCollections', () => {
         parents: [],
         level: 0,
         unread_count: 32,
+        refresh_interval: 60,
       },
       {
         id: 2,
@@ -31,6 +32,7 @@ describe('inflateCollections', () => {
         parents: [],
         level: 0,
         unread_count: 10,
+        refresh_interval: 60,
       },
       {
         id: 3,
@@ -42,6 +44,7 @@ describe('inflateCollections', () => {
         parents: [],
         level: 0,
         unread_count: null,
+        refresh_interval: 60,
       },
       {
         id: 5,
@@ -54,6 +57,7 @@ describe('inflateCollections', () => {
         parents: [3],
         level: 1,
         unread_count: 15,
+        refresh_interval: 60,
       },
       {
         id: 4,
@@ -65,6 +69,7 @@ describe('inflateCollections', () => {
         parents: [3],
         level: 1,
         unread_count: null,
+        refresh_interval: 60,
       },
       {
         id: 6,
@@ -77,6 +82,7 @@ describe('inflateCollections', () => {
         parents: [3, 4],
         level: 2,
         unread_count: 11,
+        refresh_interval: 60,
       },
     ];
 
@@ -90,6 +96,7 @@ describe('inflateCollections', () => {
         dateUpdated: 1641058737938,
         unreadCount: 32,
         children: undefined,
+        refreshInterval: 60,
       },
       {
         id: 2,
@@ -100,6 +107,7 @@ describe('inflateCollections', () => {
         dateUpdated: 1641058764932,
         unreadCount: 10,
         children: undefined,
+        refreshInterval: 60,
       },
       {
         id: 3,
@@ -108,6 +116,7 @@ describe('inflateCollections', () => {
         icon: 'Haskell',
         dateUpdated: 1641058850881,
         unreadCount: 26,
+        refreshInterval: 60,
         children: [
           {
             id: 4,
@@ -116,6 +125,8 @@ describe('inflateCollections', () => {
             icon: 'Haskell',
             dateUpdated: 1641058920330,
             unreadCount: 11,
+            parentId: 3,
+            refreshInterval: 60,
             children: [
               {
                 id: 6,
@@ -125,7 +136,9 @@ describe('inflateCollections', () => {
                 url: 'https://feed-03-01-01.com/rss.xml',
                 dateUpdated: 1641059005051,
                 unreadCount: 11,
+                parentId: 4,
                 children: undefined,
+                refreshInterval: 60,
               },
             ],
           },
@@ -137,7 +150,9 @@ describe('inflateCollections', () => {
             url: 'https://feed-03-02.com/rss.xml',
             dateUpdated: 1641058961198,
             unreadCount: 15,
+            parentId: 3,
             children: undefined,
+            refreshInterval: 60,
           },
         ],
       },

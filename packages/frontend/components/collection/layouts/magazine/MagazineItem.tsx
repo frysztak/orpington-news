@@ -59,7 +59,9 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
               </Heading>
             </LinkOverlay>
           </NextLink>
-          <Text noOfLines={[2, 3]}>{summary}</Text>
+          <Text noOfLines={[2, 3]} overflowWrap="anywhere">
+            {summary}
+          </Text>
           <Text color="gray.500">
             by {collection.title} • about {readingTimeRounded} min
           </Text>
