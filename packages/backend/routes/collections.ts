@@ -6,6 +6,7 @@ import {
   addCollection,
   deleteCollection,
   getCollections,
+  hasCollectionWithUrl,
   inflateCollections,
   moveCollection,
   updateCollection,
@@ -276,8 +277,19 @@ export const collections: FastifyPluginAsync = async (
         body: { url },
       } = request;
 
+      const normalizedUrl = normalizeUrl(url);
+
+      const isUrlAlreadyUsed = await pool.exists(
+        hasCollectionWithUrl(normalizedUrl)
+      );
+      if (isUrlAlreadyUsed) {
+        return reply
+          .status(418)
+          .send({ errorCode: 418, message: 'Duplicate feed URL.' });
+      }
+
       try {
-        const feed = await parser.parseURL(url);
+        const feed = await parser.parseURL(normalizedUrl);
         reply.status(200).send({
           title: feed.title,
           description: feed.description || feed.subtitle,

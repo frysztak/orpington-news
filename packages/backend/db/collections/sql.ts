@@ -137,3 +137,8 @@ export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
   SET date_updated = TO_TIMESTAMP(${date})
   WHERE id = ${collectionId}`;
 };
+
+export const hasCollectionWithUrl = (url: string) => {
+  return sql`SELECT * FROM collections
+  WHERE url=${url}`;
+};
