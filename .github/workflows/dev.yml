@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - dev
-    paths:
-      - '.github/workflows/dev.yml'
 
 jobs:
   deploy:
