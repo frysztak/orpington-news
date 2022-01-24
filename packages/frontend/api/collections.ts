@@ -29,3 +29,25 @@ export const getItemDetails = (
     .url(`/collections/${collectionId}/item/${itemSlug}`)
     .get()
     .json<CollectionItemDetails>();
+
+export const verifyFeedUrl = (api: Wretcher, url: string) =>
+  api
+    .url(`/collections/verifyUrl`)
+    .post({ url })
+    .json<{ title: string; description: string }>();
+
+export const addCollection = (
+  api: Wretcher,
+  collection: Omit<
+    Collection,
+    'id' | 'slug' | 'unreadCount' | 'children' | 'dateUpdated'
+  >
+) => api.url(`/collections`).post(collection).json<boolean>();
+
+export const editCollection = (
+  api: Wretcher,
+  collection: Omit<
+    Collection,
+    'slug' | 'unreadCount' | 'children' | 'dateUpdated'
+  >
+) => api.url(`/collections`).put(collection).json<boolean>();

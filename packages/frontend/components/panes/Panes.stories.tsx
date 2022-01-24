@@ -1,6 +1,5 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
-import { SidebarContent } from '@components/sidebar/SidebarContent';
 import { action } from '@storybook/addon-actions';
 import { Box, Heading } from '@chakra-ui/react';
 import { genN } from '@orpington-news/shared';

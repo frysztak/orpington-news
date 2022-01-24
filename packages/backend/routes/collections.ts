@@ -29,9 +29,7 @@ import { fetchRSSJob, parser } from '@tasks/fetchRSS';
 
 const PostCollection = Type.Object({
   title: Type.String(),
-  icon: Type.Optional(
-    Type.Union(CollectionIcons.map((icon) => Type.Literal(icon)))
-  ),
+  icon: Type.Union(CollectionIcons.map((icon) => Type.Literal(icon))),
   parentId: Type.Optional(Type.Integer()),
   description: Type.Optional(Type.String()),
   url: Type.Optional(Type.String()),

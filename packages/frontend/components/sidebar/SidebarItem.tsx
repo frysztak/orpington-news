@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { Chevron } from './Chevron';
+import { useIconFill } from '@utils/icon';
 
 export interface SidebarItemProps {
   isActive: boolean;
@@ -44,7 +45,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
     onChevronClick,
   } = props;
 
-  const fg = useColorModeValue('purple.700', 'white');
+  const fg = useIconFill();
   const bg = useColorModeValue('purple.50', 'gray.700');
   const hoverBg = useColorModeValue('purple.10', 'gray.600');
 

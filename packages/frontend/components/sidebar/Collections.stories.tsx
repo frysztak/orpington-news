@@ -1,7 +1,11 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { Collections, CollectionsProps } from './Collections';
-import { Collection } from '@orpington-news/shared';
+import {
+  Collection,
+  defaultIcon,
+  defaultRefreshInterval,
+} from '@orpington-news/shared';
 import { action } from '@storybook/addon-actions';
 
 export default {
@@ -20,7 +24,13 @@ Empty.args = {
 };
 
 const sampleCollections: Collection[] = [
-  { id: 1, title: 'Feed 01', slug: 'feed-01', unreadCount: 9, icon: 'React' },
+  {
+    id: 1,
+    title: 'Feed 01',
+    slug: 'feed-01',
+    unreadCount: 9,
+    icon: 'React',
+  },
   {
     id: 2,
     title: 'Feed 02',
@@ -34,25 +44,40 @@ const sampleCollections: Collection[] = [
     title: 'Category 01',
     slug: 'category-01',
     unreadCount: 11,
+    icon: defaultIcon,
     children: [
-      { id: 301, title: 'Feed 03-01', slug: 'feed-03-01', unreadCount: 112 },
+      {
+        id: 301,
+        title: 'Feed 03-01',
+        slug: 'feed-03-01',
+        unreadCount: 112,
+        icon: defaultIcon,
+      },
       {
         id: 302,
         title: 'Category 02',
         slug: 'feed-03-02',
         unreadCount: 113,
+        icon: defaultIcon,
         children: [
           {
             id: 30201,
             title: 'Feed 03-02-01',
             slug: 'feed-03-02-01',
             unreadCount: 114,
+            icon: defaultIcon,
           },
         ],
       },
     ],
   },
-  { id: 4, title: 'Feed 04', slug: 'feed-04', unreadCount: 9 },
+  {
+    id: 4,
+    title: 'Feed 04',
+    slug: 'feed-04',
+    unreadCount: 9,
+    icon: defaultIcon,
+  },
 ];
 
 export const Error = Template.bind({});

@@ -1,7 +1,12 @@
 import faker from 'faker';
 import slugify from 'slugify';
 import { getUnixTime } from 'date-fns';
-import { Collection, CollectionItem } from '@orpington-news/shared';
+import {
+  Collection,
+  CollectionItem,
+  defaultIcon,
+  defaultRefreshInterval,
+} from '@orpington-news/shared';
 
 export const generateSampleCollectionItem = (
   collection: Collection
@@ -29,7 +34,9 @@ export const generateSampleCollection = (name?: string): Collection => {
   return {
     id: faker.datatype.number(),
     title: n,
+    icon: defaultIcon,
     slug: slugify(n),
     unreadCount: faker.datatype.number(),
+    refreshInterval: defaultRefreshInterval,
   };
 };

@@ -8,11 +8,17 @@ import { ActiveCollection } from '@components/collection/types';
 import { Article } from '@features/Article';
 import { useCollectionsTree, useCollectionItems } from './queries';
 import { getNumber, getString } from '@utils/router';
+import { AddCollectionModal } from '@features/AddCollectionModal';
+import { useAddCollectionModal } from '@features/AddCollectionModal';
+import { CollectionMenuAction } from '@components/sidebar/Collections';
 
 export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
   const itemSlug = getString(router.query?.itemSlug);
+
+  const { onOpenAddCollectionModal, ...addCollectionModalProps } =
+    useAddCollectionModal();
 
   const { activeCollection, handleCollectionClicked, setActiveCollection } =
     useActiveCollection();
@@ -21,11 +27,27 @@ export const Panes: React.FC = ({ children }) => {
 
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
-      if (item === 'home') {
-        setActiveCollection({ id: 'home', title: 'Home' });
+      switch (item) {
+        case 'home': {
+          return setActiveCollection({ id: 'home', title: 'Home' });
+        }
+        case 'addFeed': {
+          return onOpenAddCollectionModal();
+        }
       }
     },
-    [setActiveCollection]
+    [onOpenAddCollectionModal, setActiveCollection]
+  );
+
+  const handleCollectionMenuItemClicked = useCallback(
+    (collection: Collection, action: CollectionMenuAction) => {
+      switch (action) {
+        case 'edit': {
+          return onOpenAddCollectionModal(collection);
+        }
+      }
+    },
+    [onOpenAddCollectionModal]
   );
 
   const { data: collections, isError: collectionsError } = useCollectionsTree();
@@ -52,6 +74,7 @@ export const Panes: React.FC = ({ children }) => {
           onCollectionClicked: handleCollectionClicked,
           onChevronClicked: handleCollectionChevronClicked,
           onMenuItemClicked: handleMenuItemClicked,
+          onCollectionMenuActionClicked: handleCollectionMenuItemClicked,
           activeCollectionId: activeCollection.id,
           expandedCollectionIDs: expandedCollectionIDs,
         }}
@@ -73,6 +96,7 @@ export const Panes: React.FC = ({ children }) => {
           )
         }
       />
+      <AddCollectionModal {...addCollectionModalProps} />
       {children}
     </>
   );

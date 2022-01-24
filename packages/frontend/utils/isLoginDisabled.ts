@@ -1,6 +1,6 @@
 import getConfig from 'next/config';
 
-const { publicRuntimeConfig } = getConfig();
+const config = getConfig();
 
 export const isLoginDisabled = () =>
-  Boolean(publicRuntimeConfig.APP_DISABLE_LOGIN);
+  Boolean(config?.publicRuntimeConfig.APP_DISABLE_LOGIN);

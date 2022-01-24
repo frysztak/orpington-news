@@ -56,14 +56,14 @@ export interface Collection {
   slug: string;
   title: string;
   unreadCount: number;
-  icon?: CollectionIconType;
+  icon: CollectionIconType;
   parentId?: ID;
   children?: Collection[];
 
   description?: string;
   url?: string;
   dateUpdated?: number;
-  refreshInterval: number;
+  refreshInterval?: number;
 }
 
 export interface CollectionItem {
