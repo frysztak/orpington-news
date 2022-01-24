@@ -6,6 +6,8 @@ import {
   Collection,
   CollectionIcons,
   CollectionIconType,
+  defaultIcon,
+  defaultRefreshInterval,
   ID,
   toStringWithoutExponent,
 } from '@orpington-news/shared';
@@ -122,8 +124,8 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
       : {
           url: '',
           title: '',
-          icon: 'Code',
-          refreshInterval: '60',
+          icon: defaultIcon,
+          refreshInterval: toStringWithoutExponent(defaultRefreshInterval),
         };
   }, [initialData]);
 
