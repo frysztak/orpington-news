@@ -116,6 +116,7 @@ describe('inflateCollections', () => {
             icon: 'Haskell',
             dateUpdated: 1641058920330,
             unreadCount: 11,
+            parentId: 3,
             children: [
               {
                 id: 6,
@@ -125,6 +126,7 @@ describe('inflateCollections', () => {
                 url: 'https://feed-03-01-01.com/rss.xml',
                 dateUpdated: 1641059005051,
                 unreadCount: 11,
+                parentId: 4,
                 children: undefined,
               },
             ],
@@ -137,6 +139,7 @@ describe('inflateCollections', () => {
             url: 'https://feed-03-02.com/rss.xml',
             dateUpdated: 1641058961198,
             unreadCount: 15,
+            parentId: 3,
             children: undefined,
           },
         ],
