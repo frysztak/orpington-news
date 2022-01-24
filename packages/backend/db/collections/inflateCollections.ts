@@ -17,12 +17,14 @@ const flattenJSON = (
       children,
       date_updated,
       unread_count,
+      refresh_interval,
       ...rest
     } = col;
 
     return {
       ...rest,
       dateUpdated: date_updated,
+      refreshInterval: refresh_interval,
       unreadCount: countUnread(col),
       children: children && flattenJSON(children),
       parentId: last(parents),

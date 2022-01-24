@@ -45,7 +45,8 @@ export const deleteCollection = (collectionId: ID) => {
 export const updateCollection = (
   collection: Omit<Collection, 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const { id, title, icon, parentId, description, url } = collection;
+  const { id, title, icon, parentId, description, url, refreshInterval } =
+    collection;
 
   return sql`UPDATE collections
   SET title = ${title},
@@ -53,7 +54,8 @@ export const updateCollection = (
       icon = ${icon ?? defaultIcon},
       parent_id = ${parentId ?? null},
       description = ${description ?? null},
-      url = ${url ?? null}
+      url = ${url ?? null},
+      refresh_interval = ${refreshInterval ?? defaultRefreshInterval}
   WHERE id = ${id}`;
 };
 
@@ -63,27 +65,28 @@ export const moveCollection = (collectionId: ID, newParentId: ID | null) => {
 
 export type DBCollection = Omit<
   Collection,
-  'children' | 'parentId' | 'dateUpdated' | 'unreadCount'
+  'children' | 'parentId' | 'dateUpdated' | 'unreadCount' | 'refreshInterval'
 > & {
   parents: Array<ID>;
   order: number;
   level: number;
   date_updated: number;
   unread_count: number | null;
+  refresh_interval: number;
 };
 
 export const getCollections = () => {
   return sql<DBCollection>`
   WITH RECURSIVE collections_from_parents AS (
     SELECT
-      id, title, slug, icon, "order", description, url, date_updated, '{}'::int[] AS parents, 0 AS level
+      id, title, slug, icon, "order", description, url, date_updated, refresh_interval, '{}'::int[] AS parents, 0 AS level
     FROM collections
 	  WHERE parent_id IS NULL
 
     UNION ALL
 
     SELECT
-      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, parents || c.parent_id, level + 1
+      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, c.refresh_interval, parents || c.parent_id, level + 1
     FROM
       collections_from_parents p
       JOIN collections c ON c.parent_id = p.id
@@ -91,7 +94,7 @@ export const getCollections = () => {
       NOT c.id = ANY (parents)
   )
 SELECT
-  id, title, slug, icon, "order", description, url, date_updated, parents, level, unread_count
+  id, title, slug, icon, "order", description, url, date_updated, refresh_interval, parents, level, unread_count
 FROM
   collections_from_parents
 LEFT JOIN (SELECT collection_id, COUNT(*) as unread_count
