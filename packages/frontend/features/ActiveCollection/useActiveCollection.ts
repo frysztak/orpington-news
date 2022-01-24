@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react';
-import { useLocalStorage } from 'beautiful-react-hooks';
 import { ActiveCollection } from '@components/collection/types';
 import { Collection, ID } from '@orpington-news/shared';
-import { useCollectionsTree } from './queries';
+import { useCollectionsTree } from '../Panes/queries';
+import { useActiveCollectionContext } from './ActiveCollectionContext';
 
 const findById = (
   targetId: ID | string,
@@ -26,9 +26,8 @@ const findById = (
 };
 
 export const useActiveCollection = () => {
-  const [activeCollectionId, setActiveCollectionId] = useLocalStorage<
-    ID | string
-  >('activeCollectionId', 'home');
+  const { activeCollectionId, setActiveCollectionId } =
+    useActiveCollectionContext();
 
   const handleCollectionClicked = useCallback(
     (collection: Collection) => {
