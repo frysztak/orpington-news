@@ -4,13 +4,13 @@ import { useRouter } from 'next/router';
 import { Panes as PanesComponent } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
 import { Collection, ID } from '@orpington-news/shared';
-import { ActiveCollection } from '@components/collection/types';
 import { Article } from '@features/Article';
 import { useCollectionsTree, useCollectionItems } from './queries';
 import { getNumber, getString } from '@utils/router';
 import { AddCollectionModal } from '@features/AddCollectionModal';
 import { useAddCollectionModal } from '@features/AddCollectionModal';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
+import { useActiveCollection } from './useActiveCollection';
 
 export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
@@ -20,7 +20,7 @@ export const Panes: React.FC = ({ children }) => {
   const { onOpenAddCollectionModal, ...addCollectionModalProps } =
     useAddCollectionModal();
 
-  const { activeCollection, handleCollectionClicked, setActiveCollection } =
+  const { activeCollection, handleCollectionClicked, setActiveCollectionId } =
     useActiveCollection();
   const { expandedCollectionIDs, handleCollectionChevronClicked } =
     useExpandedCollections();
@@ -29,14 +29,14 @@ export const Panes: React.FC = ({ children }) => {
     (item: MenuItem) => {
       switch (item) {
         case 'home': {
-          return setActiveCollection({ id: 'home', title: 'Home' });
+          return setActiveCollectionId('home');
         }
         case 'addFeed': {
           return onOpenAddCollectionModal();
         }
       }
     },
-    [onOpenAddCollectionModal, setActiveCollection]
+    [onOpenAddCollectionModal, setActiveCollectionId]
   );
 
   const handleCollectionMenuItemClicked = useCallback(
@@ -100,23 +100,6 @@ export const Panes: React.FC = ({ children }) => {
       {children}
     </>
   );
-};
-
-const useActiveCollection = () => {
-  const [activeCollection, setActiveCollection] =
-    useLocalStorage<ActiveCollection>('activeCollection', {
-      id: 'home',
-      title: 'Home',
-    });
-
-  const handleCollectionClicked = useCallback(
-    (collection: Collection) => {
-      setActiveCollection({ id: collection.id, title: collection.title });
-    },
-    [setActiveCollection]
-  );
-
-  return { activeCollection, handleCollectionClicked, setActiveCollection };
 };
 
 const useExpandedCollections = () => {
