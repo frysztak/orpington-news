@@ -32,15 +32,15 @@ export interface AddCollectionFormData {
   title: string;
   description?: string;
   icon: CollectionIconType;
-  parentID?: ID;
+  parentId?: ID;
   refreshInterval?: number;
 }
 
 type InternalFormData = Omit<
   AddCollectionFormData,
-  'parentID' | 'refreshInterval'
+  'parentId' | 'refreshInterval'
 > & {
-  parentID?: string;
+  parentId?: string;
   refreshInterval?: string;
 };
 
@@ -49,8 +49,7 @@ const validationSchema = Yup.object({
   title: Yup.string().required('Please enter title'),
   description: Yup.string(),
   icon: Yup.string().oneOf(CollectionIcons as unknown as string[]),
-  parentID: Yup.string().optional(),
-  refreshInterval: Yup.number(),
+  parentId: Yup.string().optional(),
 });
 
 interface FieldListenerProps<T extends unknown> {
@@ -104,9 +103,9 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
         refreshInterval: data.refreshInterval
           ? +data.refreshInterval
           : undefined,
-        parentID:
-          data.parentID && data.parentID !== 'none'
-            ? +data.parentID
+        parentId:
+          data.parentId && data.parentId !== 'none'
+            ? +data.parentId
             : undefined,
       });
     },
@@ -117,7 +116,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
     return initialData
       ? {
           ...initialData,
-          parentID: toStringWithoutExponent(initialData.parentID),
+          parentId: toStringWithoutExponent(initialData.parentId),
           refreshInterval: toStringWithoutExponent(initialData.refreshInterval),
         }
       : {
@@ -190,7 +189,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
             />
 
             <SelectField
-              name="parentID"
+              name="parentId"
               label="Parent"
               isLoading={areCollectionsLoading}
               isDisabled={isLoading}

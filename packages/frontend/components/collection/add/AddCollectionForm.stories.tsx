@@ -54,7 +54,7 @@ Edit.args = {
     icon: 'HackerNews',
     title: 'Sample Feed',
     description: 'test',
-    parentID: collectionWithChildren.children[0].id,
+    parentId: collectionWithChildren.children[0].id,
     refreshInterval: 30,
   },
 };

@@ -14,13 +14,14 @@ import {
 
 export type AddCollectionModalProps = AddCollectionFormProps & {
   isOpen: boolean;
+  modalTitle: string;
   onClose: () => void;
 };
 
 export const AddCollectionModal: React.FC<AddCollectionModalProps> = (
   props
 ) => {
-  const { isOpen, onClose, ...formProps } = props;
+  const { isOpen, onClose, modalTitle, ...formProps } = props;
 
   return (
     <Modal
@@ -33,7 +34,7 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = (
     >
       <ModalOverlay />
       <ModalContent p={4}>
-        <ModalHeader>Add feed</ModalHeader>
+        <ModalHeader>{modalTitle}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <AddCollectionForm {...formProps} />
