@@ -7,19 +7,15 @@ import {
 } from '@orpington-news/shared';
 import { slugify } from 'utils/slugify';
 import { getUnixTime } from 'date-fns';
+import { normalizeUrl } from '@utils';
 
 export const addCollection = (
   collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const {
-    title,
-    icon,
-    parentId,
-    description,
-    url,
-    dateUpdated,
-    refreshInterval,
-  } = collection;
+  const { title, icon, parentId, description, dateUpdated, refreshInterval } =
+    collection;
+
+  const url = collection.url && normalizeUrl(collection.url);
 
   const values = [
     title,
@@ -45,8 +41,10 @@ export const deleteCollection = (collectionId: ID) => {
 export const updateCollection = (
   collection: Omit<Collection, 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const { id, title, icon, parentId, description, url, refreshInterval } =
+  const { id, title, icon, parentId, description, refreshInterval } =
     collection;
+
+  const url = collection.url && normalizeUrl(collection.url);
 
   return sql`UPDATE collections
   SET title = ${title},

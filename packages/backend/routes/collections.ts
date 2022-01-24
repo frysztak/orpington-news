@@ -22,7 +22,7 @@ import {
   CollectionIcons,
   CollectionItem,
 } from '@orpington-news/shared';
-import { disableCoercionAjv } from '@utils';
+import { disableCoercionAjv, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
 import { fetchRSSJob, parser } from '@tasks/fetchRSS';
