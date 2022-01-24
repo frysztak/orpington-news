@@ -9,7 +9,7 @@ import {
   defaultIcon,
   defaultRefreshInterval,
   ID,
-  toStringWithoutExponent,
+  numberToString,
 } from '@orpington-news/shared';
 import { NumberField, SelectField, StringField } from '@components/forms';
 import { CollectionIconField } from './CollectionIconField';
@@ -118,14 +118,14 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
     return initialData
       ? {
           ...initialData,
-          parentId: toStringWithoutExponent(initialData.parentId),
-          refreshInterval: toStringWithoutExponent(initialData.refreshInterval),
+          parentId: numberToString(initialData.parentId),
+          refreshInterval: numberToString(initialData.refreshInterval),
         }
       : {
           url: '',
           title: '',
           icon: defaultIcon,
-          refreshInterval: toStringWithoutExponent(defaultRefreshInterval),
+          refreshInterval: numberToString(defaultRefreshInterval),
         };
   }, [initialData]);
 
