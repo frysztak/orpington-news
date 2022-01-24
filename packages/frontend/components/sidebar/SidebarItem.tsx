@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import {
   Badge,
   Box,
+  Center,
   HStack,
   Icon,
   IconButton,
@@ -158,11 +159,13 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
         {isLoading && <Spinner />}
         {!isLoading && counter && !isOpen && (
           <Badge
+            w={6}
+            h={6}
             _groupHover={{
               display: menuItems ? 'none' : '',
             }}
           >
-            {counter > 999 ? '999+' : counter}
+            <Center h="full">{counter > 99 ? '99+' : counter}</Center>
           </Badge>
         )}
         {!isLoading && menuItems && (
@@ -179,7 +182,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
                 aria-label="Menu"
                 icon={<BsThreeDotsVertical />}
                 variant="ghost"
-                size="sm"
+                size="xs"
                 tabIndex={0}
               />
               <MenuList>{menuItems}</MenuList>

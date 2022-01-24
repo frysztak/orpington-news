@@ -41,7 +41,7 @@ const sampleCollections: Collection[] = [
   },
   {
     id: 3,
-    title: 'Category 01',
+    title: 'A Little Bit Longer Category 01',
     slug: 'category-01',
     unreadCount: 11,
     icon: defaultIcon,
