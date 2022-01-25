@@ -12,6 +12,7 @@ COPY packages/backend/package.json /app/packages/backend/package.json
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --frozen-lockfile
 
 COPY . /app
+ENV NODE_OPTIONS="--max-old-space-size=1024"
 RUN yarn lerna run build --scope @orpington-news/frontend --include-dependencies --stream
 
 # FRONTEND
