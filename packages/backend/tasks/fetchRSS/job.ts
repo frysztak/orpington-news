@@ -50,11 +50,13 @@ const task = new AsyncTask(
       .any(getCollectionsToRefresh())
       .then((collections) => {
         logger.info(`Found ${collections.length} feeds to update...`);
-        sseEmit(
-          makeUpdatingFeedsMsg({
-            feedIds: collections.map((c) => c.id),
-          })
-        );
+        if (collections.length) {
+          sseEmit(
+            makeUpdatingFeedsMsg({
+              feedIds: collections.map((c) => c.id),
+            })
+          );
+        }
         return Promise.allSettled(collections.map(fetchAndInsertCollection));
       })
       .then((results) => {
