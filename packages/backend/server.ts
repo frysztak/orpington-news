@@ -6,9 +6,10 @@ import fastifyAuth from 'fastify-auth';
 import fastifyCors from 'fastify-cors';
 import fastifySchedule from 'fastify-schedule';
 import fastifySplitValidator from 'fastify-split-validator';
+import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
 
-import { auth, collectionItem, collections } from '@routes';
+import { auth, collectionItem, collections, sse } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob } from '@tasks/fetchRSS';
 import { defaultAjv, logger } from '@utils';
@@ -82,10 +83,12 @@ async function setupFastify() {
   await fastify.register(fastifySplitValidator, {
     defaultValidator: defaultAjv,
   });
+  await fastify.register(FastifySSEPlugin);
 
   await fastify.register(auth, { prefix: '/auth' });
   await fastify.register(collections, { prefix: '/collections' });
   await fastify.register(collectionItem, { prefix: '/collectionItem' });
+  await fastify.register(sse, { prefix: '/events' });
 
   const closeListeners = closeWithGrace(
     { delay: 500 },

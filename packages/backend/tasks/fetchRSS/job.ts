@@ -9,7 +9,12 @@ import {
 import { fetchFeed, mapFeedItems } from './parse';
 import { logger } from '@utils/logger';
 import { insertCollectionItems } from '@db/collectionItems';
-import { isRejected } from '@orpington-news/shared';
+import {
+  isRejected,
+  makeUpdatedFeedsMsg,
+  makeUpdatingFeedsMsg,
+} from '@orpington-news/shared';
+import { sseEmit } from 'sse';
 
 const fetchAndInsertCollection = (collection: DBCollection) => {
   if (!collection.url) {
@@ -32,6 +37,7 @@ const fetchAndInsertCollection = (collection: DBCollection) => {
       return pool.transaction(async (con) => {
         await con.query(insertCollectionItems(feedItems));
         await con.query(setCollectionDateUpdated(collection_id, now));
+        sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
       });
     });
 };
@@ -44,6 +50,11 @@ const task = new AsyncTask(
       .any(getCollectionsToRefresh())
       .then((collections) => {
         logger.info(`Found ${collections.length} feeds to update...`);
+        sseEmit(
+          makeUpdatingFeedsMsg({
+            feedIds: collections.map((c) => c.id),
+          })
+        );
         return Promise.allSettled(collections.map(fetchAndInsertCollection));
       })
       .then((results) => {
