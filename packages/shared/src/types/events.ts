@@ -22,5 +22,5 @@ export const makeUpdatedFeedsMsg = (
   data: UpdatedFeedsMsg['data']
 ): UpdatedFeedsMsg => ({ type: 'updatedFeeds', data });
 
-type Msg = UpdatingFeedsMsg | UpdatedFeedsMsg;
+export type Msg = UpdatingFeedsMsg | UpdatedFeedsMsg;
 export type MsgType = Msg['type'];
