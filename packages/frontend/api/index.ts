@@ -4,10 +4,11 @@ import getConfig from 'next/config';
 import { useHandleUnauthorized } from './useHandleUnauthorized';
 
 const { publicRuntimeConfig } = getConfig();
+const apiUrl = publicRuntimeConfig.API_URL;
 
 export const makeApi = () =>
   wretch()
-    .url(`${publicRuntimeConfig.API_URL}`)
+    .url(apiUrl)
     .options({ credentials: 'include', mode: 'cors' })
     .errorType('json');
 
@@ -21,6 +22,8 @@ export const useApi = () => {
     [onUnauthorized]
   );
 };
+
+export const sseUrl = `${apiUrl}/events`;
 
 export * from './useHandleError';
 export * from './collections';

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   Icon,
@@ -22,6 +22,7 @@ export interface CollapsibleCollectionListProps {
   collection: Collection;
   activeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
+  collectionsCurrentlyUpdated?: Set<ID>;
 
   onCollectionClicked: (collection: Collection) => void;
   onChevronClicked: (collection: Collection) => void;
@@ -38,6 +39,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
     collection,
     activeCollectionId,
     expandedCollectionIDs,
+    collectionsCurrentlyUpdated,
     onCollectionClicked,
     onChevronClicked,
     onCollectionMenuActionClicked,
@@ -70,6 +72,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
         isActive={activeCollectionId === id}
         icon={icon}
         counter={unreadCount}
+        isLoading={collectionsCurrentlyUpdated?.has(id) ?? false}
         chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
         onClick={handleClick}
         onChevronClick={handleChevronClick(collection)}
@@ -111,6 +114,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
               collection={collection}
               activeCollectionId={activeCollectionId}
               expandedCollectionIDs={expandedCollectionIDs}
+              collectionsCurrentlyUpdated={collectionsCurrentlyUpdated}
               onCollectionClicked={onCollectionClicked}
               onChevronClicked={handleChevronClick(collection)}
               onCollectionMenuActionClicked={onCollectionMenuActionClicked}
@@ -126,6 +130,7 @@ export interface CollectionsProps {
   collections: Collection[];
   activeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
+  collectionsCurrentlyUpdated?: Set<ID>;
 
   onCollectionClicked: (collection: Collection) => void;
   onChevronClicked: (collection: Collection) => void;
@@ -141,6 +146,7 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
     collections,
     activeCollectionId,
     expandedCollectionIDs,
+    collectionsCurrentlyUpdated,
     onCollectionClicked,
     onChevronClicked,
     onCollectionMenuActionClicked,
@@ -168,6 +174,7 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
             collection={collection}
             activeCollectionId={activeCollectionId}
             expandedCollectionIDs={expandedCollectionIDs}
+            collectionsCurrentlyUpdated={collectionsCurrentlyUpdated}
             onCollectionClicked={onCollectionClicked}
             onChevronClicked={onChevronClicked}
             onCollectionMenuActionClicked={onCollectionMenuActionClicked}

@@ -9,7 +9,10 @@ import { useCollectionsTree, useCollectionItems } from './queries';
 import { getNumber, getString } from '@utils/router';
 import { AddCollectionModal } from '@features/AddCollectionModal';
 import { useAddCollectionModal } from '@features/AddCollectionModal';
-import { useActiveCollection } from '@features/ActiveCollection';
+import {
+  useActiveCollection,
+  useActiveCollectionContext,
+} from '@features/ActiveCollection';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 
 export const Panes: React.FC = ({ children }) => {
@@ -22,6 +25,7 @@ export const Panes: React.FC = ({ children }) => {
 
   const { activeCollection, handleCollectionClicked, setActiveCollectionId } =
     useActiveCollection();
+  const { currentlyUpdatedCollections } = useActiveCollectionContext();
   const { expandedCollectionIDs, handleCollectionChevronClicked } =
     useExpandedCollections();
 
@@ -77,6 +81,7 @@ export const Panes: React.FC = ({ children }) => {
           onCollectionMenuActionClicked: handleCollectionMenuItemClicked,
           activeCollectionId: activeCollection.id,
           expandedCollectionIDs: expandedCollectionIDs,
+          collectionsCurrentlyUpdated: currentlyUpdatedCollections,
         }}
         activeCollection={activeCollection}
         collectionItems={allItems}
