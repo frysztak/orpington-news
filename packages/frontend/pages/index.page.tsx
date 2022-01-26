@@ -17,10 +17,11 @@ const Home: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = req.headers.cookie ?? '';
   if (!isLoginDisabled()) {
     if (!req.cookies['sessionId']) {
       return {
-        props: {},
+        props: { cookies },
         redirect: {
           destination: '/login',
         },
@@ -35,6 +36,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   return {
     props: {
+      cookies,
       dehydratedState: dehydrate(queryClient),
     },
   };

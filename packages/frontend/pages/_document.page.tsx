@@ -1,4 +1,3 @@
-import { ColorModeScript } from '@chakra-ui/react';
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
 
 export default class Document extends NextDocument {
@@ -83,7 +82,6 @@ export default class Document extends NextDocument {
           <meta name="msapplication-config" content="/browserconfig.xml" />
           <meta name="msapplication-tap-highlight" content="no" />
           <link rel="manifest" href="/manifest.json" />
-          <meta name="theme-color" content="#ffffff"></meta>
 
           <meta name="application-name" content="Orpington News" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -99,7 +97,6 @@ export default class Document extends NextDocument {
           <meta name="google" content="notranslate" />
         </Head>
         <body>
-          <ColorModeScript initialColorMode={'system'} />
           <Main />
           <NextScript />
         </body>

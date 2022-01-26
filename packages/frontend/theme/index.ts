@@ -4,13 +4,14 @@ import {
   withDefaultColorScheme,
   withDefaultSize,
 } from '@chakra-ui/react';
+import { mode } from '@chakra-ui/theme-tools';
 import 'focus-visible/dist/focus-visible';
 import { textStyles } from './textStyles';
 import { fonts } from './fonts';
 import { Button, Menu } from './components';
 
 const styles = {
-  global: {
+  global: (props: any) => ({
     '*': {
       scrollbarWidth: 'thin',
     },
@@ -20,26 +21,16 @@ const styles = {
     },
     '*::-webkit-scrollbar-track': {
       borderRadius: 'md',
-      '@media (prefers-color-scheme: dark)': {
-        bgColor: 'gray.700',
-      },
-      '@media (prefers-color-scheme: light)': {
-        bgColor: 'gray.200',
-      },
+      bgColor: mode('gray.200', 'gray.700')(props),
     },
     '*::-webkit-scrollbar-thumb': {
       borderRadius: 'md',
-      '@media (prefers-color-scheme: dark)': {
-        bgColor: 'gray.500',
-      },
-      '@media (prefers-color-scheme: light)': {
-        bgColor: 'gray.300',
-      },
+      bgColor: mode('gray.300', 'gray.500')(props),
     },
     '*::-webkit-scrollbar-button': {
       display: 'none',
     },
-  },
+  }),
 };
 
 const fontSizes = {
@@ -52,8 +43,8 @@ const space = {
 
 export const theme = extendTheme(
   {
-    useSystemColorMode: true,
-    initialColorMode: 'system',
+    useSystemColorMode: false,
+    initialColorMode: 'dark',
     fonts,
     colors,
     styles,
@@ -72,3 +63,6 @@ export const theme = extendTheme(
     components: ['Button'],
   } as any)
 );
+
+export * from './fonts';
+export * from './MetaTheme';
