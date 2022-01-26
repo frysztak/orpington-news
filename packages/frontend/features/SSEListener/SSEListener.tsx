@@ -18,7 +18,6 @@ export const SSEListener: React.FC = ({ children }) => {
         onmessage(ev) {
           if (ev.data) {
             const msg: Msg = JSON.parse(ev.data);
-            console.log(msg);
             switch (msg.type) {
               case 'updatingFeeds': {
                 return addCurrentlyUpdatedCollection(msg.data.feedIds);
