@@ -4,7 +4,7 @@ import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
 export default class Document extends NextDocument {
   render() {
     return (
-      <Html lang="en">
+      <Html lang="en" className="notranslate" translate="no">
         <Head>
           <link
             rel="apple-touch-icon"
@@ -83,6 +83,7 @@ export default class Document extends NextDocument {
           <meta name="msapplication-config" content="/browserconfig.xml" />
           <link rel="manifest" href="/manifest.json" />
           <meta name="theme-color" content="#ffffff"></meta>
+          <meta name="google" content="notranslate" />
         </Head>
         <body>
           <ColorModeScript initialColorMode={'system'} />
