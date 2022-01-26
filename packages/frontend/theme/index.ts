@@ -52,8 +52,8 @@ const space = {
 
 export const theme = extendTheme(
   {
-    useSystemColorMode: true,
-    initialColorMode: 'system',
+    useSystemColorMode: false,
+    initialColorMode: 'dark',
     fonts,
     colors,
     styles,

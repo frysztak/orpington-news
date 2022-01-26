@@ -1,4 +1,3 @@
-import { ColorModeScript } from '@chakra-ui/react';
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
 
 export default class Document extends NextDocument {
@@ -99,7 +98,6 @@ export default class Document extends NextDocument {
           <meta name="google" content="notranslate" />
         </Head>
         <body>
-          <ColorModeScript initialColorMode={'system'} />
           <Main />
           <NextScript />
         </body>

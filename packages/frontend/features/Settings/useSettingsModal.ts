@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useColorMode, useDisclosure, useToast } from '@chakra-ui/react';
 import { SettingsFormData, ThemeOption } from './SettingsForm';
 
@@ -33,16 +33,15 @@ export const useSettingsModal = () => {
     [setColorMode]
   );
 
-  useEffect(() => {
-    if (!isOpen) {
-      setColorMode(initialData.theme);
-    }
-  }, [initialData.theme, isOpen, setColorMode]);
+  const onCloseHandler = useCallback(() => {
+    setColorMode(initialData.theme);
+    onClose();
+  }, [initialData.theme, onClose, setColorMode]);
 
   return {
     onOpenSettingsModal: onOpen,
     isOpen,
-    onClose,
+    onClose: onCloseHandler,
     onSubmit,
     onThemeChanged,
     initialData,

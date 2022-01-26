@@ -30,10 +30,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   query,
 }) => {
+  const cookies = req.headers.cookie ?? '';
+
   if (!isLoginDisabled()) {
     if (!req.cookies['sessionId']) {
       return {
-        props: {},
+        props: {
+          cookies,
+        },
         redirect: {
           destination: '/login',
         },
@@ -44,7 +48,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   const collectionId = getNumber(query?.collectionId);
   const itemSlug = getString(query?.itemSlug);
   if (collectionId === undefined || itemSlug === undefined) {
-    return { props: {} };
+    return { props: { cookies } };
   }
 
   const queryClient = new QueryClient();
@@ -65,6 +69,7 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   return {
     props: {
+      cookies,
       dehydratedState: dehydrate(queryClient),
     },
   };
