@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useLocalStorage } from 'beautiful-react-hooks';
 import { useRouter } from 'next/router';
 import { Panes as PanesComponent } from '@components/panes';
@@ -13,6 +13,7 @@ import {
   useActiveCollection,
   useActiveCollectionContext,
 } from '@features/ActiveCollection';
+import { SettingsModal, useSettingsModal } from '@features/Settings';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 
 export const Panes: React.FC = ({ children }) => {
@@ -22,6 +23,8 @@ export const Panes: React.FC = ({ children }) => {
 
   const { onOpenAddCollectionModal, ...addCollectionModalProps } =
     useAddCollectionModal();
+
+  const { onOpenSettingsModal, ...settingsModalProps } = useSettingsModal();
 
   const { activeCollection, handleCollectionClicked, setActiveCollectionId } =
     useActiveCollection();
@@ -38,9 +41,12 @@ export const Panes: React.FC = ({ children }) => {
         case 'addFeed': {
           return onOpenAddCollectionModal();
         }
+        case 'settings': {
+          return onOpenSettingsModal();
+        }
       }
     },
-    [onOpenAddCollectionModal, setActiveCollectionId]
+    [onOpenAddCollectionModal, onOpenSettingsModal, setActiveCollectionId]
   );
 
   const handleCollectionMenuItemClicked = useCallback(
@@ -102,6 +108,7 @@ export const Panes: React.FC = ({ children }) => {
         }
       />
       <AddCollectionModal {...addCollectionModalProps} />
+      <SettingsModal {...settingsModalProps} />
       {children}
     </>
   );

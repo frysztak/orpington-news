@@ -11,7 +11,12 @@ import {
   ID,
   numberToString,
 } from '@orpington-news/shared';
-import { NumberField, SelectField, StringField } from '@components/forms';
+import {
+  FieldListener,
+  NumberField,
+  SelectField,
+  StringField,
+} from '@components/forms';
 import { CollectionIconField } from './CollectionIconField';
 import { flattenCollections } from './flattenCollections';
 
@@ -53,19 +58,6 @@ const validationSchema = Yup.object({
   icon: Yup.string().oneOf(CollectionIcons as unknown as string[]),
   parentId: Yup.string().optional(),
 });
-
-interface FieldListenerProps<T extends unknown> {
-  value: T;
-  setter: (x: T) => void;
-}
-
-const FieldListener = <T,>(props: FieldListenerProps<T>) => {
-  const { value, setter } = props;
-  useEffect(() => {
-    setter(value);
-  }, [setter, value]);
-  return null;
-};
 
 export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
   const {
@@ -149,7 +141,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
               placeholder="Feed URL"
               isDisabled={isLoading}
             />
-            <FieldListener value={values.url} setter={setFeedUrl} />
+            <FieldListener value={values.url} cb={setFeedUrl} />
 
             <HStack w="full" justify="flex-end">
               <Button
