@@ -81,8 +81,21 @@ export default class Document extends NextDocument {
           <meta name="msapplication-TileColor" content="#ffffff" />
           <meta name="msapplication-TileImage" content="/favicon-144x144.png" />
           <meta name="msapplication-config" content="/browserconfig.xml" />
+          <meta name="msapplication-tap-highlight" content="no" />
           <link rel="manifest" href="/manifest.json" />
           <meta name="theme-color" content="#ffffff"></meta>
+
+          <meta name="application-name" content="Orpington News" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="default"
+          />
+          <meta name="apple-mobile-web-app-title" content="Orpington News" />
+          <meta name="description" content="Self-hosted RSS reader" />
+          <meta name="format-detection" content="telephone=no" />
+          <meta name="mobile-web-app-capable" content="yes" />
+
           <meta name="google" content="notranslate" />
         </Head>
         <body>
