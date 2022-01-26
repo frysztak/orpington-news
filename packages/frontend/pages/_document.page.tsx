@@ -82,7 +82,6 @@ export default class Document extends NextDocument {
           <meta name="msapplication-config" content="/browserconfig.xml" />
           <meta name="msapplication-tap-highlight" content="no" />
           <link rel="manifest" href="/manifest.json" />
-          <meta name="theme-color" content="#ffffff"></meta>
 
           <meta name="application-name" content="Orpington News" />
           <meta name="apple-mobile-web-app-capable" content="yes" />

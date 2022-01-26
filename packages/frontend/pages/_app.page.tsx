@@ -6,8 +6,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { Panes } from '@features/Panes';
 import { ActiveCollectionContextProvider } from '@features/ActiveCollection';
 import { SSEListener } from '@features/SSEListener';
-import { theme } from '../theme';
-import { fontFaces } from '../theme/fonts';
+import { theme, fontFaces, MetaTheme } from 'theme';
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [queryClient] = useState(
@@ -34,6 +33,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               <Global styles={fontFaces} />
 
               <Flex minH="100vh" direction="column">
+                <MetaTheme />
                 {getLayout(<Component {...pageProps} />)}
               </Flex>
             </SSEListener>

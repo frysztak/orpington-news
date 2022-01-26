@@ -63,3 +63,6 @@ export const theme = extendTheme(
     components: ['Button'],
   } as any)
 );
+
+export * from './fonts';
+export * from './MetaTheme';
