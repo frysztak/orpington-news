@@ -3,7 +3,6 @@ import type { AppPropsWithLayout } from './types';
 import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
-import { sseUrl } from '@api';
 import { Panes } from '@features/Panes';
 import { ActiveCollectionContextProvider } from '@features/ActiveCollection';
 import { SSEListener } from '@features/SSEListener';
