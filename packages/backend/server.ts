@@ -57,6 +57,8 @@ async function setupFastify() {
     if (!process.env.COOKIE_SECRET) {
       throw new Error(`COOKIE_SECRET not set!`);
     }
+
+    await fastify.register(fastifyCookie);
     await fastify.register(fastifySession, {
       secret: process.env.COOKIE_SECRET,
       cookie: {
@@ -78,7 +80,6 @@ async function setupFastify() {
   });
   await fastify.register(fastifyAuth);
   await fastify.register(fastifyVerifySession);
-  await fastify.register(fastifyCookie);
   await fastify.register(fastifySchedule);
   await fastify.register(fastifySplitValidator, {
     defaultValidator: defaultAjv,
