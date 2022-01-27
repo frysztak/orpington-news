@@ -51,3 +51,9 @@ export const editCollection = (
     'slug' | 'unreadCount' | 'children' | 'dateUpdated'
   >
 ) => api.url(`/collections`).put(collection).json<boolean>();
+
+export const markCollectionAsRead = (api: Wretcher, collectionId: ID) =>
+  api
+    .url(`/collections/${collectionId}/markAsRead`)
+    .post()
+    .json<{ ids: ID[] }>();

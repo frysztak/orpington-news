@@ -5,9 +5,11 @@ import { DataIntegrityError, NotFoundError } from 'slonik';
 import {
   addCollection,
   deleteCollection,
+  getCollectionChildrenIds,
   getCollections,
   hasCollectionWithUrl,
   inflateCollections,
+  markCollectionAsRead,
   moveCollection,
   updateCollection,
 } from 'db/collections';
@@ -27,6 +29,7 @@ import { disableCoercionAjv, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
 import { fetchRSSJob, parser } from '@tasks/fetchRSS';
+import { getUnixTime } from 'date-fns';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -155,6 +158,32 @@ export const collections: FastifyPluginAsync = async (
 
       await pool.any(deleteCollection(id));
       return true;
+    }
+  );
+
+  fastify.post<{ Params: CollectionIdType }>(
+    '/:id/markAsRead',
+    {
+      schema: {
+        params: CollectionId,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        params: { id },
+      } = request;
+      if (id === 'home') {
+        reply.status(500);
+        return {
+          errorCode: 500,
+          message: 'Cannot mark home collection as read',
+        };
+      }
+
+      await pool.any(markCollectionAsRead(id, getUnixTime(new Date())));
+      const children = await pool.any(getCollectionChildrenIds(id));
+      return { ids: children.map(({ children_id }) => children_id) };
     }
   );
 

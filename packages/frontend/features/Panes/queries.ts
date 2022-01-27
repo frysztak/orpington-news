@@ -1,10 +1,16 @@
 import { useMemo } from 'react';
-import { useInfiniteQuery, useQuery } from 'react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from 'react-query';
 import {
   useApi,
   useHandleError,
   getCollections,
   getCollectionItems,
+  markCollectionAsRead,
 } from '@api';
 import { collectionKeys } from '@features/queryKeys';
 import { ID } from '@orpington-news/shared';
@@ -40,4 +46,20 @@ export const useCollectionItems = (collectionId: ID | string) => {
   }, [data]);
 
   return { ...rest, data, allItems };
+};
+
+export const useMarkCollectionAsRead = () => {
+  const api = useApi();
+  const { onError } = useHandleError();
+  const queryClient = useQueryClient();
+
+  return useMutation(({ id }: { id: ID }) => markCollectionAsRead(api, id), {
+    onError,
+    onSuccess: ({ ids }) => {
+      for (const id of ids) {
+        queryClient.invalidateQueries(collectionKeys.allForId(id));
+      }
+      queryClient.invalidateQueries(collectionKeys.tree);
+    },
+  });
 };

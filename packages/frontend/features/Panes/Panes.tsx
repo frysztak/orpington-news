@@ -5,7 +5,11 @@ import { Panes as PanesComponent } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
 import { Collection, ID } from '@orpington-news/shared';
 import { Article } from '@features/Article';
-import { useCollectionsTree, useCollectionItems } from './queries';
+import {
+  useCollectionsTree,
+  useCollectionItems,
+  useMarkCollectionAsRead,
+} from './queries';
 import { getNumber, getString } from '@utils/router';
 import { AddCollectionModal } from '@features/AddCollectionModal';
 import { useAddCollectionModal } from '@features/AddCollectionModal';
@@ -31,6 +35,7 @@ export const Panes: React.FC = ({ children }) => {
   const { currentlyUpdatedCollections } = useActiveCollectionContext();
   const { expandedCollectionIDs, handleCollectionChevronClicked } =
     useExpandedCollections();
+  const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
 
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
@@ -55,9 +60,12 @@ export const Panes: React.FC = ({ children }) => {
         case 'edit': {
           return onOpenAddCollectionModal(collection);
         }
+        case 'markAsRead': {
+          return markCollectionAsRead({ id: collection.id });
+        }
       }
     },
-    [onOpenAddCollectionModal]
+    [markCollectionAsRead, onOpenAddCollectionModal]
   );
 
   const { data: collections, isError: collectionsError } = useCollectionsTree();
