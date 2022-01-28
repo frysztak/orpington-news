@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import parse, {
   domToReact,
   attributesToProps,
@@ -184,10 +185,13 @@ const options: HTMLReactParserOptions = {
 
 export const ArticleContent: React.FC<ArticleContentProps> = (props) => {
   const { html } = props;
+  const content = useMemo(() => {
+    return parse(html, options);
+  }, [html]);
 
   return (
     <VStack w="full" align="flex-start" spacing={4}>
-      <>{parse(html, options)}</>
+      <>{content}</>
     </VStack>
   );
 };
