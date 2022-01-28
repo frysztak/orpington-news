@@ -10,6 +10,7 @@ export interface CollectionHeaderProps {
   collection?: ActiveCollection;
   menuButtonRef?: React.MutableRefObject<HTMLButtonElement | null>;
   hideMenuButton?: boolean;
+  isRefreshing?: boolean;
 
   onMenuClicked?: () => void;
   onRefresh?: () => void;
@@ -21,6 +22,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     collection,
     menuButtonRef,
     hideMenuButton = false,
+    isRefreshing = false,
     onMenuClicked,
     onRefresh,
     onChangeLayout,
@@ -43,6 +45,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
           <Box>
             <IconButton
               icon={<IoRefresh />}
+              isLoading={isRefreshing}
               aria-label="Refresh"
               variant="ghost"
               onClick={onRefresh}

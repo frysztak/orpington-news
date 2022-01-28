@@ -33,6 +33,7 @@ export interface PanesProps {
     CollectionListProps,
     'isFetchingMoreItems' | 'canFetchMoreItems' | 'onFetchMoreItems'
   >;
+  currentlyUpdatedCollections: Set<ID>;
 
   mainContent?: ReactNode;
 
@@ -52,6 +53,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     collectionItems,
     activeCollection,
     collectionListProps = {},
+    currentlyUpdatedCollections,
 
     mainContent,
 
@@ -129,6 +131,11 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     }
   }, [activeCollection, onRefreshClicked]);
 
+  const isRefreshing =
+    activeCollection && typeof activeCollection.id === 'number'
+      ? currentlyUpdatedCollections.has(activeCollection.id)
+      : false;
+
   return (
     <>
       <Drawer
@@ -184,6 +191,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
               <CollectionHeader
                 collection={activeCollection}
                 hideMenuButton
+                isRefreshing={isRefreshing}
                 menuButtonRef={drawerButtonRef}
                 onRefresh={handleRefreshClick}
                 onMenuClicked={onToggle}
@@ -209,6 +217,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
             <CollectionHeader
               collection={activeCollection}
               menuButtonRef={drawerButtonRef}
+              isRefreshing={isRefreshing}
               onRefresh={handleRefreshClick}
               onMenuClicked={onToggle}
             />

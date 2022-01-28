@@ -119,6 +119,7 @@ export const Panes: React.FC = ({ children }) => {
           onFetchMoreItems: fetchNextPage,
           canFetchMoreItems: hasNextPage,
         }}
+        currentlyUpdatedCollections={currentlyUpdatedCollections}
         onRefreshClicked={handleRefreshClicked}
         mainContent={
           itemSerialId &&
