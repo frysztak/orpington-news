@@ -73,9 +73,6 @@ const Heading: React.FC<{
 const options: HTMLReactParserOptions = {
   replace: (domNode) => {
     if (!('tagName' in domNode)) {
-      if (domNode.type === 'text' && 'data' in domNode) {
-        return <Text>{domNode.data}</Text>;
-      }
       return;
     }
 
@@ -190,7 +187,7 @@ export const ArticleContent: React.FC<ArticleContentProps> = (props) => {
 
   return (
     <VStack w="full" align="flex-start" spacing={4}>
-      {parse(html, options)}
+      <>{parse(html, options)}</>
     </VStack>
   );
 };
