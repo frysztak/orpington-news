@@ -30,5 +30,6 @@ module.exports = withPlugins(
       APP_DISABLE_LOGIN: process.env.APP_DISABLE_LOGIN,
       API_URL: process.env.API_URL,
     },
+    swcMinify: true,
   }
 );
