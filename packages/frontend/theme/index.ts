@@ -8,7 +8,7 @@ import { mode } from '@chakra-ui/theme-tools';
 import 'focus-visible/dist/focus-visible';
 import { textStyles } from './textStyles';
 import { fonts } from './fonts';
-import { Button, Menu } from './components';
+import { Button, Menu, Drawer } from './components';
 
 const styles = {
   global: (props: any) => ({
@@ -55,6 +55,7 @@ export const theme = extendTheme(
     components: {
       Menu,
       Button,
+      Drawer,
     },
   },
   withDefaultColorScheme({ colorScheme: 'purple' }),
