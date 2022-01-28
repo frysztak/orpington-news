@@ -52,6 +52,9 @@ export const editCollection = (
   >
 ) => api.url(`/collections`).put(collection).json<boolean>();
 
+export const deleteCollection = (api: Wretcher, collectionId: ID) =>
+  api.url(`/collections/${collectionId}`).delete().json<{ ids: ID[] }>();
+
 export const markCollectionAsRead = (api: Wretcher, collectionId: ID) =>
   api
     .url(`/collections/${collectionId}/markAsRead`)

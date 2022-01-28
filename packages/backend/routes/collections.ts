@@ -157,8 +157,9 @@ export const collections: FastifyPluginAsync = async (
         return { errorCode: 500, message: 'Cannot DELETE home collection' };
       }
 
+      const children = await pool.any(getCollectionChildrenIds(id));
       await pool.any(deleteCollection(id));
-      return true;
+      return { ids: children.map(({ children_id }) => children_id) };
     }
   );
 

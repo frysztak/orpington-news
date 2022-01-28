@@ -12,8 +12,14 @@ import {
   useRefreshCollection,
 } from './queries';
 import { getNumber } from '@utils/router';
-import { AddCollectionModal } from '@features/AddCollectionModal';
-import { useAddCollectionModal } from '@features/AddCollectionModal';
+import {
+  AddCollectionModal,
+  useAddCollectionModal,
+} from '@features/AddCollectionModal';
+import {
+  DeleteCollectionModal,
+  useDeleteCollectionModal,
+} from '@features/DeleteCollectionModal';
 import {
   useActiveCollection,
   useActiveCollectionContext,
@@ -28,6 +34,9 @@ export const Panes: React.FC = ({ children }) => {
 
   const { onOpenAddCollectionModal, ...addCollectionModalProps } =
     useAddCollectionModal();
+
+  const { onOpenDeleteCollectionModal, ...deleteCollectionModalProps } =
+    useDeleteCollectionModal();
 
   const { onOpenSettingsModal, ...settingsModalProps } = useSettingsModal();
 
@@ -68,9 +77,17 @@ export const Panes: React.FC = ({ children }) => {
         case 'refresh': {
           return refreshCollection({ id: collection.id });
         }
+        case 'delete': {
+          return onOpenDeleteCollectionModal(collection.id);
+        }
       }
     },
-    [markCollectionAsRead, onOpenAddCollectionModal, refreshCollection]
+    [
+      markCollectionAsRead,
+      onOpenAddCollectionModal,
+      onOpenDeleteCollectionModal,
+      refreshCollection,
+    ]
   );
 
   const handleRefreshClicked = useCallback(
@@ -132,8 +149,11 @@ export const Panes: React.FC = ({ children }) => {
           )
         }
       />
+
       <AddCollectionModal {...addCollectionModalProps} />
+      <DeleteCollectionModal {...deleteCollectionModalProps} />
       <SettingsModal {...settingsModalProps} />
+
       {children}
     </>
   );
