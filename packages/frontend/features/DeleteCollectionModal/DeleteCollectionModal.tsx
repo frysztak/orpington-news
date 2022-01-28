@@ -36,7 +36,7 @@ export const DeleteCollectionModal: React.FC<DeleteCollectionModalProps> = (
       <AlertDialogOverlay>
         <AlertDialogContent>
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
-            Delete Feed
+            Delete feed
           </AlertDialogHeader>
           <AlertDialogCloseButton isDisabled={isLoading} />
 

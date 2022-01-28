@@ -27,7 +27,7 @@ export const useAddCollectionModal = () => {
       onClose();
       toast({
         status: 'success',
-        description: 'Collection added!',
+        description: 'Feed added!',
         isClosable: true,
       });
     },
@@ -38,7 +38,7 @@ export const useAddCollectionModal = () => {
       onClose();
       toast({
         status: 'success',
-        description: 'Collection edited!',
+        description: 'Feed edited!',
         isClosable: true,
       });
     },
