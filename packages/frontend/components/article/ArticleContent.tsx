@@ -90,7 +90,12 @@ const options: HTMLReactParserOptions = {
         const href = domNode.attribs['href'];
 
         return (
-          <Link isExternal={!href.startsWith('#')} href={href} color="teal.400">
+          <Link
+            isExternal={!href.startsWith('#')}
+            href={href}
+            color="teal.400"
+            overflowWrap="anywhere"
+          >
             {children}
           </Link>
         );
