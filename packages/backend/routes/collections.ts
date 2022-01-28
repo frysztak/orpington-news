@@ -7,6 +7,7 @@ import {
   deleteCollection,
   getCollectionChildrenIds,
   getCollections,
+  getCollectionsFromRootId,
   hasCollectionWithUrl,
   inflateCollections,
   markCollectionAsRead,
@@ -28,7 +29,7 @@ import {
 import { disableCoercionAjv, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
-import { fetchRSSJob, parser } from '@tasks/fetchRSS';
+import { fetchRSSJob, parser, updateCollections } from '@tasks/fetchRSS';
 import { getUnixTime } from 'date-fns';
 
 const PostCollection = Type.Object({
@@ -286,6 +287,40 @@ export const collections: FastifyPluginAsync = async (
           );
           reply.status(500).send({ errorCode: 500, message: 'Server error.' });
         }
+      }
+    }
+  );
+
+  fastify.post<{ Params: Static<typeof CollectionId> }>(
+    '/:id/refresh',
+    {
+      schema: {
+        params: CollectionId,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        params: { id },
+      } = request;
+      if (id === 'home') {
+        reply.status(500);
+        return {
+          errorCode: 500,
+          message: 'Cannot mark home collection as read',
+        };
+      }
+
+      const collections = await pool.any(getCollectionsFromRootId(id));
+      const result = await updateCollections(collections);
+      if (result) {
+        const children = await pool.any(getCollectionChildrenIds(id));
+        return { ids: children.map(({ children_id }) => children_id) };
+      } else {
+        const noun = collections.length > 1 ? 'Feeds' : 'Feed';
+        reply
+          .status(500)
+          .send({ errorCode: 500, message: `${noun} failed to refresh.` });
       }
     }
   );

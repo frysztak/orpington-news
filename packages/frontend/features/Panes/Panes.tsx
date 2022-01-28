@@ -9,6 +9,7 @@ import {
   useCollectionsTree,
   useCollectionItems,
   useMarkCollectionAsRead,
+  useRefreshCollection,
 } from './queries';
 import { getNumber } from '@utils/router';
 import { AddCollectionModal } from '@features/AddCollectionModal';
@@ -36,6 +37,7 @@ export const Panes: React.FC = ({ children }) => {
   const { expandedCollectionIDs, handleCollectionChevronClicked } =
     useExpandedCollections();
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
+  const { mutate: refreshCollection } = useRefreshCollection();
 
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
@@ -63,9 +65,22 @@ export const Panes: React.FC = ({ children }) => {
         case 'markAsRead': {
           return markCollectionAsRead({ id: collection.id });
         }
+        case 'refresh': {
+          return refreshCollection({ id: collection.id });
+        }
       }
     },
-    [markCollectionAsRead, onOpenAddCollectionModal]
+    [markCollectionAsRead, onOpenAddCollectionModal, refreshCollection]
+  );
+
+  const handleRefreshClicked = useCallback(
+    (collectionId: ID | string) => {
+      if (typeof collectionId === 'string') {
+        return;
+      }
+      refreshCollection({ id: collectionId });
+    },
+    [refreshCollection]
   );
 
   const { data: collections, isError: collectionsError } = useCollectionsTree();
@@ -104,6 +119,7 @@ export const Panes: React.FC = ({ children }) => {
           onFetchMoreItems: fetchNextPage,
           canFetchMoreItems: hasNextPage,
         }}
+        onRefreshClicked={handleRefreshClicked}
         mainContent={
           itemSerialId &&
           collectionId && (

@@ -57,3 +57,6 @@ export const markCollectionAsRead = (api: Wretcher, collectionId: ID) =>
     .url(`/collections/${collectionId}/markAsRead`)
     .post()
     .json<{ ids: ID[] }>();
+
+export const refreshCollection = (api: Wretcher, collectionId: ID) =>
+  api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();

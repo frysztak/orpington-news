@@ -25,6 +25,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     onRefresh,
     onChangeLayout,
   } = props;
+
   return (
     <VStack spacing={1} w="full">
       <HStack w="full" justify={hideMenuButton ? 'flex-end' : 'space-between'}>

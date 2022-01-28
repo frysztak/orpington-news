@@ -11,6 +11,7 @@ import {
   getCollections,
   getCollectionItems,
   markCollectionAsRead,
+  refreshCollection,
 } from '@api';
 import { collectionKeys } from '@features/queryKeys';
 import { ID } from '@orpington-news/shared';
@@ -54,6 +55,22 @@ export const useMarkCollectionAsRead = () => {
   const queryClient = useQueryClient();
 
   return useMutation(({ id }: { id: ID }) => markCollectionAsRead(api, id), {
+    onError,
+    onSuccess: ({ ids }) => {
+      for (const id of ids) {
+        queryClient.invalidateQueries(collectionKeys.allForId(id));
+      }
+      queryClient.invalidateQueries(collectionKeys.tree);
+    },
+  });
+};
+
+export const useRefreshCollection = () => {
+  const api = useApi();
+  const { onError } = useHandleError();
+  const queryClient = useQueryClient();
+
+  return useMutation(({ id }: { id: ID }) => refreshCollection(api, id), {
     onError,
     onSuccess: ({ ids }) => {
       for (const id of ids) {

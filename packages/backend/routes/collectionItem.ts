@@ -4,7 +4,7 @@ import { pool } from '@db';
 import { setItemDateRead } from '@db/collectionItems';
 
 const ItemIdSchema = Type.Object({
-  id: Type.String(),
+  id: Type.Number(),
 });
 type ItemId = Static<typeof ItemIdSchema>;
 
