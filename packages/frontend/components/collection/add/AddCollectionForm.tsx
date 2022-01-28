@@ -54,7 +54,7 @@ type InternalFormData = Omit<
 const validationSchema = Yup.object({
   url: Yup.string().url('Please enter valid URL').nullable(),
   title: Yup.string().required('Please enter title'),
-  description: Yup.string(),
+  description: Yup.string().nullable(),
   icon: Yup.string().oneOf(CollectionIcons as unknown as string[]),
   parentId: Yup.string().optional(),
 });

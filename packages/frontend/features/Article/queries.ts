@@ -6,25 +6,26 @@ import { useActiveCollectionContext } from '@features/ActiveCollection';
 
 export const useArticleDateReadMutation = (
   collectionId: ID,
-  itemSlug: string
+  itemSerialId: ID
 ) => {
   const api = useApi();
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
 
-  const detailKey = collectionKeys.detail(collectionId, itemSlug);
+  const detailKey = collectionKeys.detail(collectionId, itemSerialId);
   const { activeCollectionId } = useActiveCollectionContext();
 
   return useMutation(
-    ({ id, dateRead }: { id: string; dateRead: number | null }) =>
+    ({ id, dateRead }: { id: ID; dateRead: number | null }) =>
       setDateRead(api, id, dateRead),
     {
       onMutate: async ({ id, dateRead }) => {
         // Optimistically update article
         await queryClient.cancelQueries(detailKey);
-        const previousDetails = queryClient.getQueryData<
-          CollectionItemDetails | undefined
-        >(detailKey);
+        const previousDetails =
+          queryClient.getQueryData<CollectionItemDetails | undefined>(
+            detailKey
+          );
         if (previousDetails) {
           queryClient.setQueryData(detailKey, {
             ...previousDetails,
@@ -49,15 +50,19 @@ export const useArticleDateReadMutation = (
   );
 };
 
-export const useArticleDetails = (collectionId: ID, itemSlug: string) => {
+export const useArticleDetails = (collectionId: ID, itemSerialId: ID) => {
   const api = useApi();
   const { onError } = useHandleError();
 
-  const key = collectionKeys.detail(collectionId, itemSlug);
+  const key = collectionKeys.detail(collectionId, itemSerialId);
 
-  return useQuery(key, () => getItemDetails(api, collectionId!, itemSlug!), {
-    enabled: Boolean(collectionId) && Boolean(itemSlug),
-    retry: false,
-    onError,
-  });
+  return useQuery(
+    key,
+    () => getItemDetails(api, collectionId!, itemSerialId!),
+    {
+      enabled: Boolean(collectionId) && Boolean(itemSerialId),
+      retry: false,
+      onError,
+    }
+  );
 };

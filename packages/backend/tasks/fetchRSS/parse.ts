@@ -55,6 +55,7 @@ export const mapFeedItems = (
 ): Array<
   Omit<
     DBCollectionItem,
+    | 'serial_id'
     | 'date_updated'
     | 'date_read'
     | 'collection_id'

@@ -13,7 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
-import { CollectionItem } from '@orpington-news/shared';
+import { CollectionItem, ID } from '@orpington-news/shared';
 import { SidebarContent, SidebarContentProps } from '@components/sidebar';
 import { CollectionHeader } from '@components/collection/header';
 import {
@@ -33,6 +33,7 @@ export interface PanesProps {
     CollectionListProps,
     'isFetchingMoreItems' | 'canFetchMoreItems' | 'onFetchMoreItems'
   >;
+  currentlyUpdatedCollections: Set<ID>;
 
   mainContent?: ReactNode;
 
@@ -42,6 +43,7 @@ export interface PanesProps {
   collectionItemsWidth?: number;
   onCollectionItemsWidthChanged?: (width: number) => void;
 
+  onRefreshClicked?: (collectionId: ID | string) => void;
   onGoBackClicked?: () => void;
 }
 
@@ -51,6 +53,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     collectionItems,
     activeCollection,
     collectionListProps = {},
+    currentlyUpdatedCollections,
 
     mainContent,
 
@@ -60,6 +63,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     collectionItemsWidth,
     onCollectionItemsWidthChanged,
 
+    onRefreshClicked,
     onGoBackClicked,
 
     ...rest
@@ -119,6 +123,19 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     [collectionItems, collectionListProps]
   );
 
+  const handleRefreshClick = useCallback(() => {
+    if (activeCollection) {
+      onRefreshClicked?.(activeCollection.id);
+    } else {
+      console.error(`onRefreshClicked() without active collection`);
+    }
+  }, [activeCollection, onRefreshClicked]);
+
+  const isRefreshing =
+    activeCollection && typeof activeCollection.id === 'number'
+      ? currentlyUpdatedCollections.has(activeCollection.id)
+      : false;
+
   return (
     <>
       <Drawer
@@ -174,7 +191,9 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
               <CollectionHeader
                 collection={activeCollection}
                 hideMenuButton
+                isRefreshing={isRefreshing}
                 menuButtonRef={drawerButtonRef}
+                onRefresh={handleRefreshClick}
                 onMenuClicked={onToggle}
               />
 
@@ -198,6 +217,8 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
             <CollectionHeader
               collection={activeCollection}
               menuButtonRef={drawerButtonRef}
+              isRefreshing={isRefreshing}
+              onRefresh={handleRefreshClick}
               onMenuClicked={onToggle}
             />
 

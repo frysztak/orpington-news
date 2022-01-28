@@ -8,6 +8,6 @@ export const collectionKeys = {
     [...collectionKeys.base, collectionId] as const,
   list: (collectionId: ID | string) =>
     [...collectionKeys.base, collectionId, 'list'] as const,
-  detail: (collectionId: ID, itemSlug: string) =>
-    [...collectionKeys.base, collectionId, 'detail', { itemSlug }] as const,
+  detail: (collectionId: ID, itemSerialId: ID) =>
+    [...collectionKeys.base, collectionId, 'detail', { itemSerialId }] as const,
 };

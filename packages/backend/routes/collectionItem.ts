@@ -4,7 +4,7 @@ import { pool } from '@db';
 import { setItemDateRead } from '@db/collectionItems';
 
 const ItemIdSchema = Type.Object({
-  id: Type.String(),
+  id: Type.Number(),
 });
 type ItemId = Static<typeof ItemIdSchema>;
 
@@ -15,7 +15,7 @@ export const collectionItem: FastifyPluginAsync = async (
   fastify.addHook('preHandler', fastify.auth([fastify.verifySession]));
 
   const SetDateReadSchema = Type.Object({
-    id: Type.String(),
+    id: Type.Number(),
     dateRead: Type.Union([Type.Null(), Type.Number()]),
   });
   fastify.put<{ Body: Static<typeof SetDateReadSchema> }>(

@@ -16,6 +16,33 @@ import {
 } from '@orpington-news/shared';
 import { sseEmit } from 'sse';
 
+export const updateCollections = (collections: readonly DBCollection[]) => {
+  logger.info(`Found ${collections.length} feeds to update...`);
+  if (collections.length) {
+    sseEmit(
+      makeUpdatingFeedsMsg({
+        feedIds: collections.map((c) => c.id),
+      })
+    );
+  }
+
+  return Promise.allSettled(collections.map(fetchAndInsertCollection)).then(
+    (results) => {
+      const failures = results.filter(isRejected);
+      if (failures.length === 0) {
+        logger.info(`Feeds updated successfully!`);
+        return true;
+      } else {
+        logger.info(`Feed updated, but with following errors:`);
+        for (const failure of failures) {
+          logger.error(failure.reason);
+        }
+        return false;
+      }
+    }
+  );
+};
+
 const fetchAndInsertCollection = (collection: DBCollection) => {
   if (!collection.url) {
     return Promise.reject(`Collection ${collection.id} without URL!`);
@@ -34,42 +61,25 @@ const fetchAndInsertCollection = (collection: DBCollection) => {
       }));
     })
     .then((feedItems) => {
-      return pool.transaction(async (con) => {
-        await con.query(insertCollectionItems(feedItems));
-        await con.query(setCollectionDateUpdated(collection_id, now));
-        sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
-      });
+      return pool
+        .transaction(async (con) => {
+          await con.query(insertCollectionItems(feedItems));
+          await con.query(setCollectionDateUpdated(collection_id, now));
+        })
+        .then(() => {
+          sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
+        });
     });
 };
 
 const task = new AsyncTask(
   'fetchRSS',
-  async () => {
+  () => {
     logger.info(`Starting to update feeds...`);
     return pool
       .any(getCollectionsToRefresh())
-      .then((collections) => {
-        logger.info(`Found ${collections.length} feeds to update...`);
-        if (collections.length) {
-          sseEmit(
-            makeUpdatingFeedsMsg({
-              feedIds: collections.map((c) => c.id),
-            })
-          );
-        }
-        return Promise.allSettled(collections.map(fetchAndInsertCollection));
-      })
-      .then((results) => {
-        const failures = results.filter(isRejected);
-        if (failures.length === 0) {
-          logger.info(`Feeds updated successfully!`);
-        } else {
-          logger.info(`Feed updated, but with following errors:`);
-          for (const failure of failures) {
-            logger.error(failure.reason);
-          }
-        }
-      });
+      .then(updateCollections)
+      .then(() => void 0);
   },
   (err: Error) => {
     logger.error(err);

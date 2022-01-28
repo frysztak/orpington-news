@@ -15,6 +15,7 @@ export const generateSampleCollectionItem = (
 
   return {
     id: faker.datatype.uuid(),
+    serialId: faker.datatype.number(),
     link: faker.internet.url(),
     summary: faker.lorem.words(30),
     datePublished: getUnixTime(faker.date.recent()),

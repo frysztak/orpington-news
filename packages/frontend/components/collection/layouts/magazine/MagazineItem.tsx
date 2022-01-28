@@ -18,9 +18,9 @@ export type MagazineItemProps = CollectionItemProps & BoxProps;
 export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
   const { item, ...rest } = props;
   const {
+    serialId,
     title,
     summary,
-    slug,
     thumbnailUrl,
     collection,
     readingTime,
@@ -47,7 +47,7 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
 
         <VStack align="flex-start">
           <NextLink
-            href={`/collection/${collection.id}/article/${slug}`}
+            href={`/collection/${collection.id}/article/${serialId}`}
             passHref
           >
             <LinkOverlay>

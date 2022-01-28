@@ -68,6 +68,7 @@ export interface Collection {
 
 export interface CollectionItem {
   id: string;
+  serialId: number;
   title: string;
   slug: string;
   link: string;

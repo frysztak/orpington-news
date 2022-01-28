@@ -25,6 +25,12 @@ NoMenuButton.args = {
   hideMenuButton: true,
 };
 
+export const IsRefreshing = Template.bind({});
+IsRefreshing.args = {
+  ...Default.args,
+  isRefreshing: true,
+};
+
 export const NoCollection = Template.bind({});
 NoCollection.args = {
   ...Default.args,

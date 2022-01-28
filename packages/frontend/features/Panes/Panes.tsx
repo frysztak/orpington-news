@@ -5,10 +5,21 @@ import { Panes as PanesComponent } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
 import { Collection, ID } from '@orpington-news/shared';
 import { Article } from '@features/Article';
-import { useCollectionsTree, useCollectionItems } from './queries';
-import { getNumber, getString } from '@utils/router';
-import { AddCollectionModal } from '@features/AddCollectionModal';
-import { useAddCollectionModal } from '@features/AddCollectionModal';
+import {
+  useCollectionsTree,
+  useCollectionItems,
+  useMarkCollectionAsRead,
+  useRefreshCollection,
+} from './queries';
+import { getNumber } from '@utils/router';
+import {
+  AddCollectionModal,
+  useAddCollectionModal,
+} from '@features/AddCollectionModal';
+import {
+  DeleteCollectionModal,
+  useDeleteCollectionModal,
+} from '@features/DeleteCollectionModal';
 import {
   useActiveCollection,
   useActiveCollectionContext,
@@ -19,10 +30,13 @@ import { CollectionMenuAction } from '@components/sidebar/Collections';
 export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
-  const itemSlug = getString(router.query?.itemSlug);
+  const itemSerialId = getNumber(router.query?.itemId);
 
   const { onOpenAddCollectionModal, ...addCollectionModalProps } =
     useAddCollectionModal();
+
+  const { onOpenDeleteCollectionModal, ...deleteCollectionModalProps } =
+    useDeleteCollectionModal();
 
   const { onOpenSettingsModal, ...settingsModalProps } = useSettingsModal();
 
@@ -31,6 +45,8 @@ export const Panes: React.FC = ({ children }) => {
   const { currentlyUpdatedCollections } = useActiveCollectionContext();
   const { expandedCollectionIDs, handleCollectionChevronClicked } =
     useExpandedCollections();
+  const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
+  const { mutate: refreshCollection } = useRefreshCollection();
 
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
@@ -55,9 +71,33 @@ export const Panes: React.FC = ({ children }) => {
         case 'edit': {
           return onOpenAddCollectionModal(collection);
         }
+        case 'markAsRead': {
+          return markCollectionAsRead({ id: collection.id });
+        }
+        case 'refresh': {
+          return refreshCollection({ id: collection.id });
+        }
+        case 'delete': {
+          return onOpenDeleteCollectionModal(collection.id);
+        }
       }
     },
-    [onOpenAddCollectionModal]
+    [
+      markCollectionAsRead,
+      onOpenAddCollectionModal,
+      onOpenDeleteCollectionModal,
+      refreshCollection,
+    ]
+  );
+
+  const handleRefreshClicked = useCallback(
+    (collectionId: ID | string) => {
+      if (typeof collectionId === 'string') {
+        return;
+      }
+      refreshCollection({ id: collectionId });
+    },
+    [refreshCollection]
   );
 
   const { data: collections, isError: collectionsError } = useCollectionsTree();
@@ -96,19 +136,24 @@ export const Panes: React.FC = ({ children }) => {
           onFetchMoreItems: fetchNextPage,
           canFetchMoreItems: hasNextPage,
         }}
+        currentlyUpdatedCollections={currentlyUpdatedCollections}
+        onRefreshClicked={handleRefreshClicked}
         mainContent={
-          itemSlug &&
+          itemSerialId &&
           collectionId && (
             <Article
               collectionId={collectionId}
-              itemSlug={itemSlug}
+              itemSerialId={itemSerialId}
               onGoBackClicked={handleGoBack}
             />
           )
         }
       />
+
       <AddCollectionModal {...addCollectionModalProps} />
+      <DeleteCollectionModal {...deleteCollectionModalProps} />
       <SettingsModal {...settingsModalProps} />
+
       {children}
     </>
   );

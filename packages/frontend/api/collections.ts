@@ -23,10 +23,10 @@ export const getCollectionItems = (
 export const getItemDetails = (
   api: Wretcher,
   collectionId: ID,
-  itemSlug: string
+  itemSerialId: ID
 ) =>
   api
-    .url(`/collections/${collectionId}/item/${itemSlug}`)
+    .url(`/collections/${collectionId}/item/${itemSerialId}`)
     .get()
     .json<CollectionItemDetails>();
 
@@ -51,3 +51,15 @@ export const editCollection = (
     'slug' | 'unreadCount' | 'children' | 'dateUpdated'
   >
 ) => api.url(`/collections`).put(collection).json<boolean>();
+
+export const deleteCollection = (api: Wretcher, collectionId: ID) =>
+  api.url(`/collections/${collectionId}`).delete().json<{ ids: ID[] }>();
+
+export const markCollectionAsRead = (api: Wretcher, collectionId: ID) =>
+  api
+    .url(`/collections/${collectionId}/markAsRead`)
+    .post()
+    .json<{ ids: ID[] }>();
+
+export const refreshCollection = (api: Wretcher, collectionId: ID) =>
+  api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();

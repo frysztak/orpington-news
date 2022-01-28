@@ -104,7 +104,7 @@ ORDER BY level ASC, "order" ASC`;
 };
 
 export const getCollectionChildrenIds = (rootId: ID) => {
-  return sql<{ childrenId: ID }>`
+  return sql<{ children_id: ID }>`
   WITH RECURSIVE tree AS
   (
     SELECT id, '{}'::integer[] AS ancestors FROM collections WHERE parent_id = ${rootId}
@@ -115,9 +115,9 @@ export const getCollectionChildrenIds = (rootId: ID) => {
     FROM collections, tree
     WHERE collections.parent_id = tree.id
   )
-  SELECT ${rootId} as childrenId
+  SELECT ${rootId} as children_id
   UNION
-  SELECT id as childrenId FROM tree`;
+  SELECT id as children_id FROM tree`;
 };
 
 export const getCollectionsToRefresh = () => {
@@ -132,6 +132,14 @@ export const getCollectionsToRefresh = () => {
       );`;
 };
 
+export const getCollectionsFromRootId = (rootId: ID) => {
+  return sql<DBCollection>`
+  SELECT * FROM collections
+  WHERE
+    url IS NOT NULL
+    AND id = ANY(${getCollectionChildrenIds(rootId)})`;
+};
+
 export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
   return sql`UPDATE collections
   SET date_updated = TO_TIMESTAMP(${date})
@@ -141,4 +149,14 @@ export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
 export const hasCollectionWithUrl = (url: string) => {
   return sql`SELECT * FROM collections
   WHERE url=${url}`;
+};
+
+export const markCollectionAsRead = (
+  collectionId: ID,
+  dateRead: number | null
+) => {
+  return sql`
+  UPDATE collection_items
+  SET date_read = TO_TIMESTAMP(${dateRead})
+  WHERE collection_id = ANY(${getCollectionChildrenIds(collectionId)})`;
 };

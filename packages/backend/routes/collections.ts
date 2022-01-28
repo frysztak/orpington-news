@@ -5,9 +5,12 @@ import { DataIntegrityError, NotFoundError } from 'slonik';
 import {
   addCollection,
   deleteCollection,
+  getCollectionChildrenIds,
   getCollections,
+  getCollectionsFromRootId,
   hasCollectionWithUrl,
   inflateCollections,
+  markCollectionAsRead,
   moveCollection,
   updateCollection,
 } from 'db/collections';
@@ -26,7 +29,8 @@ import {
 import { disableCoercionAjv, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
-import { fetchRSSJob, parser } from '@tasks/fetchRSS';
+import { fetchRSSJob, parser, updateCollections } from '@tasks/fetchRSS';
+import { getUnixTime } from 'date-fns';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -60,7 +64,7 @@ type MoveCollectionType = Static<typeof MoveCollection>;
 
 const ItemDetailsParams = Type.Object({
   id: Type.Integer(),
-  itemSlug: Type.String(),
+  itemSerialId: Type.Number(),
 });
 type ItemDetailsType = Static<typeof ItemDetailsParams>;
 
@@ -153,8 +157,35 @@ export const collections: FastifyPluginAsync = async (
         return { errorCode: 500, message: 'Cannot DELETE home collection' };
       }
 
+      const children = await pool.any(getCollectionChildrenIds(id));
       await pool.any(deleteCollection(id));
-      return true;
+      return { ids: children.map(({ children_id }) => children_id) };
+    }
+  );
+
+  fastify.post<{ Params: CollectionIdType }>(
+    '/:id/markAsRead',
+    {
+      schema: {
+        params: CollectionId,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        params: { id },
+      } = request;
+      if (id === 'home') {
+        reply.status(500);
+        return {
+          errorCode: 500,
+          message: 'Cannot mark home collection as read',
+        };
+      }
+
+      await pool.any(markCollectionAsRead(id, getUnixTime(new Date())));
+      const children = await pool.any(getCollectionChildrenIds(id));
+      return { ids: children.map(({ children_id }) => children_id) };
     }
   );
 
@@ -182,6 +213,7 @@ export const collections: FastifyPluginAsync = async (
 
       return items.map((dbItem) => ({
         id: dbItem.id,
+        serialId: dbItem.serial_id,
         title: dbItem.title,
         slug: dbItem.slug,
         link: dbItem.link,
@@ -207,7 +239,7 @@ export const collections: FastifyPluginAsync = async (
   fastify.get<{
     Params: ItemDetailsType;
   }>(
-    '/:id/item/:itemSlug',
+    '/:id/item/:itemSerialId',
     {
       schema: {
         params: ItemDetailsParams,
@@ -216,11 +248,12 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const { params } = request;
-      const { id, itemSlug } = params;
+      const { id, itemSerialId } = params;
 
       try {
-        const details = await pool.one(getItemDetails(id, itemSlug));
+        const details = await pool.one(getItemDetails(id, itemSerialId));
         const {
+          serial_id,
           full_text,
           date_published,
           date_read,
@@ -233,17 +266,18 @@ export const collections: FastifyPluginAsync = async (
 
         return {
           ...rest,
+          serialId: serial_id,
           fullText: full_text,
           datePublished: timestampMsToSeconds(date_published),
           dateRead: timestampMsToSeconds(date_read),
-          date_updated: timestampMsToSeconds(date_updated),
+          dateUpdated: timestampMsToSeconds(date_updated),
           thumbnailUrl: thumbnail_url,
           readingTime: reading_time,
         };
       } catch (error) {
         if (error instanceof NotFoundError) {
           logger.error(
-            `Items details for collection '${id}' and item '${itemSlug}' not found.`
+            `Items details for collection '${id}' and item '${itemSerialId}' not found.`
           );
           reply
             .status(404)
@@ -254,6 +288,40 @@ export const collections: FastifyPluginAsync = async (
           );
           reply.status(500).send({ errorCode: 500, message: 'Server error.' });
         }
+      }
+    }
+  );
+
+  fastify.post<{ Params: Static<typeof CollectionId> }>(
+    '/:id/refresh',
+    {
+      schema: {
+        params: CollectionId,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        params: { id },
+      } = request;
+      if (id === 'home') {
+        reply.status(500);
+        return {
+          errorCode: 500,
+          message: 'Cannot mark home collection as read',
+        };
+      }
+
+      const collections = await pool.any(getCollectionsFromRootId(id));
+      const result = await updateCollections(collections);
+      if (result) {
+        const children = await pool.any(getCollectionChildrenIds(id));
+        return { ids: children.map(({ children_id }) => children_id) };
+      } else {
+        const noun = collections.length > 1 ? 'Feeds' : 'Feed';
+        reply
+          .status(500)
+          .send({ errorCode: 500, message: `${noun} failed to refresh.` });
       }
     }
   );

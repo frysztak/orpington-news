@@ -1,8 +1,12 @@
 import { Wretcher } from 'wretch';
+import { ID } from '@orpington-news/shared';
 
 export const setDateRead = (
   api: Wretcher,
-  itemId: string,
+  itemSerialId: ID,
   dateRead: number | null
 ) =>
-  api.url(`/collectionItem/setDateRead`).put({ id: itemId, dateRead }).json();
+  api
+    .url(`/collectionItem/setDateRead`)
+    .put({ id: itemSerialId, dateRead })
+    .json();
