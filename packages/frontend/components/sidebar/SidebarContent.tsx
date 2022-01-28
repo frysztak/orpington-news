@@ -93,6 +93,8 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         />
       )}
 
+      <Divider />
+
       <Box w="full" style={{ marginTop: 'auto' }} pb={6}>
         <SidebarItem
           title="Organize"
