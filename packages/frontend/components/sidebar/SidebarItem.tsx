@@ -175,7 +175,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
               display: 'block',
             }}
           >
-            <Menu isOpen={isOpen} onOpen={onOpen}>
+            <Menu isOpen={isOpen} onOpen={onOpen} isLazy>
               <MenuButton
                 onClick={handleMenuClick}
                 as={IconButton}
