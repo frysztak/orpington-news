@@ -170,7 +170,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
           }
           onResizeStop={handleSidebarResize}
         >
-          <HStack h="full">
+          <HStack h="full" maxH="100vh">
             {sidebar}
             <Divider orientation="vertical" h="full" />
           </HStack>
