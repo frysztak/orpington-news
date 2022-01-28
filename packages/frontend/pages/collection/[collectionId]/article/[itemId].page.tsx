@@ -6,14 +6,14 @@ import { dehydrate, QueryClient } from 'react-query';
 import { api, getCollections, getItemDetails } from '@api';
 import { getSessionIdFromRequest, isLoginDisabled } from '@utils';
 import { collectionKeys } from '@features/queryKeys';
-import { getNumber, getString } from '@utils/router';
+import { getNumber } from '@utils/router';
 import { useArticleDetails } from '@features/Article/queries';
 
 const ItemPage: NextPage = () => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
-  const itemSlug = getString(router.query?.itemSlug);
-  const { data: { title } = {} } = useArticleDetails(collectionId!, itemSlug!);
+  const itemId = getNumber(router.query?.itemId);
+  const { data: { title } = {} } = useArticleDetails(collectionId!, itemId!);
 
   return (
     <>
@@ -46,8 +46,8 @@ export const getServerSideProps: GetServerSideProps = async ({
   }
 
   const collectionId = getNumber(query?.collectionId);
-  const itemSlug = getString(query?.itemSlug);
-  if (collectionId === undefined || itemSlug === undefined) {
+  const itemId = getNumber(query?.itemId);
+  if (collectionId === undefined || itemId === undefined) {
     return { props: { cookies } };
   }
 
@@ -56,14 +56,12 @@ export const getServerSideProps: GetServerSideProps = async ({
     queryClient.prefetchQuery(collectionKeys.tree, () =>
       getCollections(api.headers(getSessionIdFromRequest(req)))
     ),
-    queryClient.prefetchQuery(
-      collectionKeys.detail(collectionId, itemSlug),
-      () =>
-        getItemDetails(
-          api.headers(getSessionIdFromRequest(req)),
-          collectionId,
-          itemSlug
-        )
+    queryClient.prefetchQuery(collectionKeys.detail(collectionId, itemId), () =>
+      getItemDetails(
+        api.headers(getSessionIdFromRequest(req)),
+        collectionId,
+        itemId
+      )
     ),
   ]);
 

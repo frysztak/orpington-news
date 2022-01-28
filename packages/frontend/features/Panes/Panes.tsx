@@ -10,7 +10,7 @@ import {
   useCollectionItems,
   useMarkCollectionAsRead,
 } from './queries';
-import { getNumber, getString } from '@utils/router';
+import { getNumber } from '@utils/router';
 import { AddCollectionModal } from '@features/AddCollectionModal';
 import { useAddCollectionModal } from '@features/AddCollectionModal';
 import {
@@ -23,7 +23,7 @@ import { CollectionMenuAction } from '@components/sidebar/Collections';
 export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
-  const itemSlug = getString(router.query?.itemSlug);
+  const itemSerialId = getNumber(router.query?.itemId);
 
   const { onOpenAddCollectionModal, ...addCollectionModalProps } =
     useAddCollectionModal();
@@ -105,11 +105,11 @@ export const Panes: React.FC = ({ children }) => {
           canFetchMoreItems: hasNextPage,
         }}
         mainContent={
-          itemSlug &&
+          itemSerialId &&
           collectionId && (
             <Article
               collectionId={collectionId}
-              itemSlug={itemSlug}
+              itemSerialId={itemSerialId}
               onGoBackClicked={handleGoBack}
             />
           )

@@ -63,7 +63,7 @@ type MoveCollectionType = Static<typeof MoveCollection>;
 
 const ItemDetailsParams = Type.Object({
   id: Type.Integer(),
-  itemSlug: Type.String(),
+  itemSerialId: Type.Number(),
 });
 type ItemDetailsType = Static<typeof ItemDetailsParams>;
 
@@ -211,6 +211,7 @@ export const collections: FastifyPluginAsync = async (
 
       return items.map((dbItem) => ({
         id: dbItem.id,
+        serialId: dbItem.serial_id,
         title: dbItem.title,
         slug: dbItem.slug,
         link: dbItem.link,
@@ -236,7 +237,7 @@ export const collections: FastifyPluginAsync = async (
   fastify.get<{
     Params: ItemDetailsType;
   }>(
-    '/:id/item/:itemSlug',
+    '/:id/item/:itemSerialId',
     {
       schema: {
         params: ItemDetailsParams,
@@ -245,11 +246,12 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const { params } = request;
-      const { id, itemSlug } = params;
+      const { id, itemSerialId } = params;
 
       try {
-        const details = await pool.one(getItemDetails(id, itemSlug));
+        const details = await pool.one(getItemDetails(id, itemSerialId));
         const {
+          serial_id,
           full_text,
           date_published,
           date_read,
@@ -262,17 +264,18 @@ export const collections: FastifyPluginAsync = async (
 
         return {
           ...rest,
+          serialId: serial_id,
           fullText: full_text,
           datePublished: timestampMsToSeconds(date_published),
           dateRead: timestampMsToSeconds(date_read),
-          date_updated: timestampMsToSeconds(date_updated),
+          dateUpdated: timestampMsToSeconds(date_updated),
           thumbnailUrl: thumbnail_url,
           readingTime: reading_time,
         };
       } catch (error) {
         if (error instanceof NotFoundError) {
           logger.error(
-            `Items details for collection '${id}' and item '${itemSlug}' not found.`
+            `Items details for collection '${id}' and item '${itemSerialId}' not found.`
           );
           reply
             .status(404)

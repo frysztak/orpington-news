@@ -5,7 +5,11 @@ import { DBCollectionItemDetails, DBCollectionItem } from './types';
 
 type InsertDBCollectionItem = Omit<
   DBCollectionItem,
-  'date_read' | 'collection_title' | 'collection_slug' | 'collection_icon'
+  | 'serial_id'
+  | 'date_read'
+  | 'collection_title'
+  | 'collection_slug'
+  | 'collection_icon'
 >;
 
 export const insertCollectionItems = (items: Array<InsertDBCollectionItem>) => {
@@ -33,6 +37,7 @@ export const insertCollectionItems = (items: Array<InsertDBCollectionItem>) => {
 export const getCollectionItems = (collectionId: ID) => {
   return sql<Omit<DBCollectionItem, 'full_text'>>`
 SELECT collection_items.id,
+         collection_items.serial_id,
          collection_items.title,
   	     collection_items.slug,
   	     collection_items.link,
@@ -60,6 +65,7 @@ SELECT collection_items.id,
 export const getAllCollectionItems = () => {
   return sql<Omit<DBCollectionItem, 'full_text'>>`
   SELECT collection_items.id,
+         collection_items.serial_id,
          collection_items.title,
   	     collection_items.slug,
   	     collection_items.link,
@@ -81,19 +87,19 @@ export const getAllCollectionItems = () => {
   ORDER BY date_published DESC`;
 };
 
-export const getItemDetails = (collectionId: ID, itemSlug: string) => {
+export const getItemDetails = (collectionId: ID, itemSerialID: ID) => {
   return sql<DBCollectionItemDetails>`
   SELECT collection_items.*
   FROM collections
   INNER JOIN (SELECT * FROM collection_items) collection_items
   ON collections.id = collection_items.collection_id
   WHERE collections.id = ${collectionId}
-   AND collection_items.slug = ${itemSlug}`;
+   AND collection_items.serial_id = ${itemSerialID}`;
 };
 
-export const setItemDateRead = (itemId: string, dateRead: number | null) => {
+export const setItemDateRead = (itemId: ID, dateRead: number | null) => {
   return sql`
   UPDATE collection_items
   SET date_read = TO_TIMESTAMP(${dateRead})
-  WHERE id = ${itemId}`;
+  WHERE serial_id = ${itemId}`;
 };
