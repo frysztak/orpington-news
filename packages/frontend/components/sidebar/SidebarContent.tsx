@@ -45,7 +45,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
   const fg = useColorModeValue('purple.700', 'white');
 
   return (
-    <VStack w="full" h="full" align="flex-start">
+    <VStack w="full" h="full" align="flex-start" overflowY="auto">
       <HStack py={6} px={4} spacing={2}>
         <Icon as={RssIcon} color={fg} w={8} h="auto" />
         <Heading
