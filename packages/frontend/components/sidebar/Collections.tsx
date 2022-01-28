@@ -11,7 +11,8 @@ import { CgRemove } from '@react-icons/all-files/cg/CgRemove';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import { AiTwotoneEdit } from '@react-icons/all-files/ai/AiTwotoneEdit';
-import { BiMessageAltError } from '@react-icons/all-files/bi/BiMessageAltError';
+import ExclamationCircleIcon from '@heroicons/react/solid/ExclamationCircleIcon';
+import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
 import { SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
 import { ID, Collection } from '@orpington-news/shared';
@@ -157,14 +158,27 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
       {isError ? (
         <>
           <Icon
-            as={BiMessageAltError}
+            as={ExclamationCircleIcon}
             boxSize={10}
             color="red.400"
             mt={4}
             mb={2}
           />
           <Text fontSize="xl" fontWeight="bold">
-            Failed to fetch collections
+            Failed to fetch feeds.
+          </Text>
+        </>
+      ) : collections.length === 0 ? (
+        <>
+          <Icon
+            as={InformationCircleIcon}
+            boxSize={10}
+            color="blue.400"
+            mt={4}
+            mb={2}
+          />
+          <Text fontSize="xl" fontWeight="bold">
+            There are no feeds yet.
           </Text>
         </>
       ) : (

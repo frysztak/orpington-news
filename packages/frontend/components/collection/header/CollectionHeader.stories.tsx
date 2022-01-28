@@ -36,3 +36,12 @@ NoCollection.args = {
   ...Default.args,
   collection: undefined,
 };
+
+export const LongTitle = Template.bind({});
+LongTitle.args = {
+  ...Default.args,
+  collection: {
+    id: 90,
+    title: 'A Very Fun Blog Indeed',
+  },
+};

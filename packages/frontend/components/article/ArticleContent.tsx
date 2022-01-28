@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import parse, {
   domToReact,
   attributesToProps,
@@ -90,7 +91,12 @@ const options: HTMLReactParserOptions = {
         const href = domNode.attribs['href'];
 
         return (
-          <Link isExternal={!href.startsWith('#')} href={href} color="teal.400">
+          <Link
+            isExternal={!href.startsWith('#')}
+            href={href}
+            color="teal.400"
+            overflowWrap="anywhere"
+          >
             {children}
           </Link>
         );
@@ -179,10 +185,13 @@ const options: HTMLReactParserOptions = {
 
 export const ArticleContent: React.FC<ArticleContentProps> = (props) => {
   const { html } = props;
+  const content = useMemo(() => {
+    return parse(html, options);
+  }, [html]);
 
   return (
     <VStack w="full" align="flex-start" spacing={4}>
-      {parse(html, options)}
+      <>{content}</>
     </VStack>
   );
 };

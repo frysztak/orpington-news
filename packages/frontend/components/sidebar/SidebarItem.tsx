@@ -119,7 +119,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
       ref={ref}
       w="full"
       spacing={4}
-      pr={2}
+      pr={3}
       pl={chevron ? 0 : 6}
       minH={10}
       align="center"
@@ -159,13 +159,13 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
         {isLoading && <Spinner />}
         {!isLoading && counter && !isOpen && (
           <Badge
-            w={6}
-            h={6}
+            w={8}
+            h={8}
             _groupHover={{
               display: menuItems ? 'none' : '',
             }}
           >
-            <Center h="full">{counter > 99 ? '99+' : counter}</Center>
+            <Center h="full">{counter > 999 ? '999+' : counter}</Center>
           </Badge>
         )}
         {!isLoading && menuItems && (
@@ -175,14 +175,14 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
               display: 'block',
             }}
           >
-            <Menu isOpen={isOpen} onOpen={onOpen}>
+            <Menu isOpen={isOpen} onOpen={onOpen} isLazy>
               <MenuButton
                 onClick={handleMenuClick}
                 as={IconButton}
                 aria-label="Menu"
                 icon={<BsThreeDotsVertical />}
                 variant="ghost"
-                size="xs"
+                size="sm"
                 tabIndex={0}
               />
               <MenuList>{menuItems}</MenuList>
