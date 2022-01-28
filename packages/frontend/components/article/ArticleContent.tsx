@@ -73,6 +73,9 @@ const Heading: React.FC<{
 const options: HTMLReactParserOptions = {
   replace: (domNode) => {
     if (!('tagName' in domNode)) {
+      if (domNode.type === 'text' && 'data' in domNode) {
+        return <Text>{domNode.data}</Text>;
+      }
       return;
     }
 
