@@ -3,13 +3,13 @@ import {
   Box,
   BoxProps,
   Icon,
-  Heading,
   SkeletonText,
   VStack,
+  Text,
 } from '@chakra-ui/react';
 import { useVirtual } from '@utils/useVirtual';
 import { last } from 'rambda';
-import { CgSmileSad } from '@react-icons/all-files/cg/CgSmileSad';
+import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
 import { CollectionItem, genN } from '@orpington-news/shared';
 import { LayoutType } from '../types';
 import { MagazineItem } from '../layouts';
@@ -82,9 +82,11 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       );
     } else {
       return (
-        <VStack w="full" h="full" justify="center">
-          <Icon as={CgSmileSad} boxSize={12} />
-          <Heading textAlign="center">This collection has no items</Heading>
+        <VStack w="full" pt={8} justify="center">
+          <Icon as={InformationCircleIcon} boxSize={12} color="blue.400" />
+          <Text fontSize="xl" fontWeight="bold">
+            This feed has no items.
+          </Text>
         </VStack>
       );
     }
