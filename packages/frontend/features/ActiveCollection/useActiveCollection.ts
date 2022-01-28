@@ -36,7 +36,7 @@ export const useActiveCollection = () => {
     [setActiveCollectionId]
   );
 
-  const { data: collections } = useCollectionsTree();
+  const { data: collections, isFetched } = useCollectionsTree();
 
   const activeCollection: ActiveCollection = useMemo(() => {
     if (activeCollectionId === 'home') {
@@ -51,9 +51,9 @@ export const useActiveCollection = () => {
         }
       : {
           id: activeCollectionId,
-          title: 'Unknown',
+          title: isFetched ? 'Unknown' : '',
         };
-  }, [activeCollectionId, collections]);
+  }, [activeCollectionId, collections, isFetched]);
 
   return { activeCollection, handleCollectionClicked, setActiveCollectionId };
 };
