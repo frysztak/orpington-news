@@ -20,28 +20,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build API
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: packages/backend
           load: true
           tags: frysztak/orpington-news-api:latest
       - name: Build APP
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: packages/frontend
           load: true
           tags: frysztak/orpington-news-app:latest
       - name: Push API
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: packages/backend
           push: true
           tags: frysztak/orpington-news-api:latest
       - name: Push APP
-        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: packages/frontend
