@@ -212,23 +212,29 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
 
       {/* Mobile view */}
       <Box display={{ base: 'flex', lg: 'none' }} h="100vh" {...rest}>
-        {mainContent ? (
-          mainContent
-        ) : (
-          <VStack spacing={0} h="full" w="full">
-            <CollectionHeader
-              collection={activeCollection}
-              menuButtonRef={drawerButtonRef}
-              isRefreshing={isRefreshing}
-              onRefresh={handleRefreshClick}
-              onMenuClicked={onToggle}
-            />
-
-            <Divider pt={3} />
-
-            {items}
-          </VStack>
+        {mainContent && (
+          <Box position="absolute" top={0} left={0} h="full" w="full">
+            {mainContent}
+          </Box>
         )}
+        <VStack
+          spacing={0}
+          h="full"
+          w="full"
+          visibility={mainContent ? 'hidden' : 'visible'}
+        >
+          <CollectionHeader
+            collection={activeCollection}
+            menuButtonRef={drawerButtonRef}
+            isRefreshing={isRefreshing}
+            onRefresh={handleRefreshClick}
+            onMenuClicked={onToggle}
+          />
+
+          <Divider pt={3} />
+
+          {items}
+        </VStack>
       </Box>
     </>
   );
