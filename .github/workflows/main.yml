@@ -22,24 +22,29 @@ jobs:
       - name: Build API
         uses: docker/build-push-action@v2
         with:
-          context: packages/backend
+          context: ./packages/backend
+          file: ./packages/backend/Dockerfile
           load: true
           tags: frysztak/orpington-news-api:latest
       - name: Build APP
         uses: docker/build-push-action@v2
         with:
-          context: packages/frontend
+          context: ./packages/frontend
+          file: ./packages/frontend/Dockerfile
           load: true
           tags: frysztak/orpington-news-app:latest
+
       - name: Push API
         uses: docker/build-push-action@v2
         with:
-          context: packages/backend
+          context: ./packages/backend
+          file: ./packages/backend/Dockerfile
           push: true
           tags: frysztak/orpington-news-api:latest
       - name: Push APP
         uses: docker/build-push-action@v2
         with:
-          context: packages/frontend
+          context: ./packages/frontend
+          file: ./packages/frontend/Dockerfile
           push: true
           tags: frysztak/orpington-news-app:latest
