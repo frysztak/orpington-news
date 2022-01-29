@@ -17,10 +17,21 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
+      "@components": ["components/index.ts"],
       "@components/*": ["components/*"],
+
+      "@utils": ["utils/index.ts"],
       "@utils/*": ["utils/*"],
+
+      "@api": ["api/index.ts"],
+      "@api/*": ["api/*"],
+
+      "@pages/*": ["pages/*"],
+
+      "@features": ["features/index.ts"],
+      "@features/*": ["features/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

@@ -1,0 +1,26 @@
+name: CD DEV
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Push API to dokku
+        uses: dokku/github-action@master
+        with:
+          branch: dev
+          git_remote_url: 'ssh://dokku@orpington.software:22/news-dev-api'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Push app to dokku
+        uses: dokku/github-action@master
+        with:
+          branch: dev
+          git_remote_url: 'ssh://dokku@orpington.software:22/news-dev-app'
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}

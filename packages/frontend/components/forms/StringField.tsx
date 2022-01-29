@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  FormLabel,
   FormControl,
   FormErrorMessage,
   forwardRef,
@@ -13,10 +14,11 @@ export type StringFieldProps = BasicField & Omit<InputProps, 'value'>;
 
 export const StringField = forwardRef<StringFieldProps, 'input'>(
   (props, ref) => {
-    const { formControlProps, inputProps, meta } = useFormControl(props);
+    const { formControlProps, inputProps, meta, label } = useFormControl(props);
 
     return (
       <FormControl {...formControlProps}>
+        {label && <FormLabel htmlFor={formControlProps.id}>{label}</FormLabel>}
         <Input {...inputProps} ref={ref} />
         <FormErrorMessage>{meta.error}</FormErrorMessage>
       </FormControl>

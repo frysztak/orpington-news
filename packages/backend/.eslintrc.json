@@ -1,0 +1,22 @@
+{
+    "plugins": [
+      "sql"
+    ],
+    "rules": {
+      "sql/format": [
+        2,
+        {
+          "ignoreExpressions": false,
+          "ignoreInline": true,
+          "ignoreTagless": true
+        }
+      ],
+      "sql/no-unsafe-query": [
+        2,
+        {
+          "allowLiteral": false
+        }
+      ]
+    }
+  }
+  

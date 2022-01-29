@@ -1,0 +1,7 @@
+.git
+.husky
+**/.next
+**/node_modules
+**/storybook-static
+**/dist
+Dockerfile
