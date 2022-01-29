@@ -3,8 +3,17 @@ import type { NextPageWithLayout } from '@pages/types';
 import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import getConfig from 'next/config';
 import { useMutation } from 'react-query';
-import { Heading, VStack, Container } from '@chakra-ui/react';
+import {
+  Heading,
+  VStack,
+  Container,
+  Text,
+  Alert,
+  AlertIcon,
+  Code,
+} from '@chakra-ui/react';
 import { useApi, useHandleError } from '@api';
 import { LoginForm, LoginFormData } from './LoginForm';
 
@@ -25,6 +34,8 @@ const LoginPage: NextPageWithLayout = () => {
     }
   );
 
+  const { publicRuntimeConfig } = getConfig();
+
   return (
     <>
       <Head>
@@ -35,6 +46,21 @@ const LoginPage: NextPageWithLayout = () => {
         <VStack w="full" spacing={16} align="stretch">
           <Heading textAlign="center">Log in</Heading>
           <LoginForm onSubmit={mutate} isLoading={isLoading} />
+
+          {publicRuntimeConfig.APP_DEMO && (
+            <Alert status="info">
+              <AlertIcon />
+              <VStack align="flex-start">
+                <Text>This is a demo instance.</Text>
+                <Text>
+                  Username: <Code>{publicRuntimeConfig.APP_DEMO_USERNAME}</Code>
+                </Text>
+                <Text>
+                  Password: <Code>{publicRuntimeConfig.APP_DEMO_PASSWORD}</Code>
+                </Text>
+              </VStack>
+            </Alert>
+          )}
         </VStack>
       </Container>
     </>
