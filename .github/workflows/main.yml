@@ -1,9 +1,9 @@
-name: CD MAIN
+name: CD Master
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
