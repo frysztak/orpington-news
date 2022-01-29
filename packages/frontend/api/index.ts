@@ -15,7 +15,7 @@ export const makeApi = () =>
 export const api = makeApi();
 
 export const useApi = () => {
-  const { onUnauthorized } = useHandleUnauthorized();
+  const onUnauthorized = useHandleUnauthorized();
 
   return useMemo(
     () => makeApi().catcher(401, onUnauthorized),
@@ -25,6 +25,7 @@ export const useApi = () => {
 
 export const sseUrl = `${apiUrl}/events`;
 
+export * from './ApiContext';
 export * from './useHandleError';
 export * from './collections';
 export * from './collectionItem';

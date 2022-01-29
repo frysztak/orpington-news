@@ -14,11 +14,10 @@ import {
   AlertIcon,
   Code,
 } from '@chakra-ui/react';
-import { useApi, useHandleError } from '@api';
+import { api, useHandleError } from '@api';
 import { LoginForm, LoginFormData } from './LoginForm';
 
 const LoginPage: NextPageWithLayout = () => {
-  const api = useApi();
   const router = useRouter();
   const { onError } = useHandleError();
 

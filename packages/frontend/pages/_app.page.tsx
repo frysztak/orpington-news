@@ -6,6 +6,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { Panes } from '@features/Panes';
 import { ActiveCollectionContextProvider } from '@features/ActiveCollection';
 import { SSEListener } from '@features/SSEListener';
+import { ApiContextProvider } from '@api';
 import { theme, fontFaces, MetaTheme } from 'theme';
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -28,16 +29,18 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
         <ChakraProvider theme={theme} colorModeManager={colorModeManager}>
-          <ActiveCollectionContextProvider>
-            <SSEListener>
-              <Global styles={fontFaces} />
+          <ApiContextProvider>
+            <ActiveCollectionContextProvider>
+              <SSEListener>
+                <Global styles={fontFaces} />
 
-              <Flex minH="100vh" direction="column">
-                <MetaTheme />
-                {getLayout(<Component {...pageProps} />)}
-              </Flex>
-            </SSEListener>
-          </ActiveCollectionContextProvider>
+                <Flex minH="100vh" direction="column">
+                  <MetaTheme />
+                  {getLayout(<Component {...pageProps} />)}
+                </Flex>
+              </SSEListener>
+            </ActiveCollectionContextProvider>
+          </ApiContextProvider>
         </ChakraProvider>
       </Hydrate>
     </QueryClientProvider>
