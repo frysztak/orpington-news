@@ -18,13 +18,17 @@ export const useHandleError = () => {
   const onError = useCallback(
     (error: any) => {
       const [title, description] = getNameAndMessage(error);
+      const toastId = `toast-${title}-${description}`;
 
-      toast({
-        title,
-        description,
-        status: 'error',
-        isClosable: true,
-      });
+      if (!toast.isActive(toastId)) {
+        toast({
+          id: toastId,
+          title,
+          description,
+          status: 'error',
+          isClosable: true,
+        });
+      }
     },
     [toast]
   );

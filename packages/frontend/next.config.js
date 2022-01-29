@@ -29,6 +29,9 @@ module.exports = withPlugins(
     publicRuntimeConfig: {
       APP_DISABLE_LOGIN: process.env.APP_DISABLE_LOGIN,
       API_URL: process.env.API_URL,
+      APP_DEMO: process.env.APP_DEMO,
+      APP_DEMO_USERNAME: process.env.APP_DEMO_USERNAME,
+      APP_DEMO_PASSWORD: process.env.APP_DEMO_PASSWORD,
     },
     swcMinify: true,
   }
