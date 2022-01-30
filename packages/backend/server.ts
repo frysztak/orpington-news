@@ -112,7 +112,7 @@ async function setupFastify() {
   fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
   await fastify.listen(
     process.env.PORT || 5000,
-    process.env.HOST || '127.0.0.1',
+    process.env.HOST || '0.0.0.0',
     (err, address) => {
       if (err) {
         fastify.log.error(err);

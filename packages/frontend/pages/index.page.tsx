@@ -3,7 +3,11 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { dehydrate, QueryClient } from 'react-query';
 import { api, getCollections } from '@api';
-import { getSessionIdFromRequest, isLoginDisabled } from '@utils';
+import {
+  getChakraColorModeCookie,
+  getCookieHeaderFromReq,
+  isLoginDisabled,
+} from '@utils';
 import { collectionKeys } from '@features';
 
 const Home: NextPage = () => {
@@ -17,11 +21,11 @@ const Home: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const cookies = req.headers.cookie ?? '';
+  const chakraCookie = getChakraColorModeCookie(req);
   if (!isLoginDisabled()) {
     if (!req.cookies['sessionId']) {
       return {
-        props: { cookies },
+        props: { chakraCookie },
         redirect: {
           destination: '/login',
         },
@@ -29,14 +33,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     }
   }
 
+  const apiWithHeaders = api.headers(getCookieHeaderFromReq(req));
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery(collectionKeys.tree, () =>
-    getCollections(api.headers(getSessionIdFromRequest(req)))
+    getCollections(apiWithHeaders)
   );
 
   return {
     props: {
-      cookies,
+      chakraCookie,
       dehydratedState: dehydrate(queryClient),
     },
   };
