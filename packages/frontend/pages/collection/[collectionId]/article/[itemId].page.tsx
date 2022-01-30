@@ -4,7 +4,11 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { dehydrate, QueryClient } from 'react-query';
 import { api, getCollections, getItemDetails } from '@api';
-import { getSessionIdFromRequest, isLoginDisabled } from '@utils';
+import {
+  getCookieHeaderFromReq,
+  getChakraColorModeCookie,
+  isLoginDisabled,
+} from '@utils';
 import { collectionKeys } from '@features/queryKeys';
 import { getNumber } from '@utils/router';
 import { useArticleDetails } from '@features/Article/queries';
@@ -30,13 +34,13 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   query,
 }) => {
-  const cookies = req.headers.cookie ?? '';
+  const chakraCookie = getChakraColorModeCookie(req);
 
   if (!isLoginDisabled()) {
     if (!req.cookies['sessionId']) {
       return {
         props: {
-          cookies,
+          chakraCookie,
         },
         redirect: {
           destination: '/login',
@@ -48,26 +52,23 @@ export const getServerSideProps: GetServerSideProps = async ({
   const collectionId = getNumber(query?.collectionId);
   const itemId = getNumber(query?.itemId);
   if (collectionId === undefined || itemId === undefined) {
-    return { props: { cookies } };
+    return { props: { chakraCookie } };
   }
 
+  const apiWithHeaders = api.headers(getCookieHeaderFromReq(req));
   const queryClient = new QueryClient();
   await Promise.all([
     queryClient.prefetchQuery(collectionKeys.tree, () =>
-      getCollections(api.headers(getSessionIdFromRequest(req)))
+      getCollections(apiWithHeaders)
     ),
     queryClient.prefetchQuery(collectionKeys.detail(collectionId, itemId), () =>
-      getItemDetails(
-        api.headers(getSessionIdFromRequest(req)),
-        collectionId,
-        itemId
-      )
+      getItemDetails(apiWithHeaders, collectionId, itemId)
     ),
   ]);
 
   return {
     props: {
-      cookies,
+      chakraCookie,
       dehydratedState: dehydrate(queryClient),
     },
   };

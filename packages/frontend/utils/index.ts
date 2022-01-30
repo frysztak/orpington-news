@@ -1,3 +1,3 @@
 export * from './ClientRender';
-export * from './session';
+export * from './cookie';
 export * from './isLoginDisabled';

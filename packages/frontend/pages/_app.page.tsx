@@ -23,7 +23,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   const getLayout = Component.getLayout || ((page) => <Panes>{page}</Panes>);
 
-  const colorModeManager = cookieStorageManager(pageProps.cookies ?? '');
+  const colorModeManager = cookieStorageManager(pageProps.chakraCookie ?? '');
 
   return (
     <QueryClientProvider client={queryClient}>
