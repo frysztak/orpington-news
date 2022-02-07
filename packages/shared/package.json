@@ -12,19 +12,19 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@babel/core": "^7.16.12",
+    "@babel/core": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-typescript": "^8.3.0",
     "@types/jest": "^27.4.0",
-    "babel-jest": "^27.4.6",
-    "jest": "^27.4.7",
-    "rollup": "^2.66.1",
+    "babel-jest": "^27.5.0",
+    "jest": "^27.5.0",
+    "rollup": "^2.67.1",
     "ts-jest": "^27.1.3",
-    "ts-node": "^10.4.0"
+    "ts-node": "^10.5.0"
   },
   "dependencies": {
-    "rambda": "^7.0.1"
+    "rambda": "^7.0.2"
   }
 }

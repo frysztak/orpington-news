@@ -196,7 +196,6 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
               decimalSeparator="0"
               isLoading={areCollectionsLoading}
               isDisabled={isLoading}
-              options={parentOptions}
             />
 
             <HStack w="full" justify="flex-end">
