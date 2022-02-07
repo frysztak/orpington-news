@@ -78,14 +78,14 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           aria-label="Open external link"
           variant="ghost"
         />
-        <IconButton
+        {/*<IconButton
           icon={onReadingList ? <BsBookmarkDash /> : <BsBookmarkPlus />}
           aria-label={
             onReadingList ? 'Remove from reading list' : 'Add to reading list'
           }
           variant="ghost"
           onClick={onReadingListToggle}
-        />
+        />*/}
 
         <Box>
           <Menu>

@@ -66,12 +66,12 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         onClick={handleClick('home')}
       />
 
-      <SidebarItem
+      {/*<SidebarItem
         title="Reading List"
         icon={BsBookmarks}
         isActive={activeCollectionId === 'readingList'}
         onClick={handleClick('readingList')}
-      />
+      />*/}
 
       <SidebarItem
         title="Add Feed"
@@ -96,12 +96,12 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
       <Divider />
 
       <Box w="full" style={{ marginTop: 'auto' }} pb={6}>
-        <SidebarItem
+        {/*<SidebarItem
           title="Organize"
           icon={CgReorder}
           isActive={activeCollectionId === 'organize'}
           onClick={handleClick('organize')}
-        />
+        />*/}
         <SidebarItem
           title="Settings"
           icon={RiSettingsLine}
