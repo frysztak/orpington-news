@@ -11,15 +11,15 @@ module.exports = {
     },
   },
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
- transformIgnorePatterns: ['node_modules/(?!(normalize-url)/)'],
- transform: {
-   '^.+\\.tsx?$': 'ts-jest',
-   '^.+\\.jsx?$': 'babel-jest',
- },
+  transformIgnorePatterns: ['node_modules/(?!(normalize-url)/)'],
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.jsx?$': 'babel-jest',
+  },
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: '<rootDir>/',
     }),
-  '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
 };
