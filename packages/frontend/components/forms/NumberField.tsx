@@ -9,7 +9,8 @@ import { NumberInput, NumberInputProps } from '@components/inputs';
 import { BasicField } from './types';
 import { useFormControl } from './useFormControl';
 
-export type NumberFieldProps = BasicField & Omit<NumberInputProps, 'value'>;
+export type NumberFieldProps = BasicField &
+  Omit<NumberInputProps, 'value'> & { isLoading?: boolean };
 
 export const NumberField = forwardRef<NumberFieldProps, 'input'>(
   (props, ref) => {
