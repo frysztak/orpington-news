@@ -92,10 +92,11 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
           }
         />
       )}
+      <Box w="full" style={{ marginTop: 'auto' }}>
+        <Divider mt={2} />
+      </Box>
 
-      <Divider />
-
-      <Box w="full" style={{ marginTop: 'auto' }} pb={6}>
+      <Box w="full" py={6}>
         {/*<SidebarItem
           title="Organize"
           icon={CgReorder}
