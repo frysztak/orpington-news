@@ -50,16 +50,16 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
               variant="ghost"
               onClick={onRefresh}
             />
-            <IconButton
+            {/*<IconButton
               icon={<CgSearch />}
               aria-label="Search"
               variant="ghost"
-            />
-            <IconButton
+            />*/}
+            {/*<IconButton
               icon={<BsLayoutWtf />}
               aria-label="Layout"
               variant="ghost"
-            />
+            />*/}
           </Box>
         )}
       </HStack>
