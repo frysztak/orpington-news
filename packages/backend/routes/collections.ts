@@ -4,12 +4,12 @@ import { pool } from 'db';
 import { DataIntegrityError, NotFoundError } from 'slonik';
 import {
   addCollection,
+  DBCollection,
   deleteCollection,
   getCollectionChildrenIds,
   getCollections,
   getCollectionsFromRootId,
   hasCollectionWithUrl,
-  inflateCollections,
   markCollectionAsRead,
   moveCollection,
   updateCollection,
@@ -22,7 +22,7 @@ import {
 } from '@db/collectionItems';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
 import {
-  Collection,
+  FlatCollection,
   CollectionIcons,
   CollectionItem,
 } from '@orpington-news/shared';
@@ -74,7 +74,7 @@ export const collections: FastifyPluginAsync = async (
 ): Promise<void> => {
   fastify.addHook('preHandler', fastify.auth([fastify.verifySession]));
 
-  fastify.get<{ Reply: Array<Collection> }>(
+  fastify.get<{ Reply: Array<FlatCollection> }>(
     '/',
     {
       schema: {
@@ -83,7 +83,16 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const collections = await pool.any(getCollections());
-      return inflateCollections(collections);
+      return collections.map((c: DBCollection): FlatCollection => {
+        const { date_updated, refresh_interval, unread_count, ...rest } = c;
+
+        return {
+          ...rest,
+          dateUpdated: date_updated,
+          refreshInterval: refresh_interval,
+          unreadCount: unread_count ?? 0,
+        };
+      });
     }
   );
 

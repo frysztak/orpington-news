@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   useInfiniteQuery,
   useMutation,
@@ -14,13 +14,33 @@ import {
   refreshCollection,
 } from '@api';
 import { collectionKeys } from '@features/queryKeys';
-import { ID } from '@orpington-news/shared';
+import { inflateCollections } from '@features/Collections';
+import { FlatCollection, ID } from '@orpington-news/shared';
 
-export const useCollectionsTree = () => {
+export const useCollectionsList = <TSelectedData>(opts?: {
+  select?: (data: FlatCollection[]) => TSelectedData;
+}) => {
   const api = useApi();
   const { onError } = useHandleError();
 
-  return useQuery(collectionKeys.tree, () => getCollections(api), { onError });
+  return useQuery(collectionKeys.tree, () => getCollections(api), {
+    onError,
+    select: opts?.select,
+  });
+};
+
+export const useCollectionsTree = () => {
+  return useCollectionsList({ select: inflateCollections });
+};
+
+export const useCollectionById = (collectionId: ID | string) => {
+  return useCollectionsList({
+    select: useCallback(
+      (collections: FlatCollection[]) =>
+        collections?.find(({ id }) => id === collectionId),
+      [collectionId]
+    ),
+  });
 };
 
 export const useCollectionItems = (collectionId: ID | string) => {

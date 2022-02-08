@@ -66,6 +66,12 @@ export interface Collection {
   refreshInterval?: number;
 }
 
+export type FlatCollection = Omit<Collection, 'children' | 'parentId'> & {
+  parents: Array<ID>;
+  order: number;
+  level: number;
+};
+
 export interface CollectionItem {
   id: string;
   serialId: number;

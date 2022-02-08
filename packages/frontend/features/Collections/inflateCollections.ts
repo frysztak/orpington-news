@@ -1,30 +1,18 @@
-import { Collection, ID } from '@orpington-news/shared';
+import { Collection, FlatCollection, ID } from '@orpington-news/shared';
 import { sum, last, sortBy, lensPath, view, set, values } from 'rambda';
-import { DBCollection } from './sql';
 
-type DBCollectionWithChildren = DBCollection & {
-  children?: Record<ID, DBCollectionWithChildren>;
+type FlatCollectionWithChildren = FlatCollection & {
+  children?: Record<ID, FlatCollectionWithChildren>;
 };
 
 const flattenJSON = (
-  json: Record<ID, DBCollectionWithChildren>
+  json: Record<ID, FlatCollectionWithChildren>
 ): Collection[] => {
   return sortBy((j) => j.order, values(json)).map((col): Collection => {
-    const {
-      parents,
-      level,
-      order,
-      children,
-      date_updated,
-      unread_count,
-      refresh_interval,
-      ...rest
-    } = col;
+    const { parents, level, order, children, ...rest } = col;
 
     return {
       ...rest,
-      dateUpdated: date_updated,
-      refreshInterval: refresh_interval,
       unreadCount: countUnread(col),
       children: children && flattenJSON(children),
       parentId: last(parents),
@@ -33,7 +21,7 @@ const flattenJSON = (
 };
 
 export const inflateCollections = (
-  collections: readonly DBCollection[]
+  collections: readonly FlatCollection[]
 ): Collection[] => {
   const json = collections.reduce((acc, col) => {
     if (col.parents.length === 0) {
@@ -45,7 +33,10 @@ export const inflateCollections = (
 
     const parentPath = col.parents.join('.children.');
     const parentLens = lensPath(parentPath);
-    const parent: DBCollectionWithChildren | undefined = view(parentLens, acc);
+    const parent: FlatCollectionWithChildren | undefined = view(
+      parentLens,
+      acc
+    );
     if (!parent) {
       console.warn(`Parent path '${parentPath}' not found.`);
       return acc;
@@ -60,14 +51,14 @@ export const inflateCollections = (
       },
       acc
     );
-  }, {} as Record<ID, DBCollectionWithChildren>);
+  }, {} as Record<ID, FlatCollectionWithChildren>);
 
   return flattenJSON(json);
 };
 
-const countUnread = (collection: DBCollectionWithChildren): number => {
+const countUnread = (collection: FlatCollectionWithChildren): number => {
   return sum([
-    collection.unread_count ?? 0,
+    collection.unreadCount,
     ...Object.values(collection.children ?? []).map(countUnread),
   ]);
 };

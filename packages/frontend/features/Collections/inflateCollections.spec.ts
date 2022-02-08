@@ -1,5 +1,5 @@
+import { FlatCollection } from '@orpington-news/shared';
 import { inflateCollections } from './inflateCollections';
-import { DBCollection } from './sql';
 
 describe('inflateCollections', () => {
   it('works for empty array', () => {
@@ -7,7 +7,7 @@ describe('inflateCollections', () => {
   });
 
   it('works', () => {
-    const data: DBCollection[] = [
+    const data: FlatCollection[] = [
       {
         id: 1,
         title: 'Feed 01',
@@ -15,11 +15,11 @@ describe('inflateCollections', () => {
         icon: 'React',
         order: 0,
         url: 'https://feed-01.com/rss.xml',
-        date_updated: 1641058737938,
+        dateUpdated: 1641058737938,
         parents: [],
         level: 0,
-        unread_count: 32,
-        refresh_interval: 60,
+        unreadCount: 32,
+        refreshInterval: 60,
       },
       {
         id: 2,
@@ -28,11 +28,11 @@ describe('inflateCollections', () => {
         icon: 'Linux',
         order: 1,
         url: 'https://feed-02.com/rss.xml',
-        date_updated: 1641058764932,
+        dateUpdated: 1641058764932,
         parents: [],
         level: 0,
-        unread_count: 10,
-        refresh_interval: 60,
+        unreadCount: 10,
+        refreshInterval: 60,
       },
       {
         id: 3,
@@ -40,11 +40,11 @@ describe('inflateCollections', () => {
         slug: 'collection-03',
         icon: 'Haskell',
         order: 2,
-        date_updated: 1641058850881,
+        dateUpdated: 1641058850881,
         parents: [],
         level: 0,
-        unread_count: null,
-        refresh_interval: 60,
+        unreadCount: 0,
+        refreshInterval: 60,
       },
       {
         id: 5,
@@ -53,11 +53,11 @@ describe('inflateCollections', () => {
         icon: 'Haskell',
         order: 1,
         url: 'https://feed-03-02.com/rss.xml',
-        date_updated: 1641058961198,
+        dateUpdated: 1641058961198,
         parents: [3],
         level: 1,
-        unread_count: 15,
-        refresh_interval: 60,
+        unreadCount: 15,
+        refreshInterval: 60,
       },
       {
         id: 4,
@@ -65,11 +65,11 @@ describe('inflateCollections', () => {
         slug: 'collection-03-01',
         icon: 'Haskell',
         order: 0,
-        date_updated: 1641058920330,
+        dateUpdated: 1641058920330,
         parents: [3],
         level: 1,
-        unread_count: null,
-        refresh_interval: 60,
+        unreadCount: 0,
+        refreshInterval: 60,
       },
       {
         id: 6,
@@ -78,11 +78,11 @@ describe('inflateCollections', () => {
         icon: 'Haskell',
         order: 0,
         url: 'https://feed-03-01-01.com/rss.xml',
-        date_updated: 1641059005051,
+        dateUpdated: 1641059005051,
         parents: [3, 4],
         level: 2,
-        unread_count: 11,
-        refresh_interval: 60,
+        unreadCount: 11,
+        refreshInterval: 60,
       },
     ];
 

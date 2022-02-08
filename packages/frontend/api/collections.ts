@@ -3,11 +3,12 @@ import {
   Collection,
   CollectionItem,
   CollectionItemDetails,
+  FlatCollection,
   ID,
 } from '@orpington-news/shared';
 
 export const getCollections = (api: Wretcher) =>
-  api.url('/collections').get().json<Collection[]>();
+  api.url('/collections').get().json<FlatCollection[]>();
 
 export const getCollectionItems = (
   api: Wretcher,

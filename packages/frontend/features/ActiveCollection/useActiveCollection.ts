@@ -1,29 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { ActiveCollection } from '@components/collection/types';
-import { Collection, ID } from '@orpington-news/shared';
-import { useCollectionsTree } from '../Panes/queries';
+import { Collection } from '@orpington-news/shared';
+import { useCollectionById } from '../Panes/queries';
 import { useActiveCollectionContext } from './ActiveCollectionContext';
-
-const findById = (
-  targetId: ID | string,
-  collections?: Collection[]
-): Collection | undefined => {
-  if (!collections) {
-    return;
-  }
-  for (const collection of collections) {
-    if (collection.id === targetId) {
-      return collection;
-    }
-    if (collection.children) {
-      const childrenNode = findById(targetId, collection.children);
-      if (childrenNode) {
-        return childrenNode;
-      }
-    }
-  }
-  return undefined;
-};
 
 export const useActiveCollection = () => {
   const { activeCollectionId, setActiveCollectionId } =
@@ -36,14 +15,13 @@ export const useActiveCollection = () => {
     [setActiveCollectionId]
   );
 
-  const { data: collections, isFetched } = useCollectionsTree();
+  const { data: collection } = useCollectionById(activeCollectionId);
 
   const activeCollection: ActiveCollection = useMemo(() => {
     if (activeCollectionId === 'home') {
       return { id: activeCollectionId, title: 'Home' };
     }
 
-    const collection = findById(activeCollectionId, collections);
     return collection
       ? {
           id: activeCollectionId,
@@ -51,9 +29,9 @@ export const useActiveCollection = () => {
         }
       : {
           id: activeCollectionId,
-          title: isFetched ? 'Unknown' : '',
+          title: '',
         };
-  }, [activeCollectionId, collections, isFetched]);
+  }, [activeCollectionId, collection]);
 
   return { activeCollection, handleCollectionClicked, setActiveCollectionId };
 };
