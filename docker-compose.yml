@@ -1,0 +1,60 @@
+version: '3'
+services:
+  orpington-news-api:
+    image: frysztak/orpington-news-api:latest
+    container_name: orpington-news-api
+    environment:
+      - APP_URL=https://news.${DOMAINNAME}
+      - DB_HOST=orpington-news-postgres
+      - DB_PASS=dbpass
+      - APP_DISABLE_LOGIN=true
+      - TZ=${TIMEZONE}
+    networks:
+      - orpington-news
+    restart: always
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.orpington-news-api-rtr.rule=Host(`news.${DOMAINNAME}`) && PathPrefix(`/api`)'
+      - 'traefik.http.middlewares.orpington-news-api-mdlw.stripprefix.prefixes=/api'
+      - 'traefik.http.routers.orpington-news-api-rtr.tls=true'
+      - 'traefik.http.routers.orpington-news-api-rtr.entrypoints=https'
+      - 'traefik.http.routers.orpington-news-api-rtr.middlewares=chain-authelia@file,orpington-news-api-mdlw@docker'
+      - 'traefik.http.routers.orpington-news-api-rtr.service=orpington-news-api-svc'
+      - 'traefik.http.services.orpington-news-api-svc.loadbalancer.server.scheme=http'
+      - 'traefik.http.services.orpington-news-api-svc.loadbalancer.server.port=5000'
+
+  orpington-news-app:
+    image: frysztak/orpington-news-app:latest
+    container_name: orpington-news-app
+    environment:
+      - APP_URL=https://news.${DOMAINNAME}
+      - API_URL=https://news.${DOMAINNAME}/api
+      - APP_DISABLE_LOGIN=true
+      - TZ=${TIMEZONE}
+    networks:
+      - orpington-news
+    restart: always
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.orpington-news-app-rtr.rule=Host(`news.${DOMAINNAME}`)'
+      - 'traefik.http.routers.orpington-news-app-rtr.tls=true'
+      - 'traefik.http.routers.orpington-news-app-rtr.entrypoints=https'
+      - 'traefik.http.routers.orpington-news-app-rtr.middlewares=chain-authelia@file'
+      - 'traefik.http.routers.orpington-news-app-rtr.service=orpington-news-app-svc'
+      - 'traefik.http.services.orpington-news-app-svc.loadbalancer.server.scheme=http'
+      - 'traefik.http.services.orpington-news-app-svc.loadbalancer.server.port=3000'
+
+  orpington-news-postgres:
+    image: postgres:14-alpine
+    container_name: orpington-news-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dbpass
+    volumes:
+      - ${DOCKER_LOCAL_DIR}/orpington-news/postgres/data:/var/lib/postgresql/data
+    networks:
+      - orpington-news
+    restart: always
+
+networks:
+  orpington-news:
