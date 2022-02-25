@@ -107,6 +107,7 @@ async function setupFastify() {
   });
 
   await migrator.up();
+  await migrator.repair();
   await fastify.ready();
 
   fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
