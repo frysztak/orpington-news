@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
-import { pool } from 'db';
+import { pool } from '@db';
 import { DataIntegrityError, NotFoundError } from 'slonik';
 import {
   addCollection,
@@ -13,7 +13,7 @@ import {
   markCollectionAsRead,
   moveCollections,
   updateCollection,
-} from 'db/collections';
+} from '@db/collections';
 import {
   DBCollectionItem,
   getAllCollectionItems,

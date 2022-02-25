@@ -14,7 +14,7 @@ import {
   makeUpdatedFeedsMsg,
   makeUpdatingFeedsMsg,
 } from '@orpington-news/shared';
-import { sseEmit } from 'sse';
+import { sseEmit } from '@sse';
 
 export const updateCollections = (collections: readonly DBCollection[]) => {
   logger.info(`Found ${collections.length} feeds to update...`);

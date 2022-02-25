@@ -30,7 +30,9 @@
       "@routes/*": ["routes/*"],
 
       "@tasks": ["tasks/index.ts"],
-      "@tasks/*": ["tasks/*"]
+      "@tasks/*": ["tasks/*"],
+
+      "@sse": ["sse/index.ts"]
     }
   }
 }
