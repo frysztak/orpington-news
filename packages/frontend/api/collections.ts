@@ -64,3 +64,12 @@ export const markCollectionAsRead = (api: Wretcher, collectionId: ID) =>
 
 export const refreshCollection = (api: Wretcher, collectionId: ID) =>
   api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();
+
+export interface MoveCollectionBody {
+  collectionId: ID;
+  newParentId: ID | null;
+  newOrder: number;
+}
+
+export const moveCollection = (api: Wretcher, body: MoveCollectionBody) =>
+  api.url(`/collections/move`).post(body).json<FlatCollection[]>();

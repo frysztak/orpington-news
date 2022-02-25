@@ -11,7 +11,7 @@ import {
   getCollectionsFromRootId,
   hasCollectionWithUrl,
   markCollectionAsRead,
-  moveCollection,
+  moveCollections,
   updateCollection,
 } from 'db/collections';
 import {
@@ -57,8 +57,9 @@ const CollectionId = Type.Object({
 type CollectionIdType = Static<typeof CollectionId>;
 
 const MoveCollection = Type.Object({
-  id: Type.Integer(),
+  collectionId: Type.Integer(),
   newParentId: Type.Union([Type.Integer(), Type.Null()]),
+  newOrder: Type.Integer(),
 });
 type MoveCollectionType = Static<typeof MoveCollection>;
 
@@ -67,6 +68,17 @@ const ItemDetailsParams = Type.Object({
   itemSerialId: Type.Number(),
 });
 type ItemDetailsType = Static<typeof ItemDetailsParams>;
+
+const mapDBCollection = (collection: DBCollection): FlatCollection => {
+  const { date_updated, refresh_interval, unread_count, ...rest } = collection;
+
+  return {
+    ...rest,
+    dateUpdated: date_updated,
+    refreshInterval: refresh_interval,
+    unreadCount: unread_count ?? 0,
+  };
+};
 
 export const collections: FastifyPluginAsync = async (
   fastify,
@@ -83,16 +95,7 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const collections = await pool.any(getCollections());
-      return collections.map((c: DBCollection): FlatCollection => {
-        const { date_updated, refresh_interval, unread_count, ...rest } = c;
-
-        return {
-          ...rest,
-          dateUpdated: date_updated,
-          refreshInterval: refresh_interval,
-          unreadCount: unread_count ?? 0,
-        };
-      });
+      return collections.map(mapDBCollection);
     }
   );
 
@@ -112,7 +115,7 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Body: MoveCollectionType }>(
+  fastify.post<{ Body: MoveCollectionType; Reply: Array<FlatCollection> }>(
     '/move',
     {
       schema: {
@@ -121,16 +124,18 @@ export const collections: FastifyPluginAsync = async (
       },
       config: {
         schemaValidators: {
-          params: disableCoercionAjv,
+          body: disableCoercionAjv,
         },
       },
     },
     async (request, reply) => {
       const {
-        body: { id, newParentId },
+        body: { collectionId, newParentId, newOrder },
       } = request;
-      await pool.any(moveCollection(id, newParentId));
-      return true;
+
+      await pool.any(moveCollections(collectionId, newParentId, newOrder));
+      const collections = await pool.any(getCollections());
+      return collections.map(mapDBCollection);
     }
   );
 

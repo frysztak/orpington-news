@@ -1,13 +1,12 @@
 import { sql } from 'slonik';
+import { getUnixTime } from 'date-fns';
 import {
   Collection,
   defaultIcon,
   defaultRefreshInterval,
   ID,
 } from '@orpington-news/shared';
-import { slugify } from 'utils/slugify';
-import { getUnixTime } from 'date-fns';
-import { normalizeUrl } from '@utils';
+import { normalizeUrl, slugify } from '@utils';
 
 export const addCollection = (
   collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>
@@ -57,8 +56,12 @@ export const updateCollection = (
   WHERE id = ${id}`;
 };
 
-export const moveCollection = (collectionId: ID, newParentId: ID | null) => {
-  return sql`UPDATE collections SET parent_id = ${newParentId} WHERE id = ${collectionId}`;
+export const moveCollections = (
+  collectionId: ID,
+  newParentId: ID | null,
+  newOrder: number
+) => {
+  return sql`CALL move_collection(${collectionId}, ${newParentId}, ${newOrder})`;
 };
 
 export type DBCollection = Omit<

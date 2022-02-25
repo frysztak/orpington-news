@@ -3,6 +3,7 @@ import {
   Badge,
   Box,
   Center,
+  forwardRef,
   HStack,
   Icon,
   IconButton,
@@ -13,6 +14,7 @@ import {
   Text,
   useColorModeValue,
   useDisclosure,
+  useMergeRefs,
   useOutsideClick,
   VStack,
 } from '@chakra-ui/react';
@@ -33,7 +35,7 @@ export interface SidebarItemProps {
   onChevronClick?: () => void;
 }
 
-export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
+export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
   const {
     isActive,
     icon,
@@ -44,6 +46,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
     isLoading,
     onClick,
     onChevronClick,
+    ...rest
   } = props;
 
   const fg = useIconFill();
@@ -71,9 +74,9 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
     [isOpen, onClick, onClose]
   );
 
-  const ref = useRef<HTMLDivElement | null>(null);
+  const internalRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick({
-    ref,
+    ref: internalRef,
     handler: useCallback(
       (e) => {
         onClose();
@@ -114,9 +117,11 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
     [handleChevronClick]
   );
 
+  const refs = useMergeRefs(internalRef, ref);
+
   return (
     <HStack
-      ref={ref}
+      ref={refs}
       w="full"
       spacing={4}
       pr={3}
@@ -138,6 +143,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}
+      {...rest}
     >
       {chevron && (
         <IconButton
@@ -192,4 +198,4 @@ export const SidebarItem: React.FC<SidebarItemProps> = (props) => {
       </VStack>
     </HStack>
   );
-};
+});

@@ -14,7 +14,7 @@ import {
   refreshCollection,
 } from '@api';
 import { collectionKeys } from '@features/queryKeys';
-import { inflateCollections } from '@features/Collections';
+import { inflateCollections } from '@features/OrganizeCollections';
 import { FlatCollection, ID } from '@orpington-news/shared';
 
 export const useCollectionsList = <TSelectedData>(opts?: {
