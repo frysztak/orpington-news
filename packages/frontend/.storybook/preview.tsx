@@ -5,6 +5,7 @@ import { Global } from '@emotion/react';
 import { useDarkMode } from 'storybook-dark-mode';
 import { DndProvider } from 'react-dnd-multi-backend';
 import { HTML5toTouch } from 'rdndmb-html5-to-touch';
+import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { theme } from '../theme';
 import { fontFaces } from '../theme/fonts';
 
@@ -18,6 +19,9 @@ export const parameters = {
   },
   docs: {
     theme: themes.dark,
+  },
+  nextRouter: {
+    Provider: RouterContext.Provider,
   },
   layout: 'fullscreen',
 };

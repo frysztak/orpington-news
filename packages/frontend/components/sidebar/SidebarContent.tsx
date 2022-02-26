@@ -97,12 +97,12 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
       </Box>
 
       <Box w="full" py={6}>
-        {/*<SidebarItem
+        <SidebarItem
           title="Organize"
           icon={CgReorder}
           isActive={activeCollectionId === 'organize'}
           onClick={handleClick('organize')}
-        />*/}
+        />
         <SidebarItem
           title="Settings"
           icon={RiSettingsLine}

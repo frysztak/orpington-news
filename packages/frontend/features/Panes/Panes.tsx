@@ -60,9 +60,18 @@ export const Panes: React.FC = ({ children }) => {
         case 'settings': {
           return onOpenSettingsModal();
         }
+        case 'organize': {
+          router.push('/settings/organize');
+          break;
+        }
       }
     },
-    [onOpenAddCollectionModal, onOpenSettingsModal, setActiveCollectionId]
+    [
+      onOpenAddCollectionModal,
+      onOpenSettingsModal,
+      router,
+      setActiveCollectionId,
+    ]
   );
 
   const handleCollectionMenuItemClicked = useCallback(
