@@ -1,4 +1,11 @@
-import { Box, forwardRef, Tooltip, TooltipProps } from '@chakra-ui/react';
+import {
+  Box,
+  forwardRef,
+  PlacementWithLogical,
+  Tooltip,
+  TooltipProps,
+  useBreakpointValue,
+} from '@chakra-ui/react';
 import { Collection } from '@orpington-news/shared';
 import { HoverStatus } from './dndTypes';
 import { StatusLine } from './StatusLine';
@@ -23,6 +30,12 @@ export interface HoverStatusWrapperProps {
 export const HoverStatusWrapper = forwardRef<HoverStatusWrapperProps, 'div'>(
   (props, ref) => {
     const { collection, hoverStatus, children } = props;
+
+    const placement = useBreakpointValue<PlacementWithLogical>(
+      { base: 'bottom', md: 'left' },
+      'md'
+    );
+
     if (!hoverStatus) {
       return (
         <Box w="full" ref={ref}>
@@ -36,7 +49,7 @@ export const HoverStatusWrapper = forwardRef<HoverStatusWrapperProps, 'div'>(
         return (
           <Box w="full" ref={ref}>
             <WithTooltip
-              placement="left"
+              placement={placement}
               label={hoverStatus.reason}
               isOpen={hoverStatus.location === collection.id}
               hasArrow
