@@ -12,17 +12,11 @@ import { AiOutlineHome } from '@react-icons/all-files/ai/AiOutlineHome';
 import { BsBookmarks } from '@react-icons/all-files/bs/BsBookmarks';
 import { RiAddBoxFill } from '@react-icons/all-files/ri/RiAddBoxFill';
 import { RiSettingsLine } from '@react-icons/all-files/ri/RiSettingsLine';
-import { CgReorder } from '@react-icons/all-files/cg/CgReorder';
 import RssIcon from '@heroicons/react/outline/RssIcon';
 import { SidebarItem } from './SidebarItem';
 import { Collections, CollectionsProps } from './Collections';
 
-export type MenuItem =
-  | 'home'
-  | 'readingList'
-  | 'addFeed'
-  | 'organize'
-  | 'settings';
+export type MenuItem = 'home' | 'readingList' | 'addFeed' | 'settings';
 
 export type SidebarContentProps = Omit<
   CollectionsProps,
@@ -96,13 +90,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         <Divider mt={2} />
       </Box>
 
-      <Box w="full" py={6}>
-        <SidebarItem
-          title="Organize"
-          icon={CgReorder}
-          isActive={activeCollectionId === 'organize'}
-          onClick={handleClick('organize')}
-        />
+      <Box w="full" pt={2} pb={4}>
         <SidebarItem
           title="Settings"
           icon={RiSettingsLine}

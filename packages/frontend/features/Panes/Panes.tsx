@@ -58,10 +58,6 @@ export const Panes: React.FC = ({ children }) => {
           router.push('/settings/organize');
           break;
         }
-        case 'organize': {
-          router.push('/settings/organize');
-          break;
-        }
       }
     },
     [onOpenAddCollectionModal, router, setActiveCollectionId]
