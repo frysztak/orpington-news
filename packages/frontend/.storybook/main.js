@@ -8,6 +8,9 @@ module.exports = {
     '@storybook/addon-a11y',
     'storybook-dark-mode',
   ],
+  core: {
+    builder: 'webpack5',
+  },
   framework: '@storybook/react',
   staticDirs: ['../public'],
   reactOptions: {
@@ -19,16 +22,12 @@ module.exports = {
   },
   typescript: { reactDocgen: false },
   webpackFinal: async (config) => {
-    [].push.apply(config.resolve.plugins, [
-      new TsconfigPathsPlugin({ extensions: config.resolve.extensions }),
-    ]);
-
-    config.module.rules.push({
-      test: /\.mjs$/,
-      include: /node_modules/,
-      type: 'javascript/auto',
-    });
-
+    config.resolve.plugins = [
+      ...(config.resolve.plugins || []),
+      new TsconfigPathsPlugin({
+        extensions: config.resolve.extensions,
+      }),
+    ];
     return config;
   },
 };
