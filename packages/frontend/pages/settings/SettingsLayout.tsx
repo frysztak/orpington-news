@@ -1,7 +1,7 @@
 import NextLink from 'next/link';
 import { HStack, Divider, Show, IconButton, VStack } from '@chakra-ui/react';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
-import { SettingsSidebar } from './components/SettingsSidebar';
+import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 
 export interface SettingsLayoutProps {}
 

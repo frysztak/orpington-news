@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/react';
 import { SettingsSidebar, SettingsSidebarProps } from './SettingsSidebar';
 
 export default {
-  title: 'Pages/Settings/SettingsSidebar',
+  title: 'Pages/Settings/Sidebar/SettingsSidebar',
   component: SettingsSidebar,
 } as Meta;
 

@@ -4,7 +4,7 @@ import { IconButton, VStack } from '@chakra-ui/react';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
 import type { NextPageWithLayout } from '@pages/types';
 import { commonGetServerSideProps } from '@pages/ssrProps';
-import { SettingsSidebar } from './components/SettingsSidebar';
+import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 
 const Page: NextPageWithLayout = () => {
   return (

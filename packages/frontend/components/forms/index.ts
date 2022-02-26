@@ -7,4 +7,5 @@ export * from './SelectField';
 export * from './SwitchField';
 export * from './NumberField';
 export * from './FieldListener';
+export * from './AutoSave';
 export * from './RadioGroupField';

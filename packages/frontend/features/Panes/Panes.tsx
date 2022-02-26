@@ -24,7 +24,6 @@ import {
   useActiveCollection,
   useActiveCollectionContext,
 } from '@features/ActiveCollection';
-import { SettingsModal, useSettingsModal } from '@features/Settings';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 
 export const Panes: React.FC = ({ children }) => {
@@ -37,8 +36,6 @@ export const Panes: React.FC = ({ children }) => {
 
   const { onOpenDeleteCollectionModal, ...deleteCollectionModalProps } =
     useDeleteCollectionModal();
-
-  const { onOpenSettingsModal, ...settingsModalProps } = useSettingsModal();
 
   const { activeCollection, handleCollectionClicked, setActiveCollectionId } =
     useActiveCollection();
@@ -58,7 +55,8 @@ export const Panes: React.FC = ({ children }) => {
           return onOpenAddCollectionModal();
         }
         case 'settings': {
-          return onOpenSettingsModal();
+          router.push('/settings/organize');
+          break;
         }
         case 'organize': {
           router.push('/settings/organize');
@@ -66,12 +64,7 @@ export const Panes: React.FC = ({ children }) => {
         }
       }
     },
-    [
-      onOpenAddCollectionModal,
-      onOpenSettingsModal,
-      router,
-      setActiveCollectionId,
-    ]
+    [onOpenAddCollectionModal, router, setActiveCollectionId]
   );
 
   const handleCollectionMenuItemClicked = useCallback(
@@ -161,7 +154,6 @@ export const Panes: React.FC = ({ children }) => {
 
       <AddCollectionModal {...addCollectionModalProps} />
       <DeleteCollectionModal {...deleteCollectionModalProps} />
-      <SettingsModal {...settingsModalProps} />
 
       {children}
     </>

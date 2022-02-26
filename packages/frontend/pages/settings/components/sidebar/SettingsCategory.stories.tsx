@@ -4,7 +4,7 @@ import { SettingsCategory, SettingsCategoryProps } from './SettingsCategory';
 import { SettingsLink } from './SettingsLink';
 
 export default {
-  title: 'Pages/Settings/SettingsCategory',
+  title: 'Pages/Settings/Sidebar/SettingsCategory',
   component: SettingsCategory,
 } as Meta;
 
