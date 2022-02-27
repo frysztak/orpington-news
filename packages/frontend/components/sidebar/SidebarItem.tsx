@@ -10,6 +10,7 @@ import {
   Menu,
   MenuButton,
   MenuList,
+  Spacer,
   Spinner,
   Text,
   useColorModeValue,
@@ -163,17 +164,21 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
 
       <VStack align="flex-end" spacing={0}>
         {isLoading && <Spinner />}
-        {!isLoading && counter && !isOpen && (
-          <Badge
-            w={8}
-            h={8}
-            _groupHover={{
-              display: menuItems ? 'none' : '',
-            }}
-          >
-            <Center h="full">{counter > 999 ? '999+' : counter}</Center>
-          </Badge>
-        )}
+        {!isLoading &&
+          !isOpen &&
+          (counter ? (
+            <Badge
+              w={8}
+              h={8}
+              _groupHover={{
+                display: menuItems ? 'none' : '',
+              }}
+            >
+              <Center h="full">{counter > 999 ? '999+' : counter}</Center>
+            </Badge>
+          ) : (
+            <Spacer w={8} h={8} />
+          ))}
         {!isLoading && menuItems && (
           <Box
             display={isOpen ? 'block' : 'none'}
