@@ -12,6 +12,7 @@ import {
   hasCollectionWithUrl,
   markCollectionAsRead,
   moveCollections,
+  recalculateCollectionsOrder,
   updateCollection,
 } from '@db/collections';
 import {
@@ -109,7 +110,10 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const { body } = request;
-      await pool.any(addCollection(body));
+      await pool.transaction(async (conn) => {
+        await conn.any(addCollection(body));
+        await conn.any(recalculateCollectionsOrder());
+      });
       fetchRSSJob.start();
       return true;
     }
@@ -172,7 +176,11 @@ export const collections: FastifyPluginAsync = async (
       }
 
       const children = await pool.any(getCollectionChildrenIds(id));
-      await pool.any(deleteCollection(id));
+      await pool.transaction(async (conn) => {
+        await conn.any(deleteCollection(id));
+        await conn.any(recalculateCollectionsOrder());
+      });
+
       return { ids: children.map(({ children_id }) => children_id) };
     }
   );

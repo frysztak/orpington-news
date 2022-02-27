@@ -8,6 +8,10 @@ import {
 } from '@orpington-news/shared';
 import { normalizeUrl, slugify } from '@utils';
 
+export const recalculateCollectionsOrder = () => {
+  return sql`CALL collections_recalculate_order();`;
+};
+
 export const addCollection = (
   collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>
 ) => {
@@ -20,7 +24,7 @@ export const addCollection = (
     title,
     slugify(title),
     icon ?? defaultIcon,
-    0,
+    2147483647, // put new collection at the end
     parentId ?? null,
     description ?? null,
     url ?? null,
