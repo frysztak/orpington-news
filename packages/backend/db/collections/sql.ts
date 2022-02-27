@@ -38,7 +38,10 @@ export const addCollection = (
 };
 
 export const deleteCollection = (collectionId: ID) => {
-  return sql`DELETE FROM collections WHERE id = ${collectionId} OR parent_id = ${collectionId}`;
+  return sql<{ id: ID }>`
+  DELETE FROM collections 
+  WHERE id = ANY(${getCollectionChildrenIds(collectionId)})
+  RETURNING id`;
 };
 
 export const updateCollection = (

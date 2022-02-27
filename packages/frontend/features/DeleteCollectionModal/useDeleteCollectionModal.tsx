@@ -11,7 +11,7 @@ export const useDeleteCollectionModal = () => {
 
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { mutate: deleteCollection, isLoading } = useDeleteCollection({
-    onSuccess: (childrenIds: ID[]) => {
+    onSuccess: (deletedIds: ID[]) => {
       onClose();
       toast({
         status: 'success',
@@ -21,7 +21,7 @@ export const useDeleteCollectionModal = () => {
 
       if (
         typeof activeCollection.id === 'number' &&
-        childrenIds.includes(activeCollection.id)
+        deletedIds.includes(activeCollection.id)
       ) {
         setActiveCollectionId('home');
       }
