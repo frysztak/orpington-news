@@ -6,6 +6,7 @@ import {
   Text,
   MenuItem,
   VStack,
+  Collapse,
 } from '@chakra-ui/react';
 import { CgRemove } from '@react-icons/all-files/cg/CgRemove';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
@@ -108,8 +109,8 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
         }
       />
       <Box pl={4} w="full">
-        {isOpen &&
-          children?.map((collection: Collection) => (
+        <Collapse in={isOpen} animateOpacity>
+          {children?.map((collection: Collection) => (
             <CollapsibleCollectionList
               key={collection.id}
               collection={collection}
@@ -121,6 +122,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
               onCollectionMenuActionClicked={onCollectionMenuActionClicked}
             />
           ))}
+        </Collapse>
       </Box>
     </>
   );

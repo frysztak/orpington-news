@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { Box, VStack } from '@chakra-ui/react';
+import { Box, Collapse, VStack } from '@chakra-ui/react';
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd';
 import {
   Collection,
@@ -186,8 +186,8 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
         />
       </HoverStatusWrapper>
       <Box pl={4} w="full">
-        {isOpen &&
-          children?.map((collection: Collection, idx: number, array) => (
+        <Collapse in={isOpen} animateOpacity>
+          {children?.map((collection: Collection, idx: number, array) => (
             <CollapsibleCollectionList
               key={collection.id}
               index={idx}
@@ -202,6 +202,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
               onDnDEvent={onDnDEvent}
             />
           ))}
+        </Collapse>
       </Box>
     </>
   );
