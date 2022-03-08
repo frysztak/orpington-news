@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from 'react';
 import { Box, Collapse, VStack } from '@chakra-ui/react';
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Collection,
   ID,
@@ -16,9 +17,15 @@ import type {
   HoverPosition,
   HoverStatus,
 } from './dndTypes';
-import { HoverStatusWrapper } from './HoverStatusWrapper';
+import {
+  HoverStatusWrapper,
+  HoverStatusWrapperProps,
+} from './HoverStatusWrapper';
 import { resolveIfCanDrop } from './resolvers';
 import type { ParentsMap } from './parentsChildrenLUT';
+
+export const MotionHoverStatusWrapper =
+  motion<HoverStatusWrapperProps>(HoverStatusWrapper);
 
 interface CollapsibleCollectionListProps {
   index: number;
@@ -170,10 +177,15 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
 
   return (
     <>
-      <HoverStatusWrapper
+      <MotionHoverStatusWrapper
+        layout="position"
+        layoutId={id.toString()}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         collection={collection}
         hoverStatus={hoverStatus}
-        ref={ref}
+        dndRef={ref}
       >
         <SidebarItem
           title={title}
@@ -184,7 +196,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
           onChevronClick={handleChevronClick(collection)}
           style={{ opacity }}
         />
-      </HoverStatusWrapper>
+      </MotionHoverStatusWrapper>
       <Box pl={4} w="full">
         <Collapse in={isOpen} animateOpacity>
           {children?.map((collection: Collection, idx: number, array) => (
@@ -237,19 +249,21 @@ export const DraggableCollections: React.FC<DraggableCollectionsProps> = (
 
   return (
     <VStack w="full" spacing={1}>
-      {collections.map((collection: Collection, idx: number, array) => (
-        <CollapsibleCollectionList
-          key={collection.id}
-          index={idx}
-          isLast={idx === array.length - 1}
-          collection={collection}
-          expandedCollectionIDs={expandedCollectionIDs}
-          hoverStatus={hoverStatus}
-          parentsMap={parentsMap}
-          onChevronClicked={onChevronClicked}
-          onDnDEvent={handleDnDEvent}
-        />
-      ))}
+      <AnimatePresence initial={false}>
+        {collections.map((collection: Collection, idx: number, array) => (
+          <CollapsibleCollectionList
+            key={collection.id}
+            index={idx}
+            isLast={idx === array.length - 1}
+            collection={collection}
+            expandedCollectionIDs={expandedCollectionIDs}
+            hoverStatus={hoverStatus}
+            parentsMap={parentsMap}
+            onChevronClicked={onChevronClicked}
+            onDnDEvent={handleDnDEvent}
+          />
+        ))}
+      </AnimatePresence>
     </VStack>
   );
 };
