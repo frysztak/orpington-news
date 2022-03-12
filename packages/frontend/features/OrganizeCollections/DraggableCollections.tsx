@@ -10,6 +10,7 @@ import {
 } from '@orpington-news/shared';
 import { getCollectionIcon } from '@components/sidebar/CollectionIcon';
 import { SidebarItem } from '@components/sidebar/SidebarItem';
+import type { ParentsMap } from '@features/Collections';
 import type {
   DnDEvent,
   DropEvent,
@@ -22,7 +23,6 @@ import {
   HoverStatusWrapperProps,
 } from './HoverStatusWrapper';
 import { resolveIfCanDrop } from './resolvers';
-import type { ParentsMap } from './parentsChildrenLUT';
 
 export const MotionHoverStatusWrapper =
   motion<HoverStatusWrapperProps>(HoverStatusWrapper);

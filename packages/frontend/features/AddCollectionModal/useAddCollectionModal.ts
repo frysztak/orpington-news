@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useDisclosure, useToast } from '@chakra-ui/react';
-import { useCollectionsTree } from '@features/Panes/queries';
+import { useCollectionsTree } from '@features/Collections';
 import {
   Collection,
   defaultIcon,

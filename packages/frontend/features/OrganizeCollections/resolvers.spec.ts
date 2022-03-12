@@ -1,7 +1,7 @@
 import { FlatCollection } from '@orpington-news/shared';
+import { buildParentsChildrenMap } from '@features/Collections';
 import { DropEvent } from '.';
 import { HoverEvent, TargetInfo } from './dndTypes';
-import { buildParentsChildrenMap } from './parentsChildrenLUT';
 import {
   resolveIfCanDrop,
   resolveLogicalPosition,

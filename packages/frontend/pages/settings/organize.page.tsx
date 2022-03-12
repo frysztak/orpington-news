@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { DndProvider } from 'react-dnd-multi-backend';
 import { HTML5toTouch } from 'rdndmb-html5-to-touch';
 import { OrganizeCollections } from '@features/OrganizeCollections';
-import { useCollectionsList } from '@features/Panes/queries';
+import { useCollectionsList } from '@features/Collections';
 import { FlatCollection } from '@orpington-news/shared';
 import type { NextPageWithLayout } from '@pages/types';
 import { commonGetServerSideProps } from '@pages/ssrProps';

@@ -10,8 +10,7 @@ import {
   useCollectionItems,
   useMarkCollectionAsRead,
   useRefreshCollection,
-} from './queries';
-import { getNumber } from '@utils/router';
+} from '@features/Collections';
 import {
   AddCollectionModal,
   useAddCollectionModal,
@@ -24,6 +23,7 @@ import {
   useActiveCollection,
   useActiveCollectionContext,
 } from '@features/ActiveCollection';
+import { getNumber } from '@utils/router';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 
 export const Panes: React.FC = ({ children }) => {

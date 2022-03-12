@@ -1,6 +1,12 @@
-import { useContext, createContext, useState, useCallback } from 'react';
+import { useContext, createContext, useState, useEffect } from 'react';
 import { useLocalStorage } from 'beautiful-react-hooks';
-import { ID } from '@orpington-news/shared';
+import { FlatCollection, ID } from '@orpington-news/shared';
+import {
+  useCollectionsList,
+  buildParentsChildrenMap,
+  getParents,
+} from '@features/Collections';
+import { useSet } from '@utils';
 
 export interface ActiveCollectionContextData {
   activeCollectionId: ID | string;
@@ -19,28 +25,11 @@ export const ActiveCollectionContextProvider: React.FC = ({ children }) => {
     ID | string
   >('activeCollectionId', 'home');
 
-  const [currentlyUpdatedCollections, setCurrentlyUpdatedCollections] =
-    useState<Set<ID>>(new Set());
-
-  const addCurrentlyUpdatedCollection = useCallback((ids: Array<ID>) => {
-    setCurrentlyUpdatedCollections((set) => {
-      const newSet = new Set(set);
-      for (const id of ids) {
-        newSet.add(id);
-      }
-      return newSet;
-    });
-  }, []);
-
-  const deleteCurrentlyUpdatedCollection = useCallback((ids: Array<ID>) => {
-    setCurrentlyUpdatedCollections((set) => {
-      const newSet = new Set(set);
-      for (const id of ids) {
-        newSet.delete(id);
-      }
-      return newSet;
-    });
-  }, []);
+  const {
+    set: currentlyUpdatedCollections,
+    add: addCurrentlyUpdatedCollection,
+    remove: deleteCurrentlyUpdatedCollection,
+  } = useCurrentlyUpdatedCollections();
 
   return (
     <ActiveCollectionContext.Provider
@@ -66,4 +55,40 @@ export const useActiveCollectionContext = () => {
   }
 
   return context;
+};
+
+const useCurrentlyUpdatedCollections = () => {
+  const { data: flatCollections } = useCollectionsList<FlatCollection[]>();
+
+  const [parentsMap, setParentsMap] = useState(
+    buildParentsChildrenMap(flatCollections).parentsMap
+  );
+  useEffect(() => {
+    setParentsMap(buildParentsChildrenMap(flatCollections).parentsMap);
+  }, [flatCollections]);
+
+  const { set, add, remove } = useSet<ID>();
+  const { set: parentsSet, setValue: setParentsSet } = useSet<ID>();
+  const { set: combinedSet, setValue: setCombinedSet } = useSet<ID>();
+
+  useEffect(() => {
+    const parents = Array.from(set.values()).flatMap((id: ID) =>
+      getParents(parentsMap, id)
+    );
+    setParentsSet(new Set(parents));
+  }, [set, setParentsSet, parentsMap]);
+
+  useEffect(() => {
+    const newSet = new Set(set);
+    for (let elem of parentsSet) {
+      newSet.add(elem);
+    }
+    setCombinedSet(newSet);
+  }, [set, parentsSet, setCombinedSet]);
+
+  return {
+    set: combinedSet,
+    add,
+    remove,
+  };
 };

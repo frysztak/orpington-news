@@ -38,3 +38,10 @@ export const isParentOf = (
   const parents = parentsMap.get(id2);
   return parents?.has(id1) ?? false;
 };
+
+/**
+ * Returns parents of `id`
+ */
+export const getParents = (parentsMap: ParentsMap, id: ID): Array<ID> => {
+  return Array.from(parentsMap.get(id)?.values() ?? []);
+};

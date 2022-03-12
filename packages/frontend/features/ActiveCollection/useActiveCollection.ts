@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { ActiveCollection } from '@components/collection/types';
 import { Collection } from '@orpington-news/shared';
-import { useCollectionById } from '../Panes/queries';
+import { useCollectionById } from '@features/Collections';
 import { useActiveCollectionContext } from './ActiveCollectionContext';
 
 export const useActiveCollection = () => {

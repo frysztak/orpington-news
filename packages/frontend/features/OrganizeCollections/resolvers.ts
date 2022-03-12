@@ -1,5 +1,6 @@
-import { ID } from '@orpington-news/shared';
 import { last } from 'rambda';
+import { ID } from '@orpington-news/shared';
+import { isParentOf, ParentsMap } from '@features/Collections';
 import {
   DropEvent,
   HoverEvent,
@@ -8,7 +9,6 @@ import {
   MoveCollectionEvent,
   TargetInfo,
 } from './dndTypes';
-import { isParentOf, ParentsMap } from './parentsChildrenLUT';
 
 export const resolveLogicalPosition = (
   targetInfo: TargetInfo,

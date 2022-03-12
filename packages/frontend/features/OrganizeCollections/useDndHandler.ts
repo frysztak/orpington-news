@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Collection, FlatCollection, ID } from '@orpington-news/shared';
+import { buildParentsChildrenMap, ParentsMap } from '@features/Collections';
 import type {
   DnDEvent,
   HoverEvent,
@@ -11,7 +12,6 @@ import {
   resolveLogicalPosition,
   resolveNewParentAfterDrop,
 } from './resolvers';
-import { buildParentsChildrenMap, ParentsMap } from './parentsChildrenLUT';
 
 const resolveHoverStatus = (
   event: HoverEvent,
