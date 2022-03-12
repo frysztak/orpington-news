@@ -242,9 +242,20 @@ export const DraggableCollections: React.FC<DraggableCollectionsProps> = (
     onDnDEvent,
   } = props;
 
-  const handleDnDEvent = useMemo(
+  const debouncedDndEvent = useMemo(
     () => inhibitUntilArgsChanged(onDnDEvent),
     [onDnDEvent]
+  );
+
+  const handleDnDEvent = useCallback(
+    (event: DnDEvent) => {
+      // for rather mysterious reasons, `dragEnd` sometimes doesn't propagate through `inhibitUntilArgsChanged`...
+      if (event.type === 'dragEnd') {
+        return onDnDEvent(event);
+      }
+      return debouncedDndEvent(event);
+    },
+    [debouncedDndEvent, onDnDEvent]
   );
 
   return (
