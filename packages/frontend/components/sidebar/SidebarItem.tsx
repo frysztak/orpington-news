@@ -163,7 +163,11 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
       </Text>
 
       <VStack align="flex-end" spacing={0}>
-        {isLoading && <Spinner />}
+        {isLoading && (
+          <Center h={8} w={8}>
+            <Spinner />
+          </Center>
+        )}
         {!isLoading &&
           !isOpen &&
           (counter ? (
