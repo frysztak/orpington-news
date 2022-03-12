@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Box } from '@chakra-ui/react';
@@ -28,7 +28,10 @@ const UseDndHandlerWrapper: React.FC<UseDndHandlerWrapperProps> = (props) => {
     parentsMap,
     onDnDEvent,
     onChevronClicked,
-  } = useDndHandler(action('onDrop'), flatCollections);
+  } = useDndHandler(
+    useMemo(() => action('onDrop'), []),
+    flatCollections
+  );
 
   return (
     <Box>
