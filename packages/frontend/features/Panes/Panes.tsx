@@ -90,9 +90,10 @@ export const Panes: React.FC = ({ children }) => {
 
   const handleRefreshClicked = useCallback(
     (collectionId: ID | string) => {
-      if (typeof collectionId === 'string') {
+      if (typeof collectionId === 'string' && collectionId !== 'home') {
         return;
       }
+
       refreshCollection({ id: collectionId });
     },
     [refreshCollection]

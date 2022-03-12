@@ -62,7 +62,7 @@ export const markCollectionAsRead = (api: Wretcher, collectionId: ID) =>
     .post()
     .json<{ ids: ID[] }>();
 
-export const refreshCollection = (api: Wretcher, collectionId: ID) =>
+export const refreshCollection = (api: Wretcher, collectionId: ID | 'home') =>
   api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();
 
 export interface MoveCollectionBody {

@@ -150,6 +150,12 @@ export const getCollectionsFromRootId = (rootId: ID) => {
     AND id = ANY(${getCollectionChildrenIds(rootId)})`;
 };
 
+export const getCollectionsWithUrl = () => {
+  return sql<DBCollection>`
+  SELECT * FROM collections
+  WHERE url IS NOT NULL`;
+};
+
 export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
   return sql`UPDATE collections
   SET date_updated = TO_TIMESTAMP(${date})

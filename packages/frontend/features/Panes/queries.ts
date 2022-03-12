@@ -90,13 +90,16 @@ export const useRefreshCollection = () => {
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
 
-  return useMutation(({ id }: { id: ID }) => refreshCollection(api, id), {
-    onError,
-    onSuccess: ({ ids }) => {
-      for (const id of ids) {
-        queryClient.invalidateQueries(collectionKeys.allForId(id));
-      }
-      queryClient.invalidateQueries(collectionKeys.tree);
-    },
-  });
+  return useMutation(
+    ({ id }: { id: ID | 'home' }) => refreshCollection(api, id),
+    {
+      onError,
+      onSuccess: ({ ids }) => {
+        for (const id of ids) {
+          queryClient.invalidateQueries(collectionKeys.allForId(id));
+        }
+        queryClient.invalidateQueries(collectionKeys.tree);
+      },
+    }
+  );
 };

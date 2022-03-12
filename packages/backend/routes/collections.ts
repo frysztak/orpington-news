@@ -9,6 +9,7 @@ import {
   getCollectionChildrenIds,
   getCollections,
   getCollectionsFromRootId,
+  getCollectionsWithUrl,
   hasCollectionWithUrl,
   markCollectionAsRead,
   moveCollections,
@@ -326,19 +327,20 @@ export const collections: FastifyPluginAsync = async (
       const {
         params: { id },
       } = request;
-      if (id === 'home') {
-        reply.status(500);
-        return {
-          errorCode: 500,
-          message: 'Cannot mark home collection as read',
-        };
-      }
 
-      const collections = await pool.any(getCollectionsFromRootId(id));
+      const collections = await pool.any(
+        id === 'home' ? getCollectionsWithUrl() : getCollectionsFromRootId(id)
+      );
       const result = await updateCollections(collections);
+
       if (result) {
-        const children = await pool.any(getCollectionChildrenIds(id));
-        return { ids: children.map(({ children_id }) => children_id) };
+        if (id === 'home') {
+          const children = await pool.any(getCollectionsWithUrl());
+          return { ids: children.map(({ id }) => id) };
+        } else {
+          const children = await pool.any(getCollectionChildrenIds(id));
+          return { ids: children.map(({ children_id }) => children_id) };
+        }
       } else {
         const noun = collections.length > 1 ? 'Feeds' : 'Feed';
         reply
