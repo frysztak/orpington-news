@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useDisclosure, useToast } from '@chakra-ui/react';
 import { ID } from '@orpington-news/shared';
-import { useActiveCollection } from '@features/ActiveCollection';
+import { useActiveCollection } from '@features/Preferences';
 import { useDeleteCollection } from './queries';
 
 export const useDeleteCollectionModal = () => {

@@ -22,6 +22,7 @@ import {
   getCollectionItems,
   getItemDetails,
 } from '@db/collectionItems';
+import { pruneExpandedCollections } from '@db/preferences';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
 import {
   FlatCollection,
@@ -139,6 +140,7 @@ export const collections: FastifyPluginAsync = async (
       } = request;
 
       await pool.any(moveCollections(collectionId, newParentId, newOrder));
+      await pool.query(pruneExpandedCollections());
       const collections = await pool.any(getCollections());
       return collections.map(mapDBCollection);
     }
@@ -179,6 +181,7 @@ export const collections: FastifyPluginAsync = async (
       const deletedIds = await pool.transaction(async (conn) => {
         const deletedIds = await conn.any(deleteCollection(id));
         await conn.any(recalculateCollectionsOrder());
+        await conn.query(pruneExpandedCollections());
         return deletedIds;
       });
 

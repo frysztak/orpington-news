@@ -2,11 +2,10 @@ import { useCallback, useMemo } from 'react';
 import { ActiveCollection } from '@components/collection/types';
 import { Collection } from '@orpington-news/shared';
 import { useCollectionById } from '@features/Collections';
-import { useActiveCollectionContext } from './ActiveCollectionContext';
+import { usePreferencesContext } from './PreferencesContext';
 
 export const useActiveCollection = () => {
-  const { activeCollectionId, setActiveCollectionId } =
-    useActiveCollectionContext();
+  const { activeCollectionId, setActiveCollectionId } = usePreferencesContext();
 
   const handleCollectionClicked = useCallback(
     (collection: Collection) => {

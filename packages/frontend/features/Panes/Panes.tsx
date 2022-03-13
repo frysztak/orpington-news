@@ -19,10 +19,11 @@ import {
   DeleteCollectionModal,
   useDeleteCollectionModal,
 } from '@features/DeleteCollectionModal';
+import { useActiveCollectionContext } from '@features/ActiveCollection';
 import {
   useActiveCollection,
-  useActiveCollectionContext,
-} from '@features/ActiveCollection';
+  usePreferencesContext,
+} from '@features/Preferences';
 import { getNumber } from '@utils/router';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 
@@ -40,7 +41,7 @@ export const Panes: React.FC = ({ children }) => {
   const { activeCollection, handleCollectionClicked, setActiveCollectionId } =
     useActiveCollection();
   const { currentlyUpdatedCollections } = useActiveCollectionContext();
-  const { expandedCollectionIDs, handleCollectionChevronClicked } =
+  const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
   const { mutate: refreshCollection } = useRefreshCollection();
@@ -125,7 +126,7 @@ export const Panes: React.FC = ({ children }) => {
           onMenuItemClicked: handleMenuItemClicked,
           onCollectionMenuActionClicked: handleCollectionMenuItemClicked,
           activeCollectionId: activeCollection.id,
-          expandedCollectionIDs: expandedCollectionIDs,
+          expandedCollectionIDs: expandedCollectionIds,
           collectionsCurrentlyUpdated: currentlyUpdatedCollections,
         }}
         activeCollection={activeCollection}
@@ -158,25 +159,23 @@ export const Panes: React.FC = ({ children }) => {
 };
 
 const useExpandedCollections = () => {
-  const [expandedCollectionIDs, setExpandedCollectionIDs] = useLocalStorage<
-    Array<ID>
-  >('expandedCollectionIDs', []);
+  const { expandedCollectionIds, expandCollection, collapseCollection } =
+    usePreferencesContext();
 
   const handleCollectionChevronClicked = useCallback(
-    (collection: Collection) => {
-      setExpandedCollectionIDs((collections) => {
-        const idx = collections.findIndex((id) => id === collection.id);
-        return idx !== -1
-          ? [...collections.slice(0, idx), ...collections.slice(idx + 1)]
-          : [...collections, collection.id];
-      });
+    ({ id }: Collection) => {
+      const idx = expandedCollectionIds.findIndex((id_) => id_ === id);
+      if (idx === -1) {
+        expandCollection(id);
+      } else {
+        collapseCollection(id);
+      }
     },
-    [setExpandedCollectionIDs]
+    [collapseCollection, expandCollection, expandedCollectionIds]
   );
 
   return {
-    expandedCollectionIDs,
+    expandedCollectionIds,
     handleCollectionChevronClicked,
-    setExpandedCollectionIDs,
   };
 };

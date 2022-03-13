@@ -9,7 +9,7 @@ import fastifySplitValidator from 'fastify-split-validator';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
 
-import { auth, collectionItem, collections, sse } from '@routes';
+import { auth, collectionItem, collections, preferences, sse } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob } from '@tasks/fetchRSS';
 import { defaultAjv, logger } from '@utils';
@@ -90,6 +90,7 @@ async function setupFastify() {
   await fastify.register(collections, { prefix: '/collections' });
   await fastify.register(collectionItem, { prefix: '/collectionItem' });
   await fastify.register(sse, { prefix: '/events' });
+  await fastify.register(preferences, { prefix: '/preferences' });
 
   const closeListeners = closeWithGrace(
     { delay: 500 },

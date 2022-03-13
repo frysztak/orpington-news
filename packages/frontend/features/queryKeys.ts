@@ -11,3 +11,7 @@ export const collectionKeys = {
   detail: (collectionId: ID, itemSerialId: ID) =>
     [...collectionKeys.base, collectionId, 'detail', { itemSerialId }] as const,
 };
+
+export const preferencesKeys = {
+  base: ['preferences'] as const,
+};

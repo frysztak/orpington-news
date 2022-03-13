@@ -96,3 +96,13 @@ export type CollectionItemDetails = Omit<
   CollectionItem,
   'collection_id' | 'collection_title' | 'collection_slug' | 'collection_icon'
 >;
+
+interface CommonPreferences {
+  expandedCollectionIds: Array<ID>;
+}
+
+export type ViewPreference =
+  | { activeView: 'home' }
+  | { activeView: 'collection'; activeCollectionId: number };
+
+export type Preferences = CommonPreferences & ViewPreference;
