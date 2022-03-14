@@ -4,26 +4,16 @@ import { BsChevronRight } from '@react-icons/all-files/bs/BsChevronRight';
 
 export type ChevronProps = {
   pointTo: 'top' | 'bottom';
-  onClick?: () => void;
 } & Omit<IconProps, 'css'>;
 
 export const Chevron: React.FC<ChevronProps> = (props) => {
-  const { pointTo, onClick, ...rest } = props;
-
-  const handleClick: React.MouseEventHandler = useCallback(
-    (event) => {
-      event.stopPropagation();
-      onClick?.();
-    },
-    [onClick]
-  );
+  const { pointTo, ...rest } = props;
 
   return (
     <Icon
       as={BsChevronRight}
       transform={`rotate(${pointTo === 'top' ? 0 : 90}deg)`}
       transition="transform 0.2s"
-      onClick={handleClick}
       {...rest}
     />
   );

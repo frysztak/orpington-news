@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { MouseEvent, useCallback, useRef } from 'react';
 import {
   Badge,
   Box,
@@ -98,13 +98,17 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
     [onClick, onClose]
   );
 
-  const handleChevronClick = useCallback(() => {
-    if (isOpen) {
-      onClose();
-    } else {
-      onChevronClick?.();
-    }
-  }, [isOpen, onChevronClick, onClose]);
+  const handleChevronClick = useCallback(
+    (e?: MouseEvent) => {
+      e?.stopPropagation();
+      if (isOpen) {
+        onClose();
+      } else {
+        onChevronClick?.();
+      }
+    },
+    [isOpen, onChevronClick, onClose]
+  );
 
   const handleChevronKeyDown: React.KeyboardEventHandler = useCallback(
     (event) => {
@@ -153,8 +157,9 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
           mr={-3}
           size="2xs"
           aria-label={chevron === 'top' ? 'Collapse menu' : 'Expand menu'}
-          icon={<Chevron pointTo={chevron} onClick={handleChevronClick} />}
+          icon={<Chevron pointTo={chevron} />}
           onKeyDown={handleChevronKeyDown}
+          onClick={handleChevronClick}
         />
       )}
       {icon && <Icon as={icon} w={6} h={6} fill={fg} />}

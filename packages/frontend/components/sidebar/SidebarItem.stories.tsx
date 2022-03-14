@@ -2,6 +2,7 @@ import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { AiOutlineHome } from 'react-icons/ai';
 import { MenuItem } from '@chakra-ui/react';
+import { action } from '@storybook/addon-actions';
 import { SidebarItem, SidebarItemProps } from './SidebarItem';
 
 export default {
@@ -15,6 +16,8 @@ export const Default = Template.bind({});
 Default.args = {
   icon: AiOutlineHome,
   title: 'Home',
+  onClick: action('onClick'),
+  onChevronClick: action('onChevronClick'),
 };
 export const Active = Template.bind({});
 Active.args = {
