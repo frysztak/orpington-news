@@ -43,19 +43,18 @@ export const PreferencesContextProvider: React.FC = ({ children }) => {
     [collapseCollection]
   );
 
-  if (!preferences) {
-    return <>{children}</>;
-  }
-
-  const activeCollectionId =
-    preferences.activeView === 'home' ? 'home' : preferences.activeCollectionId;
+  const activeCollectionId = preferences
+    ? preferences.activeView === 'home'
+      ? 'home'
+      : preferences.activeCollectionId
+    : 'home';
 
   return (
     <PreferencesContext.Provider
       value={{
         activeCollectionId,
         setActiveCollectionId,
-        expandedCollectionIds: preferences.expandedCollectionIds,
+        expandedCollectionIds: preferences?.expandedCollectionIds ?? [],
         expandCollection: handleExpandCollection,
         collapseCollection: handleCollapseCollection,
       }}
