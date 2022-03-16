@@ -34,5 +34,11 @@ module.exports = withPlugins(
       APP_DEMO_PASSWORD: process.env.APP_DEMO_PASSWORD,
     },
     swcMinify: true,
+    compiler: {
+      removeConsole:
+        process.env.NODE_ENV === 'production'
+          ? { exclude: ['error', 'warn'] }
+          : false,
+    },
   }
 );

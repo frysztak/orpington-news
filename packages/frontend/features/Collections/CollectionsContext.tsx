@@ -1,6 +1,15 @@
-import { useContext, createContext, useState, useEffect } from 'react';
-import { FlatCollection, ID } from '@orpington-news/shared';
+import {
+  useContext,
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
+import { useQueryClient } from 'react-query';
+import { FlatCollection, ID, Msg } from '@orpington-news/shared';
 import { useSet } from '@utils';
+import { collectionKeys } from '@features/queryKeys';
+import { useAddEventListener } from '@features/EventListener';
 import { useCollectionsList, buildParentsChildrenMap, getParents } from '.';
 
 export interface CollectionsContextData {
@@ -17,6 +26,30 @@ export const CollectionsContextProvider: React.FC = ({ children }) => {
     add: addCurrentlyUpdatedCollection,
     remove: deleteCurrentlyUpdatedCollection,
   } = useCurrentlyUpdatedCollections();
+
+  const queryClient = useQueryClient();
+  const eventHandler = useCallback(
+    (msg: Msg) => {
+      switch (msg.type) {
+        case 'updatingFeeds': {
+          return addCurrentlyUpdatedCollection(msg.data.feedIds);
+        }
+        case 'updatedFeeds': {
+          for (const feedId of msg.data.feedIds) {
+            queryClient.invalidateQueries(collectionKeys.list(feedId));
+          }
+          queryClient.invalidateQueries(collectionKeys.tree);
+          return deleteCurrentlyUpdatedCollection(msg.data.feedIds);
+        }
+      }
+    },
+    [
+      addCurrentlyUpdatedCollection,
+      deleteCurrentlyUpdatedCollection,
+      queryClient,
+    ]
+  );
+  useAddEventListener(eventHandler);
 
   return (
     <CollectionsContext.Provider

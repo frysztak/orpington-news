@@ -5,7 +5,7 @@ import { Global } from '@emotion/react';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { Panes } from '@features/Panes';
 import { CollectionsContextProvider } from '@features/Collections';
-import { SSEListener } from '@features/SSEListener';
+import { EventListenerContextProvider } from '@features/EventListener';
 import { PreferencesContextProvider } from '@features/Preferences';
 import { ApiContextProvider } from '@api';
 import { theme, fontFaces, MetaTheme } from 'theme';
@@ -34,8 +34,8 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           <Compose
             components={[
               ApiContextProvider,
+              EventListenerContextProvider,
               CollectionsContextProvider,
-              SSEListener,
               PreferencesContextProvider,
             ]}
           >
