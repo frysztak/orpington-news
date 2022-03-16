@@ -36,10 +36,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const apiWithHeaders = api.headers(getCookieHeaderFromReq(req));
   const queryClient = new QueryClient();
   await Promise.all([
-    await queryClient.prefetchQuery(collectionKeys.tree, () =>
+    queryClient.prefetchQuery(collectionKeys.tree, () =>
       getCollections(apiWithHeaders)
     ),
-    await queryClient.prefetchQuery(preferencesKeys.base, () =>
+    queryClient.prefetchQuery(preferencesKeys.base, () =>
       getPreferences(apiWithHeaders)
     ),
   ]);

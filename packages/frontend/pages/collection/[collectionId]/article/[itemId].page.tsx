@@ -3,13 +3,13 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { dehydrate, QueryClient } from 'react-query';
-import { api, getCollections, getItemDetails } from '@api';
+import { api, getCollections, getItemDetails, getPreferences } from '@api';
 import {
   getCookieHeaderFromReq,
   getChakraColorModeCookie,
   isLoginDisabled,
 } from '@utils';
-import { collectionKeys } from '@features/queryKeys';
+import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 import { getNumber } from '@utils/router';
 import { useArticleDetails } from '@features/Article/queries';
 
@@ -63,6 +63,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     ),
     queryClient.prefetchQuery(collectionKeys.detail(collectionId, itemId), () =>
       getItemDetails(apiWithHeaders, collectionId, itemId)
+    ),
+    queryClient.prefetchQuery(preferencesKeys.base, () =>
+      getPreferences(apiWithHeaders)
     ),
   ]);
 
