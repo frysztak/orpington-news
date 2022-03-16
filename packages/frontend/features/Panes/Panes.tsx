@@ -10,6 +10,7 @@ import {
   useCollectionItems,
   useMarkCollectionAsRead,
   useRefreshCollection,
+  useCollectionsContext,
 } from '@features/Collections';
 import {
   AddCollectionModal,
@@ -19,7 +20,6 @@ import {
   DeleteCollectionModal,
   useDeleteCollectionModal,
 } from '@features/DeleteCollectionModal';
-import { useActiveCollectionContext } from '@features/ActiveCollection';
 import {
   useActiveCollection,
   usePreferencesContext,
@@ -40,7 +40,7 @@ export const Panes: React.FC = ({ children }) => {
 
   const { activeCollection, handleCollectionClicked, setActiveCollectionId } =
     useActiveCollection();
-  const { currentlyUpdatedCollections } = useActiveCollectionContext();
+  const { currentlyUpdatedCollections } = useCollectionsContext();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();

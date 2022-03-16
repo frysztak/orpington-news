@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getItemDetails, setDateRead, useApi, useHandleError } from '@api';
 import { CollectionItemDetails, ID } from '@orpington-news/shared';
 import { collectionKeys } from '@features';
-import { useActiveCollectionContext } from '@features/ActiveCollection';
+import { useActiveCollection } from '@features/Preferences';
 
 export const useArticleDateReadMutation = (
   collectionId: ID,
@@ -13,7 +13,7 @@ export const useArticleDateReadMutation = (
   const queryClient = useQueryClient();
 
   const detailKey = collectionKeys.detail(collectionId, itemSerialId);
-  const { activeCollectionId } = useActiveCollectionContext();
+  const { activeCollection } = useActiveCollection();
 
   return useMutation(
     ({ id, dateRead }: { id: ID; dateRead: number | null }) =>
@@ -42,7 +42,7 @@ export const useArticleDateReadMutation = (
       onSettled: () => {
         queryClient.invalidateQueries(collectionKeys.allForId(collectionId));
         queryClient.invalidateQueries(
-          collectionKeys.allForId(activeCollectionId)
+          collectionKeys.allForId(activeCollection.id)
         );
         queryClient.invalidateQueries(collectionKeys.tree);
       },

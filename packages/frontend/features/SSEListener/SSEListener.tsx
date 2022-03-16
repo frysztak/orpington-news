@@ -3,13 +3,13 @@ import { useQueryClient } from 'react-query';
 import { sseUrl } from '@api';
 import { Msg } from '@orpington-news/shared';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { useActiveCollectionContext } from '@features/ActiveCollection';
 import { collectionKeys } from '@features';
+import { useCollectionsContext } from '@features/Collections';
 
 export const SSEListener: React.FC = ({ children }) => {
   const queryClient = useQueryClient();
   const { addCurrentlyUpdatedCollection, deleteCurrentlyUpdatedCollection } =
-    useActiveCollectionContext();
+    useCollectionsContext();
 
   useEffect(() => {
     const fetchData = async () => {

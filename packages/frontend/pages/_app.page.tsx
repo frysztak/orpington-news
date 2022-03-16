@@ -4,7 +4,7 @@ import { ChakraProvider, cookieStorageManager, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { Panes } from '@features/Panes';
-import { ActiveCollectionContextProvider } from '@features/ActiveCollection';
+import { CollectionsContextProvider } from '@features/Collections';
 import { SSEListener } from '@features/SSEListener';
 import { PreferencesContextProvider } from '@features/Preferences';
 import { ApiContextProvider } from '@api';
@@ -34,7 +34,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
           <Compose
             components={[
               ApiContextProvider,
-              ActiveCollectionContextProvider,
+              CollectionsContextProvider,
               SSEListener,
               PreferencesContextProvider,
             ]}

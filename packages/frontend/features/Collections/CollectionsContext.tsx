@@ -1,30 +1,17 @@
 import { useContext, createContext, useState, useEffect } from 'react';
-import { useLocalStorage } from 'beautiful-react-hooks';
 import { FlatCollection, ID } from '@orpington-news/shared';
-import {
-  useCollectionsList,
-  buildParentsChildrenMap,
-  getParents,
-} from '@features/Collections';
 import { useSet } from '@utils';
+import { useCollectionsList, buildParentsChildrenMap, getParents } from '.';
 
-export interface ActiveCollectionContextData {
-  activeCollectionId: ID | string;
-  setActiveCollectionId: (id: ID | string) => void;
-
+export interface CollectionsContextData {
   currentlyUpdatedCollections: Set<ID>;
   addCurrentlyUpdatedCollection: (ids: Array<ID>) => void;
   deleteCurrentlyUpdatedCollection: (ids: Array<ID>) => void;
 }
 
-const ActiveCollectionContext =
-  createContext<ActiveCollectionContextData | null>(null);
+const CollectionsContext = createContext<CollectionsContextData | null>(null);
 
-export const ActiveCollectionContextProvider: React.FC = ({ children }) => {
-  const [activeCollectionId, setActiveCollectionId] = useLocalStorage<
-    ID | string
-  >('activeCollectionId', 'home');
-
+export const CollectionsContextProvider: React.FC = ({ children }) => {
   const {
     set: currentlyUpdatedCollections,
     add: addCurrentlyUpdatedCollection,
@@ -32,25 +19,23 @@ export const ActiveCollectionContextProvider: React.FC = ({ children }) => {
   } = useCurrentlyUpdatedCollections();
 
   return (
-    <ActiveCollectionContext.Provider
+    <CollectionsContext.Provider
       value={{
-        activeCollectionId,
-        setActiveCollectionId,
         currentlyUpdatedCollections,
         addCurrentlyUpdatedCollection,
         deleteCurrentlyUpdatedCollection,
       }}
     >
       {children}
-    </ActiveCollectionContext.Provider>
+    </CollectionsContext.Provider>
   );
 };
 
-export const useActiveCollectionContext = () => {
-  const context = useContext(ActiveCollectionContext);
+export const useCollectionsContext = () => {
+  const context = useContext(CollectionsContext);
   if (!context) {
     throw new Error(
-      `useActiveCollectionContext needs to wrapped in ActiveCollectionContextProvider`
+      `useCollectionsContext needs to wrapped in CollectionsContextProvider`
     );
   }
 
