@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
-import useDidMount from 'beautiful-react-hooks/useDidMount';
+import React from 'react';
+import { useIsClient } from 'usehooks-ts';
 
 export const ClientRender: React.FC = ({ children }) => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useDidMount(() => {
-    setIsMounted(true);
-  });
-  return isMounted ? (children as JSX.Element) : null;
+  const isClient = useIsClient();
+  return isClient ? (children as JSX.Element) : null;
 };

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
-import { useLocalStorage } from 'beautiful-react-hooks';
 import { useRouter } from 'next/router';
+import { useLocalStorage } from 'usehooks-ts';
 import { Panes as PanesComponent } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
 import { Collection, ID } from '@orpington-news/shared';

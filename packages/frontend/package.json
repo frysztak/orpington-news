@@ -23,7 +23,6 @@
     "@next/bundle-analyzer": "^12.1.0",
     "@orpington-news/shared": "^0.0.0",
     "@react-icons/all-files": "^4.1.0",
-    "beautiful-react-hooks": "^1.2.0",
     "chakra-react-select": "^3.0.6",
     "date-fns": "^2.28.0",
     "focus-visible": "^5.2.0",
@@ -46,6 +45,7 @@
     "react-syntax-highlighter": "^15.4.5",
     "react-virtual": "^2.10.4",
     "string-to-color": "^2.2.2",
+    "usehooks-ts": "^2.4.2",
     "wretch": "^1.7.9",
     "yup": "^0.32.11"
   },
