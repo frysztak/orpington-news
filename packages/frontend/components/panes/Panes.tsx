@@ -13,6 +13,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
+import { useIsClient } from 'usehooks-ts';
 import { CollectionItem, ID } from '@orpington-news/shared';
 import { SidebarContent, SidebarContentProps } from '@components/sidebar';
 import { CollectionHeader } from '@components/collection/header';
@@ -136,6 +137,8 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
       ? currentlyUpdatedCollections.has(activeCollection.id)
       : false;
 
+  const isClient = useIsClient();
+
   return (
     <>
       <Drawer
@@ -163,8 +166,8 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         <Resizable
           enable={{ right: true }}
           minWidth={275}
-          defaultSize={
-            sidebarWidth
+          size={
+            isClient && sidebarWidth
               ? { width: sidebarWidth, height: 'auto' }
               : { width: 300, height: 'auto' }
           }
@@ -179,8 +182,8 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         <Resizable
           enable={{ right: true }}
           minWidth={400}
-          defaultSize={
-            collectionItemsWidth
+          size={
+            isClient && collectionItemsWidth
               ? { width: collectionItemsWidth, height: 'auto' }
               : { width: 400, height: 'auto' }
           }

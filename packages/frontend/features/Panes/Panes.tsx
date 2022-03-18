@@ -114,6 +114,12 @@ export const Panes: React.FC = ({ children }) => {
     router.push('/');
   }, [router]);
 
+  const [sidebarWidth, setSidebarWidth] = useLocalStorage('sidebarWidth', 300);
+  const [collectionItemsWidth, setCollectionItemsWidth] = useLocalStorage(
+    'collectionItemsWidth',
+    400
+  );
+
   return (
     <>
       <PanesComponent
@@ -148,6 +154,10 @@ export const Panes: React.FC = ({ children }) => {
             />
           )
         }
+        sidebarWidth={sidebarWidth}
+        onSidebarWidthChanged={setSidebarWidth}
+        collectionItemsWidth={collectionItemsWidth}
+        onCollectionItemsWidthChanged={setCollectionItemsWidth}
       />
 
       <AddCollectionModal {...addCollectionModalProps} />
