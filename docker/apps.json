@@ -1,0 +1,28 @@
+{
+  "apps": [
+    {
+      "name": "web",
+      "cwd": "/app/packages/frontend/",
+      "script": "node_modules/.bin/next",
+      "args": "start",
+      "env": {
+        "NODE_ENV": "production",
+        "API_URL": "http://127.0.0.1:8000/api",
+        "PORT": "3000"
+      },
+      "error_file": "/var/log/web/error.log",
+      "out_file": "/var/log/web/out.log"
+    },
+    {
+      "name": "api",
+      "cwd": "/app/packages/backend/",
+      "script": "dist/server.js",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": "5000"
+      },
+      "error_file": "/var/log/api/error.log",
+      "out_file": "/var/log/api/out.log"
+    }
+  ]
+}
