@@ -16,8 +16,9 @@ export interface EventListenerContextData {
   removeEventListener: (listener: EventListener) => void;
 }
 
-const EventListenerContext =
-  createContext<EventListenerContextData | null>(null);
+const EventListenerContext = createContext<EventListenerContextData | null>(
+  null
+);
 
 export const EventListenerContextProvider: React.FC = ({ children }) => {
   const listeners = useRef<Array<EventListener>>([]);
@@ -32,6 +33,7 @@ export const EventListenerContextProvider: React.FC = ({ children }) => {
     async function fetchData() {
       await fetchEventSource(sseUrl, {
         openWhenHidden: true,
+        keepalive: true,
         onmessage(ev) {
           console.debug(`[SSE] Received new message:`, ev);
           if (ev.data) {
@@ -45,9 +47,7 @@ export const EventListenerContextProvider: React.FC = ({ children }) => {
     }
 
     fetchData();
-  }, []);
 
-  useEffect(() => {
     return () => {
       listeners.current.length = 0;
     };
