@@ -11,7 +11,7 @@ import closeWithGrace from 'close-with-grace';
 
 import { auth, collectionItem, collections, preferences, sse } from '@routes';
 import { fastifyVerifySession } from '@plugins';
-import { fetchRSSJob } from '@tasks/fetchRSS';
+import { fetchRSSJob, pingJob } from '@tasks';
 import { defaultAjv, logger } from '@utils';
 import { migrator } from '@db/migrator';
 import { isLoginDisabled } from '@orpington-news/shared';
@@ -112,6 +112,7 @@ async function setupFastify() {
   await fastify.ready();
 
   fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
+  fastify.scheduler.addSimpleIntervalJob(pingJob);
   await fastify.listen(
     process.env.PORT || 5000,
     process.env.HOST || '0.0.0.0',

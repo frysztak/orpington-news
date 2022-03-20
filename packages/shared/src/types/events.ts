@@ -22,5 +22,11 @@ export const makeUpdatedFeedsMsg = (
   data: UpdatedFeedsMsg['data']
 ): UpdatedFeedsMsg => ({ type: 'updatedFeeds', data });
 
-export type Msg = UpdatingFeedsMsg | UpdatedFeedsMsg;
+export interface PingMsg {
+  type: 'ping';
+}
+
+export const pingMsg: PingMsg = { type: 'ping' };
+
+export type Msg = UpdatingFeedsMsg | UpdatedFeedsMsg | PingMsg;
 export type MsgType = Msg['type'];
