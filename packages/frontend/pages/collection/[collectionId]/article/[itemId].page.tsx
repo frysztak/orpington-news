@@ -3,7 +3,7 @@ import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { dehydrate, QueryClient } from 'react-query';
-import { api, getCollections, getItemDetails, getPreferences } from '@api';
+import { getCollections, getItemDetails, getPreferences, ssrApi } from '@api';
 import {
   getCookieHeaderFromReq,
   getChakraColorModeCookie,
@@ -55,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     return { props: { chakraCookie } };
   }
 
-  const apiWithHeaders = api.headers(getCookieHeaderFromReq(req));
+  const apiWithHeaders = ssrApi.headers(getCookieHeaderFromReq(req));
   const queryClient = new QueryClient();
   await Promise.all([
     queryClient.prefetchQuery(collectionKeys.tree, () =>
