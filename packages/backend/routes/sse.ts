@@ -18,6 +18,6 @@ export const sse: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       return () => sseEmitter.removeListener('push', cb);
     });
 
-    res.sse(sseSource);
+    res.header('X-Accel-Buffering', 'no').sse(sseSource);
   });
 };
