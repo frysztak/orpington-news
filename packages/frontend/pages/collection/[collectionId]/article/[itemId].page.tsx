@@ -55,7 +55,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     return { props: { chakraCookie } };
   }
 
-  const apiWithHeaders = ssrApi.headers(getCookieHeaderFromReq(req));
+  const apiWithHeaders = ssrApi().headers(getCookieHeaderFromReq(req));
   const queryClient = new QueryClient();
   await Promise.all([
     queryClient.prefetchQuery(collectionKeys.tree, () =>

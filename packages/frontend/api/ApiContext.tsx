@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from 'react';
 import type { Wretcher } from 'wretch';
-import { makeApi } from '@api';
+import { getUrls, makeApi } from '@api';
 import { useHandleUnauthorized } from './useHandleUnauthorized';
 
 export interface ApiContextData {
@@ -11,10 +11,11 @@ const ApiContext = createContext<ApiContextData | null>(null);
 
 export const ApiContextProvider: React.FC = ({ children }) => {
   const onUnauthorized = useHandleUnauthorized();
+  const { apiUrl } = useMemo(() => getUrls(), []);
 
   const api = useMemo(() => {
-    return makeApi().catcher(401, onUnauthorized);
-  }, [onUnauthorized]);
+    return makeApi(apiUrl).catcher(401, onUnauthorized);
+  }, [apiUrl, onUnauthorized]);
 
   return <ApiContext.Provider value={{ api }}>{children}</ApiContext.Provider>;
 };

@@ -1,5 +1,6 @@
 .git
 .husky
+**/.env*
 **/.next
 **/node_modules
 **/coverage

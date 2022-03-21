@@ -3,35 +3,41 @@ import wretch from 'wretch';
 import getConfig from 'next/config';
 import { useHandleUnauthorized } from './useHandleUnauthorized';
 
-const { publicRuntimeConfig } = getConfig();
-if (!publicRuntimeConfig.APP_URL && !publicRuntimeConfig.API_URL) {
-  console.warn(`Neither APP_URL nor API_URL are defined!`);
-}
+export const getUrls = () => {
+  const { publicRuntimeConfig } = getConfig();
+  if (!publicRuntimeConfig?.APP_URL) {
+    console.error(`APP_URL is not set!`);
+  }
 
-const appUrl = publicRuntimeConfig.APP_URL;
-const apiUrl =
-  publicRuntimeConfig.API_URL ?? new URL('/api', appUrl).toString();
-const ssrApiUrl = publicRuntimeConfig.API_SSR_URL ?? apiUrl;
+  const appUrl: string | undefined = publicRuntimeConfig?.APP_URL;
+  const apiUrl: string =
+    publicRuntimeConfig?.API_URL ??
+    (appUrl ? new URL('/api', appUrl).toString() : '/api');
+  const ssrApiUrl: string = publicRuntimeConfig?.API_SSR_URL ?? apiUrl;
 
-export const makeApi = (url: string = apiUrl) =>
+  return { appUrl, apiUrl, ssrApiUrl };
+};
+
+export const makeApi = (url: string) =>
   wretch()
     .url(url)
     .options({ credentials: 'include', mode: 'cors' })
     .errorType('json');
 
-export const api = makeApi();
-export const ssrApi = makeApi(ssrApiUrl);
+export const ssrApi = () => {
+  const { ssrApiUrl } = getUrls();
+  return makeApi(ssrApiUrl);
+};
 
 export const useApi = () => {
   const onUnauthorized = useHandleUnauthorized();
+  const { apiUrl } = useMemo(() => getUrls(), []);
 
   return useMemo(
-    () => makeApi().catcher(401, onUnauthorized),
-    [onUnauthorized]
+    () => makeApi(apiUrl).catcher(401, onUnauthorized),
+    [apiUrl, onUnauthorized]
   );
 };
-
-export const sseUrl = `${apiUrl}/events`;
 
 export * from './ApiContext';
 export * from './useHandleError';

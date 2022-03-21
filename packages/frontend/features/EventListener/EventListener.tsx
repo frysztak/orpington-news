@@ -6,7 +6,7 @@ import {
   useRef,
 } from 'react';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { sseUrl } from '@api';
+import { getUrls } from '@api';
 import { Msg } from '@orpington-news/shared';
 
 type EventListener = (msg: Msg) => void;
@@ -31,7 +31,8 @@ export const EventListenerContextProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function fetchData() {
-      await fetchEventSource(sseUrl, {
+      const { apiUrl } = getUrls();
+      await fetchEventSource(`${apiUrl}/events`, {
         openWhenHidden: true,
         keepalive: true,
         onmessage(ev) {
