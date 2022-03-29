@@ -16,7 +16,7 @@ export const insertCollectionItems = (items: Array<InsertDBCollectionItem>) => {
   return sql`
     INSERT INTO collection_items(id, title, slug, link, summary, full_text, thumbnail_url, date_published, date_updated, categories, comments, reading_time, collection_id)
     SELECT id, title, slug, link, summary, full_text, thumbnail_url, TO_TIMESTAMP(date_published) as date_published, TO_TIMESTAMP(date_updated) as date_updated, categories, comments, reading_time, collection_id
-    FROM jsonb_to_recordset(${sql.json(
+    FROM jsonb_to_recordset(${sql.jsonb(
       items
     )}) AS t (id text, title text, slug text, link text, summary text, full_text text, thumbnail_url text, date_published integer, date_updated integer, categories text[], comments text, reading_time float4, collection_id integer)
     ON CONFLICT (id) DO UPDATE SET
