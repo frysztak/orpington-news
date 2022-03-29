@@ -1,4 +1,4 @@
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import slugify from 'slugify';
 import { getUnixTime } from 'date-fns';
 import {
