@@ -4,7 +4,7 @@
   "private": true,
   "author": "Sebastian Frysztak <sebastian@frysztak.dev>",
   "scripts": {
-    "dev": "cpy ../../.env . && next dev",
+    "dev": "cp ../../.env.local .env && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

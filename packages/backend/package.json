@@ -7,7 +7,7 @@
   "typings": "dist/index.d.ts",
   "license": "ISC",
   "scripts": {
-    "dev": "cpy ../../.env . && NODE_ENV=development rollup -c -w",
+    "dev": "cp ../../.env.local .env && NODE_ENV=development rollup -c -w",
     "build": "rimraf dist && rollup -c",
     "start": "node dist/server.js",
     "migrate": "node dist/migrate.js",
