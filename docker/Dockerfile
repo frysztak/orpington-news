@@ -37,6 +37,8 @@ RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn ins
 WORKDIR /app/packages/frontend
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --production --ignore-scripts --prefer-offline --ignore-optional --frozen-lockfile
 
+ARG COMMIT_SHA ""
+ENV NEXT_PUBLIC_GIT_COMMIT_HASH $COMMIT_SHA
 EXPOSE 8000
 CMD /bin/sh /app/run.sh
 

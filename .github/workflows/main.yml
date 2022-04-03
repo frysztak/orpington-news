@@ -19,17 +19,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build
+      - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           file: ./docker/Dockerfile
-          load: true
           tags: frysztak/orpington-news:latest
-      - name: Push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./docker/Dockerfile
-          push: true
-          tags: frysztak/orpington-news:latest
+          build-args:
+            - COMMIT_SHA: ${{ GITHUB_SHA }}
