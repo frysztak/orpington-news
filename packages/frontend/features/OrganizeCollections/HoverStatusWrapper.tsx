@@ -57,7 +57,7 @@ export const HoverStatusWrapper = forwardRef<HoverStatusWrapperProps, 'div'>(
           )}
 
         <Box w="full" ref={ref}>
-          <Tooltip isOpen={false} {...tooltipProps}>
+          <Tooltip isOpen={false} closeOnEsc={false} {...tooltipProps}>
             {children}
           </Tooltip>
         </Box>
