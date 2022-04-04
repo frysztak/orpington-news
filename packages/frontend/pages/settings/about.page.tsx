@@ -29,7 +29,7 @@ const Page: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Customize appearance</title>
+        <title>About</title>
       </Head>
 
       <VStack w="full" align="flex-start" p={4} spacing={4}>
