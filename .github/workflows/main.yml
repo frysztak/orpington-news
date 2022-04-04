@@ -30,4 +30,4 @@ jobs:
           push: true
           tags: frysztak/orpington-news:latest
           build-args: |
-            "COMMIT_SHA=${{GITHUB_SHA}}"
+            "COMMIT_SHA=${{github.sha}}"
