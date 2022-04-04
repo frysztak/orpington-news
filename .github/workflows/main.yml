@@ -29,5 +29,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: frysztak/orpington-news:latest
-          build-args:
-            - COMMIT_SHA: ${{ GITHUB_SHA }}
+          build-args: |
+            "COMMIT_SHA=${{GITHUB_SHA}}"
