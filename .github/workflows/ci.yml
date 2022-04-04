@@ -13,7 +13,7 @@ jobs:
           cache: 'yarn'
       - name: Install deps
         run: |
-          yarn install --frozen-lockfile
+          yarn install --immutable
       - name: Build
         run: |
           yarn build
