@@ -9,6 +9,8 @@ import {
   isLoginDisabled,
 } from '@utils';
 import { collectionKeys, preferencesKeys } from '@features';
+import { collectionsItemsQueryFn } from '@features/Collections';
+import { Preferences } from '@orpington-news/shared';
 
 const Home: NextPage = () => {
   return (
@@ -43,6 +45,28 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       getPreferences(apiWithHeaders)
     ),
   ]);
+  const preferences = queryClient.getQueryData<Preferences>(
+    preferencesKeys.base
+  );
+  if (preferences) {
+    const activeCollectionId =
+      preferences.activeView === 'home'
+        ? 'home'
+        : preferences.activeCollectionId;
+    await queryClient.prefetchInfiniteQuery(
+      collectionKeys.list(activeCollectionId),
+      collectionsItemsQueryFn(apiWithHeaders, activeCollectionId)
+    );
+
+    // https://github.com/tannerlinsley/react-query/issues/1458#issuecomment-953830227
+    queryClient.setQueryData(
+      collectionKeys.list(activeCollectionId),
+      (data: any) => ({
+        ...data,
+        pageParams: [],
+      })
+    );
+  }
 
   return {
     props: {

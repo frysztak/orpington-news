@@ -5,6 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from 'react-query';
+import type { Wretcher } from 'wretch';
 import {
   useApi,
   useHandleError,
@@ -43,18 +44,22 @@ export const useCollectionById = (collectionId: ID | string) => {
   });
 };
 
+export const collectionsItemsQueryFn =
+  (api: Wretcher, collectionId: ID | string) =>
+  ({ pageParam = 0 }) => {
+    return getCollectionItems(api, collectionId, pageParam).then((items) => ({
+      items,
+      pageParam,
+    }));
+  };
+
 export const useCollectionItems = (collectionId: ID | string) => {
   const api = useApi();
   const { onError } = useHandleError();
 
   const { data, ...rest } = useInfiniteQuery(
     collectionKeys.list(collectionId),
-    ({ pageParam = 0 }) => {
-      return getCollectionItems(api, collectionId, pageParam).then((items) => ({
-        items,
-        pageParam,
-      }));
-    },
+    collectionsItemsQueryFn(api, collectionId),
     {
       getNextPageParam: (lastPage) =>
         lastPage.items.length === 0 ? undefined : lastPage.pageParam + 1,
