@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { Box, VStack } from '@chakra-ui/react';
 import { DndProvider } from 'react-dnd-multi-backend';
 import { HTML5toTouch } from 'rdndmb-html5-to-touch';
 import { OrganizeCollections } from '@features/OrganizeCollections';
@@ -7,7 +8,6 @@ import { FlatCollection } from '@orpington-news/shared';
 import type { NextPageWithLayout } from '@pages/types';
 import { commonGetServerSideProps } from '@pages/ssrProps';
 import { SettingsLayout } from './SettingsLayout';
-import { Heading, VStack } from '@chakra-ui/react';
 
 const Page: NextPageWithLayout = () => {
   const { data: flatCollections } = useCollectionsList<FlatCollection[]>();
@@ -19,9 +19,9 @@ const Page: NextPageWithLayout = () => {
       </Head>
 
       <VStack w="full" align="flex-start" py={4}>
-        <Heading px={4} fontSize="2xl">
+        <Box as="h2" textStyle="settings.header" px={4}>
           Organize
-        </Heading>
+        </Box>
         <OrganizeCollections flatCollections={flatCollections} />
       </VStack>
     </>

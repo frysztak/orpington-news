@@ -8,6 +8,8 @@ import {
 } from './queries';
 
 export interface PreferencesContextData {
+  preferences?: Preferences;
+
   activeCollectionId: ID | 'home';
   setActiveCollectionId: (id: ID | 'home') => void;
 
@@ -52,6 +54,7 @@ export const PreferencesContextProvider: React.FC = ({ children }) => {
   return (
     <PreferencesContext.Provider
       value={{
+        preferences,
         activeCollectionId,
         setActiveCollectionId,
         expandedCollectionIds: preferences?.expandedCollectionIds ?? [],

@@ -32,7 +32,16 @@ export const RadioGroupField: React.FC<RadioFieldProps> = (props) => {
 
   return (
     <FormControl {...formControlProps}>
-      {label && <FormLabel htmlFor={formControlProps.id}>{label}</FormLabel>}
+      {label && (
+        <FormLabel
+          htmlFor={formControlProps.id}
+          fontWeight="bold"
+          fontSize="lg"
+          fontFamily="heading"
+        >
+          {label}
+        </FormLabel>
+      )}
       <HStack {...group} spacing={4}>
         {children({ getRadioProps })}
       </HStack>

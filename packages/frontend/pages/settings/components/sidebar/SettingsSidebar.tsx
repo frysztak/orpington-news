@@ -20,11 +20,8 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
       </Heading>
 
       <SettingsCategory title="Collections">
-        <SettingsLink href="/settings/organize">Organize</SettingsLink>
-      </SettingsCategory>
-
-      <SettingsCategory title="Customize">
         <SettingsLink href="/settings/appearance">Appearance</SettingsLink>
+        <SettingsLink href="/settings/organize">Organize</SettingsLink>
       </SettingsCategory>
 
       <SettingsCategory title="About">

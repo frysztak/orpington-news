@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import { formatDistanceToNowStrict } from 'date-fns';
 import Head from 'next/head';
-import { Heading, Text, HStack, VStack, Code } from '@chakra-ui/react';
+import { Heading, Text, HStack, VStack, Code, Box } from '@chakra-ui/react';
 import { commonGetServerSideProps } from '@pages/ssrProps';
 import type { NextPageWithLayout } from '@pages/types';
 import { useEventListenerContext } from '@features/EventListener';
@@ -33,7 +33,9 @@ const Page: NextPageWithLayout = () => {
       </Head>
 
       <VStack w="full" align="flex-start" p={4} spacing={4}>
-        <Heading fontSize="2xl">About Orpington News</Heading>
+        <Box as="h2" textStyle="settings.header">
+          About Orpington News
+        </Box>
 
         <section>
           <Heading as="h3" fontSize="xl">

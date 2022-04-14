@@ -1,9 +1,15 @@
 import React from 'react';
-import { Center, Icon, VStack } from '@chakra-ui/react';
+import { Center, Icon, Radio, VStack } from '@chakra-ui/react';
 import { Formik, Form } from 'formik';
 import MoonIcon from '@heroicons/react/solid/MoonIcon';
 import SunIcon from '@heroicons/react/solid/SunIcon';
+import {
+  CollectionLayout,
+  CollectionLayouts,
+  defaultCollectionLayout,
+} from '@orpington-news/shared';
 import { RadioGroupField, AutoSave } from '@components/forms';
+import { CollectionLayoutName } from '@components/collection/types';
 import { RadioButton } from './RadioButton';
 
 const themeOptions = ['dark', 'light'] as const;
@@ -19,10 +25,12 @@ const getThemeIcon = (theme: ThemeOption): React.FC => {
 
 export interface CustomizeAppearanceData {
   theme: ThemeOption;
+  defaultCollectionLayout: CollectionLayout;
 }
 
 const initialValues: CustomizeAppearanceData = {
   theme: 'dark',
+  defaultCollectionLayout: defaultCollectionLayout,
 };
 
 export interface CustomizeAppearanceProps {
@@ -50,6 +58,22 @@ export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
                         <Icon as={getThemeIcon(value)} boxSize={6} />
                       </Center>
                     </RadioButton>
+                  );
+                })
+              }
+            </RadioGroupField>
+
+            <RadioGroupField
+              label="Default collection layout"
+              name="defaultCollectionLayout"
+            >
+              {({ getRadioProps }) =>
+                CollectionLayouts.map((value) => {
+                  const radio = getRadioProps({ value });
+                  return (
+                    <Radio key={value} {...radio}>
+                      {CollectionLayoutName[value]}
+                    </Radio>
                   );
                 })
               }

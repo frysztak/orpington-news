@@ -10,18 +10,26 @@ import {
 import { useVirtual } from '@utils/useVirtual';
 import { last } from 'rambda';
 import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
-import { CollectionItem, genN } from '@orpington-news/shared';
-import { LayoutType } from '../types';
-import { MagazineItem } from '../layouts';
+import { CollectionItem, CollectionLayout, genN } from '@orpington-news/shared';
+import { CardItem, MagazineItem } from '../layouts';
 
 export interface CollectionListProps {
-  layout: LayoutType;
+  layout: CollectionLayout;
   items: CollectionItem[];
 
   isFetchingMoreItems?: boolean;
   canFetchMoreItems?: boolean;
   onFetchMoreItems?: () => void;
 }
+
+const getListItem = (layout: CollectionLayout) => {
+  switch (layout) {
+    case 'magazine':
+      return MagazineItem;
+    case 'card':
+      return CardItem;
+  }
+};
 
 export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   props
@@ -92,6 +100,8 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     }
   }
 
+  const Item = getListItem(layout);
+
   return (
     <Box ref={parentRef} overflow="auto" w="full" h="full" {...rest}>
       <Box
@@ -120,7 +130,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
               {isLoaderRow ? (
                 <SkeletonBox />
               ) : (
-                <MagazineItem item={items[virtualRow.index]} py={2} />
+                <Item item={items[virtualRow.index]} py={2} />
               )}
             </Box>
           );

@@ -1,10 +1,22 @@
 import React from 'react';
-import { Box, Heading, HStack, IconButton, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Heading,
+  HStack,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItemOption,
+  MenuList,
+  MenuOptionGroup,
+  VStack,
+} from '@chakra-ui/react';
 import { CgMenuLeftAlt } from '@react-icons/all-files/cg/CgMenuLeftAlt';
 import { CgSearch } from '@react-icons/all-files/cg/CgSearch';
 import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
-import { ActiveCollection, LayoutType } from '../types';
+import { ActiveCollection, CollectionLayoutName } from '../types';
+import { CollectionLayout, CollectionLayouts } from '@orpington-news/shared';
 
 export interface CollectionHeaderProps {
   collection?: ActiveCollection;
@@ -14,7 +26,7 @@ export interface CollectionHeaderProps {
 
   onMenuClicked?: () => void;
   onRefresh?: () => void;
-  onChangeLayout?: (layout: LayoutType) => void;
+  onChangeLayout?: (layout: CollectionLayout) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
@@ -55,11 +67,27 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
               aria-label="Search"
               variant="ghost"
             />*/}
-            {/*<IconButton
-              icon={<BsLayoutWtf />}
-              aria-label="Layout"
-              variant="ghost"
-            />*/}
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                icon={<BsLayoutWtf />}
+                aria-label="Layout"
+                variant="ghost"
+              />
+              <MenuList>
+                <MenuOptionGroup
+                  defaultValue="card"
+                  title="Layout"
+                  type="radio"
+                >
+                  {CollectionLayouts.map((layout) => (
+                    <MenuItemOption key={layout} value={layout}>
+                      {CollectionLayoutName[layout]}
+                    </MenuItemOption>
+                  ))}
+                </MenuOptionGroup>
+              </MenuList>
+            </Menu>
           </Box>
         )}
       </HStack>
