@@ -97,8 +97,13 @@ export type CollectionItemDetails = Omit<
   'collection_id' | 'collection_title' | 'collection_slug' | 'collection_icon'
 >;
 
+export const CollectionLayouts = ['magazine', 'card'] as const;
+export type CollectionLayout = typeof CollectionLayouts[number];
+export const defaultCollectionLayout: CollectionLayout = 'card';
+
 interface CommonPreferences {
   expandedCollectionIds: Array<ID>;
+  defaultCollectionLayout: CollectionLayout;
 }
 
 export type ViewPreference =

@@ -5,6 +5,7 @@ import {
   getPreferences,
   modifyExpandedCollections,
   pruneExpandedCollections,
+  savePreferences,
   setActiveView,
   ViewPreferenceCodec,
 } from '@db/preferences';
@@ -24,6 +25,19 @@ export const preferences: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
+      return await pool.one(getPreferences());
+    }
+  );
+
+  fastify.put<{ Reply: Preferences; Body: Preferences }>(
+    '/',
+    {
+      schema: {
+        tags: ['Preferences'],
+      },
+    },
+    async (request, reply) => {
+      await pool.query(savePreferences(request.body));
       return await pool.one(getPreferences());
     }
   );

@@ -9,8 +9,18 @@ export const getPreferences = () => {
   return sql<Preferences>`
     SELECT active_view as "activeView", 
            active_collection_id as "activeCollectionId",
-           COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds"
+           COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds",
+           default_collection_layout as "defaultCollectionLayout"
     FROM preferences`;
+};
+
+export const savePreferences = (preferences: Preferences) => {
+  const { defaultCollectionLayout } = preferences;
+
+  return sql`
+    UPDATE preferences p
+    SET default_collection_layout = ${defaultCollectionLayout}
+    WHERE p.id = 1`;
 };
 
 export const modifyExpandedCollections = (
