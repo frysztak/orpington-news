@@ -24,7 +24,7 @@ import {
   getCollectionItems,
   getItemDetails,
 } from '@db/collectionItems';
-import { pruneExpandedCollections } from '@db/preferences';
+import { getPreferences, pruneExpandedCollections } from '@db/preferences';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
 import {
   FlatCollection,
@@ -117,8 +117,14 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const { body } = request;
+      const preferences = await pool.one(getPreferences());
       await pool.transaction(async (conn) => {
-        await conn.any(addCollection(body));
+        await conn.any(
+          addCollection({
+            ...body,
+            layout: preferences.defaultCollectionLayout,
+          })
+        );
         await conn.any(recalculateCollectionsOrder());
       });
       fetchRSSJob.start();

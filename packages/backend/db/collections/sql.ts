@@ -16,8 +16,15 @@ export const recalculateCollectionsOrder = () => {
 export const addCollection = (
   collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>
 ) => {
-  const { title, icon, parentId, description, dateUpdated, refreshInterval } =
-    collection;
+  const {
+    title,
+    icon,
+    parentId,
+    description,
+    dateUpdated,
+    refreshInterval,
+    layout,
+  } = collection;
 
   const url = collection.url && normalizeUrl(collection.url);
 
@@ -31,11 +38,20 @@ export const addCollection = (
     url ?? null,
     dateUpdated ? getUnixTime(dateUpdated) : null,
     refreshInterval ?? defaultRefreshInterval,
+    layout ?? null,
   ];
-  return sql`INSERT INTO collections("title", "slug", "icon", "order", "parent_id", "description", "url", "date_updated", "refresh_interval") VALUES (${sql.join(
-    values,
-    sql`, `
-  )})`;
+  return sql`INSERT INTO collections(
+    "title", 
+    "slug", 
+    "icon", 
+    "order", 
+    "parent_id", 
+    "description", 
+    "url", 
+    "date_updated", 
+    "refresh_interval", 
+    "layout"
+    ) VALUES (${sql.join(values, sql`, `)})`;
 };
 
 export const deleteCollection = (collectionId: ID) => {
