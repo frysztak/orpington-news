@@ -10,11 +10,16 @@ import {
 import { useVirtual } from '@utils/useVirtual';
 import { last } from 'rambda';
 import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
-import { CollectionItem, CollectionLayout, genN } from '@orpington-news/shared';
+import {
+  CollectionItem,
+  CollectionLayout,
+  defaultCollectionLayout,
+  genN,
+} from '@orpington-news/shared';
 import { CardItem, MagazineItem } from '../layouts';
 
 export interface CollectionListProps {
-  layout: CollectionLayout;
+  layout?: CollectionLayout;
   items: CollectionItem[];
 
   isFetchingMoreItems?: boolean;
@@ -35,7 +40,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   props
 ) => {
   const {
-    layout,
+    layout = defaultCollectionLayout,
     items,
     isFetchingMoreItems,
     canFetchMoreItems,

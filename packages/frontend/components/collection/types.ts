@@ -12,6 +12,7 @@ export interface CollectionLayoutProps {
 export interface ActiveCollection {
   id: string | ID;
   title: string;
+  layout: CollectionLayout;
 }
 
 export const CollectionLayoutName: Record<CollectionLayout, string> = {

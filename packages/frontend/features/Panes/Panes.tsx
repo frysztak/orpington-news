@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useLocalStorage } from 'usehooks-ts';
 import { Panes as PanesComponent } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
-import { Collection, ID } from '@orpington-news/shared';
+import { Collection, CollectionLayout, ID } from '@orpington-news/shared';
 import { Article } from '@features/Article';
 import {
   useCollectionsTree,
@@ -11,6 +11,7 @@ import {
   useMarkCollectionAsRead,
   useRefreshCollection,
   useCollectionsContext,
+  useSetCollectionLayout,
 } from '@features/Collections';
 import {
   AddCollectionModal,
@@ -100,6 +101,20 @@ export const Panes: React.FC = ({ children }) => {
     [refreshCollection]
   );
 
+  const { mutate: setCollectionLayout } = useSetCollectionLayout();
+  const handleCollectionLayoutChanged = useCallback(
+    (layout: CollectionLayout) => {
+      // TODO(home): remove when home collection is refactored
+      if (typeof activeCollection.id === 'number') {
+        setCollectionLayout({
+          id: activeCollection.id,
+          layout,
+        });
+      }
+    },
+    [activeCollection.id, setCollectionLayout]
+  );
+
   const { data: collections, isError: collectionsError } = useCollectionsTree();
 
   const {
@@ -158,6 +173,7 @@ export const Panes: React.FC = ({ children }) => {
         onSidebarWidthChanged={setSidebarWidth}
         collectionItemsWidth={collectionItemsWidth}
         onCollectionItemsWidthChanged={setCollectionItemsWidth}
+        onCollectionLayoutChanged={handleCollectionLayoutChanged}
       />
 
       <AddCollectionModal {...addCollectionModalProps} />

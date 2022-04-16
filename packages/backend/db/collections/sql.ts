@@ -2,6 +2,7 @@ import { sql } from 'slonik';
 import { getUnixTime } from 'date-fns';
 import {
   Collection,
+  CollectionLayout,
   defaultIcon,
   defaultRefreshInterval,
   ID,
@@ -87,14 +88,14 @@ export const getCollections = () => {
   return sql<DBCollection>`
   WITH RECURSIVE collections_from_parents AS (
     SELECT
-      id, title, slug, icon, "order", description, url, date_updated, refresh_interval, '{}'::int[] AS parents, 0 AS level
+      id, title, slug, icon, "order", description, url, date_updated, refresh_interval, layout, '{}'::int[] AS parents, 0 AS level
     FROM collections
 	  WHERE parent_id IS NULL
 
     UNION ALL
 
     SELECT
-      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, c.refresh_interval, parents || c.parent_id, level + 1
+      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, c.refresh_interval, c.layout, parents || c.parent_id, level + 1
     FROM
       collections_from_parents p
       JOIN collections c ON c.parent_id = p.id
@@ -102,7 +103,7 @@ export const getCollections = () => {
       NOT c.id = ANY (parents)
   )
 SELECT
-  id, title, slug, icon, "order", description, url, date_updated, refresh_interval, parents, level, unread_count
+  id, title, slug, icon, "order", description, url, date_updated, refresh_interval, layout, parents, level, unread_count
 FROM
   collections_from_parents
 LEFT JOIN (SELECT collection_id, COUNT(*) as unread_count
@@ -175,4 +176,14 @@ export const markCollectionAsRead = (
   UPDATE collection_items
   SET date_read = TO_TIMESTAMP(${dateRead})
   WHERE collection_id = ANY(${getCollectionChildrenIds(collectionId)})`;
+};
+
+export const setCollectionLayout = (
+  collectionId: ID,
+  layout: CollectionLayout
+) => {
+  return sql`
+  UPDATE collections
+  SET layout = ${layout}
+  WHERE id = ${collectionId}`;
 };

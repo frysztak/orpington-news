@@ -1,5 +1,6 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import { CollectionHeader, CollectionHeaderProps } from './CollectionHeader';
 
 export default {
@@ -16,7 +17,10 @@ Default.args = {
   collection: {
     id: 90,
     title: 'Fun Blog',
+    layout: 'magazine',
   },
+  onRefresh: action('onRefresh'),
+  onChangeLayout: action('onChangeLayout'),
 };
 
 export const NoMenuButton = Template.bind({});
@@ -43,5 +47,6 @@ LongTitle.args = {
   collection: {
     id: 90,
     title: 'A Very Fun Blog Indeed',
+    layout: 'magazine',
   },
 };

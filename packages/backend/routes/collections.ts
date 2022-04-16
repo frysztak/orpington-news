@@ -1,7 +1,8 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
-import { pool } from '@db';
 import { DataIntegrityError, NotFoundError } from 'slonik';
+import { getUnixTime } from 'date-fns';
+import { pool } from '@db';
 import {
   addCollection,
   DBCollection,
@@ -14,6 +15,7 @@ import {
   markCollectionAsRead,
   moveCollections,
   recalculateCollectionsOrder,
+  setCollectionLayout,
   updateCollection,
 } from '@db/collections';
 import {
@@ -28,12 +30,13 @@ import {
   FlatCollection,
   CollectionIcons,
   CollectionItem,
+  CollectionLayouts,
+  defaultCollectionLayout,
 } from '@orpington-news/shared';
 import { disableCoercionAjv, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
 import { fetchRSSJob, parser, updateCollections } from '@tasks/fetchRSS';
-import { getUnixTime } from 'date-fns';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -73,13 +76,15 @@ const ItemDetailsParams = Type.Object({
 type ItemDetailsType = Static<typeof ItemDetailsParams>;
 
 const mapDBCollection = (collection: DBCollection): FlatCollection => {
-  const { date_updated, refresh_interval, unread_count, ...rest } = collection;
+  const { date_updated, refresh_interval, unread_count, layout, ...rest } =
+    collection;
 
   return {
     ...rest,
     dateUpdated: date_updated,
     refreshInterval: refresh_interval,
     unreadCount: unread_count ?? 0,
+    layout: layout ?? defaultCollectionLayout,
   };
 };
 
@@ -350,6 +355,36 @@ export const collections: FastifyPluginAsync = async (
           .status(500)
           .send({ errorCode: 500, message: `${noun} failed to refresh.` });
       }
+    }
+  );
+
+  const LayoutBody = Type.Object({
+    layout: Type.Union(CollectionLayouts.map((layout) => Type.Literal(layout))),
+  });
+
+  fastify.put<{
+    Params: Static<typeof CollectionId>;
+    Body: Static<typeof LayoutBody>;
+  }>(
+    '/:id/layout',
+    {
+      schema: {
+        params: CollectionId,
+        body: LayoutBody,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        body: { layout },
+        params: { id },
+      } = request;
+      // TODO: remove once home collection is refactored
+      if (typeof id === 'number') {
+        await pool.query(setCollectionLayout(id, layout));
+      }
+
+      return true;
     }
   );
 

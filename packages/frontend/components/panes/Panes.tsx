@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
 import { useIsClient } from 'usehooks-ts';
-import { CollectionItem, ID } from '@orpington-news/shared';
+import { CollectionItem, CollectionLayout, ID } from '@orpington-news/shared';
 import { SidebarContent, SidebarContentProps } from '@components/sidebar';
 import { CollectionHeader } from '@components/collection/header';
 import {
@@ -46,6 +46,7 @@ export interface PanesProps {
 
   onRefreshClicked?: (collectionId: ID | string) => void;
   onGoBackClicked?: () => void;
+  onCollectionLayoutChanged?: (layout: CollectionLayout) => void;
 }
 
 export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
@@ -66,6 +67,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
 
     onRefreshClicked,
     onGoBackClicked,
+    onCollectionLayoutChanged,
 
     ...rest
   } = props;
@@ -111,7 +113,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     () => (
       <ClientRender>
         <CollectionList
-          layout="magazine"
+          layout={activeCollection?.layout}
           items={collectionItems}
           px={3}
           mt={3}
@@ -121,7 +123,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         />
       </ClientRender>
     ),
-    [collectionItems, collectionListProps]
+    [activeCollection?.layout, collectionItems, collectionListProps]
   );
 
   const handleRefreshClick = useCallback(() => {
@@ -198,6 +200,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
                 menuButtonRef={drawerButtonRef}
                 onRefresh={handleRefreshClick}
                 onMenuClicked={onToggle}
+                onChangeLayout={onCollectionLayoutChanged}
               />
 
               <Divider pt={4} />
@@ -232,6 +235,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
             isRefreshing={isRefreshing}
             onRefresh={handleRefreshClick}
             onMenuClicked={onToggle}
+            onChangeLayout={onCollectionLayoutChanged}
           />
 
           <Divider pt={3} />

@@ -76,12 +76,16 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
               />
               <MenuList>
                 <MenuOptionGroup
-                  defaultValue="card"
+                  defaultValue={collection?.layout}
                   title="Layout"
                   type="radio"
                 >
                   {CollectionLayouts.map((layout) => (
-                    <MenuItemOption key={layout} value={layout}>
+                    <MenuItemOption
+                      key={layout}
+                      value={layout}
+                      onClick={() => onChangeLayout?.(layout)}
+                    >
                       {CollectionLayoutName[layout]}
                     </MenuItemOption>
                   ))}

@@ -3,6 +3,7 @@ import {
   Collection,
   CollectionItem,
   CollectionItemDetails,
+  CollectionLayout,
   FlatCollection,
   ID,
 } from '@orpington-news/shared';
@@ -73,3 +74,13 @@ export interface MoveCollectionBody {
 
 export const moveCollection = (api: Wretcher, body: MoveCollectionBody) =>
   api.url(`/collections/move`).post(body).json<FlatCollection[]>();
+
+export const setCollectionLayout = (
+  api: Wretcher,
+  collectionId: ID,
+  layout: CollectionLayout
+) =>
+  api
+    .url(`/collections/${collectionId}/layout`)
+    .put({ layout })
+    .json<boolean>();

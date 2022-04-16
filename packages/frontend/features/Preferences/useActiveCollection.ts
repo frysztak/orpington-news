@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { ActiveCollection } from '@components/collection/types';
-import { Collection } from '@orpington-news/shared';
+import { Collection, defaultCollectionLayout } from '@orpington-news/shared';
 import { useCollectionById } from '@features/Collections';
 import { usePreferencesContext } from './PreferencesContext';
 
@@ -18,18 +18,18 @@ export const useActiveCollection = () => {
 
   const activeCollection: ActiveCollection = useMemo(() => {
     if (activeCollectionId === 'home') {
-      return { id: activeCollectionId, title: 'Home' };
+      return {
+        id: activeCollectionId,
+        title: 'Home',
+        layout: defaultCollectionLayout,
+      };
     }
 
-    return collection
-      ? {
-          id: activeCollectionId,
-          title: collection.title,
-        }
-      : {
-          id: activeCollectionId,
-          title: '',
-        };
+    return {
+      id: activeCollectionId,
+      title: collection?.title ?? '',
+      layout: collection?.layout ?? defaultCollectionLayout,
+    };
   }, [activeCollectionId, collection]);
 
   return { activeCollection, handleCollectionClicked, setActiveCollectionId };

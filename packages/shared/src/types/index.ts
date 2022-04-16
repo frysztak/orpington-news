@@ -64,6 +64,7 @@ export interface Collection {
   url?: string;
   dateUpdated?: number;
   refreshInterval?: number;
+  layout?: CollectionLayout;
 }
 
 export type FlatCollection = Omit<Collection, 'children' | 'parentId'> & {
