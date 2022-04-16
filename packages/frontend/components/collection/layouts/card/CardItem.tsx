@@ -60,14 +60,14 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
             </LinkOverlay>
           </NextLink>
 
-          <IconButton
+          {/*<IconButton
             icon={onReadingList ? <BsBookmarkDash /> : <BsBookmarkPlus />}
             aria-label={
               onReadingList ? 'Remove from reading list' : 'Add to reading list'
             }
             variant="ghost"
             onClick={onReadingListButtonClicked}
-          />
+          />*/}
         </HStack>
         <Box
           p={3}
