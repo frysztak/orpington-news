@@ -69,7 +69,11 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
             onClick={onReadingListButtonClicked}
           />
         </HStack>
-        <Box p={3} background={useColorModeValue('gray.300', 'gray.700')}>
+        <Box
+          p={3}
+          w="full"
+          background={useColorModeValue('gray.300', 'gray.700')}
+        >
           <Text noOfLines={[2, 3]} overflowWrap="anywhere">
             {summary}
           </Text>
