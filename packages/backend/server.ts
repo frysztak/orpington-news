@@ -8,19 +8,20 @@ import fastifySchedule from 'fastify-schedule';
 import fastifySplitValidator from 'fastify-split-validator';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
+import connectPgSimple from 'connect-pg-simple';
 
 import { auth, collectionItem, collections, preferences, sse } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob, pingJob } from '@tasks';
 import { defaultAjv, logger } from '@utils';
+import { buildDsn } from '@db';
 import { migrator } from '@db/migrator';
-import { isLoginDisabled } from '@orpington-news/shared';
-
-const disableAppLogin = isLoginDisabled();
 
 const fastify = Fastify({
   logger: logger,
 });
+
+const PostgresStore = connectPgSimple(fastifySession as any);
 
 async function setupFastify() {
   await fastify.register(fastifySwagger, {
@@ -53,22 +54,23 @@ async function setupFastify() {
     exposeRoute: true,
   });
 
-  if (!disableAppLogin) {
-    if (!process.env.COOKIE_SECRET) {
-      throw new Error(`COOKIE_SECRET not set!`);
-    }
-
-    await fastify.register(fastifyCookie);
-    await fastify.register(fastifySession, {
-      secret: process.env.COOKIE_SECRET,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== 'development',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
-      },
-      rolling: true,
-    });
+  if (!process.env.COOKIE_SECRET) {
+    throw new Error(`COOKIE_SECRET not set!`);
   }
+
+  await fastify.register(fastifyCookie);
+  await fastify.register(fastifySession, {
+    secret: process.env.COOKIE_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== 'development',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+    },
+    store: new PostgresStore({
+      conString: buildDsn(),
+    }) as any,
+    rolling: true,
+  });
 
   if (!process.env.APP_URL) {
     throw new Error(`APP_URL not set!`);

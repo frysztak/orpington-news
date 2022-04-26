@@ -4,11 +4,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { dehydrate, QueryClient } from 'react-query';
 import { getCollections, getItemDetails, getPreferences, ssrApi } from '@api';
-import {
-  getCookieHeaderFromReq,
-  getChakraColorModeCookie,
-  isLoginDisabled,
-} from '@utils';
+import { getCookieHeaderFromReq, getChakraColorModeCookie } from '@utils';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 import { getNumber } from '@utils/router';
 import { useArticleDetails } from '@features/Article/queries';
@@ -36,17 +32,15 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   const chakraCookie = getChakraColorModeCookie(req);
 
-  if (!isLoginDisabled()) {
-    if (!req.cookies['sessionId']) {
-      return {
-        props: {
-          chakraCookie,
-        },
-        redirect: {
-          destination: '/login',
-        },
-      };
-    }
+  if (!req.cookies['sessionId']) {
+    return {
+      props: {
+        chakraCookie,
+      },
+      redirect: {
+        destination: '/login',
+      },
+    };
   }
 
   const collectionId = getNumber(query?.collectionId);

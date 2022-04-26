@@ -14,7 +14,8 @@ export const recalculateCollectionsOrder = () => {
 };
 
 export const addCollection = (
-  collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>
+  collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>,
+  userId: ID
 ) => {
   const {
     title,
@@ -39,6 +40,7 @@ export const addCollection = (
     dateUpdated ? getUnixTime(dateUpdated) : null,
     refreshInterval ?? defaultRefreshInterval,
     layout ?? null,
+    userId,
   ];
   return sql`INSERT INTO collections(
     "title", 
@@ -50,7 +52,8 @@ export const addCollection = (
     "url", 
     "date_updated", 
     "refresh_interval", 
-    "layout"
+    "layout",
+    "user_id"
     ) VALUES (${sql.join(values, sql`, `)})`;
 };
 
@@ -100,13 +103,22 @@ export type DBCollection = Omit<
   refresh_interval: number;
 };
 
-export const getCollections = () => {
+export const getCollectionOwner = (id: ID) => {
+  return sql<{ userId: ID }>`
+  SELECT "user_id" as "userId"
+  FROM collections
+  WHERE id = ${id}`;
+};
+
+export const getCollections = (userId: ID) => {
   return sql<DBCollection>`
   WITH RECURSIVE collections_from_parents AS (
     SELECT
       id, title, slug, icon, "order", description, url, date_updated, refresh_interval, layout, '{}'::int[] AS parents, 0 AS level
     FROM collections
-	  WHERE parent_id IS NULL
+	  WHERE 
+      parent_id IS NULL
+      AND "user_id" = ${userId}
 
     UNION ALL
 
@@ -117,6 +129,7 @@ export const getCollections = () => {
       JOIN collections c ON c.parent_id = p.id
     WHERE
       NOT c.id = ANY (parents)
+      AND c."user_id" = ${userId}
   )
 SELECT
   id, title, slug, icon, "order", description, url, date_updated, refresh_interval, layout, parents, level, unread_count
@@ -179,9 +192,10 @@ export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
   WHERE id = ${collectionId}`;
 };
 
-export const hasCollectionWithUrl = (url: string) => {
+export const hasCollectionWithUrl = (url: string, userId: ID) => {
   return sql`SELECT * FROM collections
-  WHERE url=${url}`;
+  WHERE url = ${url}
+    AND "user_id" = ${userId}`;
 };
 
 export const markCollectionAsRead = (

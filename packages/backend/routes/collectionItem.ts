@@ -29,8 +29,9 @@ export const collectionItem: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         body: { id, dateRead },
+        session: { userId },
       } = request;
-      await pool.any(setItemDateRead(id, dateRead));
+      await pool.any(setItemDateRead(id, dateRead, userId));
       return true;
     }
   );

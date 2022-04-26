@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { useApi, useHandleError } from '@api';
 import { LoginForm, LoginFormData } from './LoginForm';
+import { getChakraColorModeCookie } from '@utils';
 
 const LoginPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -73,10 +74,12 @@ LoginPage.getLayout = (page) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const cookies = req.headers.cookie ?? '';
+  const chakraCookie = getChakraColorModeCookie(req);
 
   return {
     props: {
       cookies,
+      chakraCookie,
     },
   };
 };

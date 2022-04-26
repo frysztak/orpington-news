@@ -4,6 +4,8 @@ import { EventIterator } from 'event-iterator';
 import { sseEmitter } from 'sse';
 
 export const sse: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+  fastify.addHook('preHandler', fastify.auth([fastify.verifySession]));
+
   fastify.get('/', (req, res) => {
     const sseSource = new EventIterator<EventMessage>(({ push }) => {
       const cb = (data: any) => {

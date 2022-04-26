@@ -112,3 +112,9 @@ export type ViewPreference =
   | { activeView: 'collection'; activeCollectionId: number };
 
 export type Preferences = CommonPreferences & ViewPreference;
+
+export const defaultPreferences: Preferences = {
+  activeView: 'home',
+  defaultCollectionLayout,
+  expandedCollectionIds: [],
+};

@@ -18,6 +18,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         defaultOptions: {
           queries: {
             refetchOnWindowFocus: false,
+            retry: (failureCount: number, error: any) => {
+              if (error?.json?.statusCode === 401) {
+                return false;
+              }
+              return failureCount < 3;
+            },
           },
         },
       })

@@ -97,9 +97,14 @@ export const getItemDetails = (collectionId: ID, itemSerialID: ID) => {
    AND collection_items.serial_id = ${itemSerialID}`;
 };
 
-export const setItemDateRead = (itemId: ID, dateRead: number | null) => {
+export const setItemDateRead = (
+  itemId: ID,
+  dateRead: number | null,
+  userId: ID
+) => {
   return sql`
   UPDATE collection_items
   SET date_read = TO_TIMESTAMP(${dateRead})
-  WHERE serial_id = ${itemId}`;
+  WHERE serial_id = ${itemId}
+    AND "user_id" = ${userId}`;
 };

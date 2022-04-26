@@ -1,20 +1,14 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { isLoginDisabled } from '@orpington-news/shared';
 
 function verifySession(
   request: FastifyRequest,
   reply: FastifyReply,
   done: () => void
 ) {
-  const disableLogin = isLoginDisabled();
-  if (disableLogin) {
-    return done();
-  }
-
-  const isAuthenticated = Boolean(request.session.authenticated);
+  const isAuthenticated = typeof request.session.userId === 'number';
   if (!isAuthenticated) {
-    request.destroySession(() => {
+    return request.destroySession(() => {
       reply
         .status(401)
         .clearCookie('sessionId')
@@ -41,6 +35,6 @@ declare module 'fastify' {
   }
 
   interface Session {
-    authenticated: boolean;
+    userId: number;
   }
 }

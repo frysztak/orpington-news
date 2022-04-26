@@ -3,11 +3,7 @@ import Head from 'next/head';
 import { Box, VStack } from '@chakra-ui/react';
 import { dehydrate, QueryClient } from 'react-query';
 import type { NextPageWithLayout } from '@pages/types';
-import {
-  getChakraColorModeCookie,
-  getCookieHeaderFromReq,
-  isLoginDisabled,
-} from '@utils';
+import { getChakraColorModeCookie, getCookieHeaderFromReq } from '@utils';
 import { getPreferences, ssrApi } from '@api';
 import { preferencesKeys } from '@features/queryKeys';
 import { SettingsLayout } from './SettingsLayout';
@@ -45,15 +41,13 @@ export default Page;
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const chakraCookie = getChakraColorModeCookie(req);
-  if (!isLoginDisabled()) {
-    if (!req.cookies['sessionId']) {
-      return {
-        props: { chakraCookie },
-        redirect: {
-          destination: '/login',
-        },
-      };
-    }
+  if (!req.cookies['sessionId']) {
+    return {
+      props: { chakraCookie },
+      redirect: {
+        destination: '/login',
+      },
+    };
   }
 
   const apiWithHeaders = ssrApi().headers(getCookieHeaderFromReq(req));

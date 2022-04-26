@@ -47,6 +47,8 @@ export const EventListenerContextProvider: React.FC = ({ children }) => {
       fetchEventSource(`${apiUrl}/events`, {
         openWhenHidden: true,
         keepalive: true,
+        credentials: 'include',
+        mode: 'cors',
         async onopen(response) {
           if (
             response.ok &&
@@ -84,12 +86,14 @@ export const EventListenerContextProvider: React.FC = ({ children }) => {
         onerror(err) {
           if (err instanceof FatalError) {
             setStatus('error');
-            throw err; // rethrow to stop the operation
+            throw err;
           } else {
             // do nothing to automatically retry. You can also
             // return a specific retry interval here.
           }
         },
+      }).catch((err) => {
+        console.error(err);
       });
     }
 

@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from 'fastify';
+import { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
 import { DataIntegrityError, NotFoundError } from 'slonik';
 import { getUnixTime } from 'date-fns';
@@ -8,6 +8,7 @@ import {
   DBCollection,
   deleteCollection,
   getCollectionChildrenIds,
+  getCollectionOwner,
   getCollections,
   getCollectionsFromRootId,
   getCollectionsWithUrl,
@@ -88,6 +89,24 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
   };
 };
 
+const verifyCollectionOwner = async (
+  request: FastifyRequest<{ Params: CollectionIdType }>,
+  reply: FastifyReply
+) => {
+  const {
+    params: { id },
+    session: { userId },
+  } = request;
+
+  // TODO(home)
+  if (typeof id === 'number') {
+    const owner = await pool.maybeOne(getCollectionOwner(id));
+    if (owner !== null && owner.userId !== userId) {
+      reply.status(403).send({ errorCode: 403, message: 'Access forbidden.' });
+    }
+  }
+};
+
 export const collections: FastifyPluginAsync = async (
   fastify,
   opts
@@ -102,7 +121,8 @@ export const collections: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      const collections = await pool.any(getCollections());
+      const userId = request.session.userId;
+      const collections = await pool.any(getCollections(userId));
       return collections.map(mapDBCollection);
     }
   );
@@ -116,14 +136,20 @@ export const collections: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      const { body } = request;
-      const preferences = await pool.one(getPreferences());
+      const {
+        body,
+        session: { userId },
+      } = request;
+      const preferences = await pool.one(getPreferences(userId));
       await pool.transaction(async (conn) => {
         await conn.any(
-          addCollection({
-            ...body,
-            layout: preferences.defaultCollectionLayout,
-          })
+          addCollection(
+            {
+              ...body,
+              layout: preferences.defaultCollectionLayout,
+            },
+            userId
+          )
         );
         await conn.any(recalculateCollectionsOrder());
       });
@@ -148,11 +174,12 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         body: { collectionId, newParentId, newOrder },
+        session: { userId },
       } = request;
 
       await pool.any(moveCollections(collectionId, newParentId, newOrder));
       await pool.query(pruneExpandedCollections());
-      const collections = await pool.any(getCollections());
+      const collections = await pool.any(getCollections(userId));
       return collections.map(mapDBCollection);
     }
   );
@@ -179,6 +206,7 @@ export const collections: FastifyPluginAsync = async (
         params: CollectionId,
         tags: ['Collections'],
       },
+      preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
       const {
@@ -207,6 +235,7 @@ export const collections: FastifyPluginAsync = async (
         params: CollectionId,
         tags: ['Collections'],
       },
+      preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
       const {
@@ -238,10 +267,13 @@ export const collections: FastifyPluginAsync = async (
         querystring: PaginationSchema,
         tags: ['Collections'],
       },
+      preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
-      const { params, query: pagination } = request;
-      const { id } = params;
+      const {
+        params: { id },
+        query: pagination,
+      } = request;
       const itemsQuery =
         id === 'home' ? getAllCollectionItems() : getCollectionItems(id);
       const items = await pool.any<Omit<DBCollectionItem, 'full_text'>>(
@@ -282,6 +314,7 @@ export const collections: FastifyPluginAsync = async (
         params: ItemDetailsParams,
         tags: ['Collections'],
       },
+      preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
       const { params } = request;
@@ -336,6 +369,7 @@ export const collections: FastifyPluginAsync = async (
         params: CollectionId,
         tags: ['Collections'],
       },
+      preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
       const {
@@ -379,6 +413,7 @@ export const collections: FastifyPluginAsync = async (
         body: LayoutBody,
         tags: ['Collections'],
       },
+      preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
       const {
@@ -411,12 +446,13 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         body: { url },
+        session: { userId },
       } = request;
 
       const normalizedUrl = normalizeUrl(url);
 
       const isUrlAlreadyUsed = await pool.exists(
-        hasCollectionWithUrl(normalizedUrl)
+        hasCollectionWithUrl(normalizedUrl, userId)
       );
       if (isUrlAlreadyUsed) {
         return reply

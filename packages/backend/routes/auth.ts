@@ -1,6 +1,10 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
-import { isLoginDisabled, noop } from '@orpington-news/shared';
+import argon2 from 'argon2';
+import { defaultPreferences, noop } from '@orpington-news/shared';
+import { pool } from '@db';
+import { getUserPassword, insertUser } from '@db/users';
+import { insertPreferences } from '@db/preferences';
 
 const PostLogin = Type.Object({
   username: Type.String(),
@@ -9,52 +13,57 @@ const PostLogin = Type.Object({
 
 type PostLoginType = Static<typeof PostLogin>;
 
-export const auth: FastifyPluginAsync = async (
-  fastify,
-  opts
-): Promise<void> => {
-  const disableLogin = isLoginDisabled();
-
-  fastify.post<{ Body: PostLoginType; Reply: Object }>(
-    '/login',
+export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
+  fastify.post<{ Body: PostLoginType }>(
+    '/register',
     {
       schema: {
-        body: !disableLogin && PostLogin,
+        body: PostLogin,
         tags: ['Auth'],
       },
     },
     async (request, reply) => {
-      if (disableLogin) {
-        reply.status(200);
-        return {};
-      }
-
-      if (!process.env.APP_USERNAME) {
-        reply.status(500);
-        return {
-          statusCode: 500,
-          message: `Env variable 'APP_USERNAME' not set.`,
-        };
-      }
-      if (!process.env.APP_PASSWORD) {
-        reply.status(500);
-        return {
-          statusCode: 500,
-          message: `Env variable 'APP_PASSWORD' not set.`,
-        };
-      }
-
       const { username, password } = request.body;
-      if (
-        username === process.env.APP_USERNAME &&
-        password === process.env.APP_PASSWORD
-      ) {
+      const passwordHashed = await argon2.hash(password, {
+        type: argon2.argon2id,
+      });
+      await pool.transaction(async (conn) => {
+        const { id } = await conn.one(
+          insertUser({ username, password: passwordHashed })
+        );
+        await conn.query(insertPreferences(defaultPreferences, id));
+      });
+      return true;
+    }
+  );
+
+  fastify.post<{ Body: PostLoginType }>(
+    '/login',
+    {
+      schema: {
+        body: PostLogin,
+        tags: ['Auth'],
+      },
+    },
+    async (request, reply) => {
+      const { username, password } = request.body;
+      const passQuery = await pool.maybeOne(getUserPassword(username));
+      if (passQuery === null) {
+        reply.status(403);
+        return { statusCode: 403, message: 'Wrong username or password.' };
+      }
+      const isPasswordCorrect = await argon2.verify(
+        passQuery.password,
+        password
+      );
+
+      if (isPasswordCorrect) {
         reply.status(200);
-        request.session.authenticated = true;
-        return { statusCode: 200 };
+        request.session.userId = passQuery.id;
+        return true;
       } else {
-        reply.status(401);
-        return { statusCode: 401, message: 'Wrong username or password.' };
+        reply.status(403);
+        return { statusCode: 403, message: 'Wrong username or password.' };
       }
     }
   );

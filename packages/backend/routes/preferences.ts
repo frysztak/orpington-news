@@ -25,7 +25,10 @@ export const preferences: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      return await pool.one(getPreferences());
+      const {
+        session: { userId },
+      } = request;
+      return await pool.one(getPreferences(userId));
     }
   );
 
@@ -37,8 +40,11 @@ export const preferences: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      await pool.query(savePreferences(request.body));
-      return await pool.one(getPreferences());
+      const {
+        session: { userId },
+      } = request;
+      await pool.query(savePreferences(request.body, userId));
+      return await pool.one(getPreferences(userId));
     }
   );
 
@@ -56,10 +62,13 @@ export const preferences: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      const { id } = request.params;
-      await pool.query(modifyExpandedCollections('add', id));
+      const {
+        params: { id },
+        session: { userId },
+      } = request;
+      await pool.query(modifyExpandedCollections('add', id, userId));
       await pool.query(pruneExpandedCollections());
-      return await pool.one(getPreferences());
+      return await pool.one(getPreferences(userId));
     }
   );
 
@@ -72,10 +81,13 @@ export const preferences: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      const { id } = request.params;
-      await pool.query(modifyExpandedCollections('remove', id));
+      const {
+        params: { id },
+        session: { userId },
+      } = request;
+      await pool.query(modifyExpandedCollections('remove', id, userId));
       await pool.query(pruneExpandedCollections());
-      return await pool.one(getPreferences());
+      return await pool.one(getPreferences(userId));
     }
   );
 
@@ -88,8 +100,11 @@ export const preferences: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      await pool.query(setActiveView(request.body));
-      return await pool.one(getPreferences());
+      const {
+        session: { userId },
+      } = request;
+      await pool.query(setActiveView(request.body, userId));
+      return await pool.one(getPreferences(userId));
     }
   );
 };

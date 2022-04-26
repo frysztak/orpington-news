@@ -18,6 +18,9 @@ export const useHandleError = () => {
   const onError = useCallback(
     (error: any) => {
       const [title, description] = getNameAndMessage(error);
+      if (description === 'Unauthorized') {
+        return;
+      }
       const toastId = `toast-${title}-${description}`;
 
       if (!toast.isActive(toastId)) {
