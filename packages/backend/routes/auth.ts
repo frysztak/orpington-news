@@ -24,6 +24,15 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     },
     async (request, reply) => {
       const { username, password } = request.body;
+
+      const userExists = await pool.exists(getUserPassword(username));
+      if (userExists) {
+        reply
+          .status(500)
+          .send({ errorCode: 500, message: 'Username is already taken.' });
+        return false;
+      }
+
       const passwordHashed = await argon2.hash(password, {
         type: argon2.argon2id,
       });
@@ -69,7 +78,8 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
   );
 
   fastify.delete('/session', async (request, reply) => {
-    request.destroySession(noop);
-    return {};
+    request.destroySession(() => {
+      reply.status(200).clearCookie('sessionId').send(true);
+    });
   });
 };

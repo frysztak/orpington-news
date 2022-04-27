@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import type { NextPageWithLayout } from '@pages/types';
-import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import getConfig from 'next/config';
@@ -12,26 +11,33 @@ import {
   Text,
   Alert,
   AlertIcon,
-  Code,
   Link,
+  useToast,
 } from '@chakra-ui/react';
-import { LoginFormData, useLogin } from '@features/Auth';
-import { getChakraColorModeCookie } from '@utils';
-import { LoginForm } from './LoginForm';
+import { SignupFormData, useSignup } from '@features/Auth';
+import { commonGetServerSideProps } from '@pages/ssrProps';
+import { SignupForm } from './SignupForm';
 
-const LoginPage: NextPageWithLayout = () => {
+const SignupPage: NextPageWithLayout = () => {
   const router = useRouter();
+  const toast = useToast();
 
   const onSuccess = useCallback(() => {
-    router.push('/');
-  }, [router]);
+    toast({
+      title: 'Success!',
+      description: 'Account successfully created.',
+      status: 'success',
+    });
 
-  const { isLoading, mutate } = useLogin();
+    router.push('/login');
+  }, [router, toast]);
+
+  const { isLoading, mutate } = useSignup();
   const { publicRuntimeConfig } = getConfig();
   const demoMode = Boolean(publicRuntimeConfig.APP_DEMO);
 
   const handleSubmit = useCallback(
-    (data: LoginFormData) => {
+    (data: SignupFormData) => {
       mutate(data, { onSuccess });
     },
     [mutate, onSuccess]
@@ -40,24 +46,27 @@ const LoginPage: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Log in</title>
+        <title>Sign up</title>
       </Head>
 
       <Container maxW="container.sm" py={4}>
         <VStack w="full" spacing={16} align="stretch">
-          <Heading textAlign="center">Log in</Heading>
-          <LoginForm onSubmit={handleSubmit} isLoading={isLoading} />
+          <Heading textAlign="center">Sign up</Heading>
+          <SignupForm
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            isDisabled={demoMode}
+          />
 
           {demoMode ? (
             <Alert status="info">
               <AlertIcon />
               <VStack align="flex-start">
-                <Text>This is a demo instance.</Text>
                 <Text>
-                  Username: <Code>demo</Code>
-                </Text>
-                <Text>
-                  Password: <Code>demo</Code>
+                  This is a demo instance. Account creation is disabled.{' '}
+                  <NextLink href="/login" passHref>
+                    <Link fontWeight="bold">Log in</Link>
+                  </NextLink>
                 </Text>
               </VStack>
             </Alert>
@@ -66,9 +75,9 @@ const LoginPage: NextPageWithLayout = () => {
               <AlertIcon />
               <VStack align="flex-start">
                 <Text>
-                  Don&apos;t have an account yet?{' '}
-                  <NextLink href="/signup" passHref>
-                    <Link fontWeight="bold">Sign up</Link>
+                  Have an account already?{' '}
+                  <NextLink href="/login" passHref>
+                    <Link fontWeight="bold">Log in</Link>
                   </NextLink>
                 </Text>
               </VStack>
@@ -80,17 +89,10 @@ const LoginPage: NextPageWithLayout = () => {
   );
 };
 
-LoginPage.getLayout = (page) => {
+SignupPage.getLayout = (page) => {
   return page;
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const chakraCookie = getChakraColorModeCookie(req);
-  return {
-    props: {
-      chakraCookie,
-    },
-  };
-};
+export const getServerSideProps = commonGetServerSideProps;
 
-export default LoginPage;
+export default SignupPage;

@@ -2,28 +2,32 @@ import React from 'react';
 import { Button, HStack, VStack } from '@chakra-ui/react';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
-import { LoginFormData } from '@features/Auth';
 import { PasswordField, StringField } from '@components/forms';
+import { SignupFormData } from '@features/Auth';
 
-export interface LoginFormProps {
+export interface SignupFormProps {
   isLoading?: boolean;
-  onSubmit: (data: LoginFormData) => void;
+  isDisabled?: boolean;
+  onSubmit: (data: SignupFormData) => void;
 }
 
 export const validationSchema = Yup.object({
   username: Yup.string().required('Please enter your username.'),
   password: Yup.string().required('Please enter your password.'),
+  passwordConfirm: Yup.string()
+    .oneOf([Yup.ref('password')], "Passwords don't match.")
+    .required('Please confirm your password.'),
 });
 
-const initialValues: LoginFormData = {
+const initialValues: SignupFormData = {
   username: '',
   password: '',
 };
 
-export const LoginForm: React.FC<LoginFormProps> = (props) => {
-  const { onSubmit, isLoading } = props;
+export const SignupForm: React.FC<SignupFormProps> = (props) => {
+  const { onSubmit, isLoading, isDisabled } = props;
 
-  const handleSubmit = (data: LoginFormData) => onSubmit(data);
+  const handleSubmit = (data: SignupFormData) => onSubmit(data);
 
   return (
     <Formik
@@ -37,14 +41,21 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
             <StringField
               name="username"
               placeholder="Username"
-              isDisabled={isLoading}
+              isDisabled={isDisabled || isLoading}
               isRequired
             />
 
             <PasswordField
               name="password"
-              placeholder="Password"
-              isDisabled={isLoading}
+              placeholder="Enter password"
+              isDisabled={isDisabled || isLoading}
+              isRequired
+            />
+
+            <PasswordField
+              name="passwordConfirm"
+              placeholder="Confirm password"
+              isDisabled={isDisabled || isLoading}
               isRequired
             />
 
@@ -53,9 +64,10 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
                 type="submit"
                 w={['full', 40]}
                 mt={4}
+                isDisabled={isDisabled || !isValid}
                 isLoading={isLoading}
               >
-                Login
+                Signup
               </Button>
             </HStack>
           </VStack>

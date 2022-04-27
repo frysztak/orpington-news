@@ -27,6 +27,10 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
       <SettingsCategory title="About">
         <SettingsLink href="/settings/about">About</SettingsLink>
       </SettingsCategory>
+
+      <SettingsCategory title="Account">
+        <SettingsLink href="/settings/logout">Log out</SettingsLink>
+      </SettingsCategory>
     </VStack>
   );
 };

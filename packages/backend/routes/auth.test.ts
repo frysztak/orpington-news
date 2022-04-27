@@ -61,7 +61,10 @@ describe('/auth', () => {
     });
 
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({});
-    expect(res.headers).not.toHaveProperty('set-cookie');
+    expect(res.json()).toEqual(true);
+    expect(res.headers).toHaveProperty(
+      'set-cookie',
+      'sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    );
   });
 });

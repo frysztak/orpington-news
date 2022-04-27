@@ -27,13 +27,10 @@ module.exports = withPlugins(
     reactStrictMode: true,
     pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
     publicRuntimeConfig: {
-      APP_DISABLE_LOGIN: process.env.APP_DISABLE_LOGIN,
       APP_URL: process.env.APP_URL,
       API_URL: process.env.API_URL,
       API_SSR_URL: process.env.API_SSR_URL,
       APP_DEMO: process.env.APP_DEMO,
-      APP_DEMO_USERNAME: process.env.APP_DEMO_USERNAME,
-      APP_DEMO_PASSWORD: process.env.APP_DEMO_PASSWORD,
     },
     swcMinify: true,
     compiler: {
