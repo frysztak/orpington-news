@@ -2,7 +2,7 @@ import { Collection } from '@orpington-news/shared';
 
 export type RootCollection = Omit<
   Collection,
-  'id' | 'slug' | 'unreadCount' | 'children'
+  'id' | 'unreadCount' | 'children'
 > & {
   children?: Array<RootCollection>;
 };

@@ -10,7 +10,7 @@ import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
 import connectPgSimple from 'connect-pg-simple';
 
-import { auth, collectionItem, collections, preferences, sse } from '@routes';
+import { auth, collections, preferences, sse } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob, pingJob } from '@tasks';
 import { defaultAjv, logger } from '@utils';
@@ -90,7 +90,6 @@ async function setupFastify() {
 
   await fastify.register(auth, { prefix: '/auth' });
   await fastify.register(collections, { prefix: '/collections' });
-  await fastify.register(collectionItem, { prefix: '/collectionItem' });
   await fastify.register(sse, { prefix: '/events' });
   await fastify.register(preferences, { prefix: '/preferences' });
 

@@ -30,11 +30,10 @@ export const WithFeedList = Template.bind({});
 WithFeedList.args = {
   activeCollectionId: 4,
   collections: [
-    { id: 1, title: 'Feed 01', slug: 'feed-01', unreadCount: 9, icon: 'React' },
+    { id: 1, title: 'Feed 01', unreadCount: 9, icon: 'React' },
     {
       id: 2,
       title: 'Feed 02',
-      slug: 'feed-02',
       unreadCount: 10,
       icon: 'TypeScript',
       children: [],
@@ -42,28 +41,24 @@ WithFeedList.args = {
     {
       id: 3,
       title: 'Category 01',
-      slug: 'category-01',
       unreadCount: 11,
       icon: defaultIcon,
       children: [
         {
           id: 301,
           title: 'Feed 03-01',
-          slug: 'feed-03-01',
           unreadCount: 112,
           icon: defaultIcon,
         },
         {
           id: 302,
           title: 'Category 02',
-          slug: 'feed-03-02',
           unreadCount: 113,
           icon: defaultIcon,
           children: [
             {
               id: 30201,
               title: 'Feed 03-02-01',
-              slug: 'feed-03-02-01',
               unreadCount: 114,
               icon: defaultIcon,
             },
@@ -74,7 +69,6 @@ WithFeedList.args = {
     {
       id: 4,
       title: 'Feed 04',
-      slug: 'feed-04',
       unreadCount: 9,
 
       icon: defaultIcon,

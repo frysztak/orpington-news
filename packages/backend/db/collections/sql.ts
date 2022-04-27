@@ -7,14 +7,14 @@ import {
   defaultRefreshInterval,
   ID,
 } from '@orpington-news/shared';
-import { normalizeUrl, slugify } from '@utils';
+import { normalizeUrl } from '@utils';
 
 export const recalculateCollectionsOrder = () => {
   return sql`CALL collections_recalculate_order();`;
 };
 
 export const addCollection = (
-  collection: Omit<Collection, 'id' | 'slug' | 'unreadCount' | 'children'>,
+  collection: Omit<Collection, 'id' | 'unreadCount' | 'children'>,
   userId: ID
 ) => {
   const {
@@ -30,8 +30,8 @@ export const addCollection = (
   const url = collection.url && normalizeUrl(collection.url);
 
   const values = [
+    userId,
     title,
-    slugify(title),
     icon ?? defaultIcon,
     2147483647, // put new collection at the end
     parentId ?? null,
@@ -40,11 +40,10 @@ export const addCollection = (
     dateUpdated ? getUnixTime(dateUpdated) : null,
     refreshInterval ?? defaultRefreshInterval,
     layout ?? null,
-    userId,
   ];
   return sql`INSERT INTO collections(
+    "user_id",
     "title", 
-    "slug", 
     "icon", 
     "order", 
     "parent_id", 
@@ -52,8 +51,7 @@ export const addCollection = (
     "url", 
     "date_updated", 
     "refresh_interval", 
-    "layout",
-    "user_id"
+    "layout"
     ) VALUES (${sql.join(values, sql`, `)})`;
 };
 
@@ -65,7 +63,7 @@ export const deleteCollection = (collectionId: ID) => {
 };
 
 export const updateCollection = (
-  collection: Omit<Collection, 'slug' | 'unreadCount' | 'children'>
+  collection: Omit<Collection, 'unreadCount' | 'children'>
 ) => {
   const { id, title, icon, parentId, description, refreshInterval } =
     collection;
@@ -74,7 +72,6 @@ export const updateCollection = (
 
   return sql`UPDATE collections
   SET title = ${title},
-      slug = ${slugify(title)},
       icon = ${icon ?? defaultIcon},
       parent_id = ${parentId ?? null},
       description = ${description ?? null},
@@ -114,7 +111,7 @@ export const getCollections = (userId: ID) => {
   return sql<DBCollection>`
   WITH RECURSIVE collections_from_parents AS (
     SELECT
-      id, title, slug, icon, "order", description, url, date_updated, refresh_interval, layout, '{}'::int[] AS parents, 0 AS level
+      id, title, icon, "order", description, url, date_updated, refresh_interval, layout, '{}'::int[] AS parents, 0 AS level
     FROM collections
 	  WHERE 
       parent_id IS NULL
@@ -123,7 +120,7 @@ export const getCollections = (userId: ID) => {
     UNION ALL
 
     SELECT
-      c.id, c.title, c.slug, c.icon, c."order", c.description, c.url, c.date_updated, c.refresh_interval, c.layout, parents || c.parent_id, level + 1
+      c.id, c.title, c.icon, c."order", c.description, c.url, c.date_updated, c.refresh_interval, c.layout, parents || c.parent_id, level + 1
     FROM
       collections_from_parents p
       JOIN collections c ON c.parent_id = p.id
@@ -132,7 +129,7 @@ export const getCollections = (userId: ID) => {
       AND c."user_id" = ${userId}
   )
 SELECT
-  id, title, slug, icon, "order", description, url, date_updated, refresh_interval, layout, parents, level, unread_count
+  id, title, icon, "order", description, url, date_updated, refresh_interval, layout, parents, level, unread_count
 FROM
   collections_from_parents
 LEFT JOIN (SELECT collection_id, COUNT(*) as unread_count

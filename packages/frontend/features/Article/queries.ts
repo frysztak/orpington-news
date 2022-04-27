@@ -4,28 +4,31 @@ import { CollectionItemDetails, ID } from '@orpington-news/shared';
 import { collectionKeys } from '@features';
 import { useActiveCollection } from '@features/Preferences';
 
-export const useArticleDateReadMutation = (
-  collectionId: ID,
-  itemSerialId: ID
-) => {
+export const useArticleDateReadMutation = (collectionId: ID, itemId: ID) => {
   const api = useApi();
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
 
-  const detailKey = collectionKeys.detail(collectionId, itemSerialId);
+  const detailKey = collectionKeys.detail(collectionId, itemId);
   const { activeCollection } = useActiveCollection();
 
   return useMutation(
-    ({ id, dateRead }: { id: ID; dateRead: number | null }) =>
-      setDateRead(api, id, dateRead),
+    ({
+      collectionId,
+      itemId,
+      dateRead,
+    }: {
+      collectionId: ID;
+      itemId: ID;
+      dateRead: number | null;
+    }) => setDateRead(api, collectionId, itemId, dateRead),
     {
-      onMutate: async ({ id, dateRead }) => {
+      onMutate: async ({ dateRead }) => {
         // Optimistically update article
         await queryClient.cancelQueries(detailKey);
-        const previousDetails =
-          queryClient.getQueryData<CollectionItemDetails | undefined>(
-            detailKey
-          );
+        const previousDetails = queryClient.getQueryData<
+          CollectionItemDetails | undefined
+        >(detailKey);
         if (previousDetails) {
           queryClient.setQueryData(detailKey, {
             ...previousDetails,
@@ -35,7 +38,7 @@ export const useArticleDateReadMutation = (
 
         return { previousDetails };
       },
-      onError: (err, { id, dateRead }, context) => {
+      onError: (err, { dateRead }, context) => {
         onError(err);
         queryClient.setQueryData(detailKey, (context as any).previousDetails);
       },
@@ -50,19 +53,15 @@ export const useArticleDateReadMutation = (
   );
 };
 
-export const useArticleDetails = (collectionId: ID, itemSerialId: ID) => {
+export const useArticleDetails = (collectionId: ID, itemId: ID) => {
   const api = useApi();
   const { onError } = useHandleError();
 
-  const key = collectionKeys.detail(collectionId, itemSerialId);
+  const key = collectionKeys.detail(collectionId, itemId);
 
-  return useQuery(
-    key,
-    () => getItemDetails(api, collectionId!, itemSerialId!),
-    {
-      enabled: Boolean(collectionId) && Boolean(itemSerialId),
-      retry: false,
-      onError,
-    }
-  );
+  return useQuery(key, () => getItemDetails(api, collectionId!, itemId!), {
+    enabled: Boolean(collectionId) && Boolean(itemId),
+    retry: false,
+    onError,
+  });
 };

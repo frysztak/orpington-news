@@ -4628,7 +4628,6 @@ __metadata:
     toad-scheduler: ^1.6.0
     truncate-html: ^1.0.4
     ts-jest: ^27.1.4
-    url-slug: ^3.0.3
   languageName: unknown
   linkType: soft
 
@@ -4692,7 +4691,6 @@ __metadata:
     react-syntax-highlighter: ^15.5.0
     react-test-renderer: ^17.0.2
     react-virtual: ^2.10.4
-    slugify: ^1.6.5
     storybook-addon-next-router: ^3.1.1
     storybook-dark-mode: ^1.0.9
     string-to-color: ^2.2.2
@@ -22016,13 +22014,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slugify@npm:^1.6.5":
-  version: 1.6.5
-  resolution: "slugify@npm:1.6.5"
-  checksum: a955a1b600201030f4c1daa9bb74a17d4402a0693fc40978bbd17e44e64fd72dad3bac4037422aa8aed55b5170edd57f3f4cd8f59ba331f5cf0f10f1a7795609
-  languageName: node
-  linkType: hard
-
 "smart-buffer@npm:^4.2.0":
   version: 4.2.0
   resolution: "smart-buffer@npm:4.2.0"
@@ -24049,13 +24040,6 @@ __metadata:
     file-loader:
       optional: true
   checksum: c1122a992c6cff70a7e56dfc2b7474534d48eb40b2cc75467cde0c6972e7597faf8e43acb4f45f93c2473645dfd803bcbc20960b57544dd1e4c96e77f72ba6fd
-  languageName: node
-  linkType: hard
-
-"url-slug@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "url-slug@npm:3.0.3"
-  checksum: 8af81fe0b44574d9cd7db5d4db00efb757e362c06b295e5cf74f2d9b6efc22853931e60b2f3f124ad940a82f90ac1725b243626b169c5c825cb0bb3c275f3c01
   languageName: node
   linkType: hard
 

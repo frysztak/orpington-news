@@ -24,6 +24,7 @@ import {
   getAllCollectionItems,
   getCollectionItems,
   getItemDetails,
+  setItemDateRead,
 } from '@db/collectionItems';
 import { getPreferences, pruneExpandedCollections } from '@db/preferences';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
@@ -72,7 +73,7 @@ type MoveCollectionType = Static<typeof MoveCollection>;
 
 const ItemDetailsParams = Type.Object({
   id: Type.Integer(),
-  itemSerialId: Type.Number(),
+  itemId: Type.Number(),
 });
 type ItemDetailsType = Static<typeof ItemDetailsParams>;
 
@@ -273,19 +274,18 @@ export const collections: FastifyPluginAsync = async (
       const {
         params: { id },
         query: pagination,
+        session: { userId },
       } = request;
       const itemsQuery =
-        id === 'home' ? getAllCollectionItems() : getCollectionItems(id);
+        id === 'home' ? getAllCollectionItems(userId) : getCollectionItems(id);
       const items = await pool.any<Omit<DBCollectionItem, 'full_text'>>(
         addPagination(pagination, itemsQuery)
       );
 
       return items.map((dbItem) => ({
         id: dbItem.id,
-        serialId: dbItem.serial_id,
+        url: dbItem.url,
         title: dbItem.title,
-        slug: dbItem.slug,
-        link: dbItem.link,
         summary: dbItem.summary,
         thumbnailUrl: dbItem.thumbnail_url ?? undefined,
         datePublished: dbItem.date_published,
@@ -297,7 +297,6 @@ export const collections: FastifyPluginAsync = async (
         collection: {
           id: dbItem.collection_id,
           title: dbItem.collection_title,
-          slug: dbItem.collection_slug,
           icon: dbItem.collection_icon,
         },
         onReadingList: false, // TODO
@@ -308,7 +307,7 @@ export const collections: FastifyPluginAsync = async (
   fastify.get<{
     Params: ItemDetailsType;
   }>(
-    '/:id/item/:itemSerialId',
+    '/:id/item/:itemId',
     {
       schema: {
         params: ItemDetailsParams,
@@ -318,12 +317,11 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const { params } = request;
-      const { id, itemSerialId } = params;
+      const { id, itemId } = params;
 
       try {
-        const details = await pool.one(getItemDetails(id, itemSerialId));
+        const details = await pool.one(getItemDetails(id, itemId));
         const {
-          serial_id,
           full_text,
           date_published,
           date_read,
@@ -336,7 +334,6 @@ export const collections: FastifyPluginAsync = async (
 
         return {
           ...rest,
-          serialId: serial_id,
           fullText: full_text,
           datePublished: timestampMsToSeconds(date_published),
           dateRead: timestampMsToSeconds(date_read),
@@ -347,7 +344,7 @@ export const collections: FastifyPluginAsync = async (
       } catch (error) {
         if (error instanceof NotFoundError) {
           logger.error(
-            `Items details for collection '${id}' and item '${itemSerialId}' not found.`
+            `Items details for collection '${id}' and item '${itemId}' not found.`
           );
           reply
             .status(404)
@@ -359,6 +356,33 @@ export const collections: FastifyPluginAsync = async (
           reply.status(500).send({ errorCode: 500, message: 'Server error.' });
         }
       }
+    }
+  );
+
+  const DateReadBody = Type.Object({
+    dateRead: Type.Union([Type.Null(), Type.Number()]),
+  });
+  fastify.put<{
+    Params: ItemDetailsType;
+    Body: Static<typeof DateReadBody>;
+  }>(
+    '/:id/item/:itemId/dateRead',
+    {
+      schema: {
+        params: ItemDetailsParams,
+        body: DateReadBody,
+        tags: ['Collections'],
+      },
+      preHandler: verifyCollectionOwner,
+    },
+    async (request, reply) => {
+      const {
+        params: { id, itemId },
+        body: { dateRead },
+      } = request;
+
+      await pool.any(setItemDateRead(id, itemId, dateRead));
+      return true;
     }
   );
 

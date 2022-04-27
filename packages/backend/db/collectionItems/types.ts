@@ -1,11 +1,9 @@
 import { CollectionIconType, ID } from '@orpington-news/shared';
 
 export interface DBCollectionItem {
-  id: string;
-  serial_id: number;
+  id: ID;
+  url: string;
   title: string;
-  slug: string;
-  link: string;
   full_text: string;
   summary: string;
   thumbnail_url: string | null;
@@ -17,11 +15,10 @@ export interface DBCollectionItem {
   reading_time: number;
   collection_id: ID;
   collection_title: string;
-  collection_slug: string;
   collection_icon: CollectionIconType;
 }
 
 export type DBCollectionItemDetails = Omit<
   DBCollectionItem,
-  'collection_title' | 'collection_slug' | 'collection_icon'
+  'collection_title' | 'collection_icon'
 >;

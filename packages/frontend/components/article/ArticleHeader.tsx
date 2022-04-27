@@ -39,7 +39,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
   const {
     article: {
       title,
-      link,
+      url,
       datePublished,
       dateRead,
       readingTime,
@@ -74,7 +74,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           icon={<HiOutlineExternalLink />}
           as={Link}
           isExternal
-          href={link}
+          href={url}
           aria-label="Open external link"
           variant="ghost"
         />

@@ -11,7 +11,6 @@ describe('inflateCollections', () => {
       {
         id: 1,
         title: 'Feed 01',
-        slug: 'feed-01',
         icon: 'React',
         order: 0,
         url: 'https://feed-01.com/rss.xml',
@@ -24,7 +23,6 @@ describe('inflateCollections', () => {
       {
         id: 2,
         title: 'Feed 02',
-        slug: 'feed-02',
         icon: 'Linux',
         order: 1,
         url: 'https://feed-02.com/rss.xml',
@@ -37,7 +35,6 @@ describe('inflateCollections', () => {
       {
         id: 3,
         title: 'Collection 03',
-        slug: 'collection-03',
         icon: 'Haskell',
         order: 2,
         dateUpdated: 1641058850881,
@@ -49,7 +46,6 @@ describe('inflateCollections', () => {
       {
         id: 5,
         title: 'Feed 03-02',
-        slug: 'feed-03-02',
         icon: 'Haskell',
         order: 1,
         url: 'https://feed-03-02.com/rss.xml',
@@ -62,7 +58,6 @@ describe('inflateCollections', () => {
       {
         id: 4,
         title: 'Collection 03-01',
-        slug: 'collection-03-01',
         icon: 'Haskell',
         order: 0,
         dateUpdated: 1641058920330,
@@ -74,7 +69,6 @@ describe('inflateCollections', () => {
       {
         id: 6,
         title: 'Feed 03-01-01',
-        slug: 'feed-03-01-01',
         icon: 'Haskell',
         order: 0,
         url: 'https://feed-03-01-01.com/rss.xml',
@@ -90,7 +84,6 @@ describe('inflateCollections', () => {
       {
         id: 1,
         title: 'Feed 01',
-        slug: 'feed-01',
         icon: 'React',
         url: 'https://feed-01.com/rss.xml',
         dateUpdated: 1641058737938,
@@ -101,7 +94,6 @@ describe('inflateCollections', () => {
       {
         id: 2,
         title: 'Feed 02',
-        slug: 'feed-02',
         icon: 'Linux',
         url: 'https://feed-02.com/rss.xml',
         dateUpdated: 1641058764932,
@@ -112,7 +104,6 @@ describe('inflateCollections', () => {
       {
         id: 3,
         title: 'Collection 03',
-        slug: 'collection-03',
         icon: 'Haskell',
         dateUpdated: 1641058850881,
         unreadCount: 26,
@@ -121,7 +112,6 @@ describe('inflateCollections', () => {
           {
             id: 4,
             title: 'Collection 03-01',
-            slug: 'collection-03-01',
             icon: 'Haskell',
             dateUpdated: 1641058920330,
             unreadCount: 11,
@@ -131,7 +121,6 @@ describe('inflateCollections', () => {
               {
                 id: 6,
                 title: 'Feed 03-01-01',
-                slug: 'feed-03-01-01',
                 icon: 'Haskell',
                 url: 'https://feed-03-01-01.com/rss.xml',
                 dateUpdated: 1641059005051,
@@ -145,7 +134,6 @@ describe('inflateCollections', () => {
           {
             id: 5,
             title: 'Feed 03-02',
-            slug: 'feed-03-02',
             icon: 'Haskell',
             url: 'https://feed-03-02.com/rss.xml',
             dateUpdated: 1641058961198,

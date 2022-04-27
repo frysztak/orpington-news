@@ -31,7 +31,7 @@ import { CollectionMenuAction } from '@components/sidebar/Collections';
 export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
-  const itemSerialId = getNumber(router.query?.itemId);
+  const itemId = getNumber(router.query?.itemId);
 
   const { onOpenAddCollectionModal, ...addCollectionModalProps } =
     useAddCollectionModal();
@@ -160,11 +160,11 @@ export const Panes: React.FC = ({ children }) => {
         currentlyUpdatedCollections={currentlyUpdatedCollections}
         onRefreshClicked={handleRefreshClicked}
         mainContent={
-          itemSerialId &&
+          itemId &&
           collectionId && (
             <Article
               collectionId={collectionId}
-              itemSerialId={itemSerialId}
+              itemId={itemId}
               onGoBackClicked={handleGoBack}
             />
           )

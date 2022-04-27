@@ -8,8 +8,8 @@ export const collectionKeys = {
     [...collectionKeys.base, collectionId] as const,
   list: (collectionId: ID | string) =>
     [...collectionKeys.base, collectionId, 'list'] as const,
-  detail: (collectionId: ID, itemSerialId: ID) =>
-    [...collectionKeys.base, collectionId, 'detail', { itemSerialId }] as const,
+  detail: (collectionId: ID, itemId: ID) =>
+    [...collectionKeys.base, collectionId, 'detail', { itemId }] as const,
 };
 
 export const preferencesKeys = {

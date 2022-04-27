@@ -34,8 +34,7 @@ describe('RSS parser', () => {
       {
         id: 'https://example.com/2021/10/09/post-02',
         title: 'My fun blog post, please enjoy',
-        slug: 'my-fun-blog-post-please-enjoy',
-        link: 'https://example.com/2021/10/09/post-02/',
+        url: 'https://example.com/2021/10/09/post-02/',
         date_published: 1633781700,
         full_text: 'content',
         reading_time: 0.005,
@@ -84,8 +83,7 @@ describe('RSS parser', () => {
         id: 'https://news.ycombinator.com/item?id=29852270',
         title:
           'Why do 70% of families lose their wealth in the 2nd generation? (2018)',
-        slug: 'why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018',
-        link: 'https://www.nasdaq.com/articles/generational-wealth%3A-why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018-10',
+        url: 'https://www.nasdaq.com/articles/generational-wealth%3A-why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018-10',
         date_published: 1641654219,
         full_text: `<p>Article URL: <a href=\"https://www.nasdaq.com/articles/generational-wealth%3A-why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018-10\">https://www.nasdaq.com/articles/generational-wealth%3A-why-do-70-of-families-lose-their-wealth-in-the-2nd-generation-2018-10</a></p>
 <p>Comments URL: <a href=\"https://news.ycombinator.com/item?id=29852270\">https://news.ycombinator.com/item?id=29852270</a></p>

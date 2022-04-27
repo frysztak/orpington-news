@@ -9,7 +9,6 @@ import { decode } from 'html-entities';
 import DOMPurify from 'isomorphic-dompurify';
 import { getUnixTime, parseISO } from 'date-fns';
 import { URL } from 'url';
-import { slugify } from '@utils';
 import { DBCollectionItem } from '@db/collectionItems';
 import { logger } from '@utils/logger';
 import { notEmpty } from '@orpington-news/shared';
@@ -55,12 +54,11 @@ export const mapFeedItems = (
 ): Array<
   Omit<
     DBCollectionItem,
-    | 'serial_id'
+    | 'id'
     | 'date_updated'
     | 'date_read'
     | 'collection_id'
     | 'collection_title'
-    | 'collection_slug'
     | 'collection_icon'
   >
 > => {
@@ -99,8 +97,7 @@ export const mapFeedItems = (
       return {
         id: (item.guid || item.id) as string,
         title: title,
-        slug: slugify(title),
-        link: item.link,
+        url: item.link,
         full_text: DOMPurify.sanitize(content),
         summary: decode(
           item.summary?.trim() || truncate(pureText, 20, { byWords: true })

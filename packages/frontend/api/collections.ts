@@ -22,15 +22,22 @@ export const getCollectionItems = (
     .get()
     .json<CollectionItem[]>();
 
-export const getItemDetails = (
-  api: Wretcher,
-  collectionId: ID,
-  itemSerialId: ID
-) =>
+export const getItemDetails = (api: Wretcher, collectionId: ID, itemId: ID) =>
   api
-    .url(`/collections/${collectionId}/item/${itemSerialId}`)
+    .url(`/collections/${collectionId}/item/${itemId}`)
     .get()
     .json<CollectionItemDetails>();
+
+export const setDateRead = (
+  api: Wretcher,
+  collectionId: ID,
+  itemId: ID,
+  dateRead: number | null
+) =>
+  api
+    .url(`/collections/${collectionId}/item/${itemId}/dateRead`)
+    .put({ dateRead })
+    .json<boolean>();
 
 export const verifyFeedUrl = (api: Wretcher, url: string) =>
   api
@@ -42,16 +49,13 @@ export const addCollection = (
   api: Wretcher,
   collection: Omit<
     Collection,
-    'id' | 'slug' | 'unreadCount' | 'children' | 'dateUpdated'
+    'id' | 'unreadCount' | 'children' | 'dateUpdated'
   >
 ) => api.url(`/collections`).post(collection).json<boolean>();
 
 export const editCollection = (
   api: Wretcher,
-  collection: Omit<
-    Collection,
-    'slug' | 'unreadCount' | 'children' | 'dateUpdated'
-  >
+  collection: Omit<Collection, 'unreadCount' | 'children' | 'dateUpdated'>
 ) => api.url(`/collections`).put(collection).json<boolean>();
 
 export const deleteCollection = (api: Wretcher, collectionId: ID) =>

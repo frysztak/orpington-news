@@ -145,7 +145,6 @@ describe('resolveNewParentAfterDrop', () => {
     {
       id: 1,
       title: 'Hacker News',
-      slug: 'hacker-news',
       icon: 'HackerNews',
       order: 0,
       parents: [],
@@ -156,7 +155,6 @@ describe('resolveNewParentAfterDrop', () => {
     {
       id: 2,
       title: 'Whateverblog',
-      slug: 'whateverblog',
       icon: 'React',
       order: 1,
       parents: [],
@@ -167,7 +165,6 @@ describe('resolveNewParentAfterDrop', () => {
     {
       id: 3,
       title: 'Whateverblog2',
-      slug: 'whateverblog2',
       icon: 'React',
       order: 2,
       parents: [],
@@ -178,7 +175,6 @@ describe('resolveNewParentAfterDrop', () => {
     {
       id: 31,
       title: 'Whateverchild01',
-      slug: 'whateverchild01',
       icon: 'React',
       order: 0,
       parents: [3],
@@ -189,7 +185,6 @@ describe('resolveNewParentAfterDrop', () => {
     {
       id: 311,
       title: 'Whateverchild01-01',
-      slug: 'whateverchild01-01',
       icon: 'React',
       order: 0,
       parents: [3, 31],
@@ -200,7 +195,6 @@ describe('resolveNewParentAfterDrop', () => {
     {
       id: 3111,
       title: 'Whateverchild01-01-01',
-      slug: 'whateverchild01-01-01',
       icon: 'React',
       order: 0,
       parents: [3, 31, 311],

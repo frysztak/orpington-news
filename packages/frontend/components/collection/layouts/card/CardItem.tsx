@@ -25,7 +25,7 @@ export type CardItemProps = CollectionItemProps &
 export const CardItem = forwardRef((props: CardItemProps, ref) => {
   const { item, onReadingListButtonClicked, ...rest } = props;
   const {
-    serialId,
+    id,
     title,
     summary,
     collection,
@@ -46,7 +46,7 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
       >
         <HStack w="full" justifyContent="space-between" alignItems="flex-start">
           <NextLink
-            href={`/collection/${collection.id}/article/${serialId}`}
+            href={`/collection/${collection.id}/article/${id}`}
             passHref
           >
             <LinkOverlay>

@@ -1,5 +1,4 @@
 import faker from '@faker-js/faker';
-import slugify from 'slugify';
 import { getUnixTime } from 'date-fns';
 import {
   Collection,
@@ -14,14 +13,12 @@ export const generateSampleCollectionItem = (
   const title = faker.hacker.phrase();
 
   return {
-    id: faker.datatype.uuid(),
-    serialId: faker.datatype.number(),
-    link: faker.internet.url(),
+    id: faker.datatype.number(),
+    url: faker.internet.url(),
     summary: faker.lorem.words(30),
     datePublished: getUnixTime(faker.date.recent()),
     dateUpdated: getUnixTime(faker.date.recent()),
     title,
-    slug: slugify(title),
     fullText: `<b>${title}</b><br/>${faker.lorem.sentences(10)}`,
 
     collection,
@@ -36,7 +33,6 @@ export const generateSampleCollection = (name?: string): Collection => {
     id: faker.datatype.number(),
     title: n,
     icon: defaultIcon,
-    slug: slugify(n),
     unreadCount: faker.datatype.number(),
     refreshInterval: defaultRefreshInterval,
   };

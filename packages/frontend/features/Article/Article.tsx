@@ -19,39 +19,41 @@ import { ID } from '@orpington-news/shared';
 
 export interface ArticleProps {
   collectionId: ID;
-  itemSerialId: ID;
+  itemId: ID;
 
   onGoBackClicked?: () => void;
 }
 
 export const Article: React.FC<ArticleProps> = (props) => {
-  const { collectionId, itemSerialId, onGoBackClicked } = props;
+  const { collectionId, itemId, onGoBackClicked } = props;
 
   const toast = useToast();
 
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
     collectionId,
-    itemSerialId
+    itemId
   );
 
-  const query = useArticleDetails(collectionId, itemSerialId);
+  const query = useArticleDetails(collectionId, itemId);
 
   useEffect(() => {
-    if (query.data?.serialId) {
+    if (query.data?.id) {
       mutateDateRead({
-        id: query.data.serialId,
+        collectionId,
+        itemId: query.data.id,
         dateRead: getUnixTime(new Date()),
       });
     }
-  }, [query.data?.serialId, mutateDateRead]);
+  }, [query.data?.id, mutateDateRead, collectionId]);
 
   const handleMenuItemClicked = useCallback(
     (action: ArticleMenuAction) => {
       if (action === 'markAsUnread') {
-        if (query.data?.serialId) {
+        if (query.data?.id) {
           mutateDateRead(
             {
-              id: query.data.serialId,
+              collectionId,
+              itemId: query.data.id,
               dateRead: null,
             },
             {
@@ -66,7 +68,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
         }
       }
     },
-    [mutateDateRead, query.data?.serialId, toast]
+    [collectionId, mutateDateRead, query.data?.id, toast]
   );
 
   const ref = useRef<HTMLDivElement | null>(null);

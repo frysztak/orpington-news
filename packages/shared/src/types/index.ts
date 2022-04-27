@@ -53,7 +53,6 @@ export const defaultRefreshInterval: number = 120;
 
 export interface Collection {
   id: ID;
-  slug: string;
   title: string;
   unreadCount: number;
   icon: CollectionIconType;
@@ -74,11 +73,9 @@ export type FlatCollection = Omit<Collection, 'children' | 'parentId'> & {
 };
 
 export interface CollectionItem {
-  id: string;
-  serialId: number;
+  id: ID;
+  url: string;
   title: string;
-  slug: string;
-  link: string;
   summary: string;
   fullText: string;
   thumbnailUrl?: string;
@@ -88,14 +85,14 @@ export interface CollectionItem {
   categories?: string[];
   comments?: string;
 
-  collection: Pick<Collection, 'id' | 'title' | 'slug' | 'icon'>;
+  collection: Pick<Collection, 'id' | 'title' | 'icon'>;
   readingTime: number;
   onReadingList: boolean;
 }
 
 export type CollectionItemDetails = Omit<
   CollectionItem,
-  'collection_id' | 'collection_title' | 'collection_slug' | 'collection_icon'
+  'collection_id' | 'collection_title' | 'collection_icon'
 >;
 
 export const CollectionLayouts = ['magazine', 'card'] as const;
