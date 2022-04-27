@@ -81,7 +81,7 @@ export const moveCollection = (api: Wretcher, body: MoveCollectionBody) =>
 
 export const setCollectionLayout = (
   api: Wretcher,
-  collectionId: ID,
+  collectionId: ID | 'home',
   layout: CollectionLayout
 ) =>
   api

@@ -102,6 +102,7 @@ export const defaultCollectionLayout: CollectionLayout = 'card';
 interface CommonPreferences {
   expandedCollectionIds: Array<ID>;
   defaultCollectionLayout: CollectionLayout;
+  homeCollectionLayout: CollectionLayout;
 }
 
 export type ViewPreference =
@@ -113,5 +114,6 @@ export type Preferences = CommonPreferences & ViewPreference;
 export const defaultPreferences: Preferences = {
   activeView: 'home',
   defaultCollectionLayout,
+  homeCollectionLayout: defaultCollectionLayout,
   expandedCollectionIds: [],
 };

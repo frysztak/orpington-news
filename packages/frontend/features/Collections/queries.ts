@@ -16,9 +16,14 @@ import {
   refreshCollection,
   setCollectionLayout,
 } from '@api';
-import { collectionKeys } from '@features/queryKeys';
+import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 import { inflateCollections } from '@features/OrganizeCollections';
-import { CollectionLayout, FlatCollection, ID } from '@orpington-news/shared';
+import {
+  CollectionLayout,
+  FlatCollection,
+  ID,
+  Preferences,
+} from '@orpington-news/shared';
 
 export const useCollectionsList = <TSelectedData>(opts?: {
   select?: (data: FlatCollection[]) => TSelectedData;
@@ -117,34 +122,52 @@ export const useSetCollectionLayout = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({ id, layout }: { id: ID; layout: CollectionLayout }) =>
+    ({ id, layout }: { id: ID | 'home'; layout: CollectionLayout }) =>
       setCollectionLayout(api, id, layout),
     {
       onError,
       onMutate: ({ id, layout }) => {
-        queryClient.setQueryData<FlatCollection[]>(
-          collectionKeys.tree,
-          (oldCollections) => {
-            if (!oldCollections) {
-              return [];
-            }
-
-            const idx = oldCollections.findIndex((c) => c.id === id);
-            if (idx === -1) {
-              return oldCollections;
-            }
-
-            const updatedCollection = {
-              ...oldCollections[idx]!,
-              layout,
-            };
-
-            return set(lensIndex(idx), updatedCollection, oldCollections);
+        if (id === 'home') {
+          const oldPreferences = queryClient.getQueryData<Preferences>(
+            preferencesKeys.base
+          );
+          if (oldPreferences) {
+            queryClient.setQueryData<Preferences>(preferencesKeys.base, {
+              ...oldPreferences,
+              homeCollectionLayout: layout,
+            });
           }
+
+          return;
+        }
+
+        const oldCollections = queryClient.getQueryData<FlatCollection[]>(
+          collectionKeys.tree
         );
+
+        if (oldCollections) {
+          const idx = oldCollections.findIndex((c) => c.id === id);
+          if (idx === -1) {
+            return oldCollections;
+          }
+
+          const updatedCollection = {
+            ...oldCollections[idx]!,
+            layout,
+          };
+
+          queryClient.setQueryData<FlatCollection[]>(
+            collectionKeys.tree,
+            set(lensIndex(idx), updatedCollection, oldCollections)
+          );
+        }
       },
-      onSuccess: () => {
-        queryClient.invalidateQueries(collectionKeys.tree);
+      onSuccess: (_, { id }) => {
+        if (id === 'home') {
+          queryClient.invalidateQueries(preferencesKeys.base);
+        } else {
+          queryClient.invalidateQueries(collectionKeys.tree);
+        }
       },
     }
   );

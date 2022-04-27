@@ -83,7 +83,8 @@ CREATE TABLE preferences (
     NULL
     REFERENCES collections (id),
   "expanded_collection_ids" integer[],
-  "default_collection_layout" text NOT NULL
+  "default_collection_layout" text NOT NULL,
+  "home_collection_layout" text NOT NULL
 );
 
 -- make sure that column "order" is in fact in order

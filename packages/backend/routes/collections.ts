@@ -26,7 +26,11 @@ import {
   getItemDetails,
   setItemDateRead,
 } from '@db/collectionItems';
-import { getPreferences, pruneExpandedCollections } from '@db/preferences';
+import {
+  getPreferences,
+  pruneExpandedCollections,
+  setHomeCollectionLayout,
+} from '@db/preferences';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
 import {
   FlatCollection,
@@ -99,7 +103,6 @@ const verifyCollectionOwner = async (
     session: { userId },
   } = request;
 
-  // TODO(home)
   if (typeof id === 'number') {
     const owner = await pool.maybeOne(getCollectionOwner(id));
     if (owner !== null && owner.userId !== userId) {
@@ -443,10 +446,13 @@ export const collections: FastifyPluginAsync = async (
       const {
         body: { layout },
         params: { id },
+        session: { userId },
       } = request;
-      // TODO: remove once home collection is refactored
+
       if (typeof id === 'number') {
         await pool.query(setCollectionLayout(id, layout));
+      } else if (id === 'home') {
+        await pool.query(setHomeCollectionLayout(layout, userId));
       }
 
       return true;

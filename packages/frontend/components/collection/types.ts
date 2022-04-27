@@ -10,7 +10,7 @@ export interface CollectionLayoutProps {
 }
 
 export interface ActiveCollection {
-  id: string | ID;
+  id: ID | 'home';
   title: string;
   layout: CollectionLayout;
 }

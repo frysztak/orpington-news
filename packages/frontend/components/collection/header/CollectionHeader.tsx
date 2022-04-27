@@ -76,7 +76,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
               />
               <MenuList>
                 <MenuOptionGroup
-                  defaultValue={collection?.layout}
+                  value={collection.layout}
                   title="Layout"
                   type="radio"
                 >

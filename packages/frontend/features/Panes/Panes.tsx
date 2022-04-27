@@ -104,13 +104,10 @@ export const Panes: React.FC = ({ children }) => {
   const { mutate: setCollectionLayout } = useSetCollectionLayout();
   const handleCollectionLayoutChanged = useCallback(
     (layout: CollectionLayout) => {
-      // TODO(home): remove when home collection is refactored
-      if (typeof activeCollection.id === 'number') {
-        setCollectionLayout({
-          id: activeCollection.id,
-          layout,
-        });
-      }
+      setCollectionLayout({
+        id: activeCollection.id,
+        layout,
+      });
     },
     [activeCollection.id, setCollectionLayout]
   );

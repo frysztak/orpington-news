@@ -5,7 +5,8 @@ import { useCollectionById } from '@features/Collections';
 import { usePreferencesContext } from './PreferencesContext';
 
 export const useActiveCollection = () => {
-  const { activeCollectionId, setActiveCollectionId } = usePreferencesContext();
+  const { preferences, activeCollectionId, setActiveCollectionId } =
+    usePreferencesContext();
 
   const handleCollectionClicked = useCallback(
     (collection: Collection) => {
@@ -21,7 +22,7 @@ export const useActiveCollection = () => {
       return {
         id: activeCollectionId,
         title: 'Home',
-        layout: defaultCollectionLayout,
+        layout: preferences?.homeCollectionLayout ?? defaultCollectionLayout,
       };
     }
 
@@ -30,7 +31,7 @@ export const useActiveCollection = () => {
       title: collection?.title ?? '',
       layout: collection?.layout ?? defaultCollectionLayout,
     };
-  }, [activeCollectionId, collection]);
+  }, [activeCollectionId, collection, preferences?.homeCollectionLayout]);
 
   return { activeCollection, handleCollectionClicked, setActiveCollectionId };
 };

@@ -1,19 +1,22 @@
 import { sql } from 'slonik';
-import type { ID, Preferences, ViewPreference } from '@orpington-news/shared';
+import type {
+  CollectionLayout,
+  ID,
+  Preferences,
+  ViewPreference,
+} from '@orpington-news/shared';
 
 export const pruneExpandedCollections = () => {
   return sql`CALL preferences_prune_expanded_collections();`;
 };
 
-export const insertPreferences = (preferences: Preferences, userId: ID) => {
-  const { activeView, expandedCollectionIds, defaultCollectionLayout } =
-    preferences;
-
+export const insertPreferences = (p: Preferences, userId: ID) => {
   const values = [
-    activeView,
+    p.activeView,
     null,
-    sql.array(expandedCollectionIds, 'int4'),
-    defaultCollectionLayout,
+    sql.array(p.expandedCollectionIds, 'int4'),
+    p.defaultCollectionLayout,
+    p.homeCollectionLayout,
     userId,
   ];
 
@@ -23,6 +26,7 @@ export const insertPreferences = (preferences: Preferences, userId: ID) => {
       "active_collection_id",
       "expanded_collection_ids", 
       "default_collection_layout", 
+      "home_collection_layout", 
       "user_id"
     ) VALUES (${sql.join(values, sql`, `)})`;
 };
@@ -32,17 +36,26 @@ export const getPreferences = (userId: ID) => {
     SELECT active_view as "activeView", 
            active_collection_id as "activeCollectionId",
            COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds",
-           default_collection_layout as "defaultCollectionLayout"
+           default_collection_layout as "defaultCollectionLayout",
+           home_collection_layout as "homeCollectionLayout"
     FROM preferences
     WHERE "user_id" = ${userId}`;
 };
 
-export const savePreferences = (preferences: Preferences, userId: ID) => {
-  const { defaultCollectionLayout } = preferences;
-
+export const savePreferences = (p: Preferences, userId: ID) => {
   return sql`
     UPDATE preferences p
-    SET default_collection_layout = ${defaultCollectionLayout}
+    SET default_collection_layout = ${p.defaultCollectionLayout}
+    WHERE p.user_id = ${userId}`;
+};
+
+export const setHomeCollectionLayout = (
+  layout: CollectionLayout,
+  userId: ID
+) => {
+  return sql`
+    UPDATE preferences p
+    SET home_collection_layout = ${layout}
     WHERE p.user_id = ${userId}`;
 };
 
