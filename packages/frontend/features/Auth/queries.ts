@@ -34,3 +34,16 @@ export const useLogout = () => {
     onError,
   });
 };
+
+export const useChangePassword = () => {
+  const { onError } = useHandleError();
+  const api = useApi();
+
+  return useMutation(
+    (password: string) =>
+      api.url('/auth/password').put({ password }).json<boolean>(),
+    {
+      onError,
+    }
+  );
+};

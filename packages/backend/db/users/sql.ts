@@ -17,3 +17,10 @@ export const getUserPassword = (username: string) => {
     SELECT id, password FROM "users"
     WHERE name = ${username}`;
 };
+
+export const setUserPassword = (userId: ID, password: string) => {
+  return sql`
+    UPDATE "users"
+    SET password = ${password}
+    WHERE id = ${userId}`;
+};

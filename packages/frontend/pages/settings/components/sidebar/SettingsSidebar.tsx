@@ -29,6 +29,7 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
       </SettingsCategory>
 
       <SettingsCategory title="Account">
+        <SettingsLink href="/settings/password">Change password</SettingsLink>
         <SettingsLink href="/settings/logout">Log out</SettingsLink>
       </SettingsCategory>
     </VStack>

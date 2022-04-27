@@ -17,7 +17,7 @@ export const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
       </Show>
 
       <Show below="sm">
-        <VStack spacing={2} align="flex-start">
+        <VStack spacing={2} w="full" align="flex-start">
           <NextLink href="/settings" passHref>
             <IconButton
               icon={<IoReturnUpBack />}
