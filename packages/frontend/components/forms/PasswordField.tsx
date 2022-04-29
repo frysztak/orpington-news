@@ -1,31 +1,48 @@
 import React from 'react';
 import {
-  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  forwardRef,
+  IconButton,
+  Input,
   InputGroup,
   InputRightElement,
   useDisclosure,
 } from '@chakra-ui/react';
-import { StringField, StringFieldProps } from './StringField';
+import EyeIcon from '@heroicons/react/solid/EyeIcon';
+import EyeOffIcon from '@heroicons/react/solid/EyeOffIcon';
+import { useFormControl } from './useFormControl';
+import type { StringFieldProps } from './StringField';
 
 export type PasswordFieldProps = StringFieldProps;
 
-export const PasswordField: React.FC<PasswordFieldProps> = (props) => {
-  const { isDisabled } = props;
-  const { isOpen: show, onToggle } = useDisclosure();
+export const PasswordField = forwardRef<PasswordFieldProps, 'input'>(
+  (props, ref) => {
+    const { isDisabled } = props;
+    const { formControlProps, inputProps, meta, label } = useFormControl(props);
+    const { isOpen: show, onToggle } = useDisclosure();
 
-  return (
-    <InputGroup size="md">
-      <StringField {...props} type={show ? 'text' : 'password'} />
-      <InputRightElement width="4.5rem">
-        <Button
-          h="1.75rem"
-          size="sm"
-          isDisabled={isDisabled}
-          onClick={onToggle}
-        >
-          {show ? 'Hide' : 'Show'}
-        </Button>
-      </InputRightElement>
-    </InputGroup>
-  );
-};
+    return (
+      <FormControl {...formControlProps}>
+        {label && <FormLabel htmlFor={formControlProps.id}>{label}</FormLabel>}
+
+        <InputGroup size="md">
+          <Input {...inputProps} type={show ? 'text' : 'password'} ref={ref} />
+          <InputRightElement mr={2}>
+            <IconButton
+              aria-label={show ? 'Hide password' : 'Show password'}
+              isDisabled={isDisabled}
+              onClick={onToggle}
+              size="xs"
+              icon={show ? <EyeOffIcon /> : <EyeIcon />}
+              variant="ghost"
+            />
+          </InputRightElement>
+        </InputGroup>
+
+        <FormErrorMessage>{meta.error}</FormErrorMessage>
+      </FormControl>
+    );
+  }
+);
