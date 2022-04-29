@@ -18,16 +18,23 @@ const Template: Story<SidebarContentProps> = (props) => (
 export const Default = Template.bind({});
 Default.args = {
   collections: [],
+  user: {
+    displayName: 'Demo 1',
+  },
+  preferences: {
+    avatarStyle: 'initials',
+  },
 };
 
 export const WithActiveHome = Template.bind({});
 WithActiveHome.args = {
-  collections: [],
+  ...Default.args,
   activeCollectionId: 'home',
 };
 
 export const WithFeedList = Template.bind({});
 WithFeedList.args = {
+  ...Default.args,
   activeCollectionId: 4,
   collections: [
     { id: 1, title: 'Feed 01', unreadCount: 9, icon: 'React' },

@@ -9,3 +9,4 @@ export * from './NumberField';
 export * from './FieldListener';
 export * from './AutoSave';
 export * from './RadioGroupField';
+export * from './AvatarField';

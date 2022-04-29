@@ -20,7 +20,10 @@ CREATE TABLE "users" (
     GENERATED ALWAYS as IDENTITY,
   "name" TEXT NOT NULL 
     CONSTRAINT users_name_unique UNIQUE,
-  "password" TEXT NOT NULL
+  "password" TEXT NOT NULL,
+  "email" TEXT NULL,
+  "display_name" TEXT NULL,
+  "avatar" BYTEA NULL
 );
 
 CREATE TABLE collections (
@@ -67,8 +70,6 @@ CREATE TABLE collection_items (
   PRIMARY KEY ("collection_id", "url")
 );
 
-CREATE INDEX collection_items_id_index ON collection_items (id);
-
 CREATE TABLE preferences (
   "id" integer 
     NOT NULL
@@ -77,14 +78,14 @@ CREATE TABLE preferences (
     NOT NULL
     REFERENCES users (id)
     ON DELETE CASCADE,
-   -- 'home' | 'collection'
-  "active_view" text NULL,
+  "active_view" text NULL,  -- 'home' | 'collection'
   "active_collection_id" integer
     NULL
     REFERENCES collections (id),
   "expanded_collection_ids" integer[],
   "default_collection_layout" text NOT NULL,
-  "home_collection_layout" text NOT NULL
+  "home_collection_layout" text NOT NULL,
+  "avatar_style" text NOT NULL
 );
 
 -- make sure that column "order" is in fact in order

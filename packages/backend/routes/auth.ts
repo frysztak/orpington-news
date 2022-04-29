@@ -1,33 +1,36 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
 import argon2 from 'argon2';
-import { defaultPreferences, noop } from '@orpington-news/shared';
+import { defaultPreferences, ID } from '@orpington-news/shared';
 import { pool } from '@db';
-import { getUserPassword, insertUser, setUserPassword } from '@db/users';
+import {
+  getUser,
+  getUserPassword,
+  insertUser,
+  setUser,
+  setUserPassword,
+} from '@db/users';
 import { insertPreferences } from '@db/preferences';
 
-const PostLogin = Type.Object({
-  username: Type.String(),
-  password: Type.String(),
-});
-
-type PostLoginType = Static<typeof PostLogin>;
-
-const PasswordBody = Type.Object({
-  password: Type.String(),
-});
-
 export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
-  fastify.post<{ Body: PostLoginType }>(
+  const PostRegister = Type.Object({
+    username: Type.String(),
+    password: Type.String(),
+    displayName: Type.String(),
+    avatar: Type.Optional(Type.String()),
+  });
+  fastify.post<{ Body: Static<typeof PostRegister> }>(
     '/register',
     {
       schema: {
-        body: PostLogin,
+        body: PostRegister,
         tags: ['Auth'],
       },
     },
     async (request, reply) => {
-      const { username, password } = request.body;
+      const {
+        body: { username, password, displayName, avatar },
+      } = request;
 
       const userExists = await pool.exists(getUserPassword(username));
       if (userExists) {
@@ -42,7 +45,12 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
       });
       await pool.transaction(async (conn) => {
         const { id } = await conn.one(
-          insertUser({ username, password: passwordHashed })
+          insertUser({
+            username,
+            password: passwordHashed,
+            displayName,
+            avatar,
+          })
         );
         await conn.query(insertPreferences(defaultPreferences, id));
       });
@@ -50,7 +58,11 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
   );
 
-  fastify.post<{ Body: PostLoginType }>(
+  const PostLogin = Type.Object({
+    username: Type.String(),
+    password: Type.String(),
+  });
+  fastify.post<{ Body: Static<typeof PostLogin> }>(
     '/login',
     {
       schema: {
@@ -59,7 +71,9 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
       },
     },
     async (request, reply) => {
-      const { username, password } = request.body;
+      const {
+        body: { username, password },
+      } = request;
       const passQuery = await pool.maybeOne(getUserPassword(username));
       if (passQuery === null) {
         reply.status(403);
@@ -81,6 +95,9 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
   );
 
+  const PasswordBody = Type.Object({
+    password: Type.String(),
+  });
   fastify.put<{ Body: Static<typeof PasswordBody> }>(
     '/password',
     {
@@ -103,9 +120,69 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
   );
 
-  fastify.delete('/session', async (request, reply) => {
-    request.destroySession(() => {
-      reply.status(200).clearCookie('sessionId').send(true);
-    });
+  const getUserData = async (userId: ID) => {
+    const { avatar, ...rest } = await pool.one(getUser(userId));
+    return {
+      ...rest,
+      avatar: avatar?.toString('ascii'),
+    };
+  };
+
+  fastify.get(
+    '/user',
+    {
+      schema: {
+        tags: ['Auth'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        session: { userId },
+      } = request;
+
+      return await getUserData(userId);
+    }
+  );
+
+  const PutUser = Type.Object({
+    displayName: Type.String(),
+    avatar: Type.Optional(Type.String()),
   });
+  fastify.put<{ Body: Static<typeof PutUser> }>(
+    '/user',
+    {
+      schema: {
+        body: PutUser,
+        tags: ['Auth'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        body: { displayName, avatar },
+        session: { userId },
+      } = request;
+      await pool.query(
+        setUser({
+          id: userId,
+          displayName,
+          avatar,
+        })
+      );
+      return await getUserData(userId);
+    }
+  );
+
+  fastify.delete(
+    '/session',
+    {
+      schema: {
+        tags: ['Auth'],
+      },
+    },
+    async (request, reply) => {
+      request.destroySession(() => {
+        reply.status(200).clearCookie('sessionId').send(true);
+      });
+    }
+  );
 };

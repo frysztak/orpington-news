@@ -2,38 +2,38 @@ import React from 'react';
 import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import * as Yup from 'yup';
 import { Form, Formik } from 'formik';
-import { AvatarField, PasswordField, StringField } from '@components/forms';
+import { AvatarField, StringField } from '@components/forms';
 import { SignupFormData } from '@features/Auth';
 
-export interface SignupFormProps {
+export type EditAccountFormData = Pick<
+  SignupFormData,
+  'username' | 'displayName' | 'avatar'
+>;
+
+export interface EditAccountFormProps {
   isLoading?: boolean;
   isDisabled?: boolean;
-  onSubmit: (data: SignupFormData) => void;
+  initialValues?: EditAccountFormData;
+  onSubmit: (data: EditAccountFormData) => void;
 }
 
 export const validationSchema = Yup.object({
-  username: Yup.string().required('Please enter your username.'),
   displayName: Yup.string().required('Please enter your display name.'),
-  password: Yup.string().required('Please enter your password.'),
-  passwordConfirm: Yup.string()
-    .oneOf([Yup.ref('password')], "Passwords don't match.")
-    .required('Please confirm your password.'),
 });
 
-const initialValues: SignupFormData = {
+const initVals: EditAccountFormData = {
   username: '',
-  password: '',
   displayName: '',
 };
 
-export const SignupForm: React.FC<SignupFormProps> = (props) => {
-  const { onSubmit, isLoading, isDisabled } = props;
+export const EditAccountForm: React.FC<EditAccountFormProps> = (props) => {
+  const { onSubmit, isLoading, isDisabled, initialValues } = props;
 
-  const handleSubmit = (data: SignupFormData) => onSubmit(data);
+  const handleSubmit = (data: EditAccountFormData) => onSubmit(data);
 
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={initialValues ?? initVals}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
@@ -43,34 +43,21 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
             <StringField
               name="username"
               placeholder="Username"
-              isDisabled={isDisabled || isLoading}
-              isRequired
+              label="Username"
+              isDisabled={true}
             />
 
-            <HStack w="full">
+            <HStack w="full" align="flex-end">
               <StringField
                 name="displayName"
                 placeholder="Display name"
+                label="Display name"
                 isDisabled={isDisabled || isLoading}
               />
               <Box flexBasis="20%" maxW={14} pr={2}>
                 <AvatarField name="avatar" displayName={displayName} />
               </Box>
             </HStack>
-
-            <PasswordField
-              name="password"
-              placeholder="Enter password"
-              isDisabled={isDisabled || isLoading}
-              isRequired
-            />
-
-            <PasswordField
-              name="passwordConfirm"
-              placeholder="Confirm password"
-              isDisabled={isDisabled || isLoading}
-              isRequired
-            />
 
             <HStack w="full" justify="flex-end">
               <Button
@@ -80,7 +67,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
                 isDisabled={isDisabled || !isValid}
                 isLoading={isLoading}
               >
-                Signup
+                Save
               </Button>
             </HStack>
           </VStack>

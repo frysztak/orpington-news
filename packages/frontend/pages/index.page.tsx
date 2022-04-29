@@ -2,9 +2,9 @@ import React from 'react';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { dehydrate, QueryClient } from 'react-query';
-import { getCollections, getPreferences, ssrApi } from '@api';
+import { getCollections, getPreferences, getUser, ssrApi } from '@api';
 import { getChakraColorModeCookie, getCookieHeaderFromReq } from '@utils';
-import { collectionKeys, preferencesKeys } from '@features';
+import { collectionKeys, preferencesKeys, userKeys } from '@features';
 import { collectionsItemsQueryFn } from '@features/Collections';
 import { Preferences } from '@orpington-news/shared';
 
@@ -32,6 +32,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   const apiWithHeaders = ssrApi().headers(getCookieHeaderFromReq(req));
   const queryClient = new QueryClient();
   await Promise.all([
+    queryClient.prefetchQuery(userKeys.info, () => getUser(apiWithHeaders)),
     queryClient.prefetchQuery(collectionKeys.tree, () =>
       getCollections(apiWithHeaders)
     ),

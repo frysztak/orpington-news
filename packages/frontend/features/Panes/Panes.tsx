@@ -3,7 +3,12 @@ import { useRouter } from 'next/router';
 import { useLocalStorage } from 'usehooks-ts';
 import { Panes as PanesComponent } from '@components/panes';
 import { MenuItem } from '@components/sidebar';
-import { Collection, CollectionLayout, ID } from '@orpington-news/shared';
+import {
+  Collection,
+  CollectionLayout,
+  defaultPreferences,
+  ID,
+} from '@orpington-news/shared';
 import { Article } from '@features/Article';
 import {
   useCollectionsTree,
@@ -27,6 +32,7 @@ import {
 } from '@features/Preferences';
 import { getNumber } from '@utils/router';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
+import { useGetUser } from '@features/Auth';
 
 export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
@@ -132,6 +138,9 @@ export const Panes: React.FC = ({ children }) => {
     400
   );
 
+  const { data: user } = useGetUser();
+  const { preferences } = usePreferencesContext();
+
   return (
     <>
       <PanesComponent
@@ -146,6 +155,8 @@ export const Panes: React.FC = ({ children }) => {
           activeCollectionId: activeCollection.id,
           expandedCollectionIDs: expandedCollectionIds,
           collectionsCurrentlyUpdated: currentlyUpdatedCollections,
+          user: user ?? { displayName: '', username: '' },
+          preferences: preferences ?? defaultPreferences,
         }}
         activeCollection={activeCollection}
         collectionItems={allItems}

@@ -12,22 +12,24 @@ export const pruneExpandedCollections = () => {
 
 export const insertPreferences = (p: Preferences, userId: ID) => {
   const values = [
+    userId,
     p.activeView,
     null,
     sql.array(p.expandedCollectionIds, 'int4'),
     p.defaultCollectionLayout,
     p.homeCollectionLayout,
-    userId,
+    p.avatarStyle,
   ];
 
   return sql`
     INSERT INTO preferences(
+      "user_id",
       "active_view", 
       "active_collection_id",
       "expanded_collection_ids", 
       "default_collection_layout", 
-      "home_collection_layout", 
-      "user_id"
+      "home_collection_layout",
+      "avatar_style"
     ) VALUES (${sql.join(values, sql`, `)})`;
 };
 
@@ -37,7 +39,8 @@ export const getPreferences = (userId: ID) => {
            active_collection_id as "activeCollectionId",
            COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds",
            default_collection_layout as "defaultCollectionLayout",
-           home_collection_layout as "homeCollectionLayout"
+           home_collection_layout as "homeCollectionLayout",
+           avatar_style as "avatarStyle"
     FROM preferences
     WHERE "user_id" = ${userId}`;
 };
@@ -45,7 +48,9 @@ export const getPreferences = (userId: ID) => {
 export const savePreferences = (p: Preferences, userId: ID) => {
   return sql`
     UPDATE preferences p
-    SET default_collection_layout = ${p.defaultCollectionLayout}
+    SET 
+      default_collection_layout = ${p.defaultCollectionLayout},
+      avatar_style = ${p.avatarStyle}
     WHERE p.user_id = ${userId}`;
 };
 

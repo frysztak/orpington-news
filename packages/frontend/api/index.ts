@@ -41,5 +41,6 @@ export const useApi = () => {
 
 export * from './ApiContext';
 export * from './useHandleError';
+export * from './auth';
 export * from './collections';
 export * from './preferences';

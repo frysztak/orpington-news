@@ -1,4 +1,4 @@
-import { Wretcher } from 'wretch';
+import type { Wretcher } from 'wretch';
 import type { ID, Preferences, ViewPreference } from '@orpington-news/shared';
 
 export const getPreferences = (api: Wretcher) =>

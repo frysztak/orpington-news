@@ -24,13 +24,14 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
         <SettingsLink href="/settings/organize">Organize</SettingsLink>
       </SettingsCategory>
 
-      <SettingsCategory title="About">
-        <SettingsLink href="/settings/about">About</SettingsLink>
-      </SettingsCategory>
-
       <SettingsCategory title="Account">
+        <SettingsLink href="/settings/info">Info</SettingsLink>
         <SettingsLink href="/settings/password">Change password</SettingsLink>
         <SettingsLink href="/settings/logout">Log out</SettingsLink>
+      </SettingsCategory>
+
+      <SettingsCategory title="About">
+        <SettingsLink href="/settings/about">About</SettingsLink>
       </SettingsCategory>
     </VStack>
   );

@@ -15,3 +15,8 @@ export const collectionKeys = {
 export const preferencesKeys = {
   base: ['preferences'] as const,
 };
+
+export const userKeys = {
+  base: ['user'] as const,
+  info: ['user', 'info'] as const,
+};

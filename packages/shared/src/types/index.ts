@@ -95,14 +95,19 @@ export type CollectionItemDetails = Omit<
   'collection_id' | 'collection_title' | 'collection_icon'
 >;
 
-export const CollectionLayouts = ['magazine', 'card'] as const;
+export const CollectionLayouts = ['card', 'magazine'] as const;
 export type CollectionLayout = typeof CollectionLayouts[number];
 export const defaultCollectionLayout: CollectionLayout = 'card';
+
+export const AvatarStyles = ['fallback', 'initials'] as const;
+export type AvatarStyle = typeof AvatarStyles[number];
+export const defaultAvatarStyle: AvatarStyle = 'fallback';
 
 interface CommonPreferences {
   expandedCollectionIds: Array<ID>;
   defaultCollectionLayout: CollectionLayout;
   homeCollectionLayout: CollectionLayout;
+  avatarStyle: AvatarStyle;
 }
 
 export type ViewPreference =
@@ -116,4 +121,11 @@ export const defaultPreferences: Preferences = {
   defaultCollectionLayout,
   homeCollectionLayout: defaultCollectionLayout,
   expandedCollectionIds: [],
+  avatarStyle: defaultAvatarStyle,
 };
+
+export interface User {
+  username: string;
+  displayName: string;
+  avatar?: string;
+}

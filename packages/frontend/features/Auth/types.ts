@@ -6,4 +6,6 @@ export interface LoginFormData {
 export interface SignupFormData {
   username: string;
   password: string;
+  displayName: string;
+  avatar?: string;
 }

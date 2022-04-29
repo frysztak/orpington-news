@@ -1,15 +1,48 @@
 import { sql } from 'slonik';
-import { ID } from '@orpington-news/shared';
-import { User } from './types';
+import type { ID, User } from '@orpington-news/shared';
 
-export const insertUser = (
-  user: Pick<User, 'username'> & { password: string }
-) => {
-  const { username, password } = user;
+const mapAvatar = (avatar: User['avatar']) => {
+  return avatar ? sql.binary(Buffer.from(avatar, 'ascii')) : null;
+};
+
+export const insertUser = (user: User & { password: string }) => {
+  const { username, password, displayName, avatar } = user;
+
   return sql<{ id: ID }>`
-    INSERT INTO "users"(name, password)
-    VALUES (${username}, ${password})
+    INSERT INTO "users"(
+      name, 
+      password, 
+      display_name, 
+      avatar
+    )
+    VALUES (
+      ${username}, 
+      ${password},
+      ${displayName},
+      ${mapAvatar(avatar)}
+    )
     RETURNING id`;
+};
+
+export const setUser = (user: Omit<User, 'username'> & { id: ID }) => {
+  const { id, displayName, avatar } = user;
+
+  return sql`
+    UPDATE "users"
+    SET
+      display_name = ${displayName},
+      avatar = ${mapAvatar(avatar)}
+    WHERE id = ${id}`;
+};
+
+export const getUser = (id: ID) => {
+  return sql<Omit<User, 'avatar'> & { avatar?: Buffer }>`
+    SELECT
+      name as username,
+      display_name as "displayName",
+      avatar
+    FROM "users"
+    WHERE id = ${id}`;
 };
 
 export const getUserPassword = (username: string) => {

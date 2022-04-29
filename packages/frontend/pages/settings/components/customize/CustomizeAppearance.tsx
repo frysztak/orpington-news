@@ -4,8 +4,11 @@ import { Formik, Form } from 'formik';
 import MoonIcon from '@heroicons/react/solid/MoonIcon';
 import SunIcon from '@heroicons/react/solid/SunIcon';
 import {
+  AvatarStyle,
+  AvatarStyles,
   CollectionLayout,
   CollectionLayouts,
+  defaultAvatarStyle,
   defaultCollectionLayout,
 } from '@orpington-news/shared';
 import { RadioGroupField, AutoSave } from '@components/forms';
@@ -26,17 +29,24 @@ const getThemeIcon = (theme: ThemeOption): React.FC => {
 export interface CustomizeAppearanceData {
   theme: ThemeOption;
   defaultCollectionLayout: CollectionLayout;
+  avatarStyle: AvatarStyle;
 }
 
 const initialValues: CustomizeAppearanceData = {
   theme: 'dark',
   defaultCollectionLayout: defaultCollectionLayout,
+  avatarStyle: defaultAvatarStyle,
 };
 
 export interface CustomizeAppearanceProps {
   currentData?: CustomizeAppearanceData;
   onChange: (data: CustomizeAppearanceData) => void;
 }
+
+const AvatarStylesNames: Record<AvatarStyle, string> = {
+  fallback: 'Silhouette',
+  initials: 'Initials',
+};
 
 export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
   props
@@ -73,6 +83,19 @@ export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
                   return (
                     <Radio key={value} {...radio}>
                       {CollectionLayoutName[value]}
+                    </Radio>
+                  );
+                })
+              }
+            </RadioGroupField>
+
+            <RadioGroupField label="Avatar style" name="avatarStyle">
+              {({ getRadioProps }) =>
+                AvatarStyles.map((value) => {
+                  const radio = getRadioProps({ value });
+                  return (
+                    <Radio key={value} {...radio}>
+                      {AvatarStylesNames[value]}
                     </Radio>
                   );
                 })
