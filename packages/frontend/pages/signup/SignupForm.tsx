@@ -37,21 +37,31 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ isValid, values: { displayName } }) => (
+      {({
+        isValid,
+        values: { displayName },
+        errors: { displayName: displayNameError },
+      }) => (
         <Form noValidate>
           <VStack spacing={4} w="full">
             <StringField
               name="username"
+              label="Username"
               placeholder="Username"
               isDisabled={isDisabled || isLoading}
               isRequired
             />
 
-            <HStack w="full">
+            <HStack
+              w="full"
+              align={Boolean(displayNameError) ? 'center' : 'flex-end'}
+            >
               <StringField
                 name="displayName"
+                label="Display name"
                 placeholder="Display name"
                 isDisabled={isDisabled || isLoading}
+                isRequired
               />
               <Box flexBasis="20%" maxW={14} pr={2}>
                 <AvatarField name="avatar" displayName={displayName} />
@@ -60,6 +70,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
 
             <PasswordField
               name="password"
+              label="Password"
               placeholder="Enter password"
               isDisabled={isDisabled || isLoading}
               isRequired
@@ -67,6 +78,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
 
             <PasswordField
               name="passwordConfirm"
+              label="Confirm password"
               placeholder="Confirm password"
               isDisabled={isDisabled || isLoading}
               isRequired

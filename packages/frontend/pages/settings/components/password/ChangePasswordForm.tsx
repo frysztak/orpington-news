@@ -47,6 +47,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
           <VStack spacing={4} w="full">
             <PasswordField
               name="password"
+              label="New password"
               placeholder="New password"
               isDisabled={isLoading}
               isRequired
@@ -54,7 +55,8 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
 
             <PasswordField
               name="passwordConfirm"
-              placeholder="Confirm password"
+              label="Confirm new password"
+              placeholder="Confirm new password"
               isDisabled={isLoading}
               isRequired
             />

@@ -36,6 +36,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
           <VStack spacing={4} w="full">
             <StringField
               name="username"
+              label="Username"
               placeholder="Username"
               isDisabled={isLoading}
               isRequired
@@ -43,6 +44,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
 
             <PasswordField
               name="password"
+              label="Password"
               placeholder="Password"
               isDisabled={isLoading}
               isRequired
