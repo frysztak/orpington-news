@@ -2,7 +2,7 @@ import { useField } from 'formik';
 import { BasicField } from './types';
 
 export function useFormControl<T extends BasicField>(props: T) {
-  const { name, id, label, labelTooltip, ...rest } = props;
+  const { name, id, label, labelTooltip, helperText, ...rest } = props;
   const { isRequired, isDisabled } = rest;
 
   const [field, meta, helpers] = useField(name);
@@ -19,6 +19,7 @@ export function useFormControl<T extends BasicField>(props: T) {
 
     label,
     labelTooltip,
+    helperText,
     meta,
     helpers,
   };

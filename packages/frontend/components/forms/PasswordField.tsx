@@ -2,6 +2,7 @@ import React from 'react';
 import {
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   forwardRef,
   IconButton,
@@ -20,7 +21,8 @@ export type PasswordFieldProps = StringFieldProps;
 export const PasswordField = forwardRef<PasswordFieldProps, 'input'>(
   (props, ref) => {
     const { isDisabled } = props;
-    const { formControlProps, inputProps, meta, label } = useFormControl(props);
+    const { formControlProps, inputProps, meta, label, helperText } =
+      useFormControl(props);
     const { isOpen: show, onToggle } = useDisclosure();
 
     return (
@@ -41,7 +43,11 @@ export const PasswordField = forwardRef<PasswordFieldProps, 'input'>(
           </InputRightElement>
         </InputGroup>
 
-        <FormErrorMessage>{meta.error}</FormErrorMessage>
+        {formControlProps.isInvalid ? (
+          <FormErrorMessage>{meta.error}</FormErrorMessage>
+        ) : (
+          <FormHelperText>{helperText}</FormHelperText>
+        )}
       </FormControl>
     );
   }

@@ -37,27 +37,20 @@ export const EditAccountForm: React.FC<EditAccountFormProps> = (props) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({
-        isValid,
-        values: { displayName },
-        errors: { displayName: displayNameError },
-      }) => (
+      {({ isValid, values: { displayName } }) => (
         <Form noValidate>
           <VStack spacing={4} w="full">
             <StringField
               name="username"
-              placeholder="Username"
+              helperText="You'll use this to log in into the app."
               label="Username"
               isDisabled={true}
             />
 
-            <HStack
-              w="full"
-              align={Boolean(displayNameError) ? 'center' : 'flex-end'}
-            >
+            <HStack w="full" align="center">
               <StringField
                 name="displayName"
-                placeholder="Display name"
+                helperText="Friendly username."
                 label="Display name"
                 isDisabled={isDisabled || isLoading}
                 isRequired
