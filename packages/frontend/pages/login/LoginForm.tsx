@@ -39,6 +39,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
               label="Username"
               isDisabled={isLoading}
               isRequired
+              autoComplete="username"
             />
 
             <PasswordField
@@ -46,6 +47,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
               label="Password"
               isDisabled={isLoading}
               isRequired
+              autoComplete="current-password"
             />
 
             <HStack w="full" justify="flex-end">
