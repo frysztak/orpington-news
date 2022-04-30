@@ -11,8 +11,8 @@ import {
 } from './components/account/EditAccountForm';
 
 const Page: NextPageWithLayout = () => {
-  const { data: user } = useGetUser();
-  const { mutate } = useSetUser();
+  const { data: user, isLoading } = useGetUser();
+  const { mutate, isLoading: isSaving } = useSetUser();
   const toast = useToast();
 
   const handleSubmit = useCallback(
@@ -40,7 +40,12 @@ const Page: NextPageWithLayout = () => {
           <Box as="h2" textStyle="settings.header">
             Account info
           </Box>
-          <EditAccountForm initialValues={user} onSubmit={handleSubmit} />
+          <EditAccountForm
+            initialValues={user}
+            onSubmit={handleSubmit}
+            isDisabled={isLoading}
+            isLoading={isLoading || isSaving}
+          />
         </VStack>
       </Container>
     </>

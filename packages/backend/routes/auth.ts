@@ -6,6 +6,7 @@ import { pool } from '@db';
 import {
   getUser,
   getUserPassword,
+  getUserPasswordById,
   insertUser,
   setUser,
   setUserPassword,
@@ -96,7 +97,8 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
   );
 
   const PasswordBody = Type.Object({
-    password: Type.String(),
+    currentPassword: Type.String(),
+    newPassword: Type.String(),
   });
   fastify.put<{ Body: Static<typeof PasswordBody> }>(
     '/password',
@@ -108,11 +110,24 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     },
     async (request, reply) => {
       const {
-        body: { password },
+        body: { currentPassword, newPassword },
         session: { userId },
       } = request;
 
-      const passwordHashed = await argon2.hash(password, {
+      const { password: currentPasswordHash } = await pool.one(
+        getUserPasswordById(userId)
+      );
+      const isCurrentPasswordValid = await argon2.verify(
+        currentPasswordHash,
+        currentPassword
+      );
+      if (!isCurrentPasswordValid) {
+        return reply
+          .status(500)
+          .send({ errorCode: 500, message: 'Current password is incorrect.' });
+      }
+
+      const passwordHashed = await argon2.hash(newPassword, {
         type: argon2.argon2id,
       });
       await pool.query(setUserPassword(userId, passwordHashed));

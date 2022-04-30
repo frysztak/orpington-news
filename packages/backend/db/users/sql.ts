@@ -51,6 +51,12 @@ export const getUserPassword = (username: string) => {
     WHERE name = ${username}`;
 };
 
+export const getUserPasswordById = (userId: ID) => {
+  return sql<{ password: string }>`
+    SELECT password FROM "users"
+    WHERE id = ${userId}`;
+};
+
 export const setUserPassword = (userId: ID, password: string) => {
   return sql`
     UPDATE "users"

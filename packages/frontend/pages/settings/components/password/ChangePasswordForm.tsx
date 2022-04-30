@@ -6,24 +6,27 @@ import { PasswordField } from '@components/forms';
 
 export interface ChangePasswordFormProps {
   isLoading?: boolean;
-  onSubmit: (data: string) => void;
+  onSubmit: (data: ChangePasswordFormData) => void;
 }
 
 export const validationSchema = Yup.object({
-  password: Yup.string().required('Please enter your new password.'),
-  passwordConfirm: Yup.string()
-    .oneOf([Yup.ref('password')], "Passwords don't match.")
+  currentPassword: Yup.string().required('Please enter your current password.'),
+  newPassword: Yup.string().required('Please enter your new password.'),
+  newPasswordConfirm: Yup.string()
+    .oneOf([Yup.ref('newPassword')], "Passwords don't match.")
     .required('Please confirm your new password.'),
 });
 
 interface ChangePasswordFormData {
-  password: string;
-  passwordConfirm: string;
+  currentPassword: string;
+  newPassword: string;
+  newPasswordConfirm: string;
 }
 
 const initialValues: ChangePasswordFormData = {
-  password: '',
-  passwordConfirm: '',
+  currentPassword: '',
+  newPassword: '',
+  newPasswordConfirm: '',
 };
 
 export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
@@ -32,7 +35,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
   const { onSubmit, isLoading } = props;
 
   const handleSubmit = useCallback(
-    (data: ChangePasswordFormData) => onSubmit(data.password),
+    (data: ChangePasswordFormData) => onSubmit(data),
     [onSubmit]
   );
 
@@ -46,16 +49,26 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
         <Form noValidate>
           <VStack spacing={4} w="full">
             <PasswordField
-              name="password"
-              label="New password"
+              name="currentPassword"
+              label="Current password"
               isDisabled={isLoading}
+              autoComplete="current-password"
               isRequired
             />
 
             <PasswordField
-              name="passwordConfirm"
+              name="newPassword"
+              label="New password"
+              isDisabled={isLoading}
+              autoComplete="new-password"
+              isRequired
+            />
+
+            <PasswordField
+              name="newPasswordConfirm"
               label="Confirm new password"
               isDisabled={isLoading}
+              autoComplete="new-password"
               isRequired
             />
 
