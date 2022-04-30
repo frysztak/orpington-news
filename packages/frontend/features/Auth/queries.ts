@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   changePassword,
+  ChangePasswordData,
   getUser,
   loginUser,
   logoutUser,
@@ -45,7 +46,7 @@ export const useChangePassword = () => {
   const { onError } = useHandleError();
   const api = useApi();
 
-  return useMutation((password: string) => changePassword(api, password), {
+  return useMutation((data: ChangePasswordData) => changePassword(api, data), {
     onError,
   });
 };

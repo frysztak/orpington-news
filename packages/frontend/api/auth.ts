@@ -11,10 +11,12 @@ export const loginUser = (api: Wretcher, data: LoginFormData) =>
 export const logoutUser = (api: Wretcher) =>
   api.url('/auth/session').delete().json();
 
-export const changePassword = (
-  api: Wretcher,
-  data: { currentPassword: string; newPassword: string }
-) => api.url('/auth/password').put(data).json<boolean>();
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
+}
+export const changePassword = (api: Wretcher, data: ChangePasswordData) =>
+  api.url('/auth/password').put(data).json<boolean>();
 
 export const getUser = (api: Wretcher) =>
   api.url('/auth/user').get().json<User>();

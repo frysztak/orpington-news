@@ -17,7 +17,7 @@ export const validationSchema = Yup.object({
     .required('Please confirm your new password.'),
 });
 
-interface ChangePasswordFormData {
+export interface ChangePasswordFormData {
   currentPassword: string;
   newPassword: string;
   newPasswordConfirm: string;
