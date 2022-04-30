@@ -1,7 +1,7 @@
 import Fastify, { FastifyInstance, FastifyPluginAsync } from 'fastify';
-import fastifyCookie from 'fastify-cookie';
+import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
-import fastifyAuth from 'fastify-auth';
+import fastifyAuth from '@fastify/auth';
 import fastifySplitValidator from 'fastify-split-validator';
 import { auth } from './auth';
 import { fastifyVerifySession } from '@plugins/verifySession';

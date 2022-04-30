@@ -195,7 +195,7 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
       },
     },
     async (request, reply) => {
-      request.destroySession(() => {
+      request.session.destroy(() => {
         reply.status(200).clearCookie('sessionId').send(true);
       });
     }

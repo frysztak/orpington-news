@@ -8,7 +8,7 @@ function verifySession(
 ) {
   const isAuthenticated = typeof request.session.userId === 'number';
   if (!isAuthenticated) {
-    return request.destroySession(() => {
+    return request.session.destroy(() => {
       reply
         .status(401)
         .clearCookie('sessionId')

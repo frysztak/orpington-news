@@ -39,13 +39,9 @@ export const AvatarField = forwardRef<AvatarFieldProps, 'input'>(
 
     const { open } = useDropzone({
       onDrop: handleDrop,
-      accept: [
-        'image/png',
-        'image/jpeg',
-        'image/gif',
-        'image/webp',
-        'image/avif',
-      ],
+      accept: {
+        'image/*': ['.jpeg', '.png', '.gif', '.webp', '.avif'],
+      },
       noDrag: true,
       noClick: true,
     });

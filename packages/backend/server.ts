@@ -1,9 +1,9 @@
 import Fastify from 'fastify';
-import fastifySwagger from 'fastify-swagger';
-import fastifyCookie from 'fastify-cookie';
+import fastifySwagger from '@fastify/swagger';
+import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
-import fastifyAuth from 'fastify-auth';
-import fastifyCors from 'fastify-cors';
+import fastifyAuth from '@fastify/auth';
+import fastifyCors from '@fastify/cors';
 import fastifySchedule from 'fastify-schedule';
 import fastifySplitValidator from 'fastify-split-validator';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
