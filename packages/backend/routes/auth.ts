@@ -107,6 +107,7 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
         body: PasswordBody,
         tags: ['Auth'],
       },
+      preHandler: fastify.auth([fastify.verifySession]),
     },
     async (request, reply) => {
       const {
@@ -149,6 +150,7 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
       schema: {
         tags: ['Auth'],
       },
+      preHandler: fastify.auth([fastify.verifySession]),
     },
     async (request, reply) => {
       const {
@@ -170,6 +172,7 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
         body: PutUser,
         tags: ['Auth'],
       },
+      preHandler: fastify.auth([fastify.verifySession]),
     },
     async (request, reply) => {
       const {
@@ -193,11 +196,11 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
       schema: {
         tags: ['Auth'],
       },
+      preHandler: fastify.auth([fastify.verifySession]),
     },
     async (request, reply) => {
-      request.session.destroy(() => {
-        reply.status(200).clearCookie('sessionId').send(true);
-      });
+      await request.session.destroy();
+      reply.status(200).clearCookie('sessionId').send(true);
     }
   );
 };
