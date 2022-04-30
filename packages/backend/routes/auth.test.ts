@@ -51,7 +51,7 @@ describe('/auth', () => {
     expect(res.json()).toHaveProperty('message', 'body must be object');
   });
 
-  test("DELETE /session doesn't set cookie", async () => {
+  test.skip("DELETE /session doesn't set cookie", async () => {
     const res = await app.inject({
       method: 'DELETE',
       url: '/auth/session',
