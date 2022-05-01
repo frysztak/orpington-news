@@ -1,17 +1,31 @@
-import type { GetServerSideProps } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useMediaQuery } from '@chakra-ui/react';
 import type { NextPageWithLayout } from '@pages/types';
+import { commonGetServerSideProps } from '@pages/ssrProps';
+import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 
 const Page: NextPageWithLayout = () => {
-  return null;
+  const router = useRouter();
+  const [isMobile] = useMediaQuery(['(max-width: 30em)']);
+
+  if (!isMobile) {
+    router.push('/settings/appearance');
+  }
+
+  return (
+    <>
+      <Head>
+        <title>Settings</title>
+      </Head>
+
+      <SettingsSidebar py={4} px={2} />
+    </>
+  );
 };
+
+Page.getLayout = (page) => page;
 
 export default Page;
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  return {
-    redirect: {
-      destination: '/settings/appearance',
-      permanent: true,
-    },
-  };
-};
+export const getServerSideProps = commonGetServerSideProps;
