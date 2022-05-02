@@ -17,7 +17,7 @@ import { SidebarItem } from './SidebarItem';
 import { Collections, CollectionsProps } from './Collections';
 import { SidebarFooter } from './SidebarFooter';
 
-export type MenuItem = 'home' | 'readingList' | 'addFeed' | 'settings';
+export type MenuItem = 'home' | 'readingList' | 'addFeed';
 
 export type SidebarContentProps = Omit<
   CollectionsProps,
