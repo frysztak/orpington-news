@@ -37,19 +37,21 @@ export const AvatarField = forwardRef<AvatarFieldProps, 'input'>(
       helpers.setValue(undefined);
     }, [helpers]);
 
-    const { open } = useDropzone({
+    const { getInputProps, open } = useDropzone({
       onDrop: handleDrop,
       accept: {
         'image/*': ['.jpeg', '.png', '.gif', '.webp', '.avif'],
       },
       noDrag: true,
       noClick: true,
+      useFsAccessApi: false,
     });
 
     return (
       <FormControl {...formControlProps}>
         {label && <FormLabel htmlFor={formControlProps.id}>{label}</FormLabel>}
         <VStack align="center">
+          <input {...getInputProps()} />
           <Avatar
             name={displayName}
             src={meta.value}
