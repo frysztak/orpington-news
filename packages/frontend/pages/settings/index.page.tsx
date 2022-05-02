@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useMediaQuery } from '@chakra-ui/react';
 import type { NextPageWithLayout } from '@pages/types';
-import { commonGetServerSideProps } from '@pages/ssrProps';
+import { getSSProps } from '@pages/ssrProps';
 import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 
 const Page: NextPageWithLayout = () => {
@@ -28,4 +28,4 @@ Page.getLayout = (page) => page;
 
 export default Page;
 
-export const getServerSideProps = commonGetServerSideProps;
+export const getServerSideProps = getSSProps({});

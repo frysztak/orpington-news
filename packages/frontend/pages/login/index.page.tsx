@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 import type { NextPageWithLayout } from '@pages/types';
-import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import getConfig from 'next/config';
@@ -15,8 +14,8 @@ import {
   Code,
   Link,
 } from '@chakra-ui/react';
+import { getSSProps } from '@pages/ssrProps';
 import { LoginFormData, useLogin } from '@features/Auth';
-import { getChakraColorModeCookie } from '@utils';
 import { LoginForm } from './LoginForm';
 
 const LoginPage: NextPageWithLayout = () => {
@@ -84,13 +83,6 @@ LoginPage.getLayout = (page) => {
   return page;
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const chakraCookie = getChakraColorModeCookie(req);
-  return {
-    props: {
-      chakraCookie,
-    },
-  };
-};
+export const getServerSideProps = getSSProps({});
 
 export default LoginPage;

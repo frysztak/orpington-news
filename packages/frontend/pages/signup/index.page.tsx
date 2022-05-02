@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import getConfig from 'next/config';
 import NextLink from 'next/link';
-import { GetServerSideProps } from 'next';
 import {
   Heading,
   VStack,
@@ -15,8 +14,8 @@ import {
   Link,
   useToast,
 } from '@chakra-ui/react';
+import { getSSProps } from '@pages/ssrProps';
 import { SignupFormData, useSignup } from '@features/Auth';
-import { getChakraColorModeCookie } from '@utils';
 import { SignupForm } from './SignupForm';
 
 const SignupPage: NextPageWithLayout = () => {
@@ -94,13 +93,8 @@ SignupPage.getLayout = (page) => {
   return page;
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const chakraCookie = getChakraColorModeCookie(req);
-  return {
-    props: {
-      chakraCookie,
-    },
-  };
-};
+export const getServerSideProps = getSSProps({
+  requireAuthorization: false,
+});
 
 export default SignupPage;

@@ -6,7 +6,7 @@ import { OrganizeCollections } from '@features/OrganizeCollections';
 import { useCollectionsList } from '@features/Collections';
 import { FlatCollection } from '@orpington-news/shared';
 import type { NextPageWithLayout } from '@pages/types';
-import { commonGetServerSideProps } from '@pages/ssrProps';
+import { commonQueries, getSSProps } from '@pages/ssrProps';
 import { SettingsLayout } from './SettingsLayout';
 
 const Page: NextPageWithLayout = () => {
@@ -38,4 +38,6 @@ Page.getLayout = (page) => {
 
 export default Page;
 
-export const getServerSideProps = commonGetServerSideProps;
+export const getServerSideProps = getSSProps({
+  queriesToFetch: commonQueries,
+});

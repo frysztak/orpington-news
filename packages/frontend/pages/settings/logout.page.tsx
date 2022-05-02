@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import type { NextPageWithLayout } from '@pages/types';
-import { commonGetServerSideProps } from '@pages/ssrProps';
+import { getSSProps } from '@pages/ssrProps';
 import { Heading, useTimeout } from '@chakra-ui/react';
 import { useLogout } from '@features/Auth';
 import { SettingsLayout } from './SettingsLayout';
@@ -37,4 +37,4 @@ Page.getLayout = (page) => {
 
 export default Page;
 
-export const getServerSideProps = commonGetServerSideProps;
+export const getServerSideProps = getSSProps({});

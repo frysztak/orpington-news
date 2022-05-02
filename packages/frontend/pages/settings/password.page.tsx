@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import Head from 'next/head';
 import type { NextPageWithLayout } from '@pages/types';
-import { commonGetServerSideProps } from '@pages/ssrProps';
+import { getSSProps } from '@pages/ssrProps';
 import { Box, Container, useToast, VStack } from '@chakra-ui/react';
 import { useChangePassword } from '@features/Auth';
 import { SettingsLayout } from './SettingsLayout';
@@ -59,4 +59,4 @@ Page.getLayout = (page) => {
 
 export default Page;
 
-export const getServerSideProps = commonGetServerSideProps;
+export const getServerSideProps = getSSProps({});

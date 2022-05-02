@@ -2,12 +2,16 @@ import React from 'react';
 import type { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { dehydrate, QueryClient } from 'react-query';
-import { getCollections, getItemDetails, getPreferences, ssrApi } from '@api';
-import { getCookieHeaderFromReq, getChakraColorModeCookie } from '@utils';
-import { collectionKeys, preferencesKeys } from '@features/queryKeys';
+import { getItemDetails } from '@api';
+import { getChakraColorModeCookie } from '@utils';
+import { collectionKeys } from '@features/queryKeys';
 import { getNumber } from '@utils/router';
 import { useArticleDetails } from '@features/Article/queries';
+import {
+  commonQueries,
+  fetchCurrentCollection,
+  getSSProps,
+} from '@pages/ssrProps';
 
 const ItemPage: NextPage = () => {
   const router = useRouter();
@@ -26,47 +30,22 @@ const ItemPage: NextPage = () => {
 
 export default ItemPage;
 
-export const getServerSideProps: GetServerSideProps = async ({
-  req,
-  query,
-}) => {
-  const chakraCookie = getChakraColorModeCookie(req);
-
-  if (!req.cookies['sessionId']) {
-    return {
-      props: {
-        chakraCookie,
-      },
-      redirect: {
-        destination: '/login',
-      },
-    };
-  }
-
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { req, query } = ctx;
   const collectionId = getNumber(query?.collectionId);
   const itemId = getNumber(query?.itemId);
   if (collectionId === undefined || itemId === undefined) {
-    return { props: { chakraCookie } };
+    return { props: { chakraCookie: getChakraColorModeCookie(req) } };
   }
 
-  const apiWithHeaders = ssrApi().headers(getCookieHeaderFromReq(req));
-  const queryClient = new QueryClient();
-  await Promise.all([
-    queryClient.prefetchQuery(collectionKeys.tree, () =>
-      getCollections(apiWithHeaders)
-    ),
-    queryClient.prefetchQuery(collectionKeys.detail(collectionId, itemId), () =>
-      getItemDetails(apiWithHeaders, collectionId, itemId)
-    ),
-    queryClient.prefetchQuery(preferencesKeys.base, () =>
-      getPreferences(apiWithHeaders)
-    ),
-  ]);
-
-  return {
-    props: {
-      chakraCookie,
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
+  return await getSSProps({
+    queriesToFetch: [
+      ...commonQueries,
+      [
+        collectionKeys.detail(collectionId, itemId),
+        (api) => getItemDetails(api, collectionId, itemId),
+      ],
+    ],
+    postFetchCallback: fetchCurrentCollection,
+  })(ctx);
 };
