@@ -16,24 +16,27 @@ import {
 } from '@chakra-ui/react';
 import { getSSProps } from '@pages/ssrProps';
 import { LoginFormData, useLogin } from '@features/Auth';
+import { useEventListenerContext } from '@features/EventListener';
 import { LoginForm } from './LoginForm';
 
 const LoginPage: NextPageWithLayout = () => {
   const router = useRouter();
 
-  const onSuccess = useCallback(() => {
-    router.push('/');
-  }, [router]);
-
   const { isLoading, mutate } = useLogin();
   const { publicRuntimeConfig } = getConfig();
   const demoMode = Boolean(publicRuntimeConfig.APP_DEMO);
 
+  const { attemptToConnect } = useEventListenerContext();
   const handleSubmit = useCallback(
     (data: LoginFormData) => {
-      mutate(data, { onSuccess });
+      mutate(data, {
+        onSuccess: () => {
+          router.push('/');
+          attemptToConnect();
+        },
+      });
     },
-    [mutate, onSuccess]
+    [attemptToConnect, mutate, router]
   );
 
   return (

@@ -19,6 +19,8 @@ type Status = 'connecting' | 'connected' | 'error';
 export interface EventListenerContextData {
   addEventListener: (listener: EventListener) => void;
   removeEventListener: (listener: EventListener) => void;
+  attemptToConnect: () => void;
+
   lastPing: number | null;
   status: Status;
 }
@@ -41,72 +43,86 @@ export const EventListenerContextProvider: React.FC = ({ children }) => {
     listeners.current = listeners.current.filter((l) => l !== listener);
   }, []);
 
-  useEffect(() => {
-    function fetchData() {
-      const { apiUrl } = getUrls();
-      fetchEventSource(`${apiUrl}/events`, {
-        openWhenHidden: true,
-        keepalive: true,
-        credentials: 'include',
-        mode: 'cors',
-        async onopen(response) {
-          if (
-            response.ok &&
-            response.headers.get('content-type') === EventStreamContentType
-          ) {
-            setStatus('connected');
-            return; // everything's good
-          } else if (
-            response.status >= 400 &&
-            response.status < 500 &&
-            response.status !== 429
-          ) {
-            // client-side errors are usually non-retriable:
-            throw new FatalError();
-          } else {
-            throw new RetriableError();
-          }
-        },
-        onmessage(ev) {
-          console.debug(`[SSE] Received new message:`, ev);
-          if (ev.data) {
-            const msg: Msg = JSON.parse(ev.data);
-            for (const listener of listeners.current) {
-              listener(msg);
-            }
-            if (msg.type === 'ping') {
-              setLastPing(Date.now());
-            }
-          }
-        },
-        onclose() {
-          // if the server closes the connection unexpectedly, retry:
+  function connectToEventSource() {
+    const { apiUrl } = getUrls();
+    fetchEventSource(`${apiUrl}/events`, {
+      openWhenHidden: true,
+      keepalive: true,
+      credentials: 'include',
+      mode: 'cors',
+      async onopen(response) {
+        if (
+          response.ok &&
+          response.headers.get('content-type') === EventStreamContentType
+        ) {
+          setStatus('connected');
+          return; // everything's good
+        } else if (
+          response.status >= 400 &&
+          response.status < 500 &&
+          response.status !== 429
+        ) {
+          // client-side errors are usually non-retriable:
+          throw new FatalError();
+        } else {
           throw new RetriableError();
-        },
-        onerror(err) {
-          if (err instanceof FatalError) {
-            setStatus('error');
-            throw err;
-          } else {
-            // do nothing to automatically retry. You can also
-            // return a specific retry interval here.
+        }
+      },
+      onmessage(ev) {
+        console.debug(`[SSE] Received new message:`, ev);
+        if (ev.data) {
+          const msg: Msg = JSON.parse(ev.data);
+          for (const listener of listeners.current) {
+            listener(msg);
           }
-        },
-      }).catch((err) => {
-        console.error(err);
-      });
-    }
+          if (msg.type === 'ping') {
+            setLastPing(Date.now());
+          }
+        }
+      },
+      onclose() {
+        // if the server closes the connection unexpectedly, retry:
+        throw new RetriableError();
+      },
+      onerror(err) {
+        if (err instanceof FatalError) {
+          setStatus('error');
+          throw err;
+        } else {
+          // do nothing to automatically retry. You can also
+          // return a specific retry interval here.
+        }
+      },
+    }).catch((err) => {
+      console.error(err);
+    });
+  }
 
-    fetchData();
+  useEffect(() => {
+    connectToEventSource();
 
     return () => {
       listeners.current.length = 0;
     };
   }, []);
 
+  const attemptToConnect = useCallback(() => {
+    if (status === 'connected') {
+      return;
+    }
+    setStatus('connecting');
+    connectToEventSource();
+  }, [status]);
+
   return (
     <EventListenerContext.Provider
-      value={{ addEventListener, removeEventListener, lastPing, status }}
+      value={{
+        addEventListener,
+        removeEventListener,
+        attemptToConnect,
+        lastPing,
+        status,
+      }}
     >
       {children}
     </EventListenerContext.Provider>
