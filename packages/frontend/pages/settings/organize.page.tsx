@@ -1,15 +1,17 @@
 import Head from 'next/head';
-import { Box, VStack } from '@chakra-ui/react';
-import { DndProvider } from 'react-dnd-multi-backend';
-import { HTML5toTouch } from 'rdndmb-html5-to-touch';
+import { Alert, AlertIcon, Box, VStack } from '@chakra-ui/react';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
 import { OrganizeCollections } from '@features/OrganizeCollections';
 import { useCollectionsList } from '@features/Collections';
 import { FlatCollection } from '@orpington-news/shared';
 import type { NextPageWithLayout } from '@pages/types';
 import { commonQueries, getSSProps } from '@pages/ssrProps';
+import { useIsTouchscreen } from '@utils';
 import { SettingsLayout } from './SettingsLayout';
 
 const Page: NextPageWithLayout = () => {
+  const isTouchscreen = useIsTouchscreen();
   const { data: flatCollections } = useCollectionsList<FlatCollection[]>();
 
   return (
@@ -22,7 +24,15 @@ const Page: NextPageWithLayout = () => {
         <Box as="h2" textStyle="settings.header" px={4}>
           Organize
         </Box>
-        <OrganizeCollections flatCollections={flatCollections} />
+        {isTouchscreen ? (
+          <Alert status="warning">
+            <AlertIcon />
+            Organizing collections is unfortunately unavailable on mobile
+            devices.
+          </Alert>
+        ) : (
+          <OrganizeCollections flatCollections={flatCollections} />
+        )}
       </VStack>
     </>
   );
@@ -31,7 +41,7 @@ const Page: NextPageWithLayout = () => {
 Page.getLayout = (page) => {
   return (
     <SettingsLayout>
-      <DndProvider options={HTML5toTouch}>{page}</DndProvider>
+      <DndProvider backend={HTML5Backend}>{page}</DndProvider>
     </SettingsLayout>
   );
 };
