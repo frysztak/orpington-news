@@ -21,7 +21,7 @@
     "babel-jest": "^27.5.1",
     "jest": "^27.5.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.71.0",
+    "rollup": "^2.71.1",
     "ts-jest": "^27.1.4"
   },
   "dependencies": {

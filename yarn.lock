@@ -3124,10 +3124,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@faker-js/faker@npm:6.2.0"
-  checksum: 8caffc9e55c9eb5bc5ee8824366338cb81469ed9cb591c38f06be73e8e4366d48eb6ced78e9f4c3530d0ed5f4c63bf50edf45c514cb25151a9567a7ebe45a4b1
+"@faker-js/faker@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "@faker-js/faker@npm:6.3.0"
+  checksum: 8f7cca703f80e1a23cf57ee3d0d96095340c26e682da44d7c0f300858d066cde3b6888f39485b407fef54588c7e1dacd0a344046cf84c56d7aa2d19f5905a8bf
   languageName: node
   linkType: hard
 
@@ -4845,7 +4845,7 @@ __metadata:
     "@slonik/migrator": ^0.11.2
     "@types/connect-pg-simple": ^7.0.0
     "@types/jest": ^27.4.1
-    "@types/node": ^17.0.30
+    "@types/node": ^17.0.31
     "@types/proper-url-join": ^2.1.1
     ajv: ^8.8.2
     ajv-formats: ^2.1.1
@@ -4872,7 +4872,7 @@ __metadata:
     proper-url-join: ^2.1.1
     reading-time: ^1.5.0
     rimraf: ^3.0.2
-    rollup: ^2.71.0
+    rollup: ^2.71.1
     rss-parser: ^3.12.0
     slonik: ^28.1.0
     striptags: ^3.2.0
@@ -4890,7 +4890,7 @@ __metadata:
     "@chakra-ui/react": ^1.8.8
     "@emotion/react": ^11.9.0
     "@emotion/styled": ^11.8.1
-    "@faker-js/faker": ^6.2.0
+    "@faker-js/faker": ^6.3.0
     "@heroicons/react": ^1.0.6
     "@microsoft/fetch-event-source": ^2.0.1
     "@next/bundle-analyzer": ^12.1.5
@@ -4908,7 +4908,7 @@ __metadata:
     "@testing-library/react": ^13.1.1
     "@testing-library/react-hooks": ^8.0.0
     "@testing-library/user-event": ^14.1.1
-    "@types/node": 17.0.30
+    "@types/node": 17.0.31
     "@types/react": 17.0.44
     babel-loader: ^8.2.5
     chakra-react-select: ^3.3.1
@@ -4931,15 +4931,15 @@ __metadata:
     rambda: ^7.0.3
     re-resizable: ^6.9.9
     react: 17.0.2
-    react-dnd: 15
-    react-dnd-html5-backend: 15
+    react-dnd: 15.1.2
+    react-dnd-html5-backend: 15.1.3
     react-dnd-test-backend: ^15.1.2
     react-dnd-test-utils: ^15.1.2
     react-dom: 17.0.2
     react-dropzone: ^13.0.0
     react-icons: ^4.3.1
     react-number-format: ^4.9.3
-    react-query: ^3.38.0
+    react-query: ^3.38.1
     react-syntax-highlighter: ^15.5.0
     react-test-renderer: ^17.0.2
     react-virtual: ^2.10.4
@@ -4947,7 +4947,7 @@ __metadata:
     storybook-dark-mode: ^1.1.0
     string-to-color: ^2.2.2
     tsconfig-paths-webpack-plugin: ^3.5.2
-    usehooks-ts: ^2.5.1
+    usehooks-ts: ^2.5.2
     webpack: ^5.72.0
     wretch: ^1.7.9
     yup: ^0.32.11
@@ -4968,7 +4968,7 @@ __metadata:
     jest: ^27.5.1
     rambda: ^7.0.3
     rimraf: ^3.0.2
-    rollup: ^2.71.0
+    rollup: ^2.71.1
     ts-jest: ^27.1.4
   languageName: unknown
   linkType: soft
@@ -7086,10 +7086,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:17.0.30, @types/node@npm:^17.0.30":
-  version: 17.0.30
-  resolution: "@types/node@npm:17.0.30"
-  checksum: b3cd2db6474aae3ddac5a312f340f6e4ca200429371e62cb74698fe7f23d7414d0200f643204ddfaa797846328539359e3797d7f2baaf3cdd643b159cf53baa6
+"@types/node@npm:17.0.31, @types/node@npm:^17.0.31":
+  version: 17.0.31
+  resolution: "@types/node@npm:17.0.31"
+  checksum: 704618350f8420d5c47db0f7778398e821b7724369946f5c441a7e6b9343295553936400eb8309f0b07d5e39c240988ab3456b983712ca86265dabc9aee4ad3d
   languageName: node
   linkType: hard
 
@@ -20276,7 +20276,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dnd-html5-backend@npm:15":
+"react-dnd-html5-backend@npm:15.1.3":
   version: 15.1.3
   resolution: "react-dnd-html5-backend@npm:15.1.3"
   dependencies:
@@ -20322,7 +20322,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dnd@npm:15":
+"react-dnd@npm:15.1.2":
   version: 15.1.2
   resolution: "react-dnd@npm:15.1.2"
   dependencies:
@@ -20568,9 +20568,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-query@npm:^3.38.0":
-  version: 3.38.0
-  resolution: "react-query@npm:3.38.0"
+"react-query@npm:^3.38.1":
+  version: 3.38.1
+  resolution: "react-query@npm:3.38.1"
   dependencies:
     "@babel/runtime": ^7.5.5
     broadcast-channel: ^3.4.1
@@ -20582,7 +20582,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 9318952a3e09f1716edd7f934c6d78b8bb94d1b1cce2d6e8fe5b9298009394da0ef16c5ad57797561bb2bee894a9bce9ffeacdf9276466270e5ed232f5d5097f
+  checksum: 2edb95dbc0184aa1858e7a47161372c871d0077583e439cfce4473231f426a222990ad313ad1eaf6fca1025e502d006f4f92008b346a83900be148a7e3ededc2
   languageName: node
   linkType: hard
 
@@ -21522,9 +21522,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^2.71.0":
-  version: 2.71.0
-  resolution: "rollup@npm:2.71.0"
+"rollup@npm:^2.71.1":
+  version: 2.71.1
+  resolution: "rollup@npm:2.71.1"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -21532,7 +21532,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 37b591702850ec9b73733b461fe2fc1631b95d4f376edda4a44d8ee17662a2ff1ad5a039d02a949bc22f10d2adcc71dbe7a002435d43673da2f601bea89ab7a4
+  checksum: fe2b2fda7bf53c86e970f3b026b784c00e2237089b802755b3e43725db88f5d1869c1f81f8c5257e9b68b0fd1840dcbd3897d2f19768cce97a37c70e1a563dce
   languageName: node
   linkType: hard
 
@@ -24187,12 +24187,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usehooks-ts@npm:^2.5.1":
-  version: 2.5.1
-  resolution: "usehooks-ts@npm:2.5.1"
+"usehooks-ts@npm:^2.5.2":
+  version: 2.5.2
+  resolution: "usehooks-ts@npm:2.5.2"
   peerDependencies:
     react: ">=16.8.0"
-  checksum: ed68dad0fab3982482c9072c058f69244a75552e5368e6ceb1e98083c643727fe639463dfc99da61e48e0dd68519a37acbc83f277b103e231c282c46b229ed1d
+  checksum: f9109c65b7c07f07c044156cef1fd7f35e441c5e6d999ef5df4c8d7ac9d972c5d1d1daec89beb9468b026891ffab83eabc81d0a2e36763690c47adc4883f7895
   languageName: node
   linkType: hard
 
