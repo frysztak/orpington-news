@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext } from 'react';
-import type { ID, Preferences } from '@orpington-news/shared';
+import { emptyIfUndefined, ID, Preferences } from '@orpington-news/shared';
 import {
   useCollapseCollection,
   useExpandCollection,
@@ -57,7 +57,9 @@ export const PreferencesContextProvider: React.FC = ({ children }) => {
         preferences,
         activeCollectionId,
         setActiveCollectionId,
-        expandedCollectionIds: preferences?.expandedCollectionIds ?? [],
+        expandedCollectionIds: emptyIfUndefined(
+          preferences?.expandedCollectionIds
+        ),
         expandCollection: handleExpandCollection,
         collapseCollection: handleCollapseCollection,
       }}

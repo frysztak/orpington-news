@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
+import React, { ReactNode, useCallback, useRef } from 'react';
 import {
   Box,
   BoxProps,
@@ -9,33 +9,25 @@ import {
   DrawerContent,
   DrawerOverlay,
   HStack,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
 import { useIsClient } from 'usehooks-ts';
-import { CollectionItem, CollectionLayout, ID } from '@orpington-news/shared';
-import { SidebarContent, SidebarContentProps } from '@components/sidebar';
+import { CollectionLayout, ID } from '@orpington-news/shared';
 import { CollectionHeader } from '@components/collection/header';
-import {
-  CollectionList,
-  CollectionListProps,
-} from '@components/collection/list';
-import { EmptyMain } from './EmptyMain';
-import { ClientRender } from '@utils';
 import { ActiveCollection } from '@components/collection/types';
+import { EmptyMain } from './EmptyMain';
 
 export interface PanesProps {
-  sidebarProps: SidebarContentProps;
+  isDrawerOpen: boolean;
+  onCloseDrawer: () => void;
+  onToggleDrawer: () => void;
 
-  collectionItems: CollectionItem[];
   activeCollection?: ActiveCollection;
-  collectionListProps: Pick<
-    CollectionListProps,
-    'isFetchingMoreItems' | 'canFetchMoreItems' | 'onFetchMoreItems'
-  >;
   currentlyUpdatedCollections: Set<ID>;
 
+  sidebar?: ReactNode;
+  collectionItemList?: ReactNode;
   mainContent?: ReactNode;
 
   sidebarWidth?: number;
@@ -51,12 +43,15 @@ export interface PanesProps {
 
 export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
   const {
-    sidebarProps,
-    collectionItems,
+    isDrawerOpen,
+    onCloseDrawer,
+    onToggleDrawer,
+
     activeCollection,
-    collectionListProps = {},
     currentlyUpdatedCollections,
 
+    sidebar,
+    collectionItemList,
     mainContent,
 
     sidebarWidth,
@@ -72,7 +67,6 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     ...rest
   } = props;
 
-  const { isOpen, onClose, onToggle } = useDisclosure();
   const drawerButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const handleSidebarResize: ResizeCallback = useCallback(
@@ -86,44 +80,6 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
       onCollectionItemsWidthChanged?.(elementRef.clientWidth);
     },
     [onCollectionItemsWidthChanged]
-  );
-  const injectOnCloseDrawer = useCallback(
-    (f: Function) =>
-      (...args: unknown[]) => {
-        onClose();
-        f(...args);
-      },
-    [onClose]
-  );
-
-  const sidebar = useMemo(
-    () => (
-      <SidebarContent
-        {...sidebarProps}
-        onCollectionClicked={injectOnCloseDrawer(
-          sidebarProps.onCollectionClicked
-        )}
-        onMenuItemClicked={injectOnCloseDrawer(sidebarProps.onMenuItemClicked)}
-      />
-    ),
-    [injectOnCloseDrawer, sidebarProps]
-  );
-
-  const items = useMemo(
-    () => (
-      <ClientRender>
-        <CollectionList
-          layout={activeCollection?.layout}
-          items={collectionItems}
-          px={3}
-          mt={3}
-          flex="1 1 0"
-          h="full"
-          {...collectionListProps}
-        />
-      </ClientRender>
-    ),
-    [activeCollection?.layout, collectionItems, collectionListProps]
   );
 
   const handleRefreshClick = useCallback(() => {
@@ -144,12 +100,12 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
   return (
     <>
       <Drawer
-        isOpen={isOpen}
+        isOpen={isDrawerOpen}
         placement="left"
         size="full"
         autoFocus={false}
         returnFocusOnClose={false}
-        onClose={onClose}
+        onClose={onCloseDrawer}
       >
         <DrawerOverlay />
         <DrawerContent>
@@ -199,13 +155,13 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
                 isRefreshing={isRefreshing}
                 menuButtonRef={drawerButtonRef}
                 onRefresh={handleRefreshClick}
-                onMenuClicked={onToggle}
+                onMenuClicked={onToggleDrawer}
                 onChangeLayout={onCollectionLayoutChanged}
               />
 
               <Divider pt={4} />
 
-              {items}
+              {collectionItemList}
             </VStack>
             <Divider orientation="vertical" h="full" />
           </HStack>
@@ -234,13 +190,13 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
             menuButtonRef={drawerButtonRef}
             isRefreshing={isRefreshing}
             onRefresh={handleRefreshClick}
-            onMenuClicked={onToggle}
+            onMenuClicked={onToggleDrawer}
             onChangeLayout={onCollectionLayoutChanged}
           />
 
           <Divider pt={3} />
 
-          {items}
+          {collectionItemList}
         </VStack>
       </Box>
     </>
