@@ -83,6 +83,8 @@ LoginPage.getLayout = (page) => {
   return page;
 };
 
-export const getServerSideProps = getSSProps({});
+export const getServerSideProps = getSSProps({
+  requireAuthorization: false,
+});
 
 export default LoginPage;
