@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   CircularProgress,
@@ -14,8 +14,8 @@ import {
   ArticleHeader,
   ArticleMenuAction,
 } from '@components/article';
+import type { ID } from '@orpington-news/shared';
 import { useArticleDateReadMutation, useArticleDetails } from './queries';
-import { ID } from '@orpington-news/shared';
 
 export interface ArticleProps {
   collectionId: ID;
@@ -29,6 +29,10 @@ export const Article: React.FC<ArticleProps> = (props) => {
 
   const toast = useToast();
 
+  const [forceUnread, setForceUnread] = useState(false);
+  useEffect(() => {
+    setForceUnread(false);
+  }, [itemId]);
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
     collectionId,
     itemId
@@ -37,39 +41,35 @@ export const Article: React.FC<ArticleProps> = (props) => {
   const query = useArticleDetails(collectionId, itemId);
 
   useEffect(() => {
-    if (query.data?.id) {
-      mutateDateRead({
+    if (!query.data?.id) {
+      return;
+    }
+
+    mutateDateRead(
+      {
         collectionId,
         itemId: query.data.id,
-        dateRead: getUnixTime(new Date()),
-      });
-    }
-  }, [query.data?.id, mutateDateRead, collectionId]);
-
-  const handleMenuItemClicked = useCallback(
-    (action: ArticleMenuAction) => {
-      if (action === 'markAsUnread') {
-        if (query.data?.id) {
-          mutateDateRead(
-            {
-              collectionId,
-              itemId: query.data.id,
-              dateRead: null,
-            },
-            {
-              onSuccess: () => {
-                toast({
-                  status: 'success',
-                  description: 'Article marked as unread!',
-                });
-              },
-            }
-          );
-        }
+        dateRead: forceUnread ? null : getUnixTime(new Date()),
+      },
+      {
+        onSuccess: () => {
+          if (!forceUnread) {
+            return;
+          }
+          toast({
+            status: 'success',
+            description: 'Article marked as unread!',
+          });
+        },
       }
-    },
-    [collectionId, mutateDateRead, query.data?.id, toast]
-  );
+    );
+  }, [query.data?.id, toast, mutateDateRead, collectionId, forceUnread]);
+
+  const handleMenuItemClicked = useCallback((action: ArticleMenuAction) => {
+    if (action === 'markAsUnread') {
+      setForceUnread(true);
+    }
+  }, []);
 
   const ref = useRef<HTMLDivElement | null>(null);
 
