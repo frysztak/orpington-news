@@ -34,6 +34,7 @@ export const useCollectionsList = <TSelectedData>(opts?: {
   return useQuery(collectionKeys.tree, () => getCollections(api), {
     onError,
     select: opts?.select,
+    refetchOnMount: false,
   });
 };
 

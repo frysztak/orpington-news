@@ -57,6 +57,7 @@ export const useGetUser = () => {
 
   return useQuery(userKeys.info, () => getUser(api), {
     onError,
+    refetchOnMount: false,
   });
 };
 
