@@ -67,7 +67,7 @@ export const preferences: FastifyPluginAsync = async (
         session: { userId },
       } = request;
       await pool.query(modifyExpandedCollections('add', id, userId));
-      await pool.query(pruneExpandedCollections());
+      await pool.query(pruneExpandedCollections(userId));
       return await pool.one(getPreferences(userId));
     }
   );
@@ -86,7 +86,7 @@ export const preferences: FastifyPluginAsync = async (
         session: { userId },
       } = request;
       await pool.query(modifyExpandedCollections('remove', id, userId));
-      await pool.query(pruneExpandedCollections());
+      await pool.query(pruneExpandedCollections(userId));
       return await pool.one(getPreferences(userId));
     }
   );

@@ -6,8 +6,8 @@ import type {
   ViewPreference,
 } from '@orpington-news/shared';
 
-export const pruneExpandedCollections = () => {
-  return sql`CALL preferences_prune_expanded_collections();`;
+export const pruneExpandedCollections = (userId: ID) => {
+  return sql`CALL preferences_prune_expanded_collections(${userId});`;
 };
 
 export const insertPreferences = (p: Preferences, userId: ID) => {

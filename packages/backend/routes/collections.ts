@@ -182,7 +182,7 @@ export const collections: FastifyPluginAsync = async (
       } = request;
 
       await pool.any(moveCollections(collectionId, newParentId, newOrder));
-      await pool.query(pruneExpandedCollections());
+      await pool.query(pruneExpandedCollections(userId));
       const collections = await pool.any(getCollections(userId));
       return collections.map(mapDBCollection);
     }
@@ -215,7 +215,9 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         params: { id },
+        session: { userId },
       } = request;
+
       if (id === 'home') {
         reply.status(500);
         return { errorCode: 500, message: 'Cannot DELETE home collection' };
@@ -224,7 +226,7 @@ export const collections: FastifyPluginAsync = async (
       const deletedIds = await pool.transaction(async (conn) => {
         const deletedIds = await conn.any(deleteCollection(id));
         await conn.any(recalculateCollectionsOrder());
-        await conn.query(pruneExpandedCollections());
+        await conn.query(pruneExpandedCollections(userId));
         return deletedIds;
       });
 
