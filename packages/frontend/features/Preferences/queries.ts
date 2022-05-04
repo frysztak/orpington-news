@@ -11,7 +11,7 @@ import {
 import { preferencesKeys } from '@features/queryKeys';
 import type { ID, Preferences, ViewPreference } from '@orpington-news/shared';
 
-export const useGetPreferences = <TSelectedData>(opts?: {
+export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
   select?: (data: Preferences) => TSelectedData;
 }) => {
   const api = useApi();

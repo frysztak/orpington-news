@@ -1,20 +1,23 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { ActiveCollection } from '@components/collection/types';
-import { Collection, defaultCollectionLayout } from '@orpington-news/shared';
+import { defaultCollectionLayout, Preferences } from '@orpington-news/shared';
 import { useCollectionById } from '@features/Collections';
-import { usePreferencesContext } from './PreferencesContext';
+import { useGetPreferences } from './queries';
 
 export const useActiveCollection = () => {
-  const { preferences, activeCollectionId, setActiveCollectionId } =
-    usePreferencesContext();
-
-  const handleCollectionClicked = useCallback(
-    (collection: Collection) => {
-      setActiveCollectionId(collection.id);
+  const { data } = useGetPreferences({
+    select: (prefs: Preferences) => {
+      return {
+        activeCollectionId: prefs
+          ? prefs.activeView === 'home'
+            ? 'home'
+            : prefs.activeCollectionId
+          : ('home' as const),
+        homeCollectionLayout: prefs.homeCollectionLayout,
+      };
     },
-    [setActiveCollectionId]
-  );
-
+  });
+  const activeCollectionId = data!.activeCollectionId;
   const { data: collection } = useCollectionById(activeCollectionId);
 
   const activeCollection: ActiveCollection = useMemo(() => {
@@ -22,7 +25,7 @@ export const useActiveCollection = () => {
       return {
         id: activeCollectionId,
         title: 'Home',
-        layout: preferences?.homeCollectionLayout ?? defaultCollectionLayout,
+        layout: data?.homeCollectionLayout ?? defaultCollectionLayout,
       };
     }
 
@@ -31,7 +34,7 @@ export const useActiveCollection = () => {
       title: collection?.title ?? '',
       layout: collection?.layout ?? defaultCollectionLayout,
     };
-  }, [activeCollectionId, collection, preferences?.homeCollectionLayout]);
+  }, [activeCollectionId, collection, data?.homeCollectionLayout]);
 
-  return { activeCollection, handleCollectionClicked, setActiveCollectionId };
+  return { activeCollection };
 };

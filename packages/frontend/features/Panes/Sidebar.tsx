@@ -7,12 +7,21 @@ import {
 } from '@features/Collections';
 import {
   useActiveCollection,
-  usePreferencesContext,
+  useCollapseCollection,
+  useExpandCollection,
+  useGetPreferences,
+  useSetActiveCollection,
 } from '@features/Preferences';
 import { useGetUser } from '@features/Auth';
 import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
-import { Collection, defaultPreferences, ID } from '@orpington-news/shared';
+import {
+  Collection,
+  defaultPreferences,
+  emptyIfUndefined,
+  ID,
+  Preferences,
+} from '@orpington-news/shared';
 
 interface SidebarProps {
   onCloseDrawer: () => void;
@@ -28,8 +37,8 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   } = props;
 
   const { data: collections, isError: collectionsError } = useCollectionsTree();
-  const { activeCollection, handleCollectionClicked, setActiveCollectionId } =
-    useActiveCollection();
+  const { activeCollection } = useActiveCollection();
+  const { setActiveCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
 
@@ -38,14 +47,14 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       onCloseDrawer();
       switch (item) {
         case 'home': {
-          return setActiveCollectionId('home');
+          return setActiveCollection('home');
         }
         case 'addFeed': {
           return onOpenAddCollectionModal();
         }
       }
     },
-    [onCloseDrawer, onOpenAddCollectionModal, setActiveCollectionId]
+    [onCloseDrawer, onOpenAddCollectionModal, setActiveCollection]
   );
 
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
@@ -78,14 +87,14 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const handleCollectionClickedAndCloseDrawer = useCallback(
     (collection: Collection) => {
       onCloseDrawer();
-      handleCollectionClicked(collection);
+      setActiveCollection(collection.id);
     },
-    [handleCollectionClicked, onCloseDrawer]
+    [setActiveCollection, onCloseDrawer]
   );
 
   const { currentlyUpdatedCollections } = useCollectionsContext();
   const { data: user } = useGetUser();
-  const { preferences } = usePreferencesContext();
+  const { data: preferences } = useGetPreferences();
 
   return (
     <SidebarContent
@@ -105,16 +114,23 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 };
 
 const useExpandedCollections = () => {
-  const { expandedCollectionIds, expandCollection, collapseCollection } =
-    usePreferencesContext();
+  const { data: expandedCollectionIds } = useGetPreferences({
+    select: (prefs) => emptyIfUndefined(prefs.expandedCollectionIds),
+  });
+  const { mutate: expandCollection } = useExpandCollection();
+  const { mutate: collapseCollection } = useCollapseCollection();
 
   const handleCollectionChevronClicked = useCallback(
     ({ id }: Collection) => {
-      const idx = expandedCollectionIds.findIndex((id_) => id_ === id);
+      const idx = expandedCollectionIds?.findIndex((id_) => id_ === id);
+      if (idx === undefined) {
+        return;
+      }
+
       if (idx === -1) {
-        expandCollection(id);
+        expandCollection({ id });
       } else {
-        collapseCollection(id);
+        collapseCollection({ id });
       }
     },
     [collapseCollection, expandCollection, expandedCollectionIds]

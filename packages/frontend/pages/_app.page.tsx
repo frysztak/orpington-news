@@ -6,7 +6,6 @@ import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { Panes } from '@features/Panes';
 import { CollectionsContextProvider } from '@features/Collections';
 import { EventListenerContextProvider } from '@features/EventListener';
-import { PreferencesContextProvider } from '@features/Preferences';
 import { ApiContextProvider } from '@api';
 import { theme, fontFaces, MetaTheme } from 'theme';
 import Compose from '@utils/Compose';
@@ -42,7 +41,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               ApiContextProvider,
               EventListenerContextProvider,
               CollectionsContextProvider,
-              PreferencesContextProvider,
             ]}
           >
             <Global styles={fontFaces} />

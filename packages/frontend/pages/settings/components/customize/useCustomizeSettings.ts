@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useColorMode, useToast } from '@chakra-ui/react';
 import { useMutation } from 'react-query';
-import { usePreferencesContext } from '@features/Preferences';
+import { useGetPreferences } from '@features/Preferences';
 import {
   defaultAvatarStyle,
   defaultCollectionLayout,
@@ -12,7 +12,7 @@ import { CustomizeAppearanceData } from './CustomizeAppearance';
 export const useCustomizeSettings = () => {
   const toast = useToast();
   const { setColorMode, colorMode } = useColorMode();
-  const { preferences } = usePreferencesContext();
+  const { data: preferences } = useGetPreferences();
   const [currentSettings, setCurrentSettings] =
     useState<CustomizeAppearanceData>({
       theme: colorMode,
