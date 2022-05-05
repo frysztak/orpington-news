@@ -20,6 +20,7 @@ export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
   return useQuery(preferencesKeys.base, () => getPreferences(api), {
     onError,
     select: opts?.select,
+    notifyOnChangeProps: 'tracked',
   });
 };
 
