@@ -129,3 +129,7 @@ export interface User {
   displayName: string;
   avatar?: string;
 }
+export const placeholderUser: User = {
+  displayName: '',
+  username: '',
+};

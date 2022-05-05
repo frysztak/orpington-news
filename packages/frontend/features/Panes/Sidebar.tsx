@@ -12,16 +12,10 @@ import {
   useGetPreferences,
   useSetActiveCollection,
 } from '@features/Preferences';
-import { useGetUser } from '@features/Auth';
 import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
-import {
-  Collection,
-  defaultPreferences,
-  emptyIfUndefined,
-  ID,
-  Preferences,
-} from '@orpington-news/shared';
+import { Collection, emptyIfUndefined, ID } from '@orpington-news/shared';
+import { SidebarFooter } from './SidebarFooter';
 
 interface SidebarProps {
   onCloseDrawer: () => void;
@@ -93,8 +87,6 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   );
 
   const { currentlyUpdatedCollections } = useCollectionsContext();
-  const { data: user } = useGetUser();
-  const { data: preferences } = useGetPreferences();
 
   return (
     <SidebarContent
@@ -107,8 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
       activeCollectionId={activeCollection.id}
       expandedCollectionIDs={expandedCollectionIds}
       collectionsCurrentlyUpdated={currentlyUpdatedCollections}
-      user={user ?? { displayName: '', username: '' }}
-      preferences={preferences ?? defaultPreferences}
+      footer={<SidebarFooter />}
     />
   );
 };

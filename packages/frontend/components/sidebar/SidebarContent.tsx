@@ -12,10 +12,9 @@ import { AiOutlineHome } from '@react-icons/all-files/ai/AiOutlineHome';
 import { BsBookmarks } from '@react-icons/all-files/bs/BsBookmarks';
 import { RiAddBoxFill } from '@react-icons/all-files/ri/RiAddBoxFill';
 import RssIcon from '@heroicons/react/outline/RssIcon';
-import type { ID, Preferences, User } from '@orpington-news/shared';
+import type { ID } from '@orpington-news/shared';
 import { SidebarItem } from './SidebarItem';
 import { Collections, CollectionsProps } from './Collections';
-import { SidebarFooter } from './SidebarFooter';
 
 export type MenuItem = 'home' | 'readingList' | 'addFeed';
 
@@ -24,13 +23,12 @@ export type SidebarContentProps = Omit<
   'activeCollectionId'
 > & {
   activeCollectionId: ID | 'home';
-  user: User;
-  preferences: Preferences;
   onMenuItemClicked: (menuAction: MenuItem) => void;
+  footer?: JSX.Element;
 };
 
 export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
-  const { onMenuItemClicked, user, preferences, ...collectionsProps } = props;
+  const { onMenuItemClicked, footer, ...collectionsProps } = props;
   const { activeCollectionId } = collectionsProps;
 
   const handleClick = useCallback(
@@ -95,7 +93,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
       </Box>
 
       <Box w="full" pt={2} pb={4} pl={6} pr={4}>
-        <SidebarFooter user={user} preferences={preferences} />
+        {footer}
       </Box>
     </VStack>
   );

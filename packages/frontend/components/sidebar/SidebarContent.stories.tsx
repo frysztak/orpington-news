@@ -1,8 +1,9 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { Box } from '@chakra-ui/react';
+import { defaultIcon, defaultPreferences } from '@orpington-news/shared';
 import { SidebarContent, SidebarContentProps } from './SidebarContent';
-import { defaultIcon } from '@orpington-news/shared';
+import { SidebarFooter } from './SidebarFooter';
 
 export default {
   title: 'Components/Sidebar/SidebarContent',
@@ -18,12 +19,19 @@ const Template: Story<SidebarContentProps> = (props) => (
 export const Default = Template.bind({});
 Default.args = {
   collections: [],
-  user: {
-    displayName: 'Demo 1',
-  },
-  preferences: {
-    avatarStyle: 'initials',
-  },
+
+  footer: (
+    <SidebarFooter
+      user={{
+        username: 'demo',
+        displayName: 'Demo 1',
+      }}
+      preferences={{
+        ...defaultPreferences,
+        avatarStyle: 'initials',
+      }}
+    />
+  ),
 };
 
 export const WithActiveHome = Template.bind({});
