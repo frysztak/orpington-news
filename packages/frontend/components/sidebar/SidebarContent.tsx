@@ -61,7 +61,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         title="Home"
         icon={AiOutlineHome}
         isActive={activeCollectionId === 'home'}
-        onClick={handleClick('home')}
+        onClick={useCallback(() => handleClick('home'), [handleClick])}
       />
 
       {/*<SidebarItem
@@ -75,7 +75,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         title="Add Feed"
         icon={RiAddBoxFill}
         isActive={false}
-        onClick={handleClick('addFeed')}
+        onClick={useCallback(() => handleClick('addFeed'), [handleClick])}
       />
 
       <Divider />

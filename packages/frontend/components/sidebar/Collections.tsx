@@ -51,9 +51,14 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
   const hasChildren = Boolean(children) && children?.length !== 0;
   const isOpen = expandedCollectionIDs?.includes(id) ?? false;
 
-  const handleChevronClick = (collection: Collection) => () =>
-    onChevronClicked(collection);
-  const handleClick = () => onCollectionClicked(collection);
+  const handleChevronClick = useCallback(
+    (collection: Collection) => () => onChevronClicked(collection),
+    [onChevronClicked]
+  );
+  const handleClick = useCallback(
+    () => onCollectionClicked(collection),
+    [collection, onCollectionClicked]
+  );
 
   const icon = useMemo(
     () => getCollectionIcon(collection.icon),
