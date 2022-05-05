@@ -52,7 +52,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
   const isOpen = expandedCollectionIDs?.includes(id) ?? false;
 
   const handleChevronClick = useCallback(
-    (collection: Collection) => () => onChevronClicked(collection),
+    (collection: Collection) => onChevronClicked(collection),
     [onChevronClicked]
   );
   const handleClick = useCallback(
@@ -82,7 +82,10 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
         isLoading={collectionsCurrentlyUpdated?.has(id) ?? false}
         chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
         onClick={handleClick}
-        onChevronClick={handleChevronClick(collection)}
+        onChevronClick={useCallback(
+          () => handleChevronClick(collection),
+          [collection, handleChevronClick]
+        )}
         menuItems={
           <>
             <MenuItem
@@ -123,7 +126,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
               expandedCollectionIDs={expandedCollectionIDs}
               collectionsCurrentlyUpdated={collectionsCurrentlyUpdated}
               onCollectionClicked={onCollectionClicked}
-              onChevronClicked={handleChevronClick(collection)}
+              onChevronClicked={handleChevronClick}
               onCollectionMenuActionClicked={onCollectionMenuActionClicked}
             />
           ))}
