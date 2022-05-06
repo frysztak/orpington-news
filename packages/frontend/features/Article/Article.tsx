@@ -28,48 +28,64 @@ export const Article: React.FC<ArticleProps> = (props) => {
   const { collectionId, itemId, onGoBackClicked } = props;
 
   const toast = useToast();
-
-  const [forceUnread, setForceUnread] = useState(false);
-  useEffect(() => {
-    setForceUnread(false);
-  }, [itemId]);
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
     collectionId,
     itemId
   );
 
-  const query = useArticleDetails(collectionId, itemId);
-
   useEffect(() => {
-    if (!query.data?.id) {
-      return;
-    }
+    setBlockDateReadMutation(false);
+  }, [itemId]);
 
-    mutateDateRead(
-      {
-        collectionId,
-        itemId: query.data.id,
-        dateRead: forceUnread ? null : getUnixTime(new Date()),
-      },
-      {
-        onSuccess: () => {
-          if (!forceUnread) {
-            return;
-          }
-          toast({
-            status: 'success',
-            description: 'Article marked as unread!',
-          });
-        },
+  const [blockDateReadMutation, setBlockDateReadMutation] = useState(false);
+  const query = useArticleDetails(collectionId, itemId, {
+    onSuccess: ({ dateRead }) => {
+      if (blockDateReadMutation) {
+        return;
       }
-    );
-  }, [query.data?.id, toast, mutateDateRead, collectionId, forceUnread]);
 
-  const handleMenuItemClicked = useCallback((action: ArticleMenuAction) => {
-    if (action === 'markAsUnread') {
-      setForceUnread(true);
-    }
-  }, []);
+      if (!dateRead) {
+        mutateDateRead(
+          {
+            collectionId,
+            itemId: itemId,
+            dateRead: getUnixTime(new Date()),
+          },
+          {
+            onSuccess: () => {
+              setBlockDateReadMutation(true);
+            },
+          }
+        );
+      } else {
+        setBlockDateReadMutation(true);
+      }
+    },
+  });
+
+  const handleMenuItemClicked = useCallback(
+    (action: ArticleMenuAction) => {
+      if (action === 'markAsUnread') {
+        mutateDateRead(
+          {
+            collectionId,
+            itemId: itemId,
+            dateRead: null,
+          },
+          {
+            onSuccess: () => {
+              setBlockDateReadMutation(true);
+              toast({
+                status: 'success',
+                description: 'Article marked as unread!',
+              });
+            },
+          }
+        );
+      }
+    },
+    [collectionId, itemId, mutateDateRead, toast]
+  );
 
   const ref = useRef<HTMLDivElement | null>(null);
 

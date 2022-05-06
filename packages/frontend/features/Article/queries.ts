@@ -53,7 +53,13 @@ export const useArticleDateReadMutation = (collectionId: ID, itemId: ID) => {
   );
 };
 
-export const useArticleDetails = (collectionId: ID, itemId: ID) => {
+export const useArticleDetails = (
+  collectionId: ID,
+  itemId: ID,
+  options?: {
+    onSuccess: (data: CollectionItemDetails) => void;
+  }
+) => {
   const api = useApi();
   const { onError } = useHandleError();
 
@@ -63,5 +69,6 @@ export const useArticleDetails = (collectionId: ID, itemId: ID) => {
     enabled: Boolean(collectionId) && Boolean(itemId),
     retry: false,
     onError,
+    onSuccess: options?.onSuccess,
   });
 };
