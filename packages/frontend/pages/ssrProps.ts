@@ -79,7 +79,9 @@ export const getSSProps =
     if (queriesToFetch?.length) {
       await Promise.all(
         queriesToFetch.map(([queryKey, queryFn]) =>
-          queryClient.prefetchQuery(queryKey, () => queryFn(apiWithHeaders))
+          queryClient.prefetchQuery(queryKey, () => queryFn(apiWithHeaders), {
+            staleTime: 5e3,
+          })
         )
       );
     }

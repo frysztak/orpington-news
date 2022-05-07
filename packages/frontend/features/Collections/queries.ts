@@ -18,14 +18,14 @@ import {
 } from '@api';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 import { inflateCollections } from '@features/OrganizeCollections';
-import {
+import type {
   CollectionLayout,
   FlatCollection,
   ID,
   Preferences,
 } from '@orpington-news/shared';
 
-export const useCollectionsList = <TSelectedData>(opts?: {
+export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
   select?: (data: FlatCollection[]) => TSelectedData;
 }) => {
   const api = useApi();
@@ -35,6 +35,7 @@ export const useCollectionsList = <TSelectedData>(opts?: {
     onError,
     select: opts?.select,
     refetchOnMount: false,
+    notifyOnChangeProps: 'tracked',
   });
 };
 
