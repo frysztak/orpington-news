@@ -1,12 +1,6 @@
-import {
-  useContext,
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import { useContext, createContext, useCallback } from 'react';
 import { useQueryClient } from 'react-query';
-import { FlatCollection, ID, Msg } from '@orpington-news/shared';
+import type { ID, Msg } from '@orpington-news/shared';
 import { useSet } from '@utils';
 import { collectionKeys } from '@features/queryKeys';
 import { useAddEventListener } from '@features/EventListener';
@@ -76,37 +70,33 @@ export const useCollectionsContext = () => {
 };
 
 const useCurrentlyUpdatedCollections = () => {
-  const { data: flatCollections } = useCollectionsList<FlatCollection[]>();
-
-  const [parentsMap, setParentsMap] = useState(
-    buildParentsChildrenMap(flatCollections).parentsMap
-  );
-  useEffect(() => {
-    setParentsMap(buildParentsChildrenMap(flatCollections).parentsMap);
-  }, [flatCollections]);
+  const { data: parentsMap = new Map() } = useCollectionsList({
+    select: (flatCollections) => {
+      return buildParentsChildrenMap(flatCollections).parentsMap;
+    },
+  });
 
   const { set, add, remove } = useSet<ID>();
-  const { set: parentsSet, setValue: setParentsSet } = useSet<ID>();
-  const { set: combinedSet, setValue: setCombinedSet } = useSet<ID>();
 
-  useEffect(() => {
-    const parents = Array.from(set.values()).flatMap((id: ID) =>
-      getParents(parentsMap, id)
-    );
-    setParentsSet(new Set(parents));
-  }, [set, setParentsSet, parentsMap]);
+  const handleAdd = useCallback(
+    (ids: ID[]) => {
+      const parents = ids.flatMap((id: ID) => getParents(parentsMap, id));
+      add([...ids, ...parents]);
+    },
+    [add, parentsMap]
+  );
 
-  useEffect(() => {
-    const newSet = new Set(set);
-    for (let elem of parentsSet) {
-      newSet.add(elem);
-    }
-    setCombinedSet(newSet);
-  }, [set, parentsSet, setCombinedSet]);
+  const handleRemove = useCallback(
+    (ids: ID[]) => {
+      const parents = ids.flatMap((id: ID) => getParents(parentsMap, id));
+      remove([...ids, ...parents]);
+    },
+    [remove, parentsMap]
+  );
 
   return {
-    set: combinedSet,
-    add,
-    remove,
+    set,
+    add: handleAdd,
+    remove: handleRemove,
   };
 };
