@@ -10,10 +10,6 @@ import {
   useSetCollectionLayout,
 } from '@features/Collections';
 import {
-  AddCollectionModal,
-  useAddCollectionModal,
-} from '@features/AddCollectionModal';
-import {
   DeleteCollectionModal,
   useDeleteCollectionModal,
 } from '@features/DeleteCollectionModal';
@@ -27,9 +23,6 @@ export const Panes: React.FC = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);
-
-  const { onOpenAddCollectionModal, ...addCollectionModalProps } =
-    useAddCollectionModal();
 
   const { onOpenDeleteCollectionModal, ...deleteCollectionModalProps } =
     useDeleteCollectionModal();
@@ -88,7 +81,6 @@ export const Panes: React.FC = ({ children }) => {
         sidebar={
           <Sidebar
             onCloseDrawer={onCloseDrawer}
-            onOpenAddCollectionModal={onOpenAddCollectionModal}
             onOpenDeleteCollectionModal={onOpenDeleteCollectionModal}
           />
         }
@@ -111,7 +103,6 @@ export const Panes: React.FC = ({ children }) => {
         onCollectionLayoutChanged={handleCollectionLayoutChanged}
       />
 
-      <AddCollectionModal {...addCollectionModalProps} />
       <DeleteCollectionModal {...deleteCollectionModalProps} />
 
       {children}

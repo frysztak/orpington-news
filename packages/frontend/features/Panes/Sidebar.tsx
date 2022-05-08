@@ -16,25 +16,27 @@ import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 import { Collection, emptyIfUndefined, ID } from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
+import {
+  AddCollectionModal,
+  useAddCollectionModal,
+} from '@features/AddCollectionModal';
 
 interface SidebarProps {
   onCloseDrawer: () => void;
-  onOpenAddCollectionModal: (collection?: Collection) => void;
   onOpenDeleteCollectionModal: (collectionId: ID) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = (props) => {
-  const {
-    onCloseDrawer,
-    onOpenAddCollectionModal,
-    onOpenDeleteCollectionModal,
-  } = props;
+  const { onCloseDrawer, onOpenDeleteCollectionModal } = props;
 
   const { data: collections, isError: collectionsError } = useCollectionsTree();
   const { activeCollection } = useActiveCollection();
   const { setActiveCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
+
+  const { onOpenAddCollectionModal, ...addCollectionModalProps } =
+    useAddCollectionModal();
 
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
@@ -89,18 +91,22 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const { currentlyUpdatedCollections } = useCollectionsContext();
 
   return (
-    <SidebarContent
-      isError={collectionsError}
-      collections={collections ?? []}
-      onCollectionClicked={handleCollectionClickedAndCloseDrawer}
-      onChevronClicked={handleCollectionChevronClicked}
-      onMenuItemClicked={handleMenuItemClicked}
-      onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
-      activeCollectionId={activeCollection.id}
-      expandedCollectionIDs={expandedCollectionIds}
-      collectionsCurrentlyUpdated={currentlyUpdatedCollections}
-      footer={<SidebarFooter />}
-    />
+    <>
+      <SidebarContent
+        isError={collectionsError}
+        collections={collections ?? []}
+        onCollectionClicked={handleCollectionClickedAndCloseDrawer}
+        onChevronClicked={handleCollectionChevronClicked}
+        onMenuItemClicked={handleMenuItemClicked}
+        onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
+        activeCollectionId={activeCollection.id}
+        expandedCollectionIDs={expandedCollectionIds}
+        collectionsCurrentlyUpdated={currentlyUpdatedCollections}
+        footer={<SidebarFooter />}
+      />
+
+      <AddCollectionModal {...addCollectionModalProps} />
+    </>
   );
 };
 
