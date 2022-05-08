@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
+import { useUpdateEffect } from 'usehooks-ts';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { Box, Button, HStack, VStack } from '@chakra-ui/react';
@@ -121,7 +122,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
         };
   }, [initialData]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     onVerifyUrlChanged?.(feedUrl);
   }, [feedUrl, onVerifyUrlChanged]);
 
