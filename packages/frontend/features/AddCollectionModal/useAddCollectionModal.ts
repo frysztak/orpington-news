@@ -7,18 +7,22 @@ import {
   emptyIfUndefined,
   ID,
 } from '@orpington-news/shared';
+import { AddCollectionFormData } from '@components/collection/add';
 import {
   useEditCollection,
   useSaveCollection,
   useVerifyFeedURL,
 } from './queries';
-import { AddCollectionFormData } from '@components/collection/add';
+
+interface State {
+  isUrlVerified: boolean;
+  initialData?: AddCollectionFormData;
+  editedFeedId?: ID;
+}
 
 export const useAddCollectionModal = () => {
   const toast = useToast();
-  const [isUrlVerified, setIsUrlVerified] = useState(false);
-  const [initialData, setInitialData] = useState<AddCollectionFormData>();
-  const [editedFeedId, setEditedFeedId] = useState<ID>();
+  const [state, setState] = useState<State>({ isUrlVerified: false });
 
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { mutate: verifyFeedURL, isLoading: isVerifying } = useVerifyFeedURL();
@@ -33,7 +37,7 @@ export const useAddCollectionModal = () => {
     },
   });
   const { mutate: editCollection, isLoading: isEditing } = useEditCollection({
-    id: editedFeedId!,
+    id: state.editedFeedId!,
     onSuccess: () => {
       onClose();
       toast({
@@ -49,13 +53,17 @@ export const useAddCollectionModal = () => {
 
   const onVerifyUrlChanged = useCallback(
     (url?: string) => {
-      if (initialData && initialData.url === url) {
-        setIsUrlVerified(true);
-      } else {
-        setIsUrlVerified(false);
+      if (url === state.initialData?.url) {
+        return;
       }
+      setState((old) => {
+        return {
+          ...old,
+          isUrlVerified: old.initialData?.url === url,
+        };
+      });
     },
-    [initialData]
+    [state.initialData?.url]
   );
 
   const onVerifyUrlClicked = useCallback(
@@ -64,12 +72,14 @@ export const useAddCollectionModal = () => {
         { url },
         {
           onSuccess: ({ title, description }) => {
-            setIsUrlVerified(true);
-            setInitialData({
-              url,
-              icon: defaultIcon,
-              title,
-              description,
+            setState({
+              isUrlVerified: true,
+              initialData: {
+                url,
+                icon: defaultIcon,
+                title,
+                description,
+              },
             });
           },
         }
@@ -80,11 +90,15 @@ export const useAddCollectionModal = () => {
 
   const onOpenAddCollectionModal = useCallback(
     (initialData?: Collection) => {
-      setInitialData(initialData);
       if (initialData) {
-        setIsUrlVerified(true);
+        setState({
+          isUrlVerified: true,
+          initialData,
+          editedFeedId: initialData!.id,
+        });
+      } else {
+        setState({ isUrlVerified: false });
       }
-      setEditedFeedId(initialData?.id);
       onOpen();
     },
     [onOpen]
@@ -92,8 +106,9 @@ export const useAddCollectionModal = () => {
 
   useEffect(() => {
     if (!isOpen) {
-      setIsUrlVerified(false);
-      setInitialData(undefined);
+      setState({
+        isUrlVerified: false,
+      });
     }
   }, [isOpen]);
 
@@ -102,14 +117,14 @@ export const useAddCollectionModal = () => {
     isOpen,
     onClose,
 
-    modalTitle: editedFeedId ? 'Edit feed' : 'Add feed',
-    initialData,
-    isUrlVerified,
+    modalTitle: state.editedFeedId ? 'Edit feed' : 'Add feed',
+    initialData: state.initialData,
+    isUrlVerified: state.isUrlVerified,
     onVerifyUrlChanged,
     onVerifyUrlClicked,
     areCollectionsLoading,
     collections: emptyIfUndefined(collections),
     isLoading: isVerifying || isSaving,
-    onSubmit: editedFeedId ? editCollection : saveCollection,
+    onSubmit: state.editedFeedId ? editCollection : saveCollection,
   };
 };
