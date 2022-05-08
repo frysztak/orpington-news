@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useUpdateEffect } from 'usehooks-ts';
 
 export interface FieldListenerProps<T extends unknown> {
   value: T;
@@ -7,8 +7,10 @@ export interface FieldListenerProps<T extends unknown> {
 
 export const FieldListener = <T,>(props: FieldListenerProps<T>) => {
   const { value, cb } = props;
-  useEffect(() => {
+
+  useUpdateEffect(() => {
     cb?.(value);
   }, [cb, value]);
+
   return null;
 };
