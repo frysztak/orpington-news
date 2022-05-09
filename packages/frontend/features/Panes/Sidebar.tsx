@@ -40,9 +40,9 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
-      onCloseDrawer();
       switch (item) {
         case 'home': {
+          onCloseDrawer();
           return setActiveCollection('home');
         }
         case 'addFeed': {
@@ -94,7 +94,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
     <>
       <SidebarContent
         isError={collectionsError}
-        collections={collections ?? []}
+        collections={emptyIfUndefined(collections)}
         onCollectionClicked={handleCollectionClickedAndCloseDrawer}
         onChevronClicked={handleCollectionChevronClicked}
         onMenuItemClicked={handleMenuItemClicked}
