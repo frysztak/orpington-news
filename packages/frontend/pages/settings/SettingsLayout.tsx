@@ -1,5 +1,5 @@
 import NextLink from 'next/link';
-import { HStack, Divider, Show, IconButton, VStack } from '@chakra-ui/react';
+import { HStack, Divider, Show, VStack, Button } from '@chakra-ui/react';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
 import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 
@@ -17,14 +17,16 @@ export const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
       </Show>
 
       <Show below="sm">
-        <VStack spacing={2} w="full" align="flex-start">
+        <VStack spacing={2} pt={4} px={2} w="full" align="flex-start">
           <NextLink href="/settings" passHref>
-            <IconButton
-              icon={<IoReturnUpBack />}
-              aria-label="Go back to settings"
-              variant="ghost"
-              mr="auto"
-            />
+            <Button
+              mx={4}
+              height={8}
+              leftIcon={<IoReturnUpBack />}
+              variant="link"
+            >
+              Go back
+            </Button>
           </NextLink>
           {children}
         </VStack>

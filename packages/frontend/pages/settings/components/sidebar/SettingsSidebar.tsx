@@ -1,5 +1,5 @@
 import NextLink from 'next/link';
-import { BoxProps, Button, Heading, VStack } from '@chakra-ui/react';
+import { Box, BoxProps, Button, VStack } from '@chakra-ui/react';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
 import { SettingsCategory } from './SettingsCategory';
 import { SettingsLink } from './SettingsLink';
@@ -10,14 +10,14 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
   return (
     <VStack w="full" align="flex-start" spacing={3} {...props}>
       <NextLink href="/" passHref>
-        <Button mx={4} pb={4} leftIcon={<IoReturnUpBack />} variant="link">
+        <Button mx={4} height={8} leftIcon={<IoReturnUpBack />} variant="link">
           Go back
         </Button>
       </NextLink>
 
-      <Heading px={4} fontSize="2xl">
+      <Box as="h2" px={4} pt={4} textStyle="settings.header">
         Settings
-      </Heading>
+      </Box>
 
       <SettingsCategory title="Collections">
         <SettingsLink href="/settings/appearance">Appearance</SettingsLink>
