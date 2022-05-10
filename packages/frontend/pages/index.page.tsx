@@ -1,7 +1,7 @@
 import React from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { commonQueries, fetchCurrentCollection, getSSProps } from './ssrProps';
+import { commonQueries, getSSProps } from './ssrProps';
 
 const Home: NextPage = () => {
   return (
@@ -15,7 +15,6 @@ const Home: NextPage = () => {
 
 export const getServerSideProps = getSSProps({
   queriesToFetch: commonQueries,
-  postFetchCallback: fetchCurrentCollection,
 });
 
 export default Home;

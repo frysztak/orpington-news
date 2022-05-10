@@ -7,11 +7,7 @@ import { getChakraColorModeCookie } from '@utils';
 import { collectionKeys } from '@features/queryKeys';
 import { getNumber } from '@utils/router';
 import { useArticleDetails } from '@features/Article/queries';
-import {
-  commonQueries,
-  fetchCurrentCollection,
-  getSSProps,
-} from '@pages/ssrProps';
+import { commonQueries, getSSProps } from '@pages/ssrProps';
 
 const ItemPage: NextPage = () => {
   const router = useRouter();
@@ -46,6 +42,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         (api) => getItemDetails(api, collectionId, itemId),
       ],
     ],
-    postFetchCallback: fetchCurrentCollection,
   })(ctx);
 };
