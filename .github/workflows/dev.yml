@@ -101,4 +101,4 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          dokku git:from-image news-dev ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.docker.outputs.image_sha }}
+          ssh dokku@orpington.software:22 'dokku git:from-image news-dev ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.docker.outputs.image_sha }}'
