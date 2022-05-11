@@ -92,4 +92,4 @@ jobs:
           host: 'orpington.software'
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            dokku git:from-image news-dev ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:${{ needs.build.outputs.image_sha }}
+            dokku git:from-image news-dev ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:${{ needs.docker.outputs.image_sha }}
