@@ -86,10 +86,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: [docker]
     steps:
-      - uses: appleboy/ssh-action@master
-        with:
-          username: 'dokku'
-          host: 'orpington.software'
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            dokku git:from-image news-dev ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.docker.outputs.image_sha }}
+      - name: Add SSH key
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p /home/runner/.ssh
+          ssh-keyscan orpington.software >> /home/runner/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/.ssh/github_actions
+          chmod 600 /home/runner/.ssh/github_actions
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add /home/runner/.ssh/github_actions
+
+      - name: Deploy
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          dokku git:from-image news-dev ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.docker.outputs.image_sha }}
