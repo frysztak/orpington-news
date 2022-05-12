@@ -6,7 +6,7 @@ import { pool } from '@db';
 import {
   addCollection,
   DBCollection,
-  deleteCollection,
+  deleteCollections,
   getCollectionChildrenIds,
   getCollectionOwner,
   getCollections,
@@ -29,6 +29,7 @@ import {
 import {
   getPreferences,
   pruneExpandedCollections,
+  setActiveView,
   setHomeCollectionLayout,
 } from '@db/preferences';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
@@ -223,14 +224,41 @@ export const collections: FastifyPluginAsync = async (
         return { errorCode: 500, message: 'Cannot DELETE home collection' };
       }
 
+      const [idsToDelete, preferences] = await Promise.all([
+        pool
+          .many(getCollectionChildrenIds(id))
+          .then((result) => result.map((x) => x.children_id)),
+
+        pool.one(getPreferences(userId)),
+      ]);
+
+      const deletingCurrentlyActiveCollection =
+        preferences.activeView === 'collection' &&
+        idsToDelete.includes(preferences.activeCollectionId);
+
       const deletedIds = await pool.transaction(async (conn) => {
-        const deletedIds = await conn.any(deleteCollection(id));
+        if (deletingCurrentlyActiveCollection) {
+          await conn.query(
+            setActiveView(
+              {
+                activeView: 'home',
+              },
+              userId
+            )
+          );
+        }
+
+        const deletedIds = await conn.any(deleteCollections(idsToDelete));
         await conn.any(recalculateCollectionsOrder());
         await conn.query(pruneExpandedCollections(userId));
         return deletedIds;
       });
 
-      return { ids: deletedIds.map(({ id }) => id) };
+      const ids = deletedIds.map(({ id }) => id);
+      return {
+        ids,
+        navigateHome: deletingCurrentlyActiveCollection,
+      };
     }
   );
 

@@ -62,6 +62,13 @@ export const deleteCollection = (collectionId: ID) => {
   RETURNING id`;
 };
 
+export const deleteCollections = (collectionIds: Array<ID>) => {
+  return sql<{ id: ID }>`
+  DELETE FROM collections
+  WHERE id = ANY(${sql.array(collectionIds, 'int4')})
+  RETURNING id`;
+};
+
 export const updateCollection = (
   collection: Omit<Collection, 'unreadCount' | 'children'>
 ) => {
