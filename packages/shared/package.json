@@ -17,14 +17,14 @@
     "@babel/preset-typescript": "^7.16.7",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-typescript": "^8.3.2",
-    "@types/jest": "^27.5.0",
+    "@types/jest": "^27.5.1",
     "babel-jest": "^27.5.1",
     "jest": "^27.5.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.72.0",
+    "rollup": "^2.72.1",
     "ts-jest": "^27.1.4"
   },
   "dependencies": {
-    "rambda": "^7.1.0"
+    "rambda": "^7.1.4"
   }
 }
