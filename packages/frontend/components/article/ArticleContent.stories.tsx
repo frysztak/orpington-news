@@ -10,6 +10,11 @@ const Template: Story<ArticleContentProps> = (props) => (
   <ArticleContent {...props} />
 );
 
+export const NoContent = Template.bind({});
+NoContent.args = {
+  html: '',
+};
+
 export const Paragraph = Template.bind({});
 Paragraph.args = {
   html: `<p>Test paragraph</p>`,

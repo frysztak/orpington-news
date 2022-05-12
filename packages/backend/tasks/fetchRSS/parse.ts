@@ -79,15 +79,10 @@ export const mapFeedItems = (
         return null;
       }
 
-      if (!item.content) {
-        logger.error(`Feed item '${item.link}' doesn't have content`);
-        return null;
-      }
-
       const title = decode(item.title).trim();
       const rootUrl = new URL(item.link).origin;
       const content = cleanHTML(
-        ((<any>item)['content:encoded'] || item.content).trim(),
+        ((<any>item)['content:encoded'] || item.content)?.trim(),
         rootUrl
       );
       const pureText = striptags(content);

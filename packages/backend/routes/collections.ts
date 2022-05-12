@@ -499,6 +499,7 @@ export const collections: FastifyPluginAsync = async (
           description: feed.description || feed.subtitle,
         });
       } catch (err) {
+        console.error('RSS parsing failed with: ', err);
         reply
           .status(418)
           .send({ errorCode: 418, message: 'Invalid RSS/Atom feed.' });

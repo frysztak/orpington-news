@@ -63,7 +63,8 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
             {summary}
           </Text>
           <Text color="gray.500">
-            by {collection.title} • about {readingTimeRounded} min
+            by {collection.title}
+            {readingTimeRounded > 0 && ` • about ${readingTimeRounded} min`}
           </Text>
         </VStack>
       </HStack>

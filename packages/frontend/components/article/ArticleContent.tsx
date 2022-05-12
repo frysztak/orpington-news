@@ -186,7 +186,13 @@ const options: HTMLReactParserOptions = {
 export const ArticleContent: React.FC<ArticleContentProps> = (props) => {
   const { html } = props;
   const content = useMemo(() => {
-    return parse(html, options);
+    return html ? (
+      parse(html, options)
+    ) : (
+      <Text as="i" color="gray.500">
+        No content
+      </Text>
+    );
   }, [html]);
 
   return (

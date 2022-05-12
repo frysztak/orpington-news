@@ -78,7 +78,8 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
             {summary}
           </Text>
           <Text color="gray.500">
-            by {collection.title} • about {readingTimeRounded} min
+            by {collection.title}
+            {readingTimeRounded > 0 && ` • about ${readingTimeRounded} min`}
           </Text>
         </Box>
       </VStack>
