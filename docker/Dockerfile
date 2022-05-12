@@ -13,6 +13,12 @@ COPY packages/backend/package.json /app/packages/backend/package.json
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --immutable
 
 COPY . /app
+
+ARG COMMIT_SHA
+ENV NEXT_PUBLIC_GIT_COMMIT_HASH=${COMMIT_SHA}
+ARG BUILD_VERSION
+ENV NEXT_PUBLIC_VERSION=${BUILD_VERSION}
+
 RUN yarn build && rm -rf packages/**/node_modules
 
 # RUNTIME
@@ -36,9 +42,5 @@ COPY --from=builder /app/yarn.lock /app/packages/frontend
 
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn workspaces focus --all --production
 
-ARG COMMIT_SHA
-ENV NEXT_PUBLIC_GIT_COMMIT_HASH=${COMMIT_SHA}
-ARG BUILD_VERSION
-ENV NEXT_PUBLIC_VERSION=${BUILD_VERSION}
 EXPOSE 8000
 CMD /bin/sh /app/run.sh
