@@ -189,7 +189,7 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Body: PutCollectionType; Reply: boolean }>(
+  fastify.put<{ Body: PutCollectionType }>(
     '/',
     {
       schema: {
@@ -199,6 +199,13 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const { body } = request;
+      if (body.id === body.parentId) {
+        reply.status(500);
+        return {
+          errorCode: 500,
+          message: 'Collection cannot be its own parent',
+        };
+      }
       await pool.any(updateCollection(body));
       return true;
     }
