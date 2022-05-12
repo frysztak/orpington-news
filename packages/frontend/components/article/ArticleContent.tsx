@@ -143,10 +143,10 @@ const options: HTMLReactParserOptions = {
         );
       }
       case 'ul': {
-        return <UnorderedList>{children}</UnorderedList>;
+        return <UnorderedList maxW="full">{children}</UnorderedList>;
       }
       case 'ol': {
-        return <OrderedList>{children}</OrderedList>;
+        return <OrderedList maxW="full">{children}</OrderedList>;
       }
       case 'li': {
         return (
