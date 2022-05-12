@@ -5,7 +5,8 @@
     "prepare": "husky install",
     "dev": "cross-env NODE_ENV=development lerna run dev --stream --parallel",
     "test": "lerna run test --stream --parallel",
-    "build": "lerna run build --stream"
+    "build": "lerna run build --stream",
+    "audit:fix": "yarn-audit-fix"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
@@ -14,7 +15,8 @@
     "lint-staged": "^12.4.1",
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
-    "typescript": "^4.6.4"
+    "typescript": "^4.6.4",
+    "yarn-audit-fix": "^9.3.1"
   },
   "workspaces": {
     "packages": [
