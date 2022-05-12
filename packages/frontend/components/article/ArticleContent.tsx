@@ -165,6 +165,9 @@ const options: HTMLReactParserOptions = {
         }
         return <Image src={src} alt={alt} />;
       }
+      case 'article': {
+        return <>{children}</>;
+      }
       case 'pre': {
         const isChildCode =
           domNode.children.length === 1 &&
