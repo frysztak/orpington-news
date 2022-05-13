@@ -18,6 +18,7 @@
     "@fastify/auth": "^2.0.0",
     "@fastify/cookie": "^6.0.0",
     "@fastify/cors": "^7.0.0",
+    "@fastify/etag": "3",
     "@fastify/session": "^8.2.0",
     "@fastify/swagger": "^6.0.1",
     "@orpington-news/shared": "^0.0.0",

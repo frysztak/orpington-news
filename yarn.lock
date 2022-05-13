@@ -3154,6 +3154,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/etag@npm:3":
+  version: 3.0.0
+  resolution: "@fastify/etag@npm:3.0.0"
+  dependencies:
+    fastify-plugin: ^3.0.0
+  checksum: 563a9e0261eebcf731d9740de8caa80ab0c130a58eb43df7a43b56515e3a0d1a502b5e524966318aba311e98aa5734bb6dd00cd4134289f9db9b40d400adbae3
+  languageName: node
+  linkType: hard
+
 "@fastify/session@npm:^8.2.0":
   version: 8.2.0
   resolution: "@fastify/session@npm:8.2.0"
@@ -4811,6 +4820,7 @@ __metadata:
     "@fastify/auth": ^2.0.0
     "@fastify/cookie": ^6.0.0
     "@fastify/cors": ^7.0.0
+    "@fastify/etag": 3
     "@fastify/session": ^8.2.0
     "@fastify/swagger": ^6.0.1
     "@orpington-news/shared": ^0.0.0

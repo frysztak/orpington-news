@@ -4,6 +4,7 @@ import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
 import fastifyAuth from '@fastify/auth';
 import fastifyCors from '@fastify/cors';
+import fastifyETag from '@fastify/etag';
 import fastifySchedule from 'fastify-schedule';
 import fastifySplitValidator from 'fastify-split-validator';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
@@ -83,6 +84,7 @@ async function setupFastify() {
     credentials: true,
     origin: [process.env.APP_URL],
   });
+  await fastify.register(fastifyETag);
   await fastify.register(fastifyAuth);
   await fastify.register(fastifyVerifySession);
   await fastify.register(fastifySchedule);
