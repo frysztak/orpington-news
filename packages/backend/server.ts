@@ -75,6 +75,9 @@ async function setupFastify() {
   if (!process.env.APP_URL) {
     throw new Error(`APP_URL not set!`);
   }
+  if (!process.env.API_URL) {
+    throw new Error(`API_URL not set!`);
+  }
 
   await fastify.register(fastifyCors, {
     credentials: true,

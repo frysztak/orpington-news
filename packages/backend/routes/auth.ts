@@ -1,10 +1,12 @@
 import { FastifyPluginAsync } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
 import argon2 from 'argon2';
+import { fileTypeFromBuffer } from 'file-type';
 import { defaultPreferences, ID } from '@orpington-news/shared';
 import { pool } from '@db';
 import {
   getUser,
+  getUserAvatar,
   getUserPassword,
   getUserPasswordById,
   insertUser,
@@ -136,12 +138,16 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
   );
 
-  const getUserData = async (userId: ID) => {
-    const { avatar, ...rest } = await pool.one(getUser(userId));
-    return {
-      ...rest,
-      avatar: avatar?.toString('ascii'),
-    };
+  const getUserJSON = (userId: ID) => {
+    return pool.one(getUser(userId)).then((result) => {
+      const { hasAvatar, ...rest } = result;
+      return {
+        ...rest,
+        avatarUrl: hasAvatar
+          ? `${process.env.API_URL}/auth/user/avatar`
+          : undefined,
+      };
+    });
   };
 
   fastify.get(
@@ -157,13 +163,13 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
         session: { userId },
       } = request;
 
-      return await getUserData(userId);
+      return await getUserJSON(userId);
     }
   );
 
   const PutUser = Type.Object({
     displayName: Type.String(),
-    avatar: Type.Optional(Type.String()),
+    avatarUrl: Type.Optional(Type.String()),
   });
   fastify.put<{ Body: Static<typeof PutUser> }>(
     '/user',
@@ -176,17 +182,49 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     },
     async (request, reply) => {
       const {
-        body: { displayName, avatar },
+        body: { displayName, avatarUrl },
         session: { userId },
       } = request;
+
       await pool.query(
         setUser({
           id: userId,
           displayName,
-          avatar,
+          avatarUrl,
         })
       );
-      return await getUserData(userId);
+
+      return await getUserJSON(userId);
+    }
+  );
+
+  fastify.get(
+    '/user/avatar',
+    {
+      schema: {
+        tags: ['Auth'],
+      },
+      preHandler: fastify.auth([fastify.verifySession]),
+    },
+    async (request, reply) => {
+      const {
+        session: { userId },
+      } = request;
+
+      const response = await pool.maybeOne(getUserAvatar(userId));
+      const buffer = response?.avatar;
+      if (!buffer) {
+        reply.status(404);
+        return;
+      }
+      const fileType = await fileTypeFromBuffer(buffer);
+      if (!fileType) {
+        reply.status(500);
+        return { statusCode: 500, message: 'Unknown file type.' };
+      }
+
+      reply.status(200).type(fileType.mime);
+      return buffer;
     }
   );
 

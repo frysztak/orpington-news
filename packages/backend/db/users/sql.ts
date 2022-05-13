@@ -1,11 +1,14 @@
 import { sql } from 'slonik';
+import { dataUriToBuffer } from 'data-uri-to-buffer';
 import type { ID, User } from '@orpington-news/shared';
 
-const mapAvatar = (avatar: User['avatar']) => {
-  return avatar ? sql.binary(Buffer.from(avatar, 'ascii')) : null;
+const mapAvatar = (avatar?: string) => {
+  return avatar ? sql.binary(dataUriToBuffer(avatar)) : null;
 };
 
-export const insertUser = (user: User & { password: string }) => {
+export const insertUser = (
+  user: Omit<User, 'hasAvatar'> & { password: string; avatar?: string }
+) => {
   const { username, password, displayName, avatar } = user;
 
   return sql<{ id: ID }>`
@@ -25,22 +28,39 @@ export const insertUser = (user: User & { password: string }) => {
 };
 
 export const setUser = (user: Omit<User, 'username'> & { id: ID }) => {
-  const { id, displayName, avatar } = user;
+  const { id, displayName, avatarUrl } = user;
+
+  if (avatarUrl !== undefined && !avatarUrl.startsWith('data:image')) {
+    return sql`
+    UPDATE "users"
+    SET display_name = ${displayName}
+    WHERE id = ${id}`;
+  }
 
   return sql`
     UPDATE "users"
     SET
       display_name = ${displayName},
-      avatar = ${mapAvatar(avatar)}
+      avatar = ${mapAvatar(avatarUrl)}
     WHERE id = ${id}`;
 };
 
 export const getUser = (id: ID) => {
-  return sql<Omit<User, 'avatar'> & { avatar?: Buffer }>`
+  return sql<Omit<User, 'avatarUrl'> & { hasAvatar: boolean }>`
     SELECT
       name as username,
       display_name as "displayName",
-      avatar
+      (CASE 
+	     WHEN avatar IS NULL THEN FALSE
+	     ELSE TRUE
+	    END) as "hasAvatar"
+    FROM "users"
+    WHERE id = ${id}`;
+};
+
+export const getUserAvatar = (id: ID) => {
+  return sql<{ avatar?: Buffer }>`
+    SELECT avatar
     FROM "users"
     WHERE id = ${id}`;
 };

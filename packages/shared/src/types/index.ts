@@ -127,7 +127,7 @@ export const defaultPreferences: Preferences = {
 export interface User {
   username: string;
   displayName: string;
-  avatar?: string;
+  avatarUrl?: string;
 }
 export const placeholderUser: User = {
   displayName: '',

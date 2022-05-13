@@ -25,7 +25,7 @@ export const SidebarFooter: React.FC<SidebarFooterProps> = (props) => {
     <HStack justify="space-between">
       <Avatar
         name={user.displayName}
-        src={user.avatar}
+        src={user.avatarUrl}
         avatarStyle={preferences.avatarStyle}
       />
 

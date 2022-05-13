@@ -21,6 +21,6 @@ export const changePassword = (api: Wretcher, data: ChangePasswordData) =>
 export const getUser = (api: Wretcher) =>
   api.url('/auth/user').get().json<User>();
 
-export type SetUserData = Pick<User, 'displayName' | 'avatar'>;
+export type SetUserData = Pick<User, 'displayName'> & { avatar?: string };
 export const setUser = (api: Wretcher, data: SetUserData) =>
   api.url('/auth/user').put(data).json<User>();

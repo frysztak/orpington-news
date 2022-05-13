@@ -56,7 +56,7 @@ export const EditAccountForm: React.FC<EditAccountFormProps> = (props) => {
                 isRequired
               />
               <Box flexBasis="20%" maxW={14} pr={2}>
-                <AvatarField name="avatar" displayName={displayName} />
+                <AvatarField name="avatarUrl" displayName={displayName} />
               </Box>
             </HStack>
 
