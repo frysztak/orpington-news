@@ -138,14 +138,13 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
   );
 
+  const apiUrl = process.env.API_URL ?? `${process.env.APP_URL}/api`;
   const getUserJSON = (userId: ID) => {
     return pool.one(getUser(userId)).then((result) => {
       const { hasAvatar, ...rest } = result;
       return {
         ...rest,
-        avatarUrl: hasAvatar
-          ? `${process.env.API_URL}/auth/user/avatar`
-          : undefined,
+        avatarUrl: hasAvatar ? `${apiUrl}/auth/user/avatar` : undefined,
       };
     });
   };
