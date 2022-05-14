@@ -61,7 +61,7 @@ const Page: NextPageWithLayout = () => {
             <Code>{status}</Code>
           </HStack>
           <HStack>
-            <Text>Last ping:</Text>
+            <Text>Last message:</Text>
             <Code>{lastPingText}</Code>
           </HStack>
         </section>

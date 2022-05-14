@@ -70,13 +70,11 @@ export const EventListenerContextProvider: React.FC = ({ children }) => {
       },
       onmessage(ev) {
         console.debug(`[SSE] Received new message:`, ev);
+        setLastPing(Date.now());
         if (ev.data) {
           const msg: Msg = JSON.parse(ev.data);
           for (const listener of listeners.current) {
             listener(msg);
-          }
-          if (msg.type === 'ping') {
-            setLastPing(Date.now());
           }
         }
       },
