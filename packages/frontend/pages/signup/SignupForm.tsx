@@ -45,6 +45,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
               label="Username"
               helperText="You'll use this to log in into the app."
               isDisabled={isDisabled || isLoading}
+              autoComplete="username"
               isRequired
             />
 
@@ -66,6 +67,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
               label="Password"
               helperText="Pick a good one."
               isDisabled={isDisabled || isLoading}
+              autoComplete="new-password"
               isRequired
             />
 
@@ -74,6 +76,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
               label="Confirm password"
               helperText="Confirm your password."
               isDisabled={isDisabled || isLoading}
+              autoComplete="new-password"
               isRequired
             />
 
