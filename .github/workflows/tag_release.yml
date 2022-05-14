@@ -1,0 +1,36 @@
+name: Tag release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  tag_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Initialize mandatory git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
+
+      - name: Extract version
+        uses: martinbeentjes/npm-get-version-action@main
+        id: package-version
+
+      - name: Extract release notes
+        id: extract_release_notes
+        uses: ffurrer2/extract-release-notes@v1
+
+      - name: Create release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.package-version.outputs.current-version }}
+          name: v${{ steps.package-version.outputs.current-version }}
+          body: ${{ steps.extract_release_notes.outputs.release_notes }}
+          draft: false
+          prerelease: false
