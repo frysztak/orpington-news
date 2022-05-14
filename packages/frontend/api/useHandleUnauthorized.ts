@@ -7,7 +7,9 @@ export const useHandleUnauthorized = () => {
 
   const onUnauthorized = useCallback(
     (error: WretcherError, req: Wretcher) => {
-      router.push('/login');
+      if (router.pathname !== '/signup') {
+        router.push('/login');
+      }
 
       throw error;
     },
