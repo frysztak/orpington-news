@@ -26,6 +26,7 @@ import type {
 } from '@orpington-news/shared';
 
 export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
+  enabled?: boolean;
   select?: (data: FlatCollection[]) => TSelectedData;
 }) => {
   const api = useApi();
@@ -34,6 +35,7 @@ export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
   return useQuery(collectionKeys.tree, () => getCollections(api), {
     onError,
     select: opts?.select,
+    enabled: opts?.enabled,
     refetchOnMount: false,
     notifyOnChangeProps: 'tracked',
   });
@@ -43,8 +45,9 @@ export const useCollectionsTree = () => {
   return useCollectionsList({ select: inflateCollections });
 };
 
-export const useCollectionById = (collectionId: ID | string) => {
+export const useCollectionById = (collectionId?: ID | string) => {
   return useCollectionsList({
+    enabled: collectionId !== undefined,
     select: useCallback(
       (collections: FlatCollection[]) =>
         collections?.find(({ id }) => id === collectionId),

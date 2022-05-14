@@ -17,11 +17,17 @@ export const useActiveCollection = () => {
       };
     },
   });
-  const activeCollectionId = data!.activeCollectionId;
+  const activeCollectionId = data?.activeCollectionId;
   const { data: collection } = useCollectionById(activeCollectionId);
 
   const activeCollection: ActiveCollection = useMemo(() => {
-    if (activeCollectionId === 'home') {
+    if (activeCollectionId === undefined) {
+      return {
+        id: 'home',
+        title: collection?.title ?? '',
+        layout: collection?.layout ?? defaultCollectionLayout,
+      };
+    } else if (activeCollectionId === 'home') {
       return {
         id: activeCollectionId,
         title: 'Home',
