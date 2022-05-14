@@ -37,7 +37,9 @@ export const PasswordField = forwardRef<PasswordFieldProps, 'input'>(
               isDisabled={isDisabled}
               onClick={onToggle}
               size="xs"
-              icon={show ? <EyeOffIcon /> : <EyeIcon />}
+              icon={
+                show ? <EyeOffIcon height="100%" /> : <EyeIcon height="100%" />
+              }
               variant="ghost"
             />
           </InputRightElement>
