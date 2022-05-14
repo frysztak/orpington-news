@@ -52,7 +52,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           head: release/v${{ github.event.inputs.versionName }}
           base: main
           title: v${{ github.event.inputs.versionName }} into main
@@ -67,7 +66,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           head: release/v${{ github.event.inputs.versionName }}
           base: dev
           title: v${{ github.event.inputs.versionName }} into dev
