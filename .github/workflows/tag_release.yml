@@ -2,7 +2,7 @@ name: Tag release
 
 on:
   push:
-    branches: [main]
+    branches: [master]
 
 jobs:
   tag_release:
