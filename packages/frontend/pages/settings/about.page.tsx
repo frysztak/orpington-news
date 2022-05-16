@@ -48,7 +48,7 @@ const Page: NextPageWithLayout = () => {
 
           <HStack>
             <Text>Git commit:</Text>
-            <Code>{process.env.NEXT_PUBLIC_GIT_COMMIT_HASH}</Code>
+            <Code>{process.env.NEXT_PUBLIC_GIT_COMMIT_HASH?.slice(0, 8)}</Code>
           </HStack>
         </section>
 
