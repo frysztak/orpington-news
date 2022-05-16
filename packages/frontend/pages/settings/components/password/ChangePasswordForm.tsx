@@ -6,6 +6,7 @@ import { PasswordField } from '@components/forms';
 
 export interface ChangePasswordFormProps {
   isLoading?: boolean;
+  isDisabled?: boolean;
   onSubmit: (data: ChangePasswordFormData) => void;
 }
 
@@ -32,7 +33,7 @@ const initialValues: ChangePasswordFormData = {
 export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
   props
 ) => {
-  const { onSubmit, isLoading } = props;
+  const { onSubmit, isLoading, isDisabled } = props;
 
   const handleSubmit = useCallback(
     (data: ChangePasswordFormData) => onSubmit(data),
@@ -51,7 +52,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
             <PasswordField
               name="currentPassword"
               label="Current password"
-              isDisabled={isLoading}
+              isDisabled={isDisabled || isLoading}
               autoComplete="current-password"
               isRequired
             />
@@ -59,7 +60,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
             <PasswordField
               name="newPassword"
               label="New password"
-              isDisabled={isLoading}
+              isDisabled={isDisabled || isLoading}
               autoComplete="new-password"
               isRequired
             />
@@ -67,7 +68,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
             <PasswordField
               name="newPasswordConfirm"
               label="Confirm new password"
-              isDisabled={isLoading}
+              isDisabled={isDisabled || isLoading}
               autoComplete="new-password"
               isRequired
             />
@@ -77,7 +78,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
                 type="submit"
                 w={['full', 40]}
                 mt={4}
-                isDisabled={!isValid}
+                isDisabled={!isValid || isDisabled}
                 isLoading={isLoading}
               >
                 Save password
