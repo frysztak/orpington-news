@@ -18,7 +18,7 @@
     "@fastify/auth": "^2.0.0",
     "@fastify/cookie": "^6.0.0",
     "@fastify/cors": "^7.0.0",
-    "@fastify/etag": "3",
+    "@fastify/etag": "3.0.0",
     "@fastify/session": "^8.2.0",
     "@fastify/swagger": "^6.0.1",
     "@orpington-news/shared": "^0.0.0",
@@ -39,7 +39,7 @@
     "file-type": "^17.1.1",
     "html-entities": "^2.3.3",
     "is-relative-url": "^3.0.0",
-    "isomorphic-dompurify": "^0.18.0",
+    "isomorphic-dompurify": "^0.19.0",
     "node-html-parser": "^5.3.3",
     "normalize-url": "7.0.3",
     "pino": "^7.11.0",
@@ -53,10 +53,10 @@
     "truncate-html": "^1.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.10",
-    "@babel/plugin-transform-modules-commonjs": "^7.17.9",
-    "@babel/preset-env": "^7.17.10",
-    "@babel/preset-typescript": "^7.16.7",
+    "@babel/core": "^7.17.12",
+    "@babel/plugin-transform-modules-commonjs": "^7.17.12",
+    "@babel/preset-env": "^7.17.12",
+    "@babel/preset-typescript": "^7.17.12",
     "@rollup/plugin-commonjs": "^21.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-run": "^2.1.0",
@@ -64,13 +64,13 @@
     "@sinclair/typebox": "^0.23.5",
     "@types/connect-pg-simple": "^7.0.0",
     "@types/jest": "^27.5.1",
-    "@types/node": "^17.0.32",
+    "@types/node": "^17.0.34",
     "@types/proper-url-join": "^2.1.1",
     "babel-jest": "^27.5.1",
     "eslint-plugin-sql": "^2.1.0",
     "jest": "^27.5.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.72.1",
+    "rollup": "^2.73.0",
     "ts-jest": "^27.1.4"
   }
 }

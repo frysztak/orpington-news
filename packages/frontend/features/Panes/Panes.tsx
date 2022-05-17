@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useLocalStorage } from 'usehooks-ts';
 import { Panes as PanesComponent } from '@components/panes';
@@ -15,11 +15,12 @@ import {
 } from '@features/DeleteCollectionModal';
 import { useActiveCollection } from '@features/Preferences';
 import { getNumber } from '@utils/router';
+import { ReactFCC } from '@utils/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { Sidebar } from './Sidebar';
 import { CollectionItemsList } from './CollectionItemsList';
 
-export const Panes: React.FC = ({ children }) => {
+export const Panes: ReactFCC = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);

@@ -4,6 +4,7 @@ import type { ID, Msg } from '@orpington-news/shared';
 import { useSet } from '@utils';
 import { collectionKeys } from '@features/queryKeys';
 import { useAddEventListener } from '@features/EventListener';
+import { ReactFCC } from '@utils/react';
 import { useCollectionsList, buildParentsChildrenMap, getParents } from '.';
 
 export interface CollectionsContextData {
@@ -14,7 +15,7 @@ export interface CollectionsContextData {
 
 const CollectionsContext = createContext<CollectionsContextData | null>(null);
 
-export const CollectionsContextProvider: React.FC = ({ children }) => {
+export const CollectionsContextProvider: ReactFCC = ({ children }) => {
   const {
     set: currentlyUpdatedCollections,
     add: addCurrentlyUpdatedCollection,

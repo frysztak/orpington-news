@@ -78,7 +78,7 @@ export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
               name="defaultCollectionLayout"
             >
               {({ getRadioProps }) =>
-                CollectionLayouts.map((value) => {
+                CollectionLayouts.map((value: CollectionLayout) => {
                   const radio = getRadioProps({ value });
                   return (
                     <Radio key={value} {...radio}>
@@ -91,7 +91,7 @@ export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
 
             <RadioGroupField label="Avatar style" name="avatarStyle">
               {({ getRadioProps }) =>
-                AvatarStyles.map((value) => {
+                AvatarStyles.map((value: AvatarStyle) => {
                   const radio = getRadioProps({ value });
                   return (
                     <Radio key={value} {...radio}>

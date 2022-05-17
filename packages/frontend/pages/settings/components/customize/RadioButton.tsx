@@ -1,9 +1,10 @@
 import React from 'react';
 import { Box, useRadio, UseRadioProps } from '@chakra-ui/react';
+import { ReactFCC } from '@utils/react';
 
 type RadioButtonProps = UseRadioProps;
 
-export const RadioButton: React.FC<RadioButtonProps> = (props) => {
+export const RadioButton: ReactFCC<RadioButtonProps> = (props) => {
   const { getInputProps, getCheckboxProps } = useRadio(props);
 
   const input = getInputProps();

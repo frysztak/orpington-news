@@ -1,11 +1,12 @@
 import NextLink from 'next/link';
 import { HStack, Divider, VStack, Button } from '@chakra-ui/react';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
+import { ReactFCC } from '@utils/react';
 import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 
 export interface SettingsLayoutProps {}
 
-export const SettingsLayout: React.FC<SettingsLayoutProps> = ({ children }) => {
+export const SettingsLayout: ReactFCC<SettingsLayoutProps> = ({ children }) => {
   return (
     <>
       <HStack

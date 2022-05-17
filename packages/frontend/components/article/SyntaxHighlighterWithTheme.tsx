@@ -14,6 +14,7 @@ import go from 'react-syntax-highlighter/dist/cjs/languages/hljs/go';
 import python from 'react-syntax-highlighter/dist/cjs/languages/hljs/python';
 import rust from 'react-syntax-highlighter/dist/cjs/languages/hljs/rust';
 import sql from 'react-syntax-highlighter/dist/cjs/languages/hljs/sql';
+import { ReactFCC } from '@utils/react';
 
 SyntaxHighlighter.registerLanguage('cpp', cpp);
 SyntaxHighlighter.registerLanguage('javascript', js);
@@ -25,14 +26,16 @@ SyntaxHighlighter.registerLanguage('python', python);
 SyntaxHighlighter.registerLanguage('rust', rust);
 SyntaxHighlighter.registerLanguage('sql', sql);
 
-const SyntaxHighlighterWithTheme: React.FC<SyntaxHighlighterProps> = ({
+const C = SyntaxHighlighter as any;
+
+const SyntaxHighlighterWithTheme: ReactFCC<SyntaxHighlighterProps> = ({
   children,
   ...rest
 }) => {
   const style = useColorModeValue(atomOneLight, dracula);
 
   return (
-    <SyntaxHighlighter
+    <C
       {...rest}
       style={style}
       codeTagProps={{
@@ -42,7 +45,7 @@ const SyntaxHighlighterWithTheme: React.FC<SyntaxHighlighterProps> = ({
       }}
     >
       {children}
-    </SyntaxHighlighter>
+    </C>
   );
 };
 

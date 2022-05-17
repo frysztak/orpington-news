@@ -79,7 +79,7 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
   useOutsideClick({
     ref: internalRef,
     handler: useCallback(
-      (e) => {
+      (e: Event) => {
         onClose();
       },
       [onClose]
