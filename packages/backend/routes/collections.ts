@@ -132,7 +132,7 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Body: PostCollectionType; Reply: boolean }>(
+  fastify.post<{ Body: PostCollectionType; Reply: Array<FlatCollection> }>(
     '/',
     {
       schema: {
@@ -159,7 +159,9 @@ export const collections: FastifyPluginAsync = async (
         await conn.any(recalculateCollectionsOrder());
       });
       fetchRSSJob.start();
-      return true;
+
+      const collections = await pool.any(getCollections(userId));
+      return collections.map(mapDBCollection);
     }
   );
 
@@ -198,7 +200,10 @@ export const collections: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      const { body } = request;
+      const {
+        body,
+        session: { userId },
+      } = request;
       if (body.id === body.parentId) {
         reply.status(500);
         return {
@@ -207,7 +212,9 @@ export const collections: FastifyPluginAsync = async (
         };
       }
       await pool.any(updateCollection(body));
-      return true;
+
+      const collections = await pool.any(getCollections(userId));
+      return collections.map(mapDBCollection);
     }
   );
 

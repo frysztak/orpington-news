@@ -7,7 +7,11 @@ import {
   verifyFeedUrl,
 } from '@api';
 import { AddCollectionFormData } from '@components/collection/add';
-import { defaultRefreshInterval, ID } from '@orpington-news/shared';
+import {
+  defaultRefreshInterval,
+  FlatCollection,
+  ID,
+} from '@orpington-news/shared';
 import { collectionKeys } from '@features/queryKeys';
 
 export const useVerifyFeedURL = () => {
@@ -41,9 +45,9 @@ export const useSaveCollection = ({
       }),
     {
       onError,
-      onSuccess: () => {
+      onSuccess: (data: FlatCollection[]) => {
         onSuccess?.();
-        queryClient.invalidateQueries(collectionKeys.tree);
+        queryClient.setQueryData(collectionKeys.tree, data);
       },
     }
   );
@@ -74,9 +78,9 @@ export const useEditCollection = ({
       }),
     {
       onError,
-      onSuccess: () => {
+      onSuccess: (data: FlatCollection[]) => {
         onSuccess?.();
-        queryClient.invalidateQueries(collectionKeys.tree);
+        queryClient.setQueryData(collectionKeys.tree, data);
         queryClient.invalidateQueries(collectionKeys.allForId(id));
       },
     }

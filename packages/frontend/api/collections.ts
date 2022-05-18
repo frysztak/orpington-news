@@ -51,12 +51,12 @@ export const addCollection = (
     Collection,
     'id' | 'unreadCount' | 'children' | 'dateUpdated'
   >
-) => api.url(`/collections`).post(collection).json<boolean>();
+) => api.url(`/collections`).post(collection).json<FlatCollection[]>();
 
 export const editCollection = (
   api: Wretcher,
   collection: Omit<Collection, 'unreadCount' | 'children' | 'dateUpdated'>
-) => api.url(`/collections`).put(collection).json<boolean>();
+) => api.url(`/collections`).put(collection).json<FlatCollection[]>();
 
 export const deleteCollection = (api: Wretcher, collectionId: ID) =>
   api
