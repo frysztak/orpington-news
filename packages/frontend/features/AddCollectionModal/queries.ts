@@ -12,7 +12,7 @@ import {
   FlatCollection,
   ID,
 } from '@orpington-news/shared';
-import { collectionKeys } from '@features/queryKeys';
+import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 
 export const useVerifyFeedURL = () => {
   const api = useApi();
@@ -45,9 +45,15 @@ export const useSaveCollection = ({
       }),
     {
       onError,
-      onSuccess: (data: FlatCollection[]) => {
+      onSuccess: (data: FlatCollection[], formData: AddCollectionFormData) => {
         onSuccess?.();
         queryClient.setQueryData(collectionKeys.tree, data);
+
+        // if collection has a parent, it got auto-expanded on the BE.
+        // update preferences to reflect that in UI
+        if (formData.parentId) {
+          queryClient.invalidateQueries(preferencesKeys.base);
+        }
       },
     }
   );
@@ -78,10 +84,16 @@ export const useEditCollection = ({
       }),
     {
       onError,
-      onSuccess: (data: FlatCollection[]) => {
+      onSuccess: (data: FlatCollection[], formData: AddCollectionFormData) => {
         onSuccess?.();
         queryClient.setQueryData(collectionKeys.tree, data);
         queryClient.invalidateQueries(collectionKeys.allForId(id));
+
+        // if collection has a parent, it got auto-expanded on the BE.
+        // update preferences to reflect that in UI
+        if (formData.parentId) {
+          queryClient.invalidateQueries(preferencesKeys.base);
+        }
       },
     }
   );

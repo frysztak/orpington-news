@@ -28,6 +28,7 @@ import {
 } from '@db/collectionItems';
 import {
   getPreferences,
+  modifyExpandedCollections,
   pruneExpandedCollections,
   setActiveView,
   setHomeCollectionLayout,
@@ -160,6 +161,13 @@ export const collections: FastifyPluginAsync = async (
       });
       fetchRSSJob.start();
 
+      if (body.parentId) {
+        await pool.query(
+          modifyExpandedCollections('add', body.parentId, userId)
+        );
+        await pool.query(pruneExpandedCollections(userId));
+      }
+
       const collections = await pool.any(getCollections(userId));
       return collections.map(mapDBCollection);
     }
@@ -212,6 +220,13 @@ export const collections: FastifyPluginAsync = async (
         };
       }
       await pool.any(updateCollection(body));
+
+      if (body.parentId) {
+        await pool.query(
+          modifyExpandedCollections('add', body.parentId, userId)
+        );
+        await pool.query(pruneExpandedCollections(userId));
+      }
 
       const collections = await pool.any(getCollections(userId));
       return collections.map(mapDBCollection);
