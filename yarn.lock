@@ -2688,6 +2688,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@chakra-ui/icons@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@chakra-ui/icons@npm:2.0.0"
+  dependencies:
+    "@chakra-ui/icon": 3.0.0
+    "@types/react": ^18.0.1
+  peerDependencies:
+    "@chakra-ui/system": ">=2.0.0-next.0"
+    react: ">=18"
+  checksum: d087e7d82ba10e10a1b82f0a901057bc61f073c7dc2a6896e405b6e43ffc534b3093d89f77d5a2a1f420b55ed6ec461793c91659d56b73dcf49d4966da606de4
+  languageName: node
+  linkType: hard
+
 "@chakra-ui/image@npm:2.0.0":
   version: 2.0.0
   resolution: "@chakra-ui/image@npm:2.0.0"
@@ -3068,6 +3081,27 @@ __metadata:
     "@chakra-ui/system": ">=2.0.0-next.0"
     react: ">=18"
   checksum: 863df07610768f3ab3df79a9c6e13c9ddf181c1d51eb802fc608bd3eed9398d7692e9e8a9186ebac3db3da8d77dfb34010df2ca61267062ae8f05c47feca7f31
+  languageName: node
+  linkType: hard
+
+"@chakra-ui/storybook-addon@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "@chakra-ui/storybook-addon@npm:2.0.2"
+  dependencies:
+    "@chakra-ui/icons": ^2.0.0
+    webpack-merge: ^5.0.0
+  peerDependencies:
+    "@chakra-ui/react": 2.0.2
+    "@storybook/addons": ">=6.4"
+    "@storybook/api": ">=6.4"
+    "@storybook/components": ">=6.4"
+    react: ">=16.8.x"
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-dom:
+      optional: true
+  checksum: 03e0be4b187af593884b3fde89e3c65e9992cf448f57b5f81e9b355c5c521bbbf2fbf05fb566179146d69d1e655b5ffb2c8165080b24de4c0c41d8b9de818708
   languageName: node
   linkType: hard
 
@@ -5282,6 +5316,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.17.12
     "@chakra-ui/react": ^2.0.2
+    "@chakra-ui/storybook-addon": ^2.0.2
     "@emotion/react": ^11.9.0
     "@emotion/styled": ^11.8.1
     "@faker-js/faker": ^6.3.1
@@ -5339,7 +5374,6 @@ __metadata:
     react-test-renderer: ^18.1.0
     react-virtual: ^2.10.4
     storybook-addon-next-router: ^3.1.1
-    storybook-dark-mode: ^1.1.0
     string-to-color: ^2.2.2
     tsconfig-paths-webpack-plugin: ^3.5.2
     usehooks-ts: ^2.5.3
@@ -7563,7 +7597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.0.9":
+"@types/react@npm:18.0.9, @types/react@npm:^18.0.1":
   version: 18.0.9
   resolution: "@types/react@npm:18.0.9"
   dependencies:
@@ -12965,7 +12999,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-deep-equal@npm:^3.0.0, fast-deep-equal@npm:^3.1.1, fast-deep-equal@npm:^3.1.3":
+"fast-deep-equal@npm:^3.1.1, fast-deep-equal@npm:^3.1.3":
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
   checksum: e21a9d8d84f53493b6aa15efc9cfd53dd5b714a1f23f67fb5dc8f574af80df889b3bce25dc081887c6d25457cce704e636395333abad896ccdec03abaf1f3f9d
@@ -22871,22 +22905,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook-dark-mode@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "storybook-dark-mode@npm:1.1.0"
-  dependencies:
-    fast-deep-equal: ^3.0.0
-    memoizerific: ^1.11.3
-  peerDependencies:
-    "@storybook/addons": ^6.0.0
-    "@storybook/api": ^6.0.0
-    "@storybook/components": ^6.0.0
-    "@storybook/core-events": ^6.0.0
-    "@storybook/theming": ^6.0.0
-  checksum: e1d7abbb96d1cdbe9cdba1e20aabffa6878f170e348958cc328de4183027c2052f44f6d78f82a45039f803349c7a4ec19988d42898030b2720dc591192f520e6
-  languageName: node
-  linkType: hard
-
 "stream-browserify@npm:^2.0.1":
   version: 2.0.2
   resolution: "stream-browserify@npm:2.0.2"
@@ -24991,6 +25009,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webpack-merge@npm:^5.0.0":
+  version: 5.8.0
+  resolution: "webpack-merge@npm:5.8.0"
+  dependencies:
+    clone-deep: ^4.0.1
+    wildcard: ^2.0.0
+  checksum: 88786ab91013f1bd2a683834ff381be81c245a4b0f63304a5103e90f6653f44dab496a0768287f8531761f8ad957d1f9f3ccb2cb55df0de1bd9ee343e079da26
+  languageName: node
+  linkType: hard
+
 "webpack-sources@npm:^1.4.0, webpack-sources@npm:^1.4.1, webpack-sources@npm:^1.4.3":
   version: 1.4.3
   resolution: "webpack-sources@npm:1.4.3"
@@ -25244,6 +25272,13 @@ __metadata:
   dependencies:
     string-width: ^4.0.0
   checksum: 03db6c9d0af9329c37d74378ff1d91972b12553c7d72a6f4e8525fe61563fa7adb0b9d6e8d546b7e059688712ea874edd5ded475999abdeedf708de9849310e0
+  languageName: node
+  linkType: hard
+
+"wildcard@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "wildcard@npm:2.0.0"
+  checksum: 1f4fe4c03dfc492777c60f795bbba597ac78794f1b650d68f398fbee9adb765367c516ebd4220889b6a81e9626e7228bbe0d66237abb311573c2ee1f4902a5ad
   languageName: node
   linkType: hard
 

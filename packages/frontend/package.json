@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.17.12",
+    "@chakra-ui/storybook-addon": "^2.0.2",
     "@faker-js/faker": "^6.3.1",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@storybook/addon-a11y": "^6.5.2",
@@ -80,7 +81,6 @@
     "react-dnd-test-utils": "^16.0.1",
     "react-test-renderer": "^18.1.0",
     "storybook-addon-next-router": "^3.1.1",
-    "storybook-dark-mode": "^1.1.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "webpack": "^5.72.1"
   },

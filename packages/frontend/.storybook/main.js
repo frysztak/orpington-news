@@ -6,8 +6,8 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-a11y',
-    'storybook-dark-mode',
     'storybook-addon-next-router',
+    '@chakra-ui/storybook-addon',
   ],
   core: {
     builder: 'webpack5',
