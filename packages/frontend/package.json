@@ -23,7 +23,7 @@
     "@next/bundle-analyzer": "^12.1.6",
     "@orpington-news/shared": "^0.0.0",
     "@react-icons/all-files": "^4.1.0",
-    "chakra-react-select": "^3.3.7",
+    "chakra-react-select": "^4.0.0",
     "date-fns": "^2.28.0",
     "focus-visible": "^5.2.0",
     "formik": "^2.2.9",
