@@ -2,10 +2,11 @@ import type { GetServerSideProps } from 'next';
 import type { Wretcher } from 'wretch';
 import { dehydrate, QueryClient, QueryKey } from 'react-query';
 import { getCollections, getPreferences, getUser, ssrApi } from '@api';
-import { getChakraColorModeCookie, getCookieHeaderFromReq } from '@utils';
+import { getCookieHeaderFromReq } from '@utils';
 import { collectionKeys, preferencesKeys, userKeys } from '@features/queryKeys';
 import { Preferences } from '@orpington-news/shared';
 import { collectionsItemsQueryFn } from '@features/Collections/queries';
+import { STORAGE_KEY } from '@chakra-ui/react';
 
 type QueryData = [QueryKey, (api: Wretcher) => Promise<unknown>];
 export interface GetSSParams {
@@ -55,18 +56,33 @@ export const fetchCurrentCollection = async (
   }
 };
 
+const parseIntCookie = (
+  cookies: Record<string, string>,
+  key: string
+): number | null => (cookies[key] && parseInt(cookies[key])) || null;
+
 export const getSSProps =
   (params: GetSSParams): GetServerSideProps =>
-  async ({ req }) => {
+  async (ctx) => {
+    const { req } = ctx;
+    const cookies = req.cookies;
     const {
       requireAuthorization = true,
       queriesToFetch,
       postFetchCallback,
     } = params;
 
-    if (requireAuthorization && !req.cookies['sessionId']) {
+    const cookiesToPass = {
+      chakraCookie: cookies[STORAGE_KEY]
+        ? `${STORAGE_KEY}=${cookies[STORAGE_KEY]}`
+        : '',
+      sidebarWidth: parseIntCookie(cookies, 'sidebarWidth'),
+      collectionItemsWidth: parseIntCookie(cookies, 'collectionItemsWidth'),
+    };
+
+    if (requireAuthorization && !cookies['sessionId']) {
       return {
-        props: { chakraCookie: getChakraColorModeCookie(req) },
+        props: { ...cookiesToPass },
         redirect: {
           destination: '/login',
         },
@@ -89,7 +105,7 @@ export const getSSProps =
 
     return {
       props: {
-        chakraCookie: getChakraColorModeCookie(req),
+        ...cookiesToPass,
         dehydratedState: dehydrate(queryClient),
       },
     };

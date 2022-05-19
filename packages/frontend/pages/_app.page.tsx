@@ -32,7 +32,16 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       })
   );
 
-  const getLayout = Component.getLayout || ((page) => <Panes>{page}</Panes>);
+  const getLayout =
+    Component.getLayout ||
+    ((page) => (
+      <Panes
+        sidebarWidthValue={pageProps.sidebarWidth}
+        collectionItemsWidthValue={pageProps.collectionItemsWidth}
+      >
+        {page}
+      </Panes>
+    ));
 
   const colorModeManager = cookieStorageManagerSSR(
     pageProps.chakraCookie ?? ''

@@ -19,8 +19,18 @@ import { ReactFCC } from '@utils/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { Sidebar } from './Sidebar';
 import { CollectionItemsList } from './CollectionItemsList';
+import { useCookie } from '@utils';
 
-export const Panes: ReactFCC = ({ children }) => {
+interface PanesProps {
+  sidebarWidthValue?: number;
+  collectionItemsWidthValue?: number;
+}
+
+export const Panes: ReactFCC<PanesProps> = ({
+  sidebarWidthValue,
+  collectionItemsWidthValue,
+  children,
+}) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);
@@ -58,10 +68,13 @@ export const Panes: ReactFCC = ({ children }) => {
     router.push('/');
   }, [router]);
 
-  const [sidebarWidth, setSidebarWidth] = useLocalStorage('sidebarWidth', 300);
-  const [collectionItemsWidth, setCollectionItemsWidth] = useLocalStorage(
+  const [sidebarWidth, setSidebarWidth] = useCookie(
+    'sidebarWidth',
+    sidebarWidthValue ?? 300
+  );
+  const [collectionItemsWidth, setCollectionItemsWidth] = useCookie(
     'collectionItemsWidth',
-    400
+    collectionItemsWidthValue ?? 400
   );
 
   const {
