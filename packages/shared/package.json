@@ -18,11 +18,11 @@
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-typescript": "^8.3.2",
     "@types/jest": "^27.5.1",
-    "babel-jest": "^27.5.1",
-    "jest": "^27.5.1",
+    "babel-jest": "^28.1.0",
+    "jest": "^28.1.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.73.0",
-    "ts-jest": "^27.1.4"
+    "rollup": "^2.74.0",
+    "ts-jest": "^28.0.2"
   },
   "dependencies": {
     "rambda": "^7.1.4"

@@ -22,5 +22,9 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig);
+const ignoredModules = ['react-dnd', 'dnd-core', '@react-dnd/*'].join('|');
+
+module.exports = async () => ({
+  ...(await createJestConfig(customJestConfig)()),
+  transformIgnorePatterns: [`/node_modules/(?!${ignoredModules})`],
+});
