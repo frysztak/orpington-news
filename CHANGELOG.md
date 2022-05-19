@@ -12,10 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-expand parent collection when adding children to it
 - Support `DB_PASS_FILE` and `COOKIE_SECRET_FILE` env variables
 
+### Changed
+
+- Migrated to React 18 and Chakra UI v2
+- Bumped all dependencies
+
 ### Fixed
 
 - About page: show short commit SHA
 - Password page: disable form in demo mode
+- Main page: fixed column width jumping on initial render
+- Settings page: fix empty SSR render
 
 ## [0.1.1] - 2022-05-14
 
