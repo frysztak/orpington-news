@@ -1,18 +1,11 @@
 import 'dotenv/config.js';
 import { createPool } from 'slonik';
-
-if (!process.env.DB_HOST) {
-  throw new Error(`DB_HOST not set!`);
-}
-
-if (!process.env.DB_PASS) {
-  throw new Error(`DB_PASS not set!`);
-}
+import { readEnvVariable } from '@utils';
 
 export const buildDsn = (): string => {
   const user = process.env.DB_USER ?? 'postgres';
-  const pass = process.env.DB_PASS;
-  const host = process.env.DB_HOST;
+  const pass = readEnvVariable('DB_PASS', { fileFallback: true });
+  const host = readEnvVariable('DB_HOST');
   const port = process.env.DB_PORT ?? 5432;
   const name = process.env.DB_NAME ?? 'postgres';
 

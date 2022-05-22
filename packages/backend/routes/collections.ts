@@ -28,6 +28,7 @@ import {
 } from '@db/collectionItems';
 import {
   getPreferences,
+  modifyExpandedCollections,
   pruneExpandedCollections,
   setActiveView,
   setHomeCollectionLayout,
@@ -132,7 +133,7 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Body: PostCollectionType; Reply: boolean }>(
+  fastify.post<{ Body: PostCollectionType; Reply: Array<FlatCollection> }>(
     '/',
     {
       schema: {
@@ -159,7 +160,16 @@ export const collections: FastifyPluginAsync = async (
         await conn.any(recalculateCollectionsOrder());
       });
       fetchRSSJob.start();
-      return true;
+
+      if (body.parentId) {
+        await pool.query(
+          modifyExpandedCollections('add', body.parentId, userId)
+        );
+        await pool.query(pruneExpandedCollections(userId));
+      }
+
+      const collections = await pool.any(getCollections(userId));
+      return collections.map(mapDBCollection);
     }
   );
 
@@ -198,7 +208,10 @@ export const collections: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      const { body } = request;
+      const {
+        body,
+        session: { userId },
+      } = request;
       if (body.id === body.parentId) {
         reply.status(500);
         return {
@@ -207,7 +220,16 @@ export const collections: FastifyPluginAsync = async (
         };
       }
       await pool.any(updateCollection(body));
-      return true;
+
+      if (body.parentId) {
+        await pool.query(
+          modifyExpandedCollections('add', body.parentId, userId)
+        );
+        await pool.query(pruneExpandedCollections(userId));
+      }
+
+      const collections = await pool.any(getCollections(userId));
+      return collections.map(mapDBCollection);
     }
   );
 

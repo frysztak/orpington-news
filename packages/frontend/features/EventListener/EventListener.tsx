@@ -11,6 +11,7 @@ import {
   fetchEventSource,
 } from '@microsoft/fetch-event-source';
 import { getUrls } from '@api';
+import { ReactFCC } from '@utils/react';
 import { Msg } from '@orpington-news/shared';
 
 type EventListener = (msg: Msg) => void;
@@ -32,7 +33,7 @@ const EventListenerContext = createContext<EventListenerContextData | null>(
 class RetriableError extends Error {}
 class FatalError extends Error {}
 
-export const EventListenerContextProvider: React.FC = ({ children }) => {
+export const EventListenerContextProvider: ReactFCC = ({ children }) => {
   const [status, setStatus] = useState<Status>('connecting');
   const [lastPing, setLastPing] = useState<number | null>(null);
   const listeners = useRef<Array<EventListener>>([]);

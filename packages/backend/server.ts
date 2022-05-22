@@ -14,7 +14,7 @@ import connectPgSimple from 'connect-pg-simple';
 import { auth, collections, preferences, sse } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob, pingJob } from '@tasks';
-import { defaultAjv, logger } from '@utils';
+import { defaultAjv, logger, readEnvVariable } from '@utils';
 import { buildDsn } from '@db';
 import { migrator } from '@db/migrator';
 
@@ -55,13 +55,9 @@ async function setupFastify() {
     exposeRoute: true,
   });
 
-  if (!process.env.COOKIE_SECRET) {
-    throw new Error(`COOKIE_SECRET not set!`);
-  }
-
   await fastify.register(fastifyCookie);
   await fastify.register(fastifySession, {
-    secret: process.env.COOKIE_SECRET,
+    secret: readEnvVariable('COOKIE_SECRET', { fileFallback: true }),
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
@@ -73,13 +69,9 @@ async function setupFastify() {
     rolling: true,
   });
 
-  if (!process.env.APP_URL) {
-    throw new Error(`APP_URL not set!`);
-  }
-
   await fastify.register(fastifyCors, {
     credentials: true,
-    origin: [process.env.APP_URL],
+    origin: [readEnvVariable('APP_URL')],
   });
   await fastify.register(fastifyETag);
   await fastify.register(fastifyAuth);
@@ -111,7 +103,6 @@ async function setupFastify() {
   });
 
   await migrator.up();
-  await migrator.repair();
   await fastify.ready();
 
   fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);

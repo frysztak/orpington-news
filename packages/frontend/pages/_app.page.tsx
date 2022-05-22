@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import type { AppPropsWithLayout } from './types';
-import { ChakraProvider, cookieStorageManager, Flex } from '@chakra-ui/react';
+import {
+  ChakraProvider,
+  cookieStorageManagerSSR,
+  Flex,
+} from '@chakra-ui/react';
 import { Global } from '@emotion/react';
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
 import { Panes } from '@features/Panes';
@@ -28,9 +32,20 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       })
   );
 
-  const getLayout = Component.getLayout || ((page) => <Panes>{page}</Panes>);
+  const getLayout =
+    Component.getLayout ||
+    ((page) => (
+      <Panes
+        sidebarWidthValue={pageProps.sidebarWidth}
+        collectionItemsWidthValue={pageProps.collectionItemsWidth}
+      >
+        {page}
+      </Panes>
+    ));
 
-  const colorModeManager = cookieStorageManager(pageProps.chakraCookie ?? '');
+  const colorModeManager = cookieStorageManagerSSR(
+    pageProps.chakraCookie ?? ''
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

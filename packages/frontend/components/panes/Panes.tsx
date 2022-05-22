@@ -12,7 +12,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
-import { useIsClient } from 'usehooks-ts';
 import { CollectionLayout, ID } from '@orpington-news/shared';
 import { CollectionHeader } from '@components/collection/header';
 import { ActiveCollection } from '@components/collection/types';
@@ -30,10 +29,10 @@ export interface PanesProps {
   collectionItemList?: ReactNode;
   mainContent?: ReactNode;
 
-  sidebarWidth?: number;
+  sidebarWidth: number;
   onSidebarWidthChanged?: (width: number) => void;
 
-  collectionItemsWidth?: number;
+  collectionItemsWidth: number;
   onCollectionItemsWidthChanged?: (width: number) => void;
 
   onRefreshClicked?: (collectionId: ID | string) => void;
@@ -95,8 +94,6 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
       ? currentlyUpdatedCollections.has(activeCollection.id)
       : false;
 
-  const isClient = useIsClient();
-
   return (
     <>
       <Drawer
@@ -124,11 +121,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         <Resizable
           enable={{ right: true }}
           minWidth={275}
-          size={
-            isClient && sidebarWidth
-              ? { width: sidebarWidth, height: 'auto' }
-              : { width: 300, height: 'auto' }
-          }
+          size={{ width: sidebarWidth, height: 'auto' }}
           onResizeStop={handleSidebarResize}
         >
           <HStack h="full" maxH="100vh">
@@ -140,11 +133,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         <Resizable
           enable={{ right: true }}
           minWidth={400}
-          size={
-            isClient && collectionItemsWidth
-              ? { width: collectionItemsWidth, height: 'auto' }
-              : { width: 400, height: 'auto' }
-          }
+          size={{ width: collectionItemsWidth, height: 'auto' }}
           onResizeStop={handleCollectionItemsResize}
         >
           <HStack h="full">

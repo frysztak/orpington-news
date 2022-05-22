@@ -7,8 +7,12 @@ import {
   verifyFeedUrl,
 } from '@api';
 import { AddCollectionFormData } from '@components/collection/add';
-import { defaultRefreshInterval, ID } from '@orpington-news/shared';
-import { collectionKeys } from '@features/queryKeys';
+import {
+  defaultRefreshInterval,
+  FlatCollection,
+  ID,
+} from '@orpington-news/shared';
+import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 
 export const useVerifyFeedURL = () => {
   const api = useApi();
@@ -41,9 +45,15 @@ export const useSaveCollection = ({
       }),
     {
       onError,
-      onSuccess: () => {
+      onSuccess: (data: FlatCollection[], formData: AddCollectionFormData) => {
         onSuccess?.();
-        queryClient.invalidateQueries(collectionKeys.tree);
+        queryClient.setQueryData(collectionKeys.tree, data);
+
+        // if collection has a parent, it got auto-expanded on the BE.
+        // update preferences to reflect that in UI
+        if (formData.parentId) {
+          queryClient.invalidateQueries(preferencesKeys.base);
+        }
       },
     }
   );
@@ -74,10 +84,16 @@ export const useEditCollection = ({
       }),
     {
       onError,
-      onSuccess: () => {
+      onSuccess: (data: FlatCollection[], formData: AddCollectionFormData) => {
         onSuccess?.();
-        queryClient.invalidateQueries(collectionKeys.tree);
+        queryClient.setQueryData(collectionKeys.tree, data);
         queryClient.invalidateQueries(collectionKeys.allForId(id));
+
+        // if collection has a parent, it got auto-expanded on the BE.
+        // update preferences to reflect that in UI
+        if (formData.parentId) {
+          queryClient.invalidateQueries(preferencesKeys.base);
+        }
       },
     }
   );

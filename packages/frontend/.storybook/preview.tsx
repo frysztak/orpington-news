@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { themes } from '@storybook/theming';
-import { ChakraProvider, useColorMode } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
-import { useDarkMode } from 'storybook-dark-mode';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { RouterContext } from 'next/dist/shared/lib/router-context';
@@ -24,27 +22,16 @@ export const parameters = {
     Provider: RouterContext.Provider,
   },
   layout: 'fullscreen',
-};
-
-const DarkModeProvider = () => {
-  const isDarkMode = useDarkMode();
-  const { setColorMode } = useColorMode();
-
-  useEffect(() => {
-    setColorMode(isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
-
-  return null;
+  chakra: {
+    theme,
+  },
 };
 
 export const decorators = [
   (Story) => (
-    <ChakraProvider theme={theme}>
-      <DndProvider backend={HTML5Backend}>
-        <Global styles={fontFaces} />
-        <DarkModeProvider />
-        <Story />
-      </DndProvider>
-    </ChakraProvider>
+    <DndProvider backend={HTML5Backend}>
+      <Global styles={fontFaces} />
+      <Story />
+    </DndProvider>
   ),
 ];

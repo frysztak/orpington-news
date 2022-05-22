@@ -1,8 +1,17 @@
 import { useCallback } from 'react';
 import Head from 'next/head';
+import getConfig from 'next/config';
 import type { NextPageWithLayout } from '@pages/types';
 import { getSSProps } from '@pages/ssrProps';
-import { Box, Container, useToast, VStack } from '@chakra-ui/react';
+import {
+  Alert,
+  AlertIcon,
+  Box,
+  Container,
+  useToast,
+  VStack,
+  Text,
+} from '@chakra-ui/react';
 import { useChangePassword } from '@features/Auth';
 import { SettingsLayout } from './SettingsLayout';
 import {
@@ -13,6 +22,9 @@ import {
 const Page: NextPageWithLayout = () => {
   const toast = useToast();
   const { mutate, isLoading } = useChangePassword();
+
+  const { publicRuntimeConfig } = getConfig();
+  const demoMode = Boolean(publicRuntimeConfig.APP_DEMO);
 
   const handleSubmit = useCallback(
     ({ currentPassword, newPassword }: ChangePasswordFormData) => {
@@ -46,7 +58,24 @@ const Page: NextPageWithLayout = () => {
           <Box as="h2" textStyle="settings.header">
             Change password
           </Box>
-          <ChangePasswordForm isLoading={isLoading} onSubmit={handleSubmit} />
+          <ChangePasswordForm
+            isLoading={isLoading}
+            isDisabled={demoMode}
+            onSubmit={handleSubmit}
+          />
+
+          {demoMode && (
+            <Box>
+              <Alert mt={16} status="info">
+                <AlertIcon />
+                <VStack align="flex-start">
+                  <Text>
+                    This is a demo instance. Password change is disabled.
+                  </Text>
+                </VStack>
+              </Alert>
+            </Box>
+          )}
         </VStack>
       </Container>
     </>

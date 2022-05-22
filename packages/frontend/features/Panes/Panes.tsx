@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { useLocalStorage } from 'usehooks-ts';
 import { Panes as PanesComponent } from '@components/panes';
@@ -15,11 +15,22 @@ import {
 } from '@features/DeleteCollectionModal';
 import { useActiveCollection } from '@features/Preferences';
 import { getNumber } from '@utils/router';
+import { ReactFCC } from '@utils/react';
 import { useDisclosure } from '@chakra-ui/react';
 import { Sidebar } from './Sidebar';
 import { CollectionItemsList } from './CollectionItemsList';
+import { useCookie } from '@utils';
 
-export const Panes: React.FC = ({ children }) => {
+interface PanesProps {
+  sidebarWidthValue?: number;
+  collectionItemsWidthValue?: number;
+}
+
+export const Panes: ReactFCC<PanesProps> = ({
+  sidebarWidthValue,
+  collectionItemsWidthValue,
+  children,
+}) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);
@@ -57,10 +68,13 @@ export const Panes: React.FC = ({ children }) => {
     router.push('/');
   }, [router]);
 
-  const [sidebarWidth, setSidebarWidth] = useLocalStorage('sidebarWidth', 300);
-  const [collectionItemsWidth, setCollectionItemsWidth] = useLocalStorage(
+  const [sidebarWidth, setSidebarWidth] = useCookie(
+    'sidebarWidth',
+    sidebarWidthValue ?? 300
+  );
+  const [collectionItemsWidth, setCollectionItemsWidth] = useCookie(
     'collectionItemsWidth',
-    400
+    collectionItemsWidthValue ?? 400
   );
 
   const {

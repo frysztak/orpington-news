@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import parse, {
   domToReact,
   attributesToProps,
@@ -18,7 +19,7 @@ import {
   Skeleton,
   Image,
 } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
+import { ReactFCC } from '@utils/react';
 import { Element } from 'domhandler';
 
 const SyntaxHighlighterWithTheme = dynamic(
@@ -51,7 +52,7 @@ const HeadingFontSize: Record<HeadingLevel, string> = {
   h4: 'sm',
   h5: 'xs',
 };
-const Heading: React.FC<{
+const Heading: ReactFCC<{
   domNode: Element;
   level: HeadingLevel;
 }> = (props) => {

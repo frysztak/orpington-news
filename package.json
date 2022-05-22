@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "husky": "^7.0.4",
+    "husky": "^8.0.1",
     "lerna": "^4.0.0",
     "lint-staged": "^12.4.1",
     "prettier": "^2.6.2",
@@ -33,5 +33,5 @@
     "*.{js,cjs,css,md,ts,tsx,json,yml,yaml}": "prettier --write"
   },
   "packageManager": "yarn@3.2.0",
-  "version": "0.1.1"
+  "version": "0.2.0"
 }
