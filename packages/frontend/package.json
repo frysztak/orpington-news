@@ -15,7 +15,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@chakra-ui/react": "^2.0.2",
+    "@chakra-ui/react": "^2.1.0",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@heroicons/react": "^1.0.6",
@@ -47,12 +47,12 @@
     "react-virtual": "^2.10.4",
     "string-to-color": "^2.2.2",
     "usehooks-ts": "^2.5.3",
-    "wretch": "^1.7.9",
+    "wretch": "^1.7.10",
     "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.18.0",
-    "@chakra-ui/storybook-addon": "^2.0.2",
+    "@chakra-ui/storybook-addon": "^3.0.0",
     "@faker-js/faker": "^6.3.1",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@storybook/addon-a11y": "^6.5.3",
@@ -71,7 +71,7 @@
     "babel-loader": "^8.2.5",
     "cross-env": "^7.0.3",
     "cross-fetch": "^3.1.5",
-    "eslint": "8.15.0",
+    "eslint": "8.16.0",
     "eslint-config-next": "12.1.6",
     "eslint-plugin-storybook": "^0.5.12",
     "jest": "^28.1.0",
@@ -81,7 +81,7 @@
     "react-dnd-test-backend": "^16.0.1",
     "react-dnd-test-utils": "^16.0.1",
     "react-test-renderer": "^18.1.0",
-    "storybook-addon-next-router": "^3.1.1",
+    "storybook-addon-next-router": "^4.0.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "webpack": "^5.72.1"
   },
