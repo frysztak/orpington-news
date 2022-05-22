@@ -68,6 +68,12 @@ const sampleCollections: Collection[] = [
     icon: defaultIcon,
   },
 ];
+export const Loading = Template.bind({});
+Loading.args = {
+  ...Empty.args,
+  collections: [],
+  isLoading: true,
+};
 
 export const Error = Template.bind({});
 Error.args = {

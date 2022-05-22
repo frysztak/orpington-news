@@ -1,18 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Box,
-  CircularProgress,
-  Heading,
-  Icon,
-  useToast,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Heading, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import { BiMessageAltError } from '@react-icons/all-files/bi/BiMessageAltError';
 import {
   ArticleContent,
   ArticleHeader,
   ArticleMenuAction,
+  ArticleSkeleton,
 } from '@components/article';
 import { ArticleWidth, defaultArticleWidth, ID } from '@orpington-news/shared';
 import { useCookie } from '@utils';
@@ -124,7 +118,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
   }
 
   return query.status === 'loading' ? (
-    <CircularProgress isIndeterminate />
+    <ArticleSkeleton />
   ) : query.status === 'success' ? (
     <VStack
       flexGrow={1}

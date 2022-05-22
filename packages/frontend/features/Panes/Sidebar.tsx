@@ -24,7 +24,11 @@ export const Sidebar: React.FC = () => {
     ModalContext,
     (ctx) => ctx.closeDrawer
   );
-  const { data: collections, isError: collectionsError } = useCollectionsTree();
+  const {
+    data: collections,
+    isLoading: collectionsLoading,
+    isError: collectionsError,
+  } = useCollectionsTree();
   const { activeCollection } = useActiveCollection();
   const { setActiveCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
@@ -95,6 +99,7 @@ export const Sidebar: React.FC = () => {
   return (
     <SidebarContent
       isError={collectionsError}
+      isLoading={collectionsLoading}
       collections={emptyIfUndefined(collections)}
       onCollectionClicked={handleCollectionClickedAndCloseDrawer}
       onChevronClicked={handleCollectionChevronClicked}
