@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { CardItem, CardItemProps } from './CardItem';
 import {
   generateSampleCollection,

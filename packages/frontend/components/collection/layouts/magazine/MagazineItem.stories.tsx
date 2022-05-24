@@ -1,6 +1,6 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { MagazineItem, MagazineItemProps } from './MagazineItem';
 import {
   generateSampleCollection,
