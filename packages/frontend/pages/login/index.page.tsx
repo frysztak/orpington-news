@@ -30,7 +30,9 @@ const LoginPage: NextPageWithLayout = () => {
   const handleSubmit = useCallback(
     (data: LoginFormData) => {
       mutate(data, {
-        onSuccess: () => {
+        onSuccess: async () => {
+          await window.caches.delete('next-data');
+          await window.caches.delete('apis');
           router.push('/');
           attemptToConnect();
         },

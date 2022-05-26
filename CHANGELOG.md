@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Settings page: fix redirect on mobile
-- PWA: clear CacheStorage on logout
+- PWA: clear CacheStorage on login/logout
 - Article page: show 'go back' button when in mobile/tablet mode
 
 ## [0.2.0] - 2022-05-22
