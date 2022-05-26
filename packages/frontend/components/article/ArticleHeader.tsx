@@ -67,7 +67,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           variant="ghost"
           mr="auto"
           onClick={onGoBackClicked}
-          display={['inline-flex', 'none']}
+          display={{ base: 'inline-flex', lg: 'none' }}
         />
 
         <IconButton
