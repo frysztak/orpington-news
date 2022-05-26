@@ -33,7 +33,12 @@ export const CollectionIconPicker: React.FC<CollectionIconPickerProps> = (
       {CollectionIcons.map((icon: CollectionIconType) => {
         return (
           <WrapItem key={icon}>
-            <Tooltip label={icon}>
+            <Tooltip
+              label={icon}
+              closeOnClick={false}
+              closeOnEsc={false}
+              closeOnMouseDown={false}
+            >
               <IconButton
                 variant="ghost"
                 aria-label={icon}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   Center,
@@ -55,21 +55,35 @@ export const CollectionIcon: React.FC<{ icon?: CollectionIconType }> = ({
 export const CollectionIconField: React.FC<CollectionIconFieldProps> = (
   props
 ) => {
-  const { formControlProps, inputProps, meta, helpers, label } =
-    useFormControl(props);
+  const {
+    formControlProps,
+    inputProps,
+    meta,
+    helpers: { setValue },
+    label,
+  } = useFormControl(props);
   const { isDisabled } = formControlProps;
   const { value } = inputProps;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onToggle, onClose } = useDisclosure();
 
-  const handleSelect = (icon: CollectionIconType) => {
-    helpers.setValue(icon);
-    onClose();
-  };
+  const handleSelect = useCallback(
+    (icon: CollectionIconType) => {
+      setValue(icon);
+      onClose();
+    },
+    [setValue, onClose]
+  );
 
   return (
     <FormControl {...formControlProps}>
       {label && <FormLabel htmlFor={formControlProps.id}>{label}</FormLabel>}
-      <Popover variant="ghost" isOpen={isOpen} onClose={onClose} isLazy>
+      <Popover
+        variant="ghost"
+        isOpen={isOpen}
+        onClose={onClose}
+        isLazy
+        lazyBehavior="keepMounted"
+      >
         <PopoverTrigger>
           <ErrorTooltip error={meta.touched ? meta.error : ''}>
             <IconButton
@@ -77,7 +91,7 @@ export const CollectionIconField: React.FC<CollectionIconFieldProps> = (
               icon={<CollectionIcon icon={value} />}
               variant="bare"
               isDisabled={isDisabled}
-              onClick={onOpen}
+              onClick={onToggle}
             />
           </ErrorTooltip>
         </PopoverTrigger>
