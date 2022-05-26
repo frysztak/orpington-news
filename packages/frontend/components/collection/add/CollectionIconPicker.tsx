@@ -3,6 +3,7 @@ import {
   BoxProps,
   Icon,
   IconButton,
+  Tooltip,
   useColorModeValue,
   Wrap,
   WrapItem,
@@ -32,13 +33,17 @@ export const CollectionIconPicker: React.FC<CollectionIconPickerProps> = (
       {CollectionIcons.map((icon: CollectionIconType) => {
         return (
           <WrapItem key={icon}>
-            <IconButton
-              variant="ghost"
-              aria-label={icon}
-              backgroundColor={icon === value ? bgColor : ''}
-              icon={<Icon as={getCollectionIcon(icon)} fill={fill} />}
-              onClick={handleOnClick(icon)}
-            />
+            <Tooltip label={icon}>
+              <IconButton
+                variant="ghost"
+                aria-label={icon}
+                backgroundColor={icon === value ? bgColor : ''}
+                icon={
+                  <Icon as={getCollectionIcon(icon)} fill={fill} w={6} h={6} />
+                }
+                onClick={handleOnClick(icon)}
+              />
+            </Tooltip>
           </WrapItem>
         );
       })}

@@ -81,7 +81,7 @@ export const CollectionIconField: React.FC<CollectionIconFieldProps> = (
             />
           </ErrorTooltip>
         </PopoverTrigger>
-        <PopoverContent w={64} maxH={64}>
+        <PopoverContent w={72} maxH={80}>
           <CollectionIconPicker
             overflowY="auto"
             overflowX="hidden"

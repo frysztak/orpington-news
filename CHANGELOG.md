@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `.nvmrc` file
 
+### Changed
+
+- Collection icon picker: increase size (of both popover and icons themselves), add tooltips
+
 ### Fixed
 
 - Settings page: fix redirect on mobile
