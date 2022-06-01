@@ -5,7 +5,7 @@ import fastifySession from '@fastify/session';
 import fastifyAuth from '@fastify/auth';
 import fastifyCors from '@fastify/cors';
 import fastifyETag from '@fastify/etag';
-import fastifySchedule from 'fastify-schedule';
+import fastifySchedule from '@fastify/schedule';
 import fastifySplitValidator from 'fastify-split-validator';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
