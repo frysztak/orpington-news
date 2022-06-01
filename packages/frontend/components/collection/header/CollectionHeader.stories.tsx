@@ -23,10 +23,14 @@ Default.args = {
   onChangeLayout: action('onChangeLayout'),
 };
 
-export const NoMenuButton = Template.bind({});
-NoMenuButton.args = {
+export const Mobile = Template.bind({});
+Mobile.args = {
   ...Default.args,
-  hideMenuButton: true,
+};
+Mobile.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
 };
 
 export const IsRefreshing = Template.bind({});

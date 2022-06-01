@@ -21,8 +21,6 @@ import { CollectionLayout, CollectionLayouts } from '@orpington-news/shared';
 export interface CollectionHeaderProps {
   collection?: ActiveCollection;
   menuButtonRef?: React.MutableRefObject<HTMLButtonElement | null>;
-  // TODO: remove, use media queries
-  hideMenuButton?: boolean;
   isRefreshing?: boolean;
 
   onMenuClicked?: () => void;
@@ -34,7 +32,6 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
   const {
     collection,
     menuButtonRef,
-    hideMenuButton = false,
     isRefreshing = false,
     onMenuClicked,
     onRefresh,
@@ -43,16 +40,15 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
 
   return (
     <VStack spacing={1} w="full">
-      <HStack w="full" justify={hideMenuButton ? 'flex-end' : 'space-between'}>
-        {!hideMenuButton && (
-          <IconButton
-            icon={<CgMenuLeftAlt />}
-            aria-label="Menu"
-            variant="ghost"
-            ref={menuButtonRef}
-            onClick={onMenuClicked}
-          />
-        )}
+      <HStack w="full" justify={{ base: 'space-between', lg: 'flex-end' }}>
+        <IconButton
+          display={{ base: 'inline-flex', lg: 'none' }}
+          icon={<CgMenuLeftAlt />}
+          aria-label="Menu"
+          variant="ghost"
+          ref={menuButtonRef}
+          onClick={onMenuClicked}
+        />
 
         {collection && (
           <Box>
