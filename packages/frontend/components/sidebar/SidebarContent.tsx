@@ -9,7 +9,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { AiOutlineHome } from '@react-icons/all-files/ai/AiOutlineHome';
-import { BsBookmarks } from '@react-icons/all-files/bs/BsBookmarks';
 import { RiAddBoxFill } from '@react-icons/all-files/ri/RiAddBoxFill';
 import RssIcon from '@heroicons/react/outline/RssIcon';
 import type { ID } from '@orpington-news/shared';

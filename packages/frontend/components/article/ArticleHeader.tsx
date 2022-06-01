@@ -16,8 +16,6 @@ import {
 } from '@chakra-ui/react';
 import { CollectionItemDetails } from '@orpington-news/shared';
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
-import { BsBookmarkDash } from '@react-icons/all-files/bs/BsBookmarkDash';
-import { BsBookmarkPlus } from '@react-icons/all-files/bs/BsBookmarkPlus';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { CgCalendar } from '@react-icons/all-files/cg/CgCalendar';
 import { CgTime } from '@react-icons/all-files/cg/CgTime';

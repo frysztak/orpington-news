@@ -1,12 +1,10 @@
 import React, { ChangeEvent, useCallback } from 'react';
 import {
-  FormLabel,
   FormControl,
   FormErrorMessage,
   forwardRef,
   Switch,
   SwitchProps,
-  Tooltip,
 } from '@chakra-ui/react';
 import { BasicField } from './types';
 import { useFormControl } from './useFormControl';

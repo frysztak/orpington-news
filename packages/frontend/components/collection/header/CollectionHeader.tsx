@@ -12,7 +12,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { CgMenuLeftAlt } from '@react-icons/all-files/cg/CgMenuLeftAlt';
-import { CgSearch } from '@react-icons/all-files/cg/CgSearch';
 import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { ActiveCollection, CollectionLayoutName } from '../types';

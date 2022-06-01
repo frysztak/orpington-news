@@ -8,13 +8,10 @@ import {
   forwardRef,
   BoxProps,
   Box,
-  IconButton,
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { BsBookmarkDash } from '@react-icons/all-files/bs/BsBookmarkDash';
-import { BsBookmarkPlus } from '@react-icons/all-files/bs/BsBookmarkPlus';
 import { CollectionItemProps } from '../../types';
 
 export type CardItemProps = CollectionItemProps &
