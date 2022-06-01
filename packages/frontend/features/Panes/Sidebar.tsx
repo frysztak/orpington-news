@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import {
   useCollectionsContext,
   useCollectionsTree,
@@ -16,33 +17,35 @@ import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 import { Collection, emptyIfUndefined, ID } from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
-import {
-  AddCollectionModal,
-  useAddCollectionModal,
-} from '@features/AddCollectionModal';
+import { ModalContext } from './ModalContext';
 
 interface SidebarProps {
-  onCloseDrawer: () => void;
   onOpenDeleteCollectionModal: (collectionId: ID) => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = (props) => {
-  const { onCloseDrawer, onOpenDeleteCollectionModal } = props;
+  const { onOpenDeleteCollectionModal } = props;
 
+  const closeDrawer = useContextSelector(
+    ModalContext,
+    (ctx) => ctx.closeDrawer
+  );
   const { data: collections, isError: collectionsError } = useCollectionsTree();
   const { activeCollection } = useActiveCollection();
   const { setActiveCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
 
-  const { onOpenAddCollectionModal, ...addCollectionModalProps } =
-    useAddCollectionModal();
+  const onOpenAddCollectionModal = useContextSelector(
+    ModalContext,
+    (ctx) => ctx.openAddModalWithData
+  );
 
   const handleMenuItemClicked = useCallback(
     (item: MenuItem) => {
       switch (item) {
         case 'home': {
-          onCloseDrawer();
+          closeDrawer();
           return setActiveCollection('home');
         }
         case 'addFeed': {
@@ -50,7 +53,7 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
         }
       }
     },
-    [onCloseDrawer, onOpenAddCollectionModal, setActiveCollection]
+    [closeDrawer, onOpenAddCollectionModal, setActiveCollection]
   );
 
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
@@ -82,31 +85,27 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
 
   const handleCollectionClickedAndCloseDrawer = useCallback(
     (collection: Collection) => {
-      onCloseDrawer();
+      closeDrawer();
       setActiveCollection(collection.id);
     },
-    [setActiveCollection, onCloseDrawer]
+    [setActiveCollection, closeDrawer]
   );
 
   const { currentlyUpdatedCollections } = useCollectionsContext();
 
   return (
-    <>
-      <SidebarContent
-        isError={collectionsError}
-        collections={emptyIfUndefined(collections)}
-        onCollectionClicked={handleCollectionClickedAndCloseDrawer}
-        onChevronClicked={handleCollectionChevronClicked}
-        onMenuItemClicked={handleMenuItemClicked}
-        onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
-        activeCollectionId={activeCollection.id}
-        expandedCollectionIDs={expandedCollectionIds}
-        collectionsCurrentlyUpdated={currentlyUpdatedCollections}
-        footer={<SidebarFooter />}
-      />
-
-      <AddCollectionModal {...addCollectionModalProps} />
-    </>
+    <SidebarContent
+      isError={collectionsError}
+      collections={emptyIfUndefined(collections)}
+      onCollectionClicked={handleCollectionClickedAndCloseDrawer}
+      onChevronClicked={handleCollectionChevronClicked}
+      onMenuItemClicked={handleMenuItemClicked}
+      onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
+      activeCollectionId={activeCollection.id}
+      expandedCollectionIDs={expandedCollectionIds}
+      collectionsCurrentlyUpdated={currentlyUpdatedCollections}
+      footer={<SidebarFooter />}
+    />
   );
 };
 

@@ -5675,6 +5675,7 @@ __metadata:
     eslint: 8.16.0
     eslint-config-next: 12.1.6
     eslint-plugin-storybook: ^0.5.12
+    eslint-plugin-unused-imports: ^2.0.0
     focus-visible: ^5.2.0
     formik: ^2.2.9
     framer-motion: ^6.3.3
@@ -5705,6 +5706,7 @@ __metadata:
     storybook-addon-next-router: ^4.0.0
     string-to-color: ^2.2.2
     tsconfig-paths-webpack-plugin: ^3.5.2
+    use-context-selector: ^1.4.0
     usehooks-ts: ^2.5.3
     webpack: ^5.72.1
     wretch: ^1.7.10
@@ -12963,6 +12965,28 @@ __metadata:
   peerDependencies:
     eslint: ">=6"
   checksum: 13cbee3db3aa092bf5a9a9e5f10e3e5f1853fcac897d19b0d448a835f566d05c803589f9ed5090ed4d50256dcada9b7c6838c16faeba821a3413b94aee141719
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-unused-imports@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "eslint-plugin-unused-imports@npm:2.0.0"
+  dependencies:
+    eslint-rule-composer: ^0.3.0
+  peerDependencies:
+    "@typescript-eslint/eslint-plugin": ^5.0.0
+    eslint: ^8.0.0
+  peerDependenciesMeta:
+    "@typescript-eslint/eslint-plugin":
+      optional: true
+  checksum: 8aa1e03e75da2a62a354065e0cb8fe370118c6f8d9720a32fe8c1da937de6adb81a4fed7d0d391d115ac9453b49029fb19f970d180a2cf3dba451fd4c20f0dc4
+  languageName: node
+  linkType: hard
+
+"eslint-rule-composer@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "eslint-rule-composer@npm:0.3.0"
+  checksum: c2f57cded8d1c8f82483e0ce28861214347e24fd79fd4144667974cd334d718f4ba05080aaef2399e3bbe36f7d6632865110227e6b176ed6daa2d676df9281b1
   languageName: node
   linkType: hard
 
@@ -25142,6 +25166,23 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7913df383a5a6fcb399212eedefaac2e0c6f843555202d4e3010bac3848afe38ecaa3d0d6500ad1d936fbeffd637e6c517e68edb024af5e6beca7f27f3ce7b21
+  languageName: node
+  linkType: hard
+
+"use-context-selector@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "use-context-selector@npm:1.4.0"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: "*"
+    react-native: "*"
+    scheduler: ">=0.19.0"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 4970ee82676418d751e9df0d3ecbf6be68abb3eb9496930f28d8749a8b9c652f31af7312d0d03533be979ad5ce79629bffcb82e54f8c03ca1efee899ffe545a1
   languageName: node
   linkType: hard
 

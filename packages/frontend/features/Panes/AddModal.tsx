@@ -1,5 +1,11 @@
-import { useCallback, useState, useEffect } from 'react';
-import { useDisclosure, useToast } from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react';
+import { AddCollectionFormData } from '@components/collection/add';
+import { AddCollectionModal } from '@features/AddCollectionModal';
+import {
+  useVerifyFeedURL,
+  useSaveCollection,
+  useEditCollection,
+} from '@features/AddCollectionModal/queries';
 import { useCollectionsTree } from '@features/Collections';
 import {
   Collection,
@@ -7,24 +13,28 @@ import {
   emptyIfUndefined,
   ID,
 } from '@orpington-news/shared';
-import { AddCollectionFormData } from '@components/collection/add';
-import {
-  useEditCollection,
-  useSaveCollection,
-  useVerifyFeedURL,
-} from './queries';
+import { useCallback, useEffect, useState } from 'react';
+import { useContextSelector } from 'use-context-selector';
+import { ModalContext } from './ModalContext';
 
-interface State {
+export interface AddModalState {
   isUrlVerified: boolean;
   initialData?: AddCollectionFormData;
   editedFeedId?: ID;
 }
 
-export const useAddCollectionModal = () => {
+export const AddModal: React.FC = () => {
   const toast = useToast();
-  const [state, setState] = useState<State>({ isUrlVerified: false });
 
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const state = useContextSelector(ModalContext, (ctx) => ctx.addModalState);
+  const setState = useContextSelector(
+    ModalContext,
+    (ctx) => ctx.setAddModalState
+  );
+  const isOpen = useContextSelector(ModalContext, (ctx) => ctx.isAddModalOpen);
+  const onClose = useContextSelector(ModalContext, (ctx) => ctx.closeAddModal);
+  const onOpen = useContextSelector(ModalContext, (ctx) => ctx.openAddModal);
+
   const { mutate: verifyFeedURL, isLoading: isVerifying } = useVerifyFeedURL();
   const { mutate: saveCollection, isLoading: isSaving } = useSaveCollection({
     onSuccess: () => {
@@ -63,7 +73,7 @@ export const useAddCollectionModal = () => {
         };
       });
     },
-    [state.initialData?.url]
+    [setState, state.initialData?.url]
   );
 
   const onVerifyUrlClicked = useCallback(
@@ -85,7 +95,7 @@ export const useAddCollectionModal = () => {
         }
       );
     },
-    [verifyFeedURL]
+    [setState, verifyFeedURL]
   );
 
   const onOpenAddCollectionModal = useCallback(
@@ -101,7 +111,7 @@ export const useAddCollectionModal = () => {
       }
       onOpen();
     },
-    [onOpen]
+    [onOpen, setState]
   );
 
   useEffect(() => {
@@ -110,21 +120,21 @@ export const useAddCollectionModal = () => {
         isUrlVerified: false,
       });
     }
-  }, [isOpen]);
+  }, [isOpen, setState]);
 
-  return {
-    onOpenAddCollectionModal,
-    isOpen,
-    onClose,
-
-    modalTitle: state.editedFeedId ? 'Edit feed' : 'Add feed',
-    initialData: state.initialData,
-    isUrlVerified: state.isUrlVerified,
-    onVerifyUrlChanged,
-    onVerifyUrlClicked,
-    areCollectionsLoading,
-    collections: emptyIfUndefined(collections),
-    isLoading: isVerifying || isSaving,
-    onSubmit: state.editedFeedId ? editCollection : saveCollection,
-  };
+  return (
+    <AddCollectionModal
+      isOpen={isOpen}
+      onClose={onClose}
+      modalTitle={state.editedFeedId ? 'Edit feed' : 'Add feed'}
+      initialData={state.initialData}
+      isUrlVerified={state.isUrlVerified}
+      onVerifyUrlChanged={onVerifyUrlChanged}
+      onVerifyUrlClicked={onVerifyUrlClicked}
+      areCollectionsLoading={areCollectionsLoading}
+      collections={emptyIfUndefined(collections)}
+      isLoading={isVerifying || isSaving}
+      onSubmit={state.editedFeedId ? editCollection : saveCollection}
+    />
+  );
 };

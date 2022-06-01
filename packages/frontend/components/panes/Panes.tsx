@@ -1,31 +1,11 @@
-import React, { ReactNode, useCallback, useRef } from 'react';
-import {
-  Box,
-  BoxProps,
-  Divider,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerOverlay,
-  HStack,
-  VStack,
-} from '@chakra-ui/react';
+import React, { ReactNode, useCallback } from 'react';
+import { Box, BoxProps, Divider, HStack, VStack } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
-import { CollectionLayout, ID } from '@orpington-news/shared';
-import { CollectionHeader } from '@components/collection/header';
-import { ActiveCollection } from '@components/collection/types';
 import { EmptyMain } from './EmptyMain';
 
 export interface PanesProps {
-  isDrawerOpen: boolean;
-  onCloseDrawer: () => void;
-  onToggleDrawer: () => void;
-
-  activeCollection?: ActiveCollection;
-  currentlyUpdatedCollections: Set<ID>;
-
   sidebar?: ReactNode;
+  collectionItemHeader?: ReactNode;
   collectionItemList?: ReactNode;
   mainContent?: ReactNode;
 
@@ -34,22 +14,12 @@ export interface PanesProps {
 
   collectionItemsWidth: number;
   onCollectionItemsWidthChanged?: (width: number) => void;
-
-  onRefreshClicked?: (collectionId: ID | string) => void;
-  onGoBackClicked?: () => void;
-  onCollectionLayoutChanged?: (layout: CollectionLayout) => void;
 }
 
 export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
   const {
-    isDrawerOpen,
-    onCloseDrawer,
-    onToggleDrawer,
-
-    activeCollection,
-    currentlyUpdatedCollections,
-
     sidebar,
+    collectionItemHeader,
     collectionItemList,
     mainContent,
 
@@ -59,14 +29,8 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     collectionItemsWidth,
     onCollectionItemsWidthChanged,
 
-    onRefreshClicked,
-    onGoBackClicked,
-    onCollectionLayoutChanged,
-
     ...rest
   } = props;
-
-  const drawerButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const handleSidebarResize: ResizeCallback = useCallback(
     (e, dir, elementRef, d) => {
@@ -81,36 +45,8 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     [onCollectionItemsWidthChanged]
   );
 
-  const handleRefreshClick = useCallback(() => {
-    if (activeCollection) {
-      onRefreshClicked?.(activeCollection.id);
-    } else {
-      console.error(`onRefreshClicked() without active collection`);
-    }
-  }, [activeCollection, onRefreshClicked]);
-
-  const isRefreshing =
-    activeCollection && typeof activeCollection.id === 'number'
-      ? currentlyUpdatedCollections.has(activeCollection.id)
-      : false;
-
   return (
     <>
-      <Drawer
-        isOpen={isDrawerOpen}
-        placement="left"
-        size="full"
-        autoFocus={false}
-        returnFocusOnClose={false}
-        onClose={onCloseDrawer}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerBody p={0}>{sidebar}</DrawerBody>
-        </DrawerContent>
-      </Drawer>
-
       {/* Desktop view */}
       <HStack
         alignItems="stretch"
@@ -138,15 +74,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         >
           <HStack h="full">
             <VStack spacing={0} h="full" w="full">
-              <CollectionHeader
-                collection={activeCollection}
-                hideMenuButton
-                isRefreshing={isRefreshing}
-                menuButtonRef={drawerButtonRef}
-                onRefresh={handleRefreshClick}
-                onMenuClicked={onToggleDrawer}
-                onChangeLayout={onCollectionLayoutChanged}
-              />
+              {collectionItemHeader}
 
               <Divider pt={4} />
 
@@ -174,14 +102,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
           w="full"
           visibility={mainContent ? 'hidden' : 'visible'}
         >
-          <CollectionHeader
-            collection={activeCollection}
-            menuButtonRef={drawerButtonRef}
-            isRefreshing={isRefreshing}
-            onRefresh={handleRefreshClick}
-            onMenuClicked={onToggleDrawer}
-            onChangeLayout={onCollectionLayoutChanged}
-          />
+          {collectionItemHeader}
 
           <Divider pt={3} />
 

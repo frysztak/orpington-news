@@ -6,7 +6,6 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  useBreakpointValue,
 } from '@chakra-ui/react';
 import {
   AddCollectionForm,
@@ -24,8 +23,6 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = (
 ) => {
   const { isOpen, onClose, modalTitle, ...formProps } = props;
 
-  const size = useBreakpointValue({ base: 'full', sm: 'lg' });
-
   return (
     <Modal
       isOpen={isOpen}
@@ -33,7 +30,7 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = (
       isCentered
       closeOnEsc={false}
       closeOnOverlayClick={false}
-      size={size}
+      size={{ base: 'full', sm: 'lg' }}
     >
       <ModalOverlay />
       <ModalContent p={4}>

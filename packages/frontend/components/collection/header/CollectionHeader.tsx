@@ -21,6 +21,7 @@ import { CollectionLayout, CollectionLayouts } from '@orpington-news/shared';
 export interface CollectionHeaderProps {
   collection?: ActiveCollection;
   menuButtonRef?: React.MutableRefObject<HTMLButtonElement | null>;
+  // TODO: remove, use media queries
   hideMenuButton?: boolean;
   isRefreshing?: boolean;
 
