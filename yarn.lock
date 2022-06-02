@@ -2764,18 +2764,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chakra-ui/color-mode@npm:2.0.2":
-  version: 2.0.2
-  resolution: "@chakra-ui/color-mode@npm:2.0.2"
-  dependencies:
-    "@chakra-ui/hooks": 2.0.0
-    "@chakra-ui/utils": 2.0.0
-  peerDependencies:
-    react: ">=18"
-  checksum: 9b20e09dcc00ae1a58536ea5b43617dbf563b2d73e658ea205d448737e86bcc4b3ca731b189d765d39ecd569b2c414f71154bdbbde086f00be428dcaffab8751
-  languageName: node
-  linkType: hard
-
 "@chakra-ui/color-mode@npm:2.0.3":
   version: 2.0.3
   resolution: "@chakra-ui/color-mode@npm:2.0.3"
@@ -3427,16 +3415,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chakra-ui/styled-system@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@chakra-ui/styled-system@npm:2.0.0"
-  dependencies:
-    "@chakra-ui/utils": 2.0.0
-    csstype: ^3.0.11
-  checksum: 684029634ac7c92081e8d583ca12ffb833b639954983c8346aaab1712335d18b99c4e4a38fd1631a882c5176af65791874bb176ef5f6c3ba541758b60a0e5ae9
-  languageName: node
-  linkType: hard
-
 "@chakra-ui/styled-system@npm:2.1.1":
   version: 2.1.1
   resolution: "@chakra-ui/styled-system@npm:2.1.1"
@@ -3461,7 +3439,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chakra-ui/system@npm:2.1.1":
+"@chakra-ui/system@npm:2.1.1, @chakra-ui/system@npm:^2.0.0":
   version: 2.1.1
   resolution: "@chakra-ui/system@npm:2.1.1"
   dependencies:
@@ -3475,23 +3453,6 @@ __metadata:
     "@emotion/styled": ^11.0.0
     react: ">=18"
   checksum: 2d7c3dc6d41312843ab7c54ef5421e18bdef831798db0c93586cab4e604a947eefb2986879bc839fc7c596f9b2a08f085d588c128e918b77b79d71dd09feb460
-  languageName: node
-  linkType: hard
-
-"@chakra-ui/system@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "@chakra-ui/system@npm:2.0.2"
-  dependencies:
-    "@chakra-ui/color-mode": 2.0.2
-    "@chakra-ui/react-utils": 2.0.0
-    "@chakra-ui/styled-system": 2.0.0
-    "@chakra-ui/utils": 2.0.0
-    react-fast-compare: 3.2.0
-  peerDependencies:
-    "@emotion/react": ^11.0.0
-    "@emotion/styled": ^11.0.0
-    react: ">=18"
-  checksum: d3c557dd01d7e360e361614ffd5dca176bc473ddcae73558a176218d3057b7525e8557632bd2b6a7ef8562e07b0f8e4103d19e655f398218f9ffc8e83b9d6a0e
   languageName: node
   linkType: hard
 
