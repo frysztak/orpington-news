@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Box,
   Heading,
   HStack,
   IconButton,
@@ -38,8 +37,12 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
   } = props;
 
   return (
-    <VStack spacing={1} w="full">
-      <HStack w="full" justify={{ base: 'space-between', lg: 'flex-end' }}>
+    <VStack spacing={0} w="full">
+      <HStack
+        spacing={0}
+        w="full"
+        justify={{ base: 'space-between', lg: 'flex-end' }}
+      >
         <IconButton
           display={{ base: 'inline-flex', lg: 'none' }}
           icon={<CgMenuLeftAlt />}
@@ -50,7 +53,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
         />
 
         {collection && (
-          <Box>
+          <HStack>
             <IconButton
               icon={<IoRefresh />}
               isLoading={isRefreshing}
@@ -88,7 +91,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                 </MenuOptionGroup>
               </MenuList>
             </Menu>
-          </Box>
+          </HStack>
         )}
       </HStack>
 

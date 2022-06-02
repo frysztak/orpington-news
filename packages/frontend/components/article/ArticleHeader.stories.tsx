@@ -19,3 +19,13 @@ Default.args = {
     readingTime: 14.5,
   } as any,
 };
+
+export const Mobile = Template.bind({});
+Mobile.args = {
+  ...Default.args,
+};
+Mobile.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
+};
