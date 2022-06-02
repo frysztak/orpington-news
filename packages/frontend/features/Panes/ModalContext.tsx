@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { createContext } from 'use-context-selector';
-import { Collection, noop } from '@orpington-news/shared';
+import { Collection, ID, noop } from '@orpington-news/shared';
 import { ReactFCC, useToggle } from '@utils';
 import { AddModalState } from './AddModal';
 
-type Elements = 'Drawer' | 'AddModal';
+type Elements = 'Drawer' | 'AddModal' | 'DeleteModal';
 
 export type ModalContextData = {
   [P in Elements as `is${P}Open`]: boolean;
@@ -14,20 +14,32 @@ export type ModalContextData = {
   addModalState: AddModalState;
   setAddModalState: Dispatch<SetStateAction<AddModalState>>;
   openAddModalWithData: (collection?: Collection) => void;
+
+  deleteModalState?: ID;
+  setDeleteModalState: Dispatch<SetStateAction<ID | undefined>>;
+  openDeleteModalWithData: (collectionId: ID) => void;
 };
 
 export const ModalContext = createContext<ModalContextData>({
   isDrawerOpen: false,
   isAddModalOpen: false,
+  isDeleteModalOpen: false,
   closeAddModal: noop,
   closeDrawer: noop,
+  closeDeleteModal: noop,
   toggleAddModal: noop,
   toggleDrawer: noop,
+  toggleDeleteModal: noop,
   openAddModal: noop,
   openDrawer: noop,
+  openDeleteModal: noop,
+
   addModalState: {} as AddModalState,
   setAddModalState: noop,
   openAddModalWithData: noop,
+
+  setDeleteModalState: noop,
+  openDeleteModalWithData: noop,
 });
 
 export const ModalContextProvider: ReactFCC = ({ children }) => {
@@ -38,6 +50,27 @@ export const ModalContextProvider: ReactFCC = ({ children }) => {
     toggle: toggleDrawer,
   } = useToggle();
 
+  const addModalProps = useAddModal();
+  const deleteModalProps = useDeleteModal();
+
+  return (
+    <ModalContext.Provider
+      value={{
+        isDrawerOpen,
+        openDrawer,
+        closeDrawer,
+        toggleDrawer,
+
+        ...addModalProps,
+        ...deleteModalProps,
+      }}
+    >
+      {children}
+    </ModalContext.Provider>
+  );
+};
+
+const useAddModal = () => {
   const [addModalState, setAddModalState] = useState<AddModalState>({
     isUrlVerified: false,
   });
@@ -64,24 +97,42 @@ export const ModalContextProvider: ReactFCC = ({ children }) => {
     [openAddModal]
   );
 
-  return (
-    <ModalContext.Provider
-      value={{
-        isDrawerOpen,
-        openDrawer,
-        closeDrawer,
-        toggleDrawer,
+  return {
+    addModalState,
+    setAddModalState,
+    isAddModalOpen,
+    openAddModal,
+    closeAddModal,
+    toggleAddModal,
+    openAddModalWithData,
+  };
+};
 
-        isAddModalOpen,
-        openAddModal,
-        closeAddModal,
-        toggleAddModal,
-        addModalState,
-        setAddModalState,
-        openAddModalWithData,
-      }}
-    >
-      {children}
-    </ModalContext.Provider>
+const useDeleteModal = () => {
+  // state is just ID to remove
+  const [deleteModalState, setDeleteModalState] = useState<ID>();
+  const {
+    isOpen: isDeleteModalOpen,
+    open: openDeleteModal,
+    close: closeDeleteModal,
+    toggle: toggleDeleteModal,
+  } = useToggle();
+
+  const openDeleteModalWithData = useCallback(
+    (id: ID) => {
+      setDeleteModalState(id);
+      openDeleteModal();
+    },
+    [openDeleteModal]
   );
+
+  return {
+    deleteModalState,
+    setDeleteModalState,
+    isDeleteModalOpen,
+    openDeleteModal,
+    closeDeleteModal,
+    toggleDeleteModal,
+    openDeleteModalWithData,
+  };
 };

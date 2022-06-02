@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings page: fix redirect on mobile
 - PWA: clear CacheStorage on login/logout
 - Article page: show 'go back' button when in mobile/tablet mode
-- Panes: improve mobile performance
+- Panes: improve performance when opening modals
 
 ## [0.2.0] - 2022-05-22
 

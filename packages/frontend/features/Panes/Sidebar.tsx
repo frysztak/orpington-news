@@ -15,17 +15,11 @@ import {
 } from '@features/Preferences';
 import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
-import { Collection, emptyIfUndefined, ID } from '@orpington-news/shared';
+import { Collection, emptyIfUndefined } from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
 import { ModalContext } from './ModalContext';
 
-interface SidebarProps {
-  onOpenDeleteCollectionModal: (collectionId: ID) => void;
-}
-
-export const Sidebar: React.FC<SidebarProps> = (props) => {
-  const { onOpenDeleteCollectionModal } = props;
-
+export const Sidebar: React.FC = () => {
   const closeDrawer = useContextSelector(
     ModalContext,
     (ctx) => ctx.closeDrawer
@@ -39,6 +33,11 @@ export const Sidebar: React.FC<SidebarProps> = (props) => {
   const onOpenAddCollectionModal = useContextSelector(
     ModalContext,
     (ctx) => ctx.openAddModalWithData
+  );
+
+  const onOpenDeleteCollectionModal = useContextSelector(
+    ModalContext,
+    (ctx) => ctx.openDeleteModalWithData
   );
 
   const handleMenuItemClicked = useCallback(

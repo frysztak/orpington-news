@@ -1,18 +1,20 @@
 import { useMutation, useQueryClient } from 'react-query';
 import {
   addCollection,
+  deleteCollection,
   editCollection,
   useApi,
   useHandleError,
   verifyFeedUrl,
 } from '@api';
 import type { AddCollectionFormData } from '@components/collection/add';
+import { useSetActiveCollection } from '@features/Preferences';
+import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 import {
   defaultRefreshInterval,
   FlatCollection,
   ID,
 } from '@orpington-news/shared';
-import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 
 export const useVerifyFeedURL = () => {
   const api = useApi();
@@ -97,4 +99,29 @@ export const useEditCollection = ({
       },
     }
   );
+};
+
+export const useDeleteCollection = ({
+  onSuccess,
+}: {
+  onSuccess?: (ids: ID[]) => void;
+}) => {
+  const api = useApi();
+  const { onError } = useHandleError();
+
+  const queryClient = useQueryClient();
+  const { setActiveCollection } = useSetActiveCollection();
+
+  return useMutation(({ id }: { id: ID }) => deleteCollection(api, id), {
+    onError,
+    onSuccess: ({ ids, navigateHome }) => {
+      onSuccess?.(ids);
+      queryClient.invalidateQueries(collectionKeys.tree);
+
+      if (navigateHome) {
+        setActiveCollection('home');
+        queryClient.invalidateQueries(preferencesKeys.base);
+      }
+    },
+  });
 };
