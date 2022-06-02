@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `.nvmrc` file
+- Collection header: added menu, allowing to mark entire collection as read on mobile
 
 ### Changed
 

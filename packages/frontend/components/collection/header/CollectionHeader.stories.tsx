@@ -19,8 +19,9 @@ Default.args = {
     title: 'Fun Blog',
     layout: 'magazine',
   },
-  onRefresh: action('onRefresh'),
+  onHamburgerClicked: action('onHamburgerClicked'),
   onChangeLayout: action('onChangeLayout'),
+  onMenuActionClicked: action('onMenuActionClicked'),
 };
 
 export const Mobile = Template.bind({});

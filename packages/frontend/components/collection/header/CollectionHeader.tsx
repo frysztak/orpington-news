@@ -5,6 +5,7 @@ import {
   IconButton,
   Menu,
   MenuButton,
+  MenuItem,
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
@@ -13,17 +14,21 @@ import {
 import { CgMenuLeftAlt } from '@react-icons/all-files/cg/CgMenuLeftAlt';
 import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
-import { ActiveCollection, CollectionLayoutName } from '../types';
+import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
+import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import { CollectionLayout, CollectionLayouts } from '@orpington-news/shared';
+import { ActiveCollection, CollectionLayoutName } from '../types';
+
+export type MenuAction = 'refresh' | 'markAsRead';
 
 export interface CollectionHeaderProps {
   collection?: ActiveCollection;
   menuButtonRef?: React.MutableRefObject<HTMLButtonElement | null>;
   isRefreshing?: boolean;
 
-  onMenuClicked?: () => void;
-  onRefresh?: () => void;
+  onHamburgerClicked?: () => void;
   onChangeLayout?: (layout: CollectionLayout) => void;
+  onMenuActionClicked?: (action: MenuAction) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
@@ -31,9 +36,9 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     collection,
     menuButtonRef,
     isRefreshing = false,
-    onMenuClicked,
-    onRefresh,
+    onHamburgerClicked,
     onChangeLayout,
+    onMenuActionClicked,
   } = props;
 
   return (
@@ -49,7 +54,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
           aria-label="Menu"
           variant="ghost"
           ref={menuButtonRef}
-          onClick={onMenuClicked}
+          onClick={onHamburgerClicked}
         />
 
         {collection && (
@@ -59,7 +64,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
               isLoading={isRefreshing}
               aria-label="Refresh"
               variant="ghost"
-              onClick={onRefresh}
+              onClick={() => onMenuActionClicked?.('refresh')}
             />
             {/*<IconButton
               icon={<CgSearch />}
@@ -89,6 +94,24 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                     </MenuItemOption>
                   ))}
                 </MenuOptionGroup>
+              </MenuList>
+            </Menu>
+
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                aria-label="Menu"
+                icon={<BsThreeDotsVertical />}
+                variant="ghost"
+                tabIndex={0}
+              />
+              <MenuList>
+                <MenuItem
+                  icon={<IoCheckmarkDone />}
+                  onClick={() => onMenuActionClicked?.('markAsRead')}
+                >
+                  Mark as read
+                </MenuItem>
               </MenuList>
             </Menu>
           </HStack>
