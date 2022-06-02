@@ -7,10 +7,7 @@ import {
   ModalCloseButton,
   ModalBody,
 } from '@chakra-ui/react';
-import {
-  AddCollectionForm,
-  AddCollectionFormProps,
-} from '@components/collection/add';
+import { AddCollectionForm, AddCollectionFormProps } from './AddCollectionForm';
 
 export type AddCollectionModalProps = AddCollectionFormProps & {
   isOpen: boolean;
@@ -33,10 +30,10 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = (
       size={{ base: 'full', sm: 'lg' }}
     >
       <ModalOverlay />
-      <ModalContent p={4}>
+      <ModalContent>
         <ModalHeader>{modalTitle}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
+        <ModalBody pb={4}>
           <AddCollectionForm {...formProps} />
         </ModalBody>
       </ModalContent>

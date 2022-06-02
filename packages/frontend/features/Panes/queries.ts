@@ -6,7 +6,7 @@ import {
   useHandleError,
   verifyFeedUrl,
 } from '@api';
-import { AddCollectionFormData } from '@components/collection/add';
+import type { AddCollectionFormData } from '@components/collection/add';
 import {
   defaultRefreshInterval,
   FlatCollection,

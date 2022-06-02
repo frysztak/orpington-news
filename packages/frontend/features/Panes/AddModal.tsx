@@ -1,21 +1,18 @@
+import { useCallback, useEffect } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import { useToast } from '@chakra-ui/react';
-import { AddCollectionFormData } from '@components/collection/add';
-import { AddCollectionModal } from '@features/AddCollectionModal';
+import {
+  AddCollectionFormData,
+  AddCollectionModal,
+} from '@components/collection/add';
+import { useCollectionsTree } from '@features/Collections';
+import { defaultIcon, emptyIfUndefined, ID } from '@orpington-news/shared';
+import { ModalContext } from './ModalContext';
 import {
   useVerifyFeedURL,
   useSaveCollection,
   useEditCollection,
-} from '@features/AddCollectionModal/queries';
-import { useCollectionsTree } from '@features/Collections';
-import {
-  Collection,
-  defaultIcon,
-  emptyIfUndefined,
-  ID,
-} from '@orpington-news/shared';
-import { useCallback, useEffect, useState } from 'react';
-import { useContextSelector } from 'use-context-selector';
-import { ModalContext } from './ModalContext';
+} from './queries';
 
 export interface AddModalState {
   isUrlVerified: boolean;
@@ -33,7 +30,6 @@ export const AddModal: React.FC = () => {
   );
   const isOpen = useContextSelector(ModalContext, (ctx) => ctx.isAddModalOpen);
   const onClose = useContextSelector(ModalContext, (ctx) => ctx.closeAddModal);
-  const onOpen = useContextSelector(ModalContext, (ctx) => ctx.openAddModal);
 
   const { mutate: verifyFeedURL, isLoading: isVerifying } = useVerifyFeedURL();
   const { mutate: saveCollection, isLoading: isSaving } = useSaveCollection({
@@ -96,22 +92,6 @@ export const AddModal: React.FC = () => {
       );
     },
     [setState, verifyFeedURL]
-  );
-
-  const onOpenAddCollectionModal = useCallback(
-    (initialData?: Collection) => {
-      if (initialData) {
-        setState({
-          isUrlVerified: true,
-          initialData,
-          editedFeedId: initialData!.id,
-        });
-      } else {
-        setState({ isUrlVerified: false });
-      }
-      onOpen();
-    },
-    [onOpen, setState]
   );
 
   useEffect(() => {
