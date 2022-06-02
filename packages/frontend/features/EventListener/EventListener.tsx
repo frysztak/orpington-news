@@ -1,18 +1,12 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createContext, useContextSelector } from 'use-context-selector';
 import {
   EventStreamContentType,
   fetchEventSource,
 } from '@microsoft/fetch-event-source';
 import { getUrls } from '@api';
 import { ReactFCC } from '@utils/react';
-import { Msg } from '@orpington-news/shared';
+import { Msg, noop } from '@orpington-news/shared';
 
 type EventListener = (msg: Msg) => void;
 type Status = 'connecting' | 'connected' | 'error';
@@ -26,9 +20,13 @@ export interface EventListenerContextData {
   status: Status;
 }
 
-const EventListenerContext = createContext<EventListenerContextData | null>(
-  null
-);
+export const EventListenerContext = createContext<EventListenerContextData>({
+  addEventListener: noop,
+  removeEventListener: noop,
+  attemptToConnect: noop,
+  lastPing: null,
+  status: 'connecting',
+});
 
 class RetriableError extends Error {}
 class FatalError extends Error {}
@@ -128,19 +126,16 @@ export const EventListenerContextProvider: ReactFCC = ({ children }) => {
   );
 };
 
-export const useEventListenerContext = () => {
-  const context = useContext(EventListenerContext);
-  if (!context) {
-    throw new Error(
-      `useEventListenerContext needs to wrapped in EventListenerContextProvider`
-    );
-  }
-
-  return context;
-};
-
 export const useAddEventListener = (listener: EventListener) => {
-  const { addEventListener, removeEventListener } = useEventListenerContext();
+  const addEventListener = useContextSelector(
+    EventListenerContext,
+    (ctx) => ctx.addEventListener
+  );
+  const removeEventListener = useContextSelector(
+    EventListenerContext,
+    (ctx) => ctx.removeEventListener
+  );
+
   useEffect(() => {
     addEventListener(listener);
     return () => removeEventListener(listener);

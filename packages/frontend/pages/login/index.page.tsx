@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import type { NextPageWithLayout } from '@pages/types';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -16,8 +17,8 @@ import {
 } from '@chakra-ui/react';
 import { getSSProps } from '@pages/ssrProps';
 import { LoginFormData, useLogin } from '@features/Auth';
-import { useEventListenerContext } from '@features/EventListener';
 import { LoginForm } from './LoginForm';
+import { EventListenerContext } from '@features/EventListener';
 
 const LoginPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -26,7 +27,10 @@ const LoginPage: NextPageWithLayout = () => {
   const { publicRuntimeConfig } = getConfig();
   const demoMode = Boolean(publicRuntimeConfig.APP_DEMO);
 
-  const { attemptToConnect } = useEventListenerContext();
+  const attemptToConnect = useContextSelector(
+    EventListenerContext,
+    (ctx) => ctx.attemptToConnect
+  );
   const handleSubmit = useCallback(
     (data: LoginFormData) => {
       mutate(data, {

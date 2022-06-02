@@ -1,11 +1,12 @@
 import { useState } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import { useInterval } from 'usehooks-ts';
 import { formatDistanceToNowStrict } from 'date-fns';
 import Head from 'next/head';
 import { Heading, Text, HStack, VStack, Code, Box } from '@chakra-ui/react';
 import { getSSProps } from '@pages/ssrProps';
 import type { NextPageWithLayout } from '@pages/types';
-import { useEventListenerContext } from '@features/EventListener';
+import { EventListenerContext } from '@features/EventListener';
 import { SettingsLayout } from './SettingsLayout';
 
 const formatLastPingText = (lastPing: number | null): string => {
@@ -16,7 +17,11 @@ const formatLastPingText = (lastPing: number | null): string => {
 };
 
 const Page: NextPageWithLayout = () => {
-  const { status, lastPing } = useEventListenerContext();
+  const status = useContextSelector(EventListenerContext, (ctx) => ctx.status);
+  const lastPing = useContextSelector(
+    EventListenerContext,
+    (ctx) => ctx.lastPing
+  );
 
   const [lastPingText, setLastPingText] = useState<string>(
     formatLastPingText(lastPing)
