@@ -41,7 +41,7 @@ import {
   CollectionLayouts,
   defaultCollectionLayout,
 } from '@orpington-news/shared';
-import { disableCoercionAjv, normalizeUrl } from '@utils';
+import { normalizeUrl, Nullable } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
 import { fetchRSSJob, parser, updateCollections } from '@tasks/fetchRSS';
@@ -72,7 +72,7 @@ type CollectionIdType = Static<typeof CollectionId>;
 
 const MoveCollection = Type.Object({
   collectionId: Type.Integer(),
-  newParentId: Type.Union([Type.Integer(), Type.Null()]),
+  newParentId: Nullable(Type.Integer()),
   newOrder: Type.Integer(),
 });
 type MoveCollectionType = Static<typeof MoveCollection>;
@@ -179,11 +179,6 @@ export const collections: FastifyPluginAsync = async (
       schema: {
         body: MoveCollection,
         tags: ['Collections'],
-      },
-      config: {
-        schemaValidators: {
-          body: disableCoercionAjv,
-        },
       },
     },
     async (request, reply) => {
@@ -422,7 +417,7 @@ export const collections: FastifyPluginAsync = async (
   );
 
   const DateReadBody = Type.Object({
-    dateRead: Type.Union([Type.Null(), Type.Number()]),
+    dateRead: Nullable(Type.Number()),
   });
   fastify.put<{
     Params: ItemDetailsType;

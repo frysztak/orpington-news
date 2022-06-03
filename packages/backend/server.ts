@@ -6,7 +6,6 @@ import fastifyAuth from '@fastify/auth';
 import fastifyCors from '@fastify/cors';
 import fastifyETag from '@fastify/etag';
 import fastifySchedule from '@fastify/schedule';
-import fastifySplitValidator from 'fastify-split-validator';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
 import connectPgSimple from 'connect-pg-simple';
@@ -14,7 +13,7 @@ import connectPgSimple from 'connect-pg-simple';
 import { auth, collections, preferences, sse } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob, pingJob } from '@tasks';
-import { defaultAjv, logger, readEnvVariable } from '@utils';
+import { logger, readEnvVariable } from '@utils';
 import { buildDsn } from '@db';
 import { migrator } from '@db/migrator';
 
@@ -77,9 +76,6 @@ async function setupFastify() {
   await fastify.register(fastifyAuth);
   await fastify.register(fastifyVerifySession);
   await fastify.register(fastifySchedule);
-  await fastify.register(fastifySplitValidator, {
-    defaultValidator: defaultAjv,
-  });
   await fastify.register(FastifySSEPlugin);
 
   await fastify.register(auth, { prefix: '/auth' });

@@ -34,7 +34,6 @@
     "dotenv": "^16.0.1",
     "event-iterator": "^2.0.0",
     "fastify": "^3.29.0",
-    "fastify-split-validator": "^1.0.2",
     "fastify-sse-v2": "^2.0.6",
     "file-type": "^17.1.2",
     "html-entities": "^2.3.3",
