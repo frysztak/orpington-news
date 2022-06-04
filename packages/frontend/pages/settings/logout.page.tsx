@@ -12,7 +12,9 @@ const Page: NextPageWithLayout = () => {
 
   useTimeout(() => {
     mutate(void 0, {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await window.caches.delete('next-data');
+        await window.caches.delete('apis');
         router.push('/');
       },
     });

@@ -38,6 +38,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <Panes
         sidebarWidthValue={pageProps.sidebarWidth}
         collectionItemsWidthValue={pageProps.collectionItemsWidth}
+        articleWidthValue={pageProps.articleWidth}
       >
         {page}
       </Panes>

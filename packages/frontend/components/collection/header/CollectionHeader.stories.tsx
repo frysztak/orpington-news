@@ -19,14 +19,19 @@ Default.args = {
     title: 'Fun Blog',
     layout: 'magazine',
   },
-  onRefresh: action('onRefresh'),
+  onHamburgerClicked: action('onHamburgerClicked'),
   onChangeLayout: action('onChangeLayout'),
+  onMenuActionClicked: action('onMenuActionClicked'),
 };
 
-export const NoMenuButton = Template.bind({});
-NoMenuButton.args = {
+export const Mobile = Template.bind({});
+Mobile.args = {
   ...Default.args,
-  hideMenuButton: true,
+};
+Mobile.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
 };
 
 export const IsRefreshing = Template.bind({});

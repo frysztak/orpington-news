@@ -39,5 +39,6 @@ module.exports = withPlugins(
           ? { exclude: ['error', 'warn'] }
           : false,
     },
+    productionBrowserSourceMaps: process.env.SOURCE_MAPS === 'true',
   }
 );

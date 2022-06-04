@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2022-06-04
+
+### Added
+
+-   `.nvmrc` file
+-   Collection header: added menu, allowing to mark entire collection as read on mobile
+-   Article page: allow to select article width (narrow, wide, unlimited)
+
+### Changed
+
+-   Collection icon picker: increase size (of both popover and icons themselves), add tooltips
+
+### Fixed
+
+-   Settings page: fix redirect on mobile
+-   PWA: clear CacheStorage on login/logout
+-   Article page: show 'go back' button when in mobile/tablet mode
+-   Panes: improve performance when opening modals
+-   Menu: fix disappearing shadow
+
 ## [0.2.0] - 2022-05-22
 
 ### Added
@@ -38,7 +58,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.3.0...HEAD
+
+[0.3.0]: https://github.com/frysztak/orpington-news/compare/0.2.0...0.3.0
 
 [0.2.0]: https://github.com/frysztak/orpington-news/compare/0.1.1...0.2.0
 

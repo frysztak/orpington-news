@@ -2,19 +2,21 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useMediaQuery } from '@chakra-ui/react';
+import { useIsClient } from 'usehooks-ts';
 import type { NextPageWithLayout } from '@pages/types';
 import { getSSProps } from '@pages/ssrProps';
 import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 
 const Page: NextPageWithLayout = () => {
   const router = useRouter();
+  const isClient = useIsClient();
   const [isMobile] = useMediaQuery(['(max-width: 30em)']);
 
   useEffect(() => {
-    if (!isMobile) {
+    if (isClient && !isMobile) {
       router.push('/settings/appearance');
     }
-  }, [isMobile, router]);
+  }, [isClient, isMobile, router]);
 
   return (
     <>

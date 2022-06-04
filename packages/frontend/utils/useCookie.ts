@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import { CookieSerializeOptions } from 'next/dist/server/web/types';
 
+const defaultOptions: CookieSerializeOptions = {
+  path: '/',
+};
+
 export const useCookie = <T>(key: string, initialValue: T) => {
   const readValue = useCallback(() => {
     try {
@@ -21,7 +25,7 @@ export const useCookie = <T>(key: string, initialValue: T) => {
   const handleSetCookie = useCallback(
     (value: T, options?: CookieSerializeOptions) => {
       setStoredValue(value);
-      setCookie(null, key, JSON.stringify(value), options);
+      setCookie(null, key, JSON.stringify(value), options ?? defaultOptions);
     },
     [key]
   );
@@ -34,7 +38,7 @@ export const useCookie = <T>(key: string, initialValue: T) => {
 
   const handleRemoveCookie = useCallback(
     (options?: CookieSerializeOptions) => {
-      destroyCookie(null, key, options);
+      destroyCookie(null, key, options ?? defaultOptions);
     },
     [key]
   );

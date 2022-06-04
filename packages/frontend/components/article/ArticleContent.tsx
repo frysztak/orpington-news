@@ -19,8 +19,8 @@ import {
   Skeleton,
   Image,
 } from '@chakra-ui/react';
-import { ReactFCC } from '@utils/react';
 import { Element } from 'domhandler';
+import { ReactFCC } from '@utils/react';
 
 const SyntaxHighlighterWithTheme = dynamic(
   () => import('./SyntaxHighlighterWithTheme'),

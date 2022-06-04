@@ -1,11 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { Collections, CollectionsProps } from './Collections';
-import {
-  Collection,
-  defaultIcon,
-  defaultRefreshInterval,
-} from '@orpington-news/shared';
+import { Collection, defaultIcon } from '@orpington-news/shared';
 import { action } from '@storybook/addon-actions';
 
 export default {

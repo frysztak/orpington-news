@@ -205,7 +205,7 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
                 size="sm"
                 tabIndex={0}
               />
-              <MenuList>{menuItems}</MenuList>
+              <MenuList data-focus-visible-disabled>{menuItems}</MenuList>
             </Menu>
           </Box>
         )}

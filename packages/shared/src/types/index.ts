@@ -133,3 +133,7 @@ export const placeholderUser: User = {
   displayName: '',
   username: '',
 };
+
+export const ArticleWidths = ['narrow', 'wide', 'unlimited'] as const;
+export type ArticleWidth = typeof ArticleWidths[number];
+export const defaultArticleWidth: ArticleWidth = 'narrow';

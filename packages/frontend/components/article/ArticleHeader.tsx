@@ -13,11 +13,16 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  MenuOptionGroup,
+  MenuItemOption,
+  MenuDivider,
 } from '@chakra-ui/react';
-import { CollectionItemDetails } from '@orpington-news/shared';
+import {
+  ArticleWidth,
+  CollectionItemDetails,
+  defaultArticleWidth,
+} from '@orpington-news/shared';
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
-import { BsBookmarkDash } from '@react-icons/all-files/bs/BsBookmarkDash';
-import { BsBookmarkPlus } from '@react-icons/all-files/bs/BsBookmarkPlus';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { CgCalendar } from '@react-icons/all-files/cg/CgCalendar';
 import { CgTime } from '@react-icons/all-files/cg/CgTime';
@@ -29,10 +34,12 @@ export type ArticleMenuAction = 'markAsUnread';
 
 export interface ArticleHeaderProps {
   article: CollectionItemDetails;
+  articleWidth?: ArticleWidth;
 
   onGoBackClicked?: () => void;
   onReadingListToggle?: () => void;
   onMenuItemClicked?: (action: ArticleMenuAction) => void;
+  onArticleWidthChanged?: (width: ArticleWidth) => void;
 }
 
 export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
@@ -45,10 +52,12 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
       readingTime,
       onReadingList,
     },
+    articleWidth,
 
     onGoBackClicked,
     onReadingListToggle,
     onMenuItemClicked,
+    onArticleWidthChanged,
   } = props;
 
   const handleMenuItemClick = useCallback(
@@ -67,7 +76,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           variant="ghost"
           mr="auto"
           onClick={onGoBackClicked}
-          display={['inline-flex', 'none']}
+          display={{ base: 'inline-flex', lg: 'none' }}
         />
 
         <IconButton
@@ -96,7 +105,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               variant="ghost"
               tabIndex={0}
             />
-            <MenuList>
+            <MenuList data-focus-visible-disabled>
               <MenuItem
                 icon={<IoCheckmarkDone />}
                 onClick={handleMenuItemClick('markAsUnread')}
@@ -104,6 +113,25 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               >
                 Mark as unread
               </MenuItem>
+
+              <Box display={{ base: 'none', lg: 'block' }}>
+                <MenuDivider />
+                <MenuOptionGroup
+                  title="Article width"
+                  type="radio"
+                  defaultValue="narrow"
+                  value={articleWidth ?? defaultArticleWidth}
+                  /**
+                   * `onChange` expects handler to accept `string | string[]`, but since
+                   * group type is `radio`, it can't call `onChange` with an array
+                   */
+                  onChange={onArticleWidthChanged as any}
+                >
+                  <MenuItemOption value="narrow">Narrow</MenuItemOption>
+                  <MenuItemOption value="wide">Wide</MenuItemOption>
+                  <MenuItemOption value="unlimited">Unlimited</MenuItemOption>
+                </MenuOptionGroup>
+              </Box>
             </MenuList>
           </Menu>
         </Box>

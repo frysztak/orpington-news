@@ -6,93 +6,120 @@ import {
   IconButton,
   Menu,
   MenuButton,
+  MenuItem,
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
   VStack,
 } from '@chakra-ui/react';
 import { CgMenuLeftAlt } from '@react-icons/all-files/cg/CgMenuLeftAlt';
-import { CgSearch } from '@react-icons/all-files/cg/CgSearch';
 import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
-import { ActiveCollection, CollectionLayoutName } from '../types';
+import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
+import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import { CollectionLayout, CollectionLayouts } from '@orpington-news/shared';
+import { ActiveCollection, CollectionLayoutName } from '../types';
+
+export type MenuAction = 'refresh' | 'markAsRead';
 
 export interface CollectionHeaderProps {
   collection?: ActiveCollection;
   menuButtonRef?: React.MutableRefObject<HTMLButtonElement | null>;
-  hideMenuButton?: boolean;
   isRefreshing?: boolean;
 
-  onMenuClicked?: () => void;
-  onRefresh?: () => void;
+  onHamburgerClicked?: () => void;
   onChangeLayout?: (layout: CollectionLayout) => void;
+  onMenuActionClicked?: (action: MenuAction) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
   const {
     collection,
     menuButtonRef,
-    hideMenuButton = false,
     isRefreshing = false,
-    onMenuClicked,
-    onRefresh,
+    onHamburgerClicked,
     onChangeLayout,
+    onMenuActionClicked,
   } = props;
 
   return (
-    <VStack spacing={1} w="full">
-      <HStack w="full" justify={hideMenuButton ? 'flex-end' : 'space-between'}>
-        {!hideMenuButton && (
-          <IconButton
-            icon={<CgMenuLeftAlt />}
-            aria-label="Menu"
-            variant="ghost"
-            ref={menuButtonRef}
-            onClick={onMenuClicked}
-          />
-        )}
+    <VStack spacing={0} w="full">
+      <HStack
+        spacing={0}
+        w="full"
+        justify={{ base: 'space-between', lg: 'flex-end' }}
+      >
+        <IconButton
+          display={{ base: 'inline-flex', lg: 'none' }}
+          icon={<CgMenuLeftAlt />}
+          aria-label="Menu"
+          variant="ghost"
+          ref={menuButtonRef}
+          onClick={onHamburgerClicked}
+        />
 
         {collection && (
-          <Box>
+          <HStack>
             <IconButton
               icon={<IoRefresh />}
               isLoading={isRefreshing}
               aria-label="Refresh"
               variant="ghost"
-              onClick={onRefresh}
+              onClick={() => onMenuActionClicked?.('refresh')}
             />
             {/*<IconButton
               icon={<CgSearch />}
               aria-label="Search"
               variant="ghost"
             />*/}
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                icon={<BsLayoutWtf />}
-                aria-label="Layout"
-                variant="ghost"
-              />
-              <MenuList>
-                <MenuOptionGroup
-                  value={collection.layout}
-                  title="Layout"
-                  type="radio"
-                >
-                  {CollectionLayouts.map((layout) => (
-                    <MenuItemOption
-                      key={layout}
-                      value={layout}
-                      onClick={() => onChangeLayout?.(layout)}
-                    >
-                      {CollectionLayoutName[layout]}
-                    </MenuItemOption>
-                  ))}
-                </MenuOptionGroup>
-              </MenuList>
-            </Menu>
-          </Box>
+            <Box>
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  icon={<BsLayoutWtf />}
+                  aria-label="Layout"
+                  variant="ghost"
+                />
+                <MenuList data-focus-visible-disabled>
+                  <MenuOptionGroup
+                    value={collection.layout}
+                    title="Layout"
+                    type="radio"
+                  >
+                    {CollectionLayouts.map((layout) => (
+                      <MenuItemOption
+                        key={layout}
+                        value={layout}
+                        onClick={() => onChangeLayout?.(layout)}
+                      >
+                        {CollectionLayoutName[layout]}
+                      </MenuItemOption>
+                    ))}
+                  </MenuOptionGroup>
+                </MenuList>
+              </Menu>
+            </Box>
+
+            <Box>
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  aria-label="Menu"
+                  icon={<BsThreeDotsVertical />}
+                  variant="ghost"
+                  tabIndex={0}
+                />
+                <MenuList data-focus-visible-disabled>
+                  <MenuItem
+                    icon={<IoCheckmarkDone />}
+                    onClick={() => onMenuActionClicked?.('markAsRead')}
+                  >
+                    Mark as read
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </Box>
+          </HStack>
         )}
       </HStack>
 
