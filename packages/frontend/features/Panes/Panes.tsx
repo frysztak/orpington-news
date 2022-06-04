@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { Panes as PanesComponent } from '@components/panes';
 import { Article } from '@features/Article';
 import { ReactFCC, getNumber, useCookie } from '@utils';
+import { ArticleWidth } from '@orpington-news/shared';
 import { CollectionItemsList } from './CollectionItemsList';
 import { Sidebar } from './Sidebar';
 import { ModalContextProvider } from './ModalContext';
@@ -14,11 +15,13 @@ import { DeleteModal } from './DeleteModal';
 interface PanesProps {
   sidebarWidthValue?: number;
   collectionItemsWidthValue?: number;
+  articleWidthValue?: ArticleWidth;
 }
 
 export const Panes: ReactFCC<PanesProps> = ({
   sidebarWidthValue,
   collectionItemsWidthValue,
+  articleWidthValue,
   children,
 }) => {
   const router = useRouter();
@@ -52,6 +55,7 @@ export const Panes: ReactFCC<PanesProps> = ({
               collectionId={collectionId}
               itemId={itemId}
               onGoBackClicked={handleGoBack}
+              articleWidthValue={articleWidthValue}
             />
           )
         }

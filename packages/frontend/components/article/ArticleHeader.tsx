@@ -13,8 +13,15 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  MenuOptionGroup,
+  MenuItemOption,
+  MenuDivider,
 } from '@chakra-ui/react';
-import { CollectionItemDetails } from '@orpington-news/shared';
+import {
+  ArticleWidth,
+  CollectionItemDetails,
+  defaultArticleWidth,
+} from '@orpington-news/shared';
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { CgCalendar } from '@react-icons/all-files/cg/CgCalendar';
@@ -27,10 +34,12 @@ export type ArticleMenuAction = 'markAsUnread';
 
 export interface ArticleHeaderProps {
   article: CollectionItemDetails;
+  articleWidth?: ArticleWidth;
 
   onGoBackClicked?: () => void;
   onReadingListToggle?: () => void;
   onMenuItemClicked?: (action: ArticleMenuAction) => void;
+  onArticleWidthChanged?: (width: ArticleWidth) => void;
 }
 
 export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
@@ -43,10 +52,12 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
       readingTime,
       onReadingList,
     },
+    articleWidth,
 
     onGoBackClicked,
     onReadingListToggle,
     onMenuItemClicked,
+    onArticleWidthChanged,
   } = props;
 
   const handleMenuItemClick = useCallback(
@@ -102,6 +113,25 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               >
                 Mark as unread
               </MenuItem>
+
+              <Box display={{ base: 'none', lg: 'block' }}>
+                <MenuDivider />
+                <MenuOptionGroup
+                  title="Article width"
+                  type="radio"
+                  defaultValue="narrow"
+                  value={articleWidth ?? defaultArticleWidth}
+                  /**
+                   * `onChange` expects handler to accept `string | string[]`, but since
+                   * group type is `radio`, it can't call `onChange` with an array
+                   */
+                  onChange={onArticleWidthChanged as any}
+                >
+                  <MenuItemOption value="narrow">Narrow</MenuItemOption>
+                  <MenuItemOption value="wide">Wide</MenuItemOption>
+                  <MenuItemOption value="unlimited">Unlimited</MenuItemOption>
+                </MenuOptionGroup>
+              </Box>
             </MenuList>
           </Menu>
         </Box>

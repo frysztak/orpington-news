@@ -14,18 +14,31 @@ import {
   ArticleHeader,
   ArticleMenuAction,
 } from '@components/article';
-import type { ID } from '@orpington-news/shared';
+import { ArticleWidth, defaultArticleWidth, ID } from '@orpington-news/shared';
+import { useCookie } from '@utils';
 import { useArticleDateReadMutation, useArticleDetails } from './queries';
 
 export interface ArticleProps {
   collectionId: ID;
   itemId: ID;
+  articleWidthValue?: ArticleWidth;
 
   onGoBackClicked?: () => void;
 }
 
+const getWidth = (setting: ArticleWidth): string => {
+  switch (setting) {
+    case 'narrow':
+      return '42em';
+    case 'wide':
+      return '64em';
+    case 'unlimited':
+      return 'unset';
+  }
+};
+
 export const Article: React.FC<ArticleProps> = (props) => {
-  const { collectionId, itemId, onGoBackClicked } = props;
+  const { collectionId, itemId, articleWidthValue, onGoBackClicked } = props;
 
   const toast = useToast();
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
@@ -93,6 +106,11 @@ export const Article: React.FC<ArticleProps> = (props) => {
     ref.current?.scrollTo({ top: 0 });
   }, [query.data?.fullText]);
 
+  const [articleWidth, setArticleWidth] = useCookie(
+    'articleWidth',
+    articleWidthValue ?? defaultArticleWidth
+  );
+
   if (query.status === 'error') {
     const status: number | undefined = query.error?.status;
     return (
@@ -108,11 +126,19 @@ export const Article: React.FC<ArticleProps> = (props) => {
   return query.status === 'loading' ? (
     <CircularProgress isIndeterminate />
   ) : query.status === 'success' ? (
-    <VStack maxH="100vh" overflowY="auto" w="full" spacing={1} ref={ref}>
+    <VStack
+      maxH="100vh"
+      w="full"
+      spacing={1}
+      ref={ref}
+      maxWidth={getWidth(articleWidth)}
+    >
       <ArticleHeader
         article={query.data}
         onGoBackClicked={onGoBackClicked}
         onMenuItemClicked={handleMenuItemClicked}
+        articleWidth={articleWidth}
+        onArticleWidthChanged={setArticleWidth}
       />
       <Box w="full" px={4} py={4}>
         <ArticleContent html={query.data.fullText} />

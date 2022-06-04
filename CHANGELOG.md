@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `.nvmrc` file
 - Collection header: added menu, allowing to mark entire collection as read on mobile
+- Article page: allow to select article width (narrow, wide, unlimited)
 
 ### Changed
 

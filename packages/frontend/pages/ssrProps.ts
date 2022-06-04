@@ -61,6 +61,12 @@ const parseIntCookie = (
   key: string
 ): number | null => (cookies[key] && parseInt(cookies[key])) || null;
 
+const parseStringCookie = (
+  cookies: Record<string, string>,
+  key: string
+): string | null =>
+  (cookies[key] && decodeURI(cookies[key]).replaceAll('"', '')) || null;
+
 export const getSSProps =
   (params: GetSSParams): GetServerSideProps =>
   async (ctx) => {
@@ -78,6 +84,7 @@ export const getSSProps =
         : '',
       sidebarWidth: parseIntCookie(cookies, 'sidebarWidth'),
       collectionItemsWidth: parseIntCookie(cookies, 'collectionItemsWidth'),
+      articleWidth: parseStringCookie(cookies, 'articleWidth'),
     };
 
     if (requireAuthorization && !cookies['sessionId']) {
