@@ -105,7 +105,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               variant="ghost"
               tabIndex={0}
             />
-            <MenuList>
+            <MenuList data-focus-visible-disabled>
               <MenuItem
                 icon={<IoCheckmarkDone />}
                 onClick={handleMenuItemClick('markAsUnread')}

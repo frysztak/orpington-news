@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   Heading,
   HStack,
   IconButton,
@@ -71,49 +72,53 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
               aria-label="Search"
               variant="ghost"
             />*/}
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                icon={<BsLayoutWtf />}
-                aria-label="Layout"
-                variant="ghost"
-              />
-              <MenuList>
-                <MenuOptionGroup
-                  value={collection.layout}
-                  title="Layout"
-                  type="radio"
-                >
-                  {CollectionLayouts.map((layout) => (
-                    <MenuItemOption
-                      key={layout}
-                      value={layout}
-                      onClick={() => onChangeLayout?.(layout)}
-                    >
-                      {CollectionLayoutName[layout]}
-                    </MenuItemOption>
-                  ))}
-                </MenuOptionGroup>
-              </MenuList>
-            </Menu>
+            <Box>
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  icon={<BsLayoutWtf />}
+                  aria-label="Layout"
+                  variant="ghost"
+                />
+                <MenuList data-focus-visible-disabled>
+                  <MenuOptionGroup
+                    value={collection.layout}
+                    title="Layout"
+                    type="radio"
+                  >
+                    {CollectionLayouts.map((layout) => (
+                      <MenuItemOption
+                        key={layout}
+                        value={layout}
+                        onClick={() => onChangeLayout?.(layout)}
+                      >
+                        {CollectionLayoutName[layout]}
+                      </MenuItemOption>
+                    ))}
+                  </MenuOptionGroup>
+                </MenuList>
+              </Menu>
+            </Box>
 
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                aria-label="Menu"
-                icon={<BsThreeDotsVertical />}
-                variant="ghost"
-                tabIndex={0}
-              />
-              <MenuList>
-                <MenuItem
-                  icon={<IoCheckmarkDone />}
-                  onClick={() => onMenuActionClicked?.('markAsRead')}
-                >
-                  Mark as read
-                </MenuItem>
-              </MenuList>
-            </Menu>
+            <Box>
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  aria-label="Menu"
+                  icon={<BsThreeDotsVertical />}
+                  variant="ghost"
+                  tabIndex={0}
+                />
+                <MenuList data-focus-visible-disabled>
+                  <MenuItem
+                    icon={<IoCheckmarkDone />}
+                    onClick={() => onMenuActionClicked?.('markAsRead')}
+                  >
+                    Mark as read
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            </Box>
           </HStack>
         )}
       </HStack>
