@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { useUpdateEffect } from 'usehooks-ts';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { Box, Button, HStack, VStack } from '@chakra-ui/react';
@@ -25,12 +24,11 @@ export interface AddCollectionFormProps {
   initialData?: AddCollectionFormData;
 
   isLoading: boolean;
-  isUrlVerified: boolean;
+  verifiedUrl?: string;
 
   areCollectionsLoading?: boolean;
   collections: Collection[];
 
-  onVerifyUrlChanged?: (url?: string) => void;
   onVerifyUrlClicked?: (url: string) => void;
   onSubmit: (data: AddCollectionFormData) => void;
 }
@@ -64,10 +62,9 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
   const {
     initialData,
     isLoading,
-    isUrlVerified,
+    verifiedUrl,
     areCollectionsLoading,
     collections,
-    onVerifyUrlChanged,
     onVerifyUrlClicked,
     onSubmit,
   } = props;
@@ -122,10 +119,6 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
         };
   }, [initialData]);
 
-  useUpdateEffect(() => {
-    onVerifyUrlChanged?.(feedUrl);
-  }, [feedUrl, onVerifyUrlChanged]);
-
   return (
     <Formik
       initialValues={initialValues}
@@ -133,85 +126,89 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
       onSubmit={handleSubmit}
       enableReinitialize
     >
-      {({ values, errors }) => (
-        <Form noValidate>
-          <VStack spacing={4} w="full">
-            <StringField
-              name="url"
-              label="RSS/Atom feed URL"
-              placeholder="Feed URL"
-              isDisabled={isLoading}
-            />
-            <FieldListener value={values.url} cb={setFeedUrl} />
+      {({ values, errors }) => {
+        const isUrlVerified = values.url === verifiedUrl;
 
-            <HStack w="full" justify="flex-end">
-              <Button
-                w={['full', 40]}
-                isLoading={isLoading}
-                onClick={handleVerifyUrlClicked}
-                isDisabled={
-                  isLoading || !values.url || !!errors.url || isUrlVerified
-                }
-              >
-                Verify URL
-              </Button>
-            </HStack>
+        return (
+          <Form noValidate>
+            <VStack spacing={4} w="full">
+              <StringField
+                name="url"
+                label="RSS/Atom feed URL"
+                placeholder="Feed URL"
+                isDisabled={isLoading}
+              />
+              <FieldListener value={values.url} cb={setFeedUrl} />
 
-            <HStack w="full" align="flex-start" spacing={0}>
-              <Box flexShrink={0} w={24}>
-                <CollectionIconField
-                  name="icon"
-                  label="Feed icon"
+              <HStack w="full" justify="flex-end">
+                <Button
+                  w={['full', 40]}
+                  isLoading={isLoading}
+                  onClick={handleVerifyUrlClicked}
+                  isDisabled={
+                    isLoading || !values.url || !!errors.url || isUrlVerified
+                  }
+                >
+                  Verify URL
+                </Button>
+              </HStack>
+
+              <HStack w="full" align="flex-start" spacing={0}>
+                <Box flexShrink={0} w={24}>
+                  <CollectionIconField
+                    name="icon"
+                    label="Feed icon"
+                    isRequired
+                    isDisabled={isLoading}
+                  />
+                </Box>
+
+                <StringField
+                  name="title"
+                  label="Feed name"
+                  placeholder="Feed name"
                   isRequired
                   isDisabled={isLoading}
                 />
-              </Box>
+              </HStack>
 
               <StringField
-                name="title"
-                label="Feed name"
-                placeholder="Feed name"
-                isRequired
+                name="description"
+                label="Feed description"
+                placeholder="Feed description"
                 isDisabled={isLoading}
               />
-            </HStack>
 
-            <StringField
-              name="description"
-              label="Feed description"
-              placeholder="Feed description"
-              isDisabled={isLoading}
-            />
+              <SelectField
+                name="parentId"
+                label="Parent"
+                isLoading={areCollectionsLoading}
+                isDisabled={isLoading}
+                options={parentOptions}
+              />
 
-            <SelectField
-              name="parentId"
-              label="Parent"
-              isLoading={areCollectionsLoading}
-              isDisabled={isLoading}
-              options={parentOptions}
-            />
+              <NumberField
+                name="refreshInterval"
+                label="Refresh interval (minutes)"
+                decimalSeparator="0"
+                isLoading={areCollectionsLoading}
+                isDisabled={isLoading}
+              />
 
-            <NumberField
-              name="refreshInterval"
-              label="Refresh interval (minutes)"
-              decimalSeparator="0"
-              isLoading={areCollectionsLoading}
-              isDisabled={isLoading}
-            />
-
-            <HStack w="full" justify="flex-end">
-              <Button
-                w={['full', 40]}
-                type="submit"
-                isLoading={isLoading}
-                isDisabled={Boolean(values.url) && !isUrlVerified}
-              >
-                {initialData ? 'Save' : 'Add'}
-              </Button>
-            </HStack>
-          </VStack>
-        </Form>
-      )}
+              <HStack w="full" justify="flex-end">
+                <Button
+                  w={['full', 40]}
+                  type="submit"
+                  isLoading={isLoading}
+                  isDisabled={Boolean(values.url) && !isUrlVerified}
+                >
+                  {initialData ? 'Save' : 'Add'}
+                </Button>
+              </HStack>
+            </VStack>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };
