@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Backend: bundle production build using esbuild. This reduces uncompressed image size by 24 MB
+- Backend: improve compatibility with certain Atom feeds
 
 ## [0.3.0] - 2022-06-04
 ### Added

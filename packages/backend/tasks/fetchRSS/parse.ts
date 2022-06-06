@@ -74,7 +74,8 @@ export const mapFeedItems = (
         return null;
       }
 
-      if (!item.guid && !item.id) {
+      const id = item.guid || item.id || item.link;
+      if (!id) {
         logger.error(`Feed item '${item.link}' doesn't have ID`);
         return null;
       }
@@ -90,7 +91,7 @@ export const mapFeedItems = (
       const stats = readingTime(pureText);
 
       return {
-        id: (item.guid || item.id) as string,
+        id: id as string,
         title: title,
         url: item.link,
         full_text: DOMPurify.sanitize(content),
