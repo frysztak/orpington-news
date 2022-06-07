@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { Panes as PanesComponent } from '@components/panes';
 import { Article } from '@features/Article';
-import { ReactFCC, getNumber, useCookie } from '@utils';
+import { ReactFCC, getNumber, useCookie, ClientRender } from '@utils';
 import { ArticleWidth } from '@orpington-news/shared';
 import { CollectionItemsList } from './CollectionItemsList';
 import { Sidebar } from './Sidebar';
@@ -43,27 +43,29 @@ export const Panes: ReactFCC<PanesProps> = ({
 
   return (
     <ModalContextProvider>
-      <PanesComponent
-        flexGrow={1}
-        sidebar={<Sidebar />}
-        collectionItemHeader={<CollectionItemsHeader />}
-        collectionItemList={<CollectionItemsList />}
-        mainContent={
-          itemId &&
-          collectionId && (
-            <Article
-              collectionId={collectionId}
-              itemId={itemId}
-              onGoBackClicked={handleGoBack}
-              articleWidthValue={articleWidthValue}
-            />
-          )
-        }
-        sidebarWidth={sidebarWidth}
-        onSidebarWidthChanged={setSidebarWidth}
-        collectionItemsWidth={collectionItemsWidth}
-        onCollectionItemsWidthChanged={setCollectionItemsWidth}
-      />
+      <ClientRender>
+        <PanesComponent
+          flexGrow={1}
+          sidebar={<Sidebar />}
+          collectionItemHeader={<CollectionItemsHeader />}
+          collectionItemList={<CollectionItemsList />}
+          mainContent={
+            itemId &&
+            collectionId && (
+              <Article
+                collectionId={collectionId}
+                itemId={itemId}
+                onGoBackClicked={handleGoBack}
+                articleWidthValue={articleWidthValue}
+              />
+            )
+          }
+          sidebarWidth={sidebarWidth}
+          onSidebarWidthChanged={setSidebarWidth}
+          collectionItemsWidth={collectionItemsWidth}
+          onCollectionItemsWidthChanged={setCollectionItemsWidth}
+        />
+      </ClientRender>
 
       <AddModal />
       <DeleteModal />
