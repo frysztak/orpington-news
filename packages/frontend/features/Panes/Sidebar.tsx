@@ -29,6 +29,7 @@ export const Sidebar: React.FC = () => {
     isLoading: collectionsLoading,
     isError: collectionsError,
   } = useCollectionsTree();
+  const { isLoading: preferencesLoading } = useGetPreferences();
   const { activeCollection } = useActiveCollection();
   const { setActiveCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
@@ -99,7 +100,7 @@ export const Sidebar: React.FC = () => {
   return (
     <SidebarContent
       isError={collectionsError}
-      isLoading={collectionsLoading}
+      isLoading={collectionsLoading || preferencesLoading}
       collections={emptyIfUndefined(collections)}
       onCollectionClicked={handleCollectionClickedAndCloseDrawer}
       onChevronClicked={handleCollectionChevronClicked}
