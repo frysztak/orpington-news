@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import Head from 'next/head';
 import type { NextPageWithLayout } from '@pages/types';
-import { commonQueries, getSSProps } from '@pages/ssrProps';
 import { Box, Container, useToast, VStack } from '@chakra-ui/react';
 import { useGetUser, useSetUser } from '@features/Auth';
 import { SettingsLayout } from './SettingsLayout';
@@ -57,7 +56,3 @@ Page.getLayout = (page) => {
 };
 
 export default Page;
-
-export const getServerSideProps = getSSProps({
-  queriesToFetch: commonQueries,
-});

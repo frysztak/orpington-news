@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { useMediaQuery } from '@chakra-ui/react';
 import { useIsClient } from 'usehooks-ts';
 import type { NextPageWithLayout } from '@pages/types';
-import { getSSProps } from '@pages/ssrProps';
 import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 
 const Page: NextPageWithLayout = () => {
@@ -32,5 +31,3 @@ const Page: NextPageWithLayout = () => {
 Page.getLayout = (page) => page;
 
 export default Page;
-
-export const getServerSideProps = getSSProps({});

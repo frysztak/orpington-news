@@ -15,7 +15,6 @@ import {
   Code,
   Link,
 } from '@chakra-ui/react';
-import { getSSProps } from '@pages/ssrProps';
 import { LoginFormData, useLogin } from '@features/Auth';
 import { LoginForm } from './LoginForm';
 import { EventListenerContext } from '@features/EventListener';
@@ -91,9 +90,5 @@ const LoginPage: NextPageWithLayout = () => {
 LoginPage.getLayout = (page) => {
   return page;
 };
-
-export const getServerSideProps = getSSProps({
-  requireAuthorization: false,
-});
 
 export default LoginPage;

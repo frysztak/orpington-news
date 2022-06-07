@@ -4,7 +4,6 @@ import { useInterval } from 'usehooks-ts';
 import { formatDistanceToNowStrict } from 'date-fns';
 import Head from 'next/head';
 import { Heading, Text, HStack, VStack, Code, Box } from '@chakra-ui/react';
-import { getSSProps } from '@pages/ssrProps';
 import type { NextPageWithLayout } from '@pages/types';
 import { EventListenerContext } from '@features/EventListener';
 import { SettingsLayout } from './SettingsLayout';
@@ -80,5 +79,3 @@ Page.getLayout = (page) => {
 };
 
 export default Page;
-
-export const getServerSideProps = getSSProps({});

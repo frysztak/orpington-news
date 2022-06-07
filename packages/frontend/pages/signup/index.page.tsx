@@ -14,7 +14,6 @@ import {
   Link,
   useToast,
 } from '@chakra-ui/react';
-import { getSSProps } from '@pages/ssrProps';
 import { SignupFormData, useSignup } from '@features/Auth';
 import { SignupForm } from './SignupForm';
 
@@ -92,9 +91,5 @@ const SignupPage: NextPageWithLayout = () => {
 SignupPage.getLayout = (page) => {
   return page;
 };
-
-export const getServerSideProps = getSSProps({
-  requireAuthorization: false,
-});
 
 export default SignupPage;
