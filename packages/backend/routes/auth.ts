@@ -233,7 +233,6 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
       schema: {
         tags: ['Auth'],
       },
-      preHandler: fastify.auth([fastify.verifySession]),
     },
     async (request, reply) => {
       await request.session.destroy();
