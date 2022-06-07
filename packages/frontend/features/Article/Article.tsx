@@ -117,29 +117,34 @@ export const Article: React.FC<ArticleProps> = (props) => {
     );
   }
 
-  return query.status === 'loading' ? (
-    <ArticleSkeleton />
-  ) : query.status === 'success' ? (
+  return (
     <VStack
       flexGrow={1}
       overflow="auto"
-      overflowY="scroll"
       maxH="100vh"
       w="full"
       spacing={1}
       ref={ref}
       maxWidth={getWidth(articleWidth)}
     >
-      <ArticleHeader
-        article={query.data}
-        onGoBackClicked={onGoBackClicked}
-        onMenuItemClicked={handleMenuItemClicked}
-        articleWidth={articleWidth}
-        onArticleWidthChanged={setArticleWidth}
-      />
-      <Box w="full" px={4} py={4}>
-        <ArticleContent html={query.data.fullText} />
-      </Box>
+      {query.status === 'loading' ? (
+        <ArticleSkeleton />
+      ) : (
+        query.status === 'success' && (
+          <>
+            <ArticleHeader
+              article={query.data}
+              onGoBackClicked={onGoBackClicked}
+              onMenuItemClicked={handleMenuItemClicked}
+              articleWidth={articleWidth}
+              onArticleWidthChanged={setArticleWidth}
+            />
+            <Box w="full" px={4} py={4}>
+              <ArticleContent html={query.data.fullText} />
+            </Box>
+          </>
+        )
+      )}
     </VStack>
-  ) : null;
+  );
 };
