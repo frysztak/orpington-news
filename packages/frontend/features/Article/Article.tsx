@@ -104,7 +104,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
 
   useEffect(() => {
     ref.current?.scrollTo({ top: 0 });
-  }, [query.data?.fullText]);
+  }, [itemId]);
 
   const [articleWidth, setArticleWidth] = useCookie(
     'articleWidth',
@@ -127,6 +127,9 @@ export const Article: React.FC<ArticleProps> = (props) => {
     <CircularProgress isIndeterminate />
   ) : query.status === 'success' ? (
     <VStack
+      flexGrow={1}
+      overflow="auto"
+      overflowY="scroll"
       maxH="100vh"
       w="full"
       spacing={1}
