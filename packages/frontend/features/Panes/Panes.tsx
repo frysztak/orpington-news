@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/router';
+import { useLocalStorage } from 'usehooks-ts';
 import { Panes as PanesComponent } from '@components/panes';
 import { Article } from '@features/Article';
-import { ReactFCC, getNumber, useCookie, ClientRender } from '@utils';
-import { ArticleWidth } from '@orpington-news/shared';
+import { ReactFCC, getNumber, ClientRender } from '@utils';
 import { CollectionItemsList } from './CollectionItemsList';
 import { Sidebar } from './Sidebar';
 import { ModalContextProvider } from './ModalContext';
@@ -12,18 +12,9 @@ import { Drawer } from './Drawer';
 import { AddModal } from './AddModal';
 import { DeleteModal } from './DeleteModal';
 
-interface PanesProps {
-  sidebarWidthValue?: number;
-  collectionItemsWidthValue?: number;
-  articleWidthValue?: ArticleWidth;
-}
+interface PanesProps {}
 
-export const Panes: ReactFCC<PanesProps> = ({
-  sidebarWidthValue,
-  collectionItemsWidthValue,
-  articleWidthValue,
-  children,
-}) => {
+export const Panes: ReactFCC<PanesProps> = ({ children }) => {
   const router = useRouter();
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);
@@ -32,13 +23,10 @@ export const Panes: ReactFCC<PanesProps> = ({
     router.push('/');
   }, [router]);
 
-  const [sidebarWidth, setSidebarWidth] = useCookie(
-    'sidebarWidth',
-    sidebarWidthValue ?? 300
-  );
-  const [collectionItemsWidth, setCollectionItemsWidth] = useCookie(
+  const [sidebarWidth, setSidebarWidth] = useLocalStorage('sidebarWidth', 300);
+  const [collectionItemsWidth, setCollectionItemsWidth] = useLocalStorage(
     'collectionItemsWidth',
-    collectionItemsWidthValue ?? 400
+    400
   );
 
   return (
@@ -56,7 +44,6 @@ export const Panes: ReactFCC<PanesProps> = ({
                 collectionId={collectionId}
                 itemId={itemId}
                 onGoBackClicked={handleGoBack}
-                articleWidthValue={articleWidthValue}
               />
             )
           }

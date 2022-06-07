@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Heading, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
+import { useLocalStorage } from 'usehooks-ts';
 import { BiMessageAltError } from '@react-icons/all-files/bi/BiMessageAltError';
 import {
   ArticleContent,
@@ -9,13 +10,11 @@ import {
   ArticleSkeleton,
 } from '@components/article';
 import { ArticleWidth, defaultArticleWidth, ID } from '@orpington-news/shared';
-import { useCookie } from '@utils';
 import { useArticleDateReadMutation, useArticleDetails } from './queries';
 
 export interface ArticleProps {
   collectionId: ID;
   itemId: ID;
-  articleWidthValue?: ArticleWidth;
 
   onGoBackClicked?: () => void;
 }
@@ -32,7 +31,7 @@ const getWidth = (setting: ArticleWidth): string => {
 };
 
 export const Article: React.FC<ArticleProps> = (props) => {
-  const { collectionId, itemId, articleWidthValue, onGoBackClicked } = props;
+  const { collectionId, itemId, onGoBackClicked } = props;
 
   const toast = useToast();
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
@@ -100,9 +99,9 @@ export const Article: React.FC<ArticleProps> = (props) => {
     ref.current?.scrollTo({ top: 0 });
   }, [itemId]);
 
-  const [articleWidth, setArticleWidth] = useCookie(
+  const [articleWidth, setArticleWidth] = useLocalStorage(
     'articleWidth',
-    articleWidthValue ?? defaultArticleWidth
+    defaultArticleWidth
   );
 
   if (query.status === 'error') {
