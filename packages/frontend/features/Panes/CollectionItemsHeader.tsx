@@ -19,7 +19,7 @@ export const CollectionItemsHeader: React.FC = () => {
 
   const drawerButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  const { activeCollection } = useActiveCollection();
+  const activeCollection = useActiveCollection();
   const { currentlyUpdatedCollections } = useCollectionsContext();
 
   const isRefreshing =
@@ -44,12 +44,19 @@ export const CollectionItemsHeader: React.FC = () => {
   const { mutate: setCollectionLayout } = useSetCollectionLayout();
   const handleCollectionLayoutChanged = useCallback(
     (layout: CollectionLayout) => {
+      if (activeCollection?.id === undefined) {
+        console.error(
+          `handleCollectionLayoutChanged() without active collection`
+        );
+        return;
+      }
+
       setCollectionLayout({
         id: activeCollection.id,
         layout,
       });
     },
-    [activeCollection.id, setCollectionLayout]
+    [activeCollection?.id, setCollectionLayout]
   );
 
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();

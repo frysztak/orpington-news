@@ -10,6 +10,7 @@ import {
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
+  Skeleton,
   VStack,
 } from '@chakra-ui/react';
 import { CgMenuLeftAlt } from '@react-icons/all-files/cg/CgMenuLeftAlt';
@@ -42,6 +43,8 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     onMenuActionClicked,
   } = props;
 
+  const isLoading = collection === undefined;
+
   return (
     <VStack spacing={0} w="full">
       <HStack
@@ -58,29 +61,31 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
           onClick={onHamburgerClicked}
         />
 
-        {collection && (
-          <HStack>
-            <IconButton
-              icon={<IoRefresh />}
-              isLoading={isRefreshing}
-              aria-label="Refresh"
-              variant="ghost"
-              onClick={() => onMenuActionClicked?.('refresh')}
-            />
-            {/*<IconButton
+        <HStack>
+          <IconButton
+            icon={<IoRefresh />}
+            isLoading={isRefreshing}
+            isDisabled={isLoading}
+            aria-label="Refresh"
+            variant="ghost"
+            onClick={() => onMenuActionClicked?.('refresh')}
+          />
+          {/*<IconButton
               icon={<CgSearch />}
               aria-label="Search"
               variant="ghost"
             />*/}
-            <Box>
-              <Menu>
-                <MenuButton
-                  as={IconButton}
-                  icon={<BsLayoutWtf />}
-                  aria-label="Layout"
-                  variant="ghost"
-                />
-                <MenuList data-focus-visible-disabled>
+          <Box>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                isDisabled={isLoading}
+                icon={<BsLayoutWtf />}
+                aria-label="Layout"
+                variant="ghost"
+              />
+              <MenuList data-focus-visible-disabled>
+                {collection && (
                   <MenuOptionGroup
                     value={collection.layout}
                     title="Layout"
@@ -96,38 +101,45 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                       </MenuItemOption>
                     ))}
                   </MenuOptionGroup>
-                </MenuList>
-              </Menu>
-            </Box>
+                )}
+              </MenuList>
+            </Menu>
+          </Box>
 
-            <Box>
-              <Menu>
-                <MenuButton
-                  as={IconButton}
-                  aria-label="Menu"
-                  icon={<BsThreeDotsVertical />}
-                  variant="ghost"
-                  tabIndex={0}
-                />
-                <MenuList data-focus-visible-disabled>
-                  <MenuItem
-                    icon={<IoCheckmarkDone />}
-                    onClick={() => onMenuActionClicked?.('markAsRead')}
-                  >
-                    Mark as read
-                  </MenuItem>
-                </MenuList>
-              </Menu>
-            </Box>
-          </HStack>
-        )}
+          <Box>
+            <Menu>
+              <MenuButton
+                as={IconButton}
+                isDisabled={isLoading}
+                aria-label="Menu"
+                icon={<BsThreeDotsVertical />}
+                variant="ghost"
+                tabIndex={0}
+              />
+              <MenuList data-focus-visible-disabled>
+                <MenuItem
+                  icon={<IoCheckmarkDone />}
+                  onClick={() => onMenuActionClicked?.('markAsRead')}
+                >
+                  Mark as read
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Box>
+        </HStack>
       </HStack>
 
-      {collection && (
-        <HStack w="full" justify="flex-start">
-          <Heading px={4}>{collection.title}</Heading>
-        </HStack>
-      )}
+      <HStack w="full" justify="flex-start" minH={12}>
+        <Skeleton
+          isLoaded={!isLoading}
+          mx={4}
+          h="full"
+          w="full"
+          maxW={isLoading ? 96 : 'unset'}
+        >
+          <Heading>{collection?.title}</Heading>
+        </Skeleton>
+      </HStack>
     </VStack>
   );
 };

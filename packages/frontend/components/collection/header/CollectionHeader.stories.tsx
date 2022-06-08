@@ -40,8 +40,8 @@ IsRefreshing.args = {
   isRefreshing: true,
 };
 
-export const NoCollection = Template.bind({});
-NoCollection.args = {
+export const IsLoading = Template.bind({});
+IsLoading.args = {
   ...Default.args,
   collection: undefined,
 };

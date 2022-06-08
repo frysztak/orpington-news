@@ -30,7 +30,7 @@ export const Sidebar: React.FC = () => {
     isError: collectionsError,
   } = useCollectionsTree();
   const { isLoading: preferencesLoading } = useGetPreferences();
-  const { activeCollection } = useActiveCollection();
+  const activeCollection = useActiveCollection();
   const { setActiveCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
@@ -106,7 +106,7 @@ export const Sidebar: React.FC = () => {
       onChevronClicked={handleCollectionChevronClicked}
       onMenuItemClicked={handleMenuItemClicked}
       onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
-      activeCollectionId={activeCollection.id}
+      activeCollectionId={activeCollection?.id}
       expandedCollectionIDs={expandedCollectionIds}
       collectionsCurrentlyUpdated={currentlyUpdatedCollections}
       footer={<SidebarFooter />}

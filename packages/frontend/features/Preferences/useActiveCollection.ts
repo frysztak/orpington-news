@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
-import { ActiveCollection } from '@components/collection/types';
-import { defaultCollectionLayout, Preferences } from '@orpington-news/shared';
+import {
+  defaultCollectionLayout,
+  ID,
+  Preferences,
+} from '@orpington-news/shared';
 import { useCollectionById } from '@features/Collections';
 import { useGetPreferences } from './queries';
 
@@ -17,30 +19,24 @@ export const useActiveCollection = () => {
       };
     },
   });
-  const activeCollectionId = data?.activeCollectionId;
+  const activeCollectionId: ID | 'home' | undefined = data?.activeCollectionId;
   const { data: collection } = useCollectionById(activeCollectionId);
 
-  const activeCollection: ActiveCollection = useMemo(() => {
-    if (activeCollectionId === undefined) {
-      return {
-        id: 'home',
-        title: collection?.title ?? '',
-        layout: collection?.layout ?? defaultCollectionLayout,
-      };
-    } else if (activeCollectionId === 'home') {
-      return {
-        id: activeCollectionId,
-        title: 'Home',
-        layout: data?.homeCollectionLayout ?? defaultCollectionLayout,
-      };
-    }
-
+  if (collection === undefined) {
+    // collection list is still being loaded
+    return;
+  } else if (collection === null || activeCollectionId === 'home') {
+    // collection with given ID was not found, or home collection is active
     return {
-      id: activeCollectionId,
-      title: collection?.title ?? '',
-      layout: collection?.layout ?? defaultCollectionLayout,
-    };
-  }, [activeCollectionId, collection, data?.homeCollectionLayout]);
+      id: 'home',
+      title: 'Home',
+      layout: data?.homeCollectionLayout ?? defaultCollectionLayout,
+    } as const;
+  }
 
-  return { activeCollection };
+  return {
+    id: activeCollectionId!,
+    title: collection?.title ?? '',
+    layout: collection?.layout ?? defaultCollectionLayout,
+  } as const;
 };
