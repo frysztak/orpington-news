@@ -24,7 +24,7 @@ const LoginPage: NextPageWithLayout = () => {
 
   const { isLoading, mutate } = useLogin();
   const { publicRuntimeConfig } = getConfig();
-  const demoMode = Boolean(publicRuntimeConfig.APP_DEMO);
+  const demoMode = Boolean(publicRuntimeConfig?.APP_DEMO);
 
   const attemptToConnect = useContextSelector(
     EventListenerContext,

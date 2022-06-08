@@ -33,7 +33,7 @@ const SignupPage: NextPageWithLayout = () => {
 
   const { isLoading, mutate } = useSignup();
   const { publicRuntimeConfig } = getConfig();
-  const demoMode = Boolean(publicRuntimeConfig.APP_DEMO);
+  const demoMode = Boolean(publicRuntimeConfig?.APP_DEMO);
 
   const handleSubmit = useCallback(
     (data: SignupFormData) => {

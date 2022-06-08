@@ -23,7 +23,7 @@ const Page: NextPageWithLayout = () => {
   const { mutate, isLoading } = useChangePassword();
 
   const { publicRuntimeConfig } = getConfig();
-  const demoMode = Boolean(publicRuntimeConfig.APP_DEMO);
+  const demoMode = Boolean(publicRuntimeConfig?.APP_DEMO);
 
   const handleSubmit = useCallback(
     ({ currentPassword, newPassword }: ChangePasswordFormData) => {
