@@ -22,7 +22,7 @@ export const useActiveCollection = () => {
   const activeCollectionId: ID | 'home' | undefined = data?.activeCollectionId;
   const { data: collection } = useCollectionById(activeCollectionId);
 
-  if (collection === undefined) {
+  if (collection === undefined || activeCollectionId === undefined) {
     // collection list is still being loaded
     return;
   } else if (collection === null || activeCollectionId === 'home') {
