@@ -22,6 +22,7 @@ export interface CollectionListProps {
   layout?: CollectionLayout;
   items: CollectionItem[];
 
+  isLoading?: boolean;
   isFetchingMoreItems?: boolean;
   canFetchMoreItems?: boolean;
   onFetchMoreItems?: () => void;
@@ -42,6 +43,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   const {
     layout = defaultCollectionLayout,
     items,
+    isLoading,
     isFetchingMoreItems,
     canFetchMoreItems,
     onFetchMoreItems,
@@ -78,31 +80,31 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     rowVirtualizer.virtualItems,
   ]);
 
-  if (items.length === 0) {
-    if (isFetchingMoreItems) {
-      return (
-        <VStack
-          w="full"
-          h="full"
-          justify="flex-start"
-          align="stretch"
-          spacing={6}
-        >
-          {genN(10).map((x) => (
-            <SkeletonBox key={x} />
-          ))}
-        </VStack>
-      );
-    } else {
-      return (
-        <VStack w="full" pt={8} justify="center">
-          <Icon as={InformationCircleIcon} boxSize={12} color="blue.400" />
-          <Text fontSize="xl" fontWeight="bold">
-            This feed has no items.
-          </Text>
-        </VStack>
-      );
-    }
+  if (isLoading) {
+    return (
+      <VStack
+        w="full"
+        h="full"
+        justify="flex-start"
+        align="stretch"
+        spacing={6}
+      >
+        {genN(10).map((x) => (
+          <SkeletonBox key={x} />
+        ))}
+      </VStack>
+    );
+  }
+
+  if (!isLoading && items.length === 0) {
+    return (
+      <VStack w="full" pt={8} justify="center">
+        <Icon as={InformationCircleIcon} boxSize={12} color="blue.400" />
+        <Text fontSize="xl" fontWeight="bold">
+          This feed has no items.
+        </Text>
+      </VStack>
+    );
   }
 
   const Item = getListItem(layout);

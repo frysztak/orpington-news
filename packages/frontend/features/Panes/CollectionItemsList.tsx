@@ -14,7 +14,8 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
   const {
     fetchNextPage,
     isFetchingNextPage,
-    isLoading: collectionItemsLoading,
+    isIdle,
+    isLoading,
     hasNextPage,
     allItems,
   } = useCollectionItems(activeCollection?.id);
@@ -28,7 +29,8 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
         mt={3}
         flex="1 1 0"
         h="full"
-        isFetchingMoreItems={collectionItemsLoading || isFetchingNextPage}
+        isLoading={isLoading || isIdle}
+        isFetchingMoreItems={isFetchingNextPage}
         onFetchMoreItems={fetchNextPage}
         canFetchMoreItems={hasNextPage}
       />
