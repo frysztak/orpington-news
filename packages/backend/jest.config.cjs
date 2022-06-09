@@ -11,7 +11,9 @@ module.exports = {
     },
   },
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
-  transformIgnorePatterns: ['node_modules/(?!(normalize-url)/)'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(normalize-url|is-relative-url|is-absolute-url)/)',
+  ],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.jsx?$': 'babel-jest',
