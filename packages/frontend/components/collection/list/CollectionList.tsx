@@ -88,6 +88,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         justify="flex-start"
         align="stretch"
         spacing={6}
+        px={3}
       >
         {genN(10).map((x) => (
           <SkeletonBox key={x} />
