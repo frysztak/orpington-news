@@ -31,7 +31,7 @@ const FeedItem = Type.Object({
   guid: Type.Optional(Type.String()),
   title: Type.String(),
   link: Type.String(),
-  content: Type.String(),
+  content: Type.Optional(Type.String()),
   isoDate: Type.String({ format: 'date-time' }),
   summary: Type.Optional(Type.String()),
   thumbnail: Type.Optional(Type.Any()),
@@ -69,7 +69,11 @@ export const mapFeedItems = (
         logger.error(
           `Feed item '${
             (item as any)?.link || 'UNKNOWN LINK'
-          }' doesn't adhere to schema: ${validateFeedItem.errors}`
+          }' doesn't adhere to schema: ${JSON.stringify(
+            validateFeedItem.errors,
+            null,
+            2
+          )}`
         );
         return null;
       }
@@ -82,10 +86,9 @@ export const mapFeedItems = (
 
       const title = decode(item.title).trim();
       const rootUrl = new URL(item.link).origin;
-      const content = cleanHTML(
-        ((<any>item)['content:encoded'] || item.content)?.trim(),
-        rootUrl
-      );
+      const rawContent: string =
+        (item as any)['content:encoded'] ?? item.content ?? '';
+      const content = cleanHTML(rawContent.trim(), rootUrl);
       const pureText = striptags(content);
 
       const stats = readingTime(pureText);

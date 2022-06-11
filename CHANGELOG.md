@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Frontend: disable SSR
 - Backend: bundle production build using esbuild. This reduces uncompressed image size by 24 MB
-- Backend: improve compatibility with certain Atom feeds
+- Backend: improve compatibility with certain feeds
 
 ## [0.3.0] - 2022-06-04
 
