@@ -26,12 +26,6 @@ module.exports = withPlugins(
   {
     reactStrictMode: true,
     pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
-    publicRuntimeConfig: {
-      APP_URL: process.env.APP_URL,
-      API_URL: process.env.API_URL,
-      API_SSR_URL: process.env.API_SSR_URL,
-      APP_DEMO: process.env.APP_DEMO,
-    },
     swcMinify: true,
     compiler: {
       removeConsole:

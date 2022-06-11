@@ -1,21 +1,12 @@
 import { useMemo } from 'react';
 import wretch from 'wretch';
-import getConfig from 'next/config';
 import { useHandleUnauthorized } from './useHandleUnauthorized';
 
 export const getUrls = () => {
-  const { publicRuntimeConfig } = getConfig();
-  if (!publicRuntimeConfig?.APP_URL) {
-    console.error(`APP_URL is not set!`);
-  }
+  const apiUrl: string = process.env.NEXT_PUBLIC_API_URL ?? '/api';
+  const ssrApiUrl: string = apiUrl;
 
-  const appUrl: string | undefined = publicRuntimeConfig?.APP_URL;
-  const apiUrl: string =
-    publicRuntimeConfig?.API_URL ??
-    (appUrl ? new URL('/api', appUrl).toString() : '/api');
-  const ssrApiUrl: string = publicRuntimeConfig?.API_SSR_URL ?? apiUrl;
-
-  return { appUrl, apiUrl, ssrApiUrl };
+  return { apiUrl, ssrApiUrl };
 };
 
 export const makeApi = (url: string) =>

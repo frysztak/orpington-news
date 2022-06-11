@@ -7,7 +7,6 @@
       "args": "start",
       "env": {
         "NODE_ENV": "production",
-        "API_SSR_URL": "http://127.0.0.1:5000",
         "PORT": "3000"
       },
       "error_file": "/var/log/web/error.log",

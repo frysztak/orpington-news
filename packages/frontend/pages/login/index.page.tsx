@@ -3,7 +3,6 @@ import { useContextSelector } from 'use-context-selector';
 import type { NextPageWithLayout } from '@pages/types';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import getConfig from 'next/config';
 import NextLink from 'next/link';
 import {
   Heading,
@@ -16,15 +15,15 @@ import {
   Link,
 } from '@chakra-ui/react';
 import { LoginFormData, useLogin } from '@features/Auth';
-import { LoginForm } from './LoginForm';
 import { EventListenerContext } from '@features/EventListener';
+import { isDemoMode } from '@utils';
+import { LoginForm } from './LoginForm';
 
 const LoginPage: NextPageWithLayout = () => {
   const router = useRouter();
 
   const { isLoading, mutate } = useLogin();
-  const { publicRuntimeConfig } = getConfig();
-  const demoMode = Boolean(publicRuntimeConfig?.APP_DEMO);
+  const demoMode = isDemoMode();
 
   const attemptToConnect = useContextSelector(
     EventListenerContext,

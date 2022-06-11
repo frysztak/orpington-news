@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import Head from 'next/head';
-import getConfig from 'next/config';
 import type { NextPageWithLayout } from '@pages/types';
 import {
   Alert,
@@ -11,6 +10,7 @@ import {
   VStack,
   Text,
 } from '@chakra-ui/react';
+import { isDemoMode } from '@utils';
 import { useChangePassword } from '@features/Auth';
 import { SettingsLayout } from './SettingsLayout';
 import {
@@ -22,8 +22,7 @@ const Page: NextPageWithLayout = () => {
   const toast = useToast();
   const { mutate, isLoading } = useChangePassword();
 
-  const { publicRuntimeConfig } = getConfig();
-  const demoMode = Boolean(publicRuntimeConfig?.APP_DEMO);
+  const demoMode = isDemoMode();
 
   const handleSubmit = useCallback(
     ({ currentPassword, newPassword }: ChangePasswordFormData) => {

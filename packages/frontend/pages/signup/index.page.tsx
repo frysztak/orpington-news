@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import type { NextPageWithLayout } from '@pages/types';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import getConfig from 'next/config';
 import NextLink from 'next/link';
 import {
   Heading,
@@ -15,6 +14,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { SignupFormData, useSignup } from '@features/Auth';
+import { isDemoMode } from '@utils';
 import { SignupForm } from './SignupForm';
 
 const SignupPage: NextPageWithLayout = () => {
@@ -32,8 +32,7 @@ const SignupPage: NextPageWithLayout = () => {
   }, [router, toast]);
 
   const { isLoading, mutate } = useSignup();
-  const { publicRuntimeConfig } = getConfig();
-  const demoMode = Boolean(publicRuntimeConfig?.APP_DEMO);
+  const demoMode = isDemoMode();
 
   const handleSubmit = useCallback(
     (data: SignupFormData) => {
