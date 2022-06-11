@@ -25,7 +25,7 @@ const plugin = async (fastify: FastifyInstance) => {
 };
 
 export const fastifyVerifySession = fastifyPlugin(plugin, {
-  fastify: '3.x',
+  fastify: '4.x',
   name: 'fastify-verify-session',
 });
 

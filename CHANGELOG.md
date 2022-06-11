@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Frontend: disable SSR
+- Backend: migrate to Fastify 4
 - Backend: bundle production build using esbuild. This reduces uncompressed image size by 24 MB
 - Backend: improve compatibility with certain feeds
 

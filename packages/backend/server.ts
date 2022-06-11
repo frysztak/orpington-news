@@ -6,6 +6,10 @@ import fastifyAuth from '@fastify/auth';
 import fastifyCors from '@fastify/cors';
 import fastifyETag from '@fastify/etag';
 import fastifySchedule from '@fastify/schedule';
+import {
+  ajvTypeBoxPlugin,
+  TypeBoxTypeProvider,
+} from '@fastify/type-provider-typebox';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
 import connectPgSimple from 'connect-pg-simple';
@@ -19,7 +23,10 @@ import { migrator } from '@db/migrator';
 
 const fastify = Fastify({
   logger: logger,
-});
+  ajv: {
+    plugins: [ajvTypeBoxPlugin],
+  },
+}).withTypeProvider<TypeBoxTypeProvider>();
 
 const PostgresStore = connectPgSimple(fastifySession as any);
 
@@ -104,8 +111,10 @@ async function setupFastify() {
   fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
   fastify.scheduler.addSimpleIntervalJob(pingJob);
   await fastify.listen(
-    process.env.PORT || 5000,
-    process.env.HOST || '0.0.0.0',
+    {
+      port: process.env.PORT ? parseInt(process.env.PORT, 10) : 5000,
+      host: process.env.HOST || '0.0.0.0',
+    },
     (err, address) => {
       if (err) {
         fastify.log.error(err);
