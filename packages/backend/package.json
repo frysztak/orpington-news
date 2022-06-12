@@ -8,7 +8,7 @@
   "license": "ISC",
   "scripts": {
     "dev": "cp ../../.env.local .env && NODE_ENV=development rollup -c -w",
-    "build": "rimraf dist && tsc --noEmit && node build.cjs",
+    "build": "rimraf dist && tsc --noEmit && node esbuild/build.js",
     "start": "node dist/server.cjs",
     "migrate": "node dist/db/migrate.cjs",
     "test": "jest",
