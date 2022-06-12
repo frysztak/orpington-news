@@ -10,6 +10,6 @@ build({
   outExtension: { '.js': '.cjs' },
   platform: 'node',
   target: ['node16'],
-  external: ['argon2', 'pg-native', 'canvas', 'pino'],
+  external: ['pg-native', 'canvas', 'pino'],
   plugins: [jsdomPlugin(), nativeNodeModulesPlugin()],
 }).catch((err) => process.exit(1));

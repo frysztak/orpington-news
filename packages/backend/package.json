@@ -15,7 +15,6 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "argon2": "^0.28.5",
     "pg": "^8.7.3",
     "pino": "^8.0.0",
     "pino-pretty": "^8.0.0"
@@ -47,6 +46,7 @@
     "@types/proper-url-join": "^2.1.1",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
+    "argon2": "^0.28.5",
     "babel-jest": "^28.1.1",
     "cheerio": "1.0.0-rc.11",
     "close-with-grace": "^1.1.0",
