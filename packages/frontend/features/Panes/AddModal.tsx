@@ -15,7 +15,7 @@ import {
 } from './queries';
 
 export interface AddModalState {
-  isUrlVerified: boolean;
+  verifiedUrl?: string;
   initialData?: AddCollectionFormData;
   editedFeedId?: ID;
 }
@@ -57,31 +57,16 @@ export const AddModal: React.FC = () => {
   const { isLoading: areCollectionsLoading, data: collections } =
     useCollectionsTree();
 
-  const onVerifyUrlChanged = useCallback(
-    (url?: string) => {
-      if (url === state.initialData?.url) {
-        return;
-      }
-      setState((old) => {
-        return {
-          ...old,
-          isUrlVerified: old.initialData?.url === url,
-        };
-      });
-    },
-    [setState, state.initialData?.url]
-  );
-
   const onVerifyUrlClicked = useCallback(
     (url: string) => {
       verifyFeedURL(
         { url },
         {
-          onSuccess: ({ title, description }) => {
+          onSuccess: ({ title, description, feedUrl }) => {
             setState({
-              isUrlVerified: true,
+              verifiedUrl: feedUrl,
               initialData: {
-                url,
+                url: feedUrl,
                 icon: defaultIcon,
                 title,
                 description,
@@ -97,7 +82,7 @@ export const AddModal: React.FC = () => {
   useEffect(() => {
     if (!isOpen) {
       setState({
-        isUrlVerified: false,
+        verifiedUrl: undefined,
       });
     }
   }, [isOpen, setState]);
@@ -108,8 +93,7 @@ export const AddModal: React.FC = () => {
       onClose={onClose}
       modalTitle={state.editedFeedId ? 'Edit feed' : 'Add feed'}
       initialData={state.initialData}
-      isUrlVerified={state.isUrlVerified}
-      onVerifyUrlChanged={onVerifyUrlChanged}
+      verifiedUrl={state.verifiedUrl}
       onVerifyUrlClicked={onVerifyUrlClicked}
       areCollectionsLoading={areCollectionsLoading}
       collections={emptyIfUndefined(collections)}

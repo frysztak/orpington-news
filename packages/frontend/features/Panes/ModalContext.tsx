@@ -71,9 +71,7 @@ export const ModalContextProvider: ReactFCC = ({ children }) => {
 };
 
 const useAddModal = () => {
-  const [addModalState, setAddModalState] = useState<AddModalState>({
-    isUrlVerified: false,
-  });
+  const [addModalState, setAddModalState] = useState<AddModalState>({});
   const {
     isOpen: isAddModalOpen,
     open: openAddModal,
@@ -85,12 +83,12 @@ const useAddModal = () => {
     (initialData?: Collection) => {
       if (initialData) {
         setAddModalState({
-          isUrlVerified: true,
+          verifiedUrl: initialData.url,
           initialData,
           editedFeedId: initialData!.id,
         });
       } else {
-        setAddModalState({ isUrlVerified: false });
+        setAddModalState({});
       }
       openAddModal();
     },

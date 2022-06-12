@@ -2,10 +2,12 @@ import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import run from '@rollup/plugin-run';
+import json from '@rollup/plugin-json';
 import pkg from './package.json';
 
 const external = [
   ...Object.keys(pkg.dependencies || {}),
+  ...Object.keys(pkg.devDependencies || {}),
   ...Object.keys(pkg.peerDependencies || {}),
 ];
 
@@ -17,6 +19,7 @@ const plugins = [
     exclude: ['**/*.spec.ts', '**/jest.config.ts'],
   }),
   commonjs(),
+  json(),
 ];
 
 const output = {

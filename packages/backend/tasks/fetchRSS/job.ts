@@ -35,6 +35,7 @@ export const updateCollections = (collections: readonly DBCollection[]) => {
       } else {
         logger.info(`Feed updated, but with following errors:`);
         for (const failure of failures) {
+          // TODO: we should probably somehow inform user about that
           logger.error(failure.reason);
         }
         return false;
@@ -69,6 +70,9 @@ const fetchAndInsertCollection = (collection: DBCollection) => {
         .then(() => {
           sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
         });
+    })
+    .finally(() => {
+      sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
     });
 };
 

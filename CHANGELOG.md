@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2022-06-12
+
+### Added
+
+-   Feature: Reduced Docker image size from 478 MB to 126 MB (uncompressed)
+-   Feature: automatically detect RSS/Atom feed from URL
+-   Feature: automatically detect system color mode
+
+### Changed
+
+-   Frontend: disable SSR
+-   Backend: migrate to Fastify 4
+-   Backend: improve compatibility with certain feeds
+
 ## [0.3.0] - 2022-06-04
 
 ### Added
@@ -58,7 +72,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.4.0...HEAD
+
+[0.4.0]: https://github.com/frysztak/orpington-news/compare/0.3.0...0.4.0
 
 [0.3.0]: https://github.com/frysztak/orpington-news/compare/0.2.0...0.3.0
 

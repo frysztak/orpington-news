@@ -16,6 +16,7 @@ import ExclamationCircleIcon from '@heroicons/react/solid/ExclamationCircleIcon'
 import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
 import { SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
+import { CollectionsSkeleton } from './CollectionsSkeleton';
 import { ID, Collection } from '@orpington-news/shared';
 
 export type CollectionMenuAction = 'markAsRead' | 'refresh' | 'edit' | 'delete';
@@ -137,6 +138,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
 };
 
 export interface CollectionsProps {
+  isLoading?: boolean;
   isError?: boolean;
   collections: Collection[];
   activeCollectionId?: ID;
@@ -153,6 +155,7 @@ export interface CollectionsProps {
 
 export const Collections: React.FC<CollectionsProps> = (props) => {
   const {
+    isLoading = false,
     isError = false,
     collections,
     activeCollectionId,
@@ -165,7 +168,9 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
 
   return (
     <VStack w="full" spacing={1}>
-      {isError ? (
+      {isLoading ? (
+        <CollectionsSkeleton />
+      ) : isError ? (
         <>
           <Icon
             as={ExclamationCircleIcon}

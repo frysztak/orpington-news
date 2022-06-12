@@ -4,6 +4,7 @@ import parse, {
   domToReact,
   attributesToProps,
   HTMLReactParserOptions,
+  Element,
 } from 'html-react-parser';
 import {
   Box,
@@ -19,7 +20,6 @@ import {
   Skeleton,
   Image,
 } from '@chakra-ui/react';
-import { Element } from 'domhandler';
 import { ReactFCC } from '@utils/react';
 
 const SyntaxHighlighterWithTheme = dynamic(

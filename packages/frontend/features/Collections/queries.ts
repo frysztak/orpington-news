@@ -50,7 +50,7 @@ export const useCollectionById = (collectionId?: ID | string) => {
     enabled: collectionId !== undefined,
     select: useCallback(
       (collections: FlatCollection[]) =>
-        collections?.find(({ id }) => id === collectionId),
+        collections.find(({ id }) => id === collectionId) ?? null,
       [collectionId]
     ),
   });
@@ -65,14 +65,15 @@ export const collectionsItemsQueryFn =
     }));
   };
 
-export const useCollectionItems = (collectionId: ID | string) => {
+export const useCollectionItems = (collectionId?: ID | string) => {
   const api = useApi();
   const { onError } = useHandleError();
 
   const { data, ...rest } = useInfiniteQuery(
-    collectionKeys.list(collectionId),
-    collectionsItemsQueryFn(api, collectionId),
+    collectionKeys.list(collectionId!),
+    collectionsItemsQueryFn(api, collectionId!),
     {
+      enabled: collectionId !== undefined,
       getNextPageParam: (lastPage) =>
         lastPage.items.length === 0 ? undefined : lastPage.pageParam + 1,
       onError,

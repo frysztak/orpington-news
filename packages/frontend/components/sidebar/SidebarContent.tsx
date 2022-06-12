@@ -21,7 +21,7 @@ export type SidebarContentProps = Omit<
   CollectionsProps,
   'activeCollectionId'
 > & {
-  activeCollectionId: ID | 'home';
+  activeCollectionId?: ID | 'home';
   onMenuItemClicked: (menuAction: MenuItem) => void;
   footer?: JSX.Element;
 };

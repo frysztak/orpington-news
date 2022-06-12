@@ -43,7 +43,7 @@ export const verifyFeedUrl = (api: Wretcher, url: string) =>
   api
     .url(`/collections/verifyUrl`)
     .post({ url })
-    .json<{ title: string; description: string }>();
+    .json<{ title: string; description: string; feedUrl: string }>();
 
 export const addCollection = (
   api: Wretcher,

@@ -32,7 +32,7 @@ export const EmptyFetching = Template.bind({});
 EmptyFetching.args = {
   items: [],
   layout: 'magazine',
-  isFetchingMoreItems: true,
+  isLoading: true,
 };
 
 export const TwoItems = Template.bind({});

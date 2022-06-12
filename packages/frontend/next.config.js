@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 
+const path = require('path');
+
 const withPlugins = require('next-compose-plugins');
 
 const bundleAnalyzer = require('@next/bundle-analyzer')({
@@ -26,12 +28,6 @@ module.exports = withPlugins(
   {
     reactStrictMode: true,
     pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
-    publicRuntimeConfig: {
-      APP_URL: process.env.APP_URL,
-      API_URL: process.env.API_URL,
-      API_SSR_URL: process.env.API_SSR_URL,
-      APP_DEMO: process.env.APP_DEMO,
-    },
     swcMinify: true,
     compiler: {
       removeConsole:
@@ -40,5 +36,8 @@ module.exports = withPlugins(
           : false,
     },
     productionBrowserSourceMaps: process.env.SOURCE_MAPS === 'true',
+    experimental: {
+      outputStandalone: true,
+    },
   }
 );

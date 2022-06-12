@@ -7,3 +7,4 @@ export * from './react';
 export * from './router';
 export * from './useCookie';
 export * from './useToggle';
+export * from './demoMode';

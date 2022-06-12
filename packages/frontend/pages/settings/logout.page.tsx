@@ -1,21 +1,23 @@
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import type { NextPageWithLayout } from '@pages/types';
-import { getSSProps } from '@pages/ssrProps';
 import { Heading, useTimeout } from '@chakra-ui/react';
+import { useQueryClient } from 'react-query';
 import { useLogout } from '@features/Auth';
 import { SettingsLayout } from './SettingsLayout';
 
 const Page: NextPageWithLayout = () => {
   const router = useRouter();
   const { mutate } = useLogout();
+  const queryClient = useQueryClient();
 
   useTimeout(() => {
     mutate(void 0, {
       onSuccess: async () => {
         await window.caches.delete('next-data');
         await window.caches.delete('apis');
-        router.push('/');
+        queryClient.clear();
+        router.push('/login');
       },
     });
   }, 200);
@@ -38,5 +40,3 @@ Page.getLayout = (page) => {
 };
 
 export default Page;
-
-export const getServerSideProps = getSSProps({});

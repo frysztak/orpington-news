@@ -10,7 +10,7 @@ export const useArticleDateReadMutation = (collectionId: ID, itemId: ID) => {
   const queryClient = useQueryClient();
 
   const detailKey = collectionKeys.detail(collectionId, itemId);
-  const { activeCollection } = useActiveCollection();
+  const activeCollection = useActiveCollection();
 
   return useMutation(
     ({
@@ -44,9 +44,11 @@ export const useArticleDateReadMutation = (collectionId: ID, itemId: ID) => {
       },
       onSettled: () => {
         queryClient.invalidateQueries(collectionKeys.allForId(collectionId));
-        queryClient.invalidateQueries(
-          collectionKeys.allForId(activeCollection.id)
-        );
+        if (activeCollection) {
+          queryClient.invalidateQueries(
+            collectionKeys.allForId(activeCollection.id)
+          );
+        }
         queryClient.invalidateQueries(collectionKeys.tree);
       },
     }

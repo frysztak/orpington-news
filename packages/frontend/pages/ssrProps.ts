@@ -64,8 +64,19 @@ const parseIntCookie = (
 const parseStringCookie = (
   cookies: Record<string, string>,
   key: string
-): string | null =>
-  (cookies[key] && decodeURI(cookies[key]).replaceAll('"', '')) || null;
+): string | null => {
+  const value = cookies[key];
+  if (!value) {
+    return null;
+  }
+
+  try {
+    return decodeURI(cookies[key]).replaceAll('"', '');
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+};
 
 export const getSSProps =
   (params: GetSSParams): GetServerSideProps =>

@@ -120,7 +120,7 @@ export default class Document extends NextDocument {
           />
         </Head>
         <body>
-          <ColorModeScript type="cookie" />
+          <ColorModeScript initialColorMode="system" />
           <Main />
           <NextScript />
         </body>

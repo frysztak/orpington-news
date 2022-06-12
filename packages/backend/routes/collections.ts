@@ -44,7 +44,12 @@ import {
 import { normalizeUrl, Nullable } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
-import { fetchRSSJob, parser, updateCollections } from '@tasks/fetchRSS';
+import {
+  fetchRSSJob,
+  parser,
+  updateCollections,
+  extractFeedUrl,
+} from '@tasks/fetchRSS';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -533,26 +538,47 @@ export const collections: FastifyPluginAsync = async (
         session: { userId },
       } = request;
 
+      const tryParse = async (url: string) => {
+        const isUrlAlreadyUsed = await pool.exists(
+          hasCollectionWithUrl(url, userId)
+        );
+        if (isUrlAlreadyUsed) {
+          return reply
+            .status(418)
+            .send({ errorCode: 418, message: 'Duplicate feed URL.' });
+        }
+
+        try {
+          const feed = await parser.parseURL(url);
+          return reply.status(200).send({
+            feedUrl: url,
+            title: feed.title,
+            description: feed.description || feed.subtitle,
+          });
+        } catch (err) {
+          console.error('RSS parsing failed with: ', err);
+          return reply
+            .status(418)
+            .send({ errorCode: 418, message: 'Invalid RSS/Atom feed.' });
+        }
+      };
+
       const normalizedUrl = normalizeUrl(url);
+      const result = await extractFeedUrl(normalizedUrl);
 
-      const isUrlAlreadyUsed = await pool.exists(
-        hasCollectionWithUrl(normalizedUrl, userId)
-      );
-      if (isUrlAlreadyUsed) {
+      if (result.status === 'OK') {
+        const normalizedFeedUrl = normalizeUrl(result.feedUrl);
+        const parseReply = await tryParse(normalizedFeedUrl);
+        if (parseReply) {
+          return parseReply;
+        }
+      } else if (result.status === 'isXML') {
+        const parseReply = await tryParse(normalizedUrl);
+        if (parseReply) {
+          return parseReply;
+        }
+      } else {
         return reply
-          .status(418)
-          .send({ errorCode: 418, message: 'Duplicate feed URL.' });
-      }
-
-      try {
-        const feed = await parser.parseURL(normalizedUrl);
-        reply.status(200).send({
-          title: feed.title,
-          description: feed.description || feed.subtitle,
-        });
-      } catch (err) {
-        console.error('RSS parsing failed with: ', err);
-        reply
           .status(418)
           .send({ errorCode: 418, message: 'Invalid RSS/Atom feed.' });
       }

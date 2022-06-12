@@ -3,11 +3,9 @@
     {
       "name": "web",
       "cwd": "/app/packages/frontend/",
-      "script": "node_modules/.bin/next",
-      "args": "start",
+      "script": "server.js",
       "env": {
         "NODE_ENV": "production",
-        "API_SSR_URL": "http://127.0.0.1:5000",
         "PORT": "3000"
       },
       "error_file": "/var/log/web/error.log",
@@ -16,7 +14,7 @@
     {
       "name": "api",
       "cwd": "/app/packages/backend/",
-      "script": "dist/server.js",
+      "script": "server.cjs",
       "env": {
         "NODE_ENV": "production",
         "PORT": "5000"

@@ -1,11 +1,6 @@
-import type { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { Box, VStack } from '@chakra-ui/react';
-import { dehydrate, QueryClient } from 'react-query';
 import type { NextPageWithLayout } from '@pages/types';
-import { getChakraColorModeCookie, getCookieHeaderFromReq } from '@utils';
-import { getPreferences, ssrApi } from '@api';
-import { preferencesKeys } from '@features/queryKeys';
 import { SettingsLayout } from './SettingsLayout';
 import { useCustomizeSettings } from './components/customize/useCustomizeSettings';
 import { CustomizeAppearance } from './components/customize/CustomizeAppearance';
@@ -38,30 +33,3 @@ Page.getLayout = (page) => {
 };
 
 export default Page;
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const chakraCookie = getChakraColorModeCookie(req);
-  if (!req.cookies['sessionId']) {
-    return {
-      props: { chakraCookie },
-      redirect: {
-        destination: '/login',
-      },
-    };
-  }
-
-  const apiWithHeaders = ssrApi().headers(getCookieHeaderFromReq(req));
-  const queryClient = new QueryClient();
-  await Promise.all([
-    queryClient.prefetchQuery(preferencesKeys.base, () =>
-      getPreferences(apiWithHeaders)
-    ),
-  ]);
-
-  return {
-    props: {
-      chakraCookie,
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-};
