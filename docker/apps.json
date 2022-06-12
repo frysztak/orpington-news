@@ -3,8 +3,7 @@
     {
       "name": "web",
       "cwd": "/app/packages/frontend/",
-      "script": "node_modules/.bin/next",
-      "args": "start",
+      "script": "server.js",
       "env": {
         "NODE_ENV": "production",
         "PORT": "3000"
@@ -15,7 +14,7 @@
     {
       "name": "api",
       "cwd": "/app/packages/backend/",
-      "script": "dist/server.cjs",
+      "script": "server.cjs",
       "env": {
         "NODE_ENV": "production",
         "PORT": "5000"

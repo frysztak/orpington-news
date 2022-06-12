@@ -34,13 +34,18 @@ COPY --from=builder /app/package.json .
 COPY --from=builder /app/yarn.lock .
 COPY --from=builder /app/.yarnrc.yml .
 COPY --from=builder /app/.yarn .yarn
-COPY --from=builder /app/packages/shared /app/packages/shared
-COPY --from=builder /app/packages/backend /app/packages/backend
-COPY --from=builder /app/yarn.lock /app/packages/backend
-COPY --from=builder /app/packages/frontend /app/packages/frontend
-COPY --from=builder /app/yarn.lock /app/packages/frontend
 
-RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn workspaces focus --all --production
+COPY --from=builder /app/packages/backend/dist/server.cjs /app/packages/backend/server.cjs
+COPY --from=builder /app/packages/backend/package.json /app/packages/backend/package.json
+
+COPY --from=builder /app/packages/frontend/public /app/packages/frontend/public
+COPY --from=builder /app/packages/frontend/package.json /app/packages/frontend/package.json
+COPY --from=builder /app/packages/frontend/.next/standalone /app/packages/frontend
+COPY --from=builder /app/packages/frontend/.next/static /app/packages/frontend/.next/static
+
+WORKDIR /app/packages/backend
+RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn workspaces focus --production
+WORKDIR /app
 
 EXPOSE 8000
 CMD /bin/sh /app/run.sh

@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 
+const path = require('path');
+
 const withPlugins = require('next-compose-plugins');
 
 const bundleAnalyzer = require('@next/bundle-analyzer')({
@@ -34,5 +36,8 @@ module.exports = withPlugins(
           : false,
     },
     productionBrowserSourceMaps: process.env.SOURCE_MAPS === 'true',
+    experimental: {
+      outputStandalone: true,
+    },
   }
 );
