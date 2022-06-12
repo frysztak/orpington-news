@@ -15,7 +15,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "pino": "^8.0.0"
+    "pino": "^8.0.0",
+    "pino-pretty": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
@@ -67,7 +68,6 @@
     "node-html-parser": "^5.3.3",
     "normalize-url": "7.0.3",
     "pg": "^8.7.3",
-    "pino-pretty": "^8.0.0",
     "proper-url-join": "^2.1.1",
     "reading-time": "^1.5.0",
     "rimraf": "^3.0.2",
