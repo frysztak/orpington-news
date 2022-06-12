@@ -9,14 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Feature: Reduced Docker image size from 478 MB to 126 MB (uncompressed)
 - Feature: automatically detect RSS/Atom feed from URL
 - Feature: automatically detect system color mode
 
 ### Changed
 
 - Frontend: disable SSR
-- Frontend: output standalone build
-- Backend: bundle production build using esbuild. This reduces uncompressed image size by 24 MB
 - Backend: migrate to Fastify 4
 - Backend: improve compatibility with certain feeds
 
