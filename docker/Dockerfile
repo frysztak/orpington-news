@@ -35,7 +35,7 @@ COPY --from=builder /app/yarn.lock .
 COPY --from=builder /app/.yarnrc.yml .
 COPY --from=builder /app/.yarn .yarn
 
-COPY --from=builder /app/packages/backend/dist/server.cjs /app/packages/backend/server.cjs
+COPY --from=builder /app/packages/backend/dist /app/packages/backend
 COPY --from=builder /app/packages/backend/db/migrations /app/packages/backend/db/migrations
 COPY --from=builder /app/packages/backend/package.json /app/packages/backend/package.json
 
