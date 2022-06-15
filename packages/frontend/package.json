@@ -89,14 +89,7 @@
     "yup": "^0.32.11"
   },
   "installConfig": {
-    "hoistingLimits": "workspaces"
-  },
-  "workspaces": {
-    "nohoist": [
-      "react-dnd-multi-backend",
-      "react-dnd-multi-backend/**",
-      "rdndmb-html5-to-touch",
-      "rdndmb-html5-to-touch/**"
-    ]
+    "hoistingLimits": "workspaces",
+    "selfReferences": false
   }
 }
