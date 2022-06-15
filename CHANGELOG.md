@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.1] - 2022-06-15
+
 ### Fixed
 
 - Article page: remove SVG anchors from heading components
@@ -74,9 +76,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- The entire app!
+-   The entire app!
 
 [unreleased]: https://github.com/frysztak/orpington-news/compare/0.4.0...HEAD
+[0.4.1]: https://github.com/frysztak/orpington-news/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/frysztak/orpington-news/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/frysztak/orpington-news/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/frysztak/orpington-news/compare/0.1.1...0.2.0
