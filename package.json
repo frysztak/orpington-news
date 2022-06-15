@@ -21,17 +21,11 @@
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "**/react",
-      "**/react/**",
-      "**/react-dom",
-      "**/react-dom/**"
     ]
   },
   "lint-staged": {
     "*.{js,cjs,css,md,ts,tsx,json,yml,yaml}": "prettier --write"
   },
   "packageManager": "yarn@3.2.0",
-  "version": "0.4.0"
+  "version": "0.4.1"
 }

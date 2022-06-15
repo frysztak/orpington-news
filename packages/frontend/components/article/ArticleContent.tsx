@@ -58,6 +58,7 @@ const Heading: ReactFCC<{
 }> = (props) => {
   const { level, domNode, children } = props;
   const { id } = attributesToProps(domNode.attribs);
+  const text: string = getNodeText(domNode);
 
   return (
     <ChakraHeading
@@ -67,7 +68,7 @@ const Heading: ReactFCC<{
       alignItems="center"
       id={id}
     >
-      {children}
+      {text}
     </ChakraHeading>
   );
 };
