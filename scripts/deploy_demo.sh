@@ -24,7 +24,8 @@ docker buildx build -t ${IMAGE_NAME} \
 docker save ${IMAGE_NAME} | bzip2 | pv | ssh $REMOTE_HOST 'bunzip2 | docker load'
 
 ssh -tt $REMOTE_HOST << EOF
-dokku git:from-image news-demo ${IMAGE_NAME} 
+dokku git:from-image news-demo ${IMAGE_NAME}
+dokku ps:rebuild news-demo
 exit
 EOF
 
