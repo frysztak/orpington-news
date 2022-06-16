@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Frontend: nicer "article not found" page
+
 ## [0.4.1] - 2022-06-15
 
 ### Fixed
@@ -76,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   The entire app!
+- The entire app!
 
 [unreleased]: https://github.com/frysztak/orpington-news/compare/0.4.0...HEAD
 [0.4.1]: https://github.com/frysztak/orpington-news/compare/0.4.0...0.4.1

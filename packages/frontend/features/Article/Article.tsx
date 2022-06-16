@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Heading, Icon, useToast, VStack } from '@chakra-ui/react';
+import { Box, Text, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
-import { BiMessageAltError } from '@react-icons/all-files/bi/BiMessageAltError';
+import { RiErrorWarningFill } from '@react-icons/all-files/ri/RiErrorWarningFill';
 import {
   ArticleContent,
   ArticleHeader,
@@ -104,18 +104,6 @@ export const Article: React.FC<ArticleProps> = (props) => {
     defaultArticleWidth
   );
 
-  if (query.status === 'error') {
-    const status: number | undefined = query.error?.status;
-    return (
-      <VStack spacing={6} h="full" w="full" justify="center">
-        <Icon as={BiMessageAltError} w={16} h="auto" />
-        <Heading>
-          {status === 404 ? 'Article not found.' : 'Unexpected error'}
-        </Heading>
-      </VStack>
-    );
-  }
-
   return (
     <VStack
       flexGrow={1}
@@ -128,6 +116,15 @@ export const Article: React.FC<ArticleProps> = (props) => {
     >
       {query.status === 'loading' ? (
         <ArticleSkeleton />
+      ) : query.status === 'error' ? (
+        <VStack spacing={6} h="full" w="full" justify="center">
+          <Icon as={RiErrorWarningFill} w={12} h="auto" fill="red.300" />
+          <Text fontSize="xl" fontWeight="bold">
+            {query.error.status === 404
+              ? 'Article not found.'
+              : 'Unexpected error'}
+          </Text>
+        </VStack>
       ) : (
         query.status === 'success' && (
           <>
