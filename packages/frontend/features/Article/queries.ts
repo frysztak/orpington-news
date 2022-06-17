@@ -4,12 +4,12 @@ import { CollectionItemDetails, ID } from '@orpington-news/shared';
 import { collectionKeys } from '@features';
 import { useActiveCollection } from '@features/Preferences';
 
-export const useArticleDateReadMutation = (collectionId: ID, itemId: ID) => {
+export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
   const api = useApi();
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
 
-  const detailKey = collectionKeys.detail(collectionId, itemId);
+  const detailKey = collectionKeys.detail(collectionId!, itemId!);
   const activeCollection = useActiveCollection();
 
   return useMutation(
@@ -43,7 +43,7 @@ export const useArticleDateReadMutation = (collectionId: ID, itemId: ID) => {
         queryClient.setQueryData(detailKey, (context as any).previousDetails);
       },
       onSettled: () => {
-        queryClient.invalidateQueries(collectionKeys.allForId(collectionId));
+        queryClient.invalidateQueries(collectionKeys.allForId(collectionId!));
         if (activeCollection) {
           queryClient.invalidateQueries(
             collectionKeys.allForId(activeCollection.id)
@@ -56,8 +56,8 @@ export const useArticleDateReadMutation = (collectionId: ID, itemId: ID) => {
 };
 
 export const useArticleDetails = (
-  collectionId: ID,
-  itemId: ID,
+  collectionId?: ID,
+  itemId?: ID,
   options?: {
     onSuccess: (data: CollectionItemDetails) => void;
   }
@@ -65,7 +65,7 @@ export const useArticleDetails = (
   const api = useApi();
   const { onError } = useHandleError();
 
-  const key = collectionKeys.detail(collectionId, itemId);
+  const key = collectionKeys.detail(collectionId!, itemId!);
 
   return useQuery(key, () => getItemDetails(api, collectionId!, itemId!), {
     enabled: Boolean(collectionId) && Boolean(itemId),

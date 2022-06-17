@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Heading, Icon, useToast, VStack } from '@chakra-ui/react';
+import { Box, Text, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
-import { BiMessageAltError } from '@react-icons/all-files/bi/BiMessageAltError';
+import { RiErrorWarningFill } from '@react-icons/all-files/ri/RiErrorWarningFill';
 import {
   ArticleContent,
   ArticleHeader,
@@ -13,8 +13,9 @@ import { ArticleWidth, defaultArticleWidth, ID } from '@orpington-news/shared';
 import { useArticleDateReadMutation, useArticleDetails } from './queries';
 
 export interface ArticleProps {
-  collectionId: ID;
-  itemId: ID;
+  collectionId?: ID;
+  itemId?: ID;
+  isRouterReady?: boolean;
 
   onGoBackClicked?: () => void;
 }
@@ -31,7 +32,7 @@ const getWidth = (setting: ArticleWidth): string => {
 };
 
 export const Article: React.FC<ArticleProps> = (props) => {
-  const { collectionId, itemId, onGoBackClicked } = props;
+  const { collectionId, itemId, isRouterReady, onGoBackClicked } = props;
 
   const toast = useToast();
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
@@ -51,18 +52,20 @@ export const Article: React.FC<ArticleProps> = (props) => {
       }
 
       if (!dateRead) {
-        mutateDateRead(
-          {
-            collectionId,
-            itemId: itemId,
-            dateRead: getUnixTime(new Date()),
-          },
-          {
-            onSuccess: () => {
-              setBlockDateReadMutation(true);
+        Boolean(collectionId) &&
+          Boolean(itemId) &&
+          mutateDateRead(
+            {
+              collectionId: itemId!,
+              itemId: itemId!,
+              dateRead: getUnixTime(new Date()),
             },
-          }
-        );
+            {
+              onSuccess: () => {
+                setBlockDateReadMutation(true);
+              },
+            }
+          );
       } else {
         setBlockDateReadMutation(true);
       }
@@ -72,22 +75,24 @@ export const Article: React.FC<ArticleProps> = (props) => {
   const handleMenuItemClicked = useCallback(
     (action: ArticleMenuAction) => {
       if (action === 'markAsUnread') {
-        mutateDateRead(
-          {
-            collectionId,
-            itemId: itemId,
-            dateRead: null,
-          },
-          {
-            onSuccess: () => {
-              setBlockDateReadMutation(true);
-              toast({
-                status: 'success',
-                description: 'Article marked as unread!',
-              });
+        Boolean(collectionId) &&
+          Boolean(itemId) &&
+          mutateDateRead(
+            {
+              collectionId: collectionId!,
+              itemId: itemId!,
+              dateRead: null,
             },
-          }
-        );
+            {
+              onSuccess: () => {
+                setBlockDateReadMutation(true);
+                toast({
+                  status: 'success',
+                  description: 'Article marked as unread!',
+                });
+              },
+            }
+          );
       }
     },
     [collectionId, itemId, mutateDateRead, toast]
@@ -104,18 +109,6 @@ export const Article: React.FC<ArticleProps> = (props) => {
     defaultArticleWidth
   );
 
-  if (query.status === 'error') {
-    const status: number | undefined = query.error?.status;
-    return (
-      <VStack spacing={6} h="full" w="full" justify="center">
-        <Icon as={BiMessageAltError} w={16} h="auto" />
-        <Heading>
-          {status === 404 ? 'Article not found.' : 'Unexpected error'}
-        </Heading>
-      </VStack>
-    );
-  }
-
   return (
     <VStack
       flexGrow={1}
@@ -126,8 +119,17 @@ export const Article: React.FC<ArticleProps> = (props) => {
       ref={ref}
       maxWidth={getWidth(articleWidth)}
     >
-      {query.status === 'loading' ? (
+      {!isRouterReady || query.status === 'loading' ? (
         <ArticleSkeleton />
+      ) : query.status === 'error' ? (
+        <VStack spacing={6} h="full" w="full" justify="center">
+          <Icon as={RiErrorWarningFill} w={12} h="auto" fill="red.300" />
+          <Text fontSize="xl" fontWeight="bold">
+            {query.error.status === 404
+              ? 'Article not found.'
+              : 'Unexpected error'}
+          </Text>
+        </VStack>
       ) : (
         query.status === 'success' && (
           <>

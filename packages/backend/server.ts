@@ -30,6 +30,15 @@ const fastify = Fastify({
 
 const PostgresStore = connectPgSimple(fastifySession as any);
 
+const getCookieSecret = (): string => {
+  try {
+    return readEnvVariable('COOKIE_SECRET', { fileFallback: true });
+  } catch (err) {
+    logger.warn('COOKIE_SECRET not found, using default value.');
+    return 'C9+YT8xJAaz5lppSeC/s/gZ2bitWCLRTUg8SOCYQe4k=';
+  }
+};
+
 async function setupFastify() {
   await fastify.register(fastifySwagger, {
     routePrefix: '/openapi',
@@ -63,7 +72,7 @@ async function setupFastify() {
 
   await fastify.register(fastifyCookie);
   await fastify.register(fastifySession, {
-    secret: readEnvVariable('COOKIE_SECRET', { fileFallback: true }),
+    secret: getCookieSecret(),
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',

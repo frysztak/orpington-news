@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query';
+import { useRouter } from 'next/router';
 import {
   addCollection,
   deleteCollection,
@@ -107,6 +108,7 @@ export const useDeleteCollection = ({
   onSuccess?: (ids: ID[]) => void;
 }) => {
   const api = useApi();
+  const router = useRouter();
   const { onError } = useHandleError();
 
   const queryClient = useQueryClient();
@@ -120,6 +122,7 @@ export const useDeleteCollection = ({
 
       if (navigateHome) {
         setActiveCollection('home');
+        router.push('/');
         queryClient.invalidateQueries(preferencesKeys.base);
       }
     },

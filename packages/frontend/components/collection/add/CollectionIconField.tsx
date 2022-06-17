@@ -100,6 +100,7 @@ export const CollectionIconField: React.FC<CollectionIconFieldProps> = (
             overflowY="auto"
             overflowX="hidden"
             onIconSelected={handleSelect}
+            value={value}
           />
         </PopoverContent>
       </Popover>
