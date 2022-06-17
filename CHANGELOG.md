@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Article page: fixed flashing "If you click on an article, it'll appear here." message
 - Collections: navigate to homepage when deleting currently active collection
+- Collection Icon Picker: highlight currently selected icon
 
 ### Changed
 
