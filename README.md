@@ -33,7 +33,7 @@ Docker image (`ghcr.io/frysztak/orpington-news`) exposes the app on port `8000`.
 - `APP_URL`
 - `DB_HOST`
 - `DB_PASS`
-- `COOKIE_SECRET` - at least 32 characters long random string. You can use `openssl rand -base64 32` to generate it
+- `COOKIE_SECRET` - at least 32 characters long random string. If not set will use a fallback value. You can use `openssl rand -base64 32` to generate it.
 
 For `DB_PASS` and `COOKIE_SECRET`, `_FILE` suffix is also supported. For example, `DB_PASS_FILE=./secrets/db_pass` will read database
 password from file `secrets/db_pass`. All variables are described in [Wiki page](https://github.com/frysztak/orpington-news/wiki/Env-variables).
