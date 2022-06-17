@@ -1,11 +1,11 @@
 # Orpington News
 
-<img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/frysztak/orpington-news">
-<img alt="Docker image size" src="https://ghcr-badge.herokuapp.com/frysztak/orpington-news/size">
-<img alt="License" src="https://img.shields.io/github/license/frysztak/orpington-news">
+[![release](https://img.shields.io/github/v/release/frysztak/orpington-news)](https://github.com/frysztak/orpington-news/releases)
+[![image-size](https://ghcr-badge.herokuapp.com/frysztak/orpington-news/size)](https://github.com/frysztak/orpington-news/pkgs/container/orpington-news)
+[![license](https://img.shields.io/github/license/frysztak/orpington-news)](https://github.com/frysztak/orpington-news/blob/master/LICENSE)
 
-<img alt="CI/CD DEV" src="https://github.com/frysztak/orpington-news/actions/workflows/dev.yml/badge.svg">
-<img alt="CI/CD Master" src="https://github.com/frysztak/orpington-news/actions/workflows/main.yml/badge.svg">
+[![cicd-dev](https://github.com/frysztak/orpington-news/actions/workflows/dev.yml/badge.svg)](https://github.com/frysztak/orpington-news/actions/workflows/dev.yml)
+[![cicd-master](https://github.com/frysztak/orpington-news/actions/workflows/main.yml/badge.svg)](https://github.com/frysztak/orpington-news/actions/workflows/main.yml)
 
 Orpington News is a self-hosted RSS/Atom feed reader with PWA support.
 
