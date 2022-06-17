@@ -39,7 +39,7 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
         justifyContent="space-between"
         borderRadius="md"
         border="1px"
-        borderColor={useColorModeValue('gray.300', 'gray.700')}
+        borderColor={useColorModeValue('purple.50', 'gray.700')}
       >
         <HStack w="full" justifyContent="space-between" alignItems="flex-start">
           <NextLink
@@ -69,12 +69,12 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
         <Box
           p={3}
           w="full"
-          background={useColorModeValue('gray.300', 'gray.700')}
+          background={useColorModeValue('purple.50', 'gray.700')}
         >
           <Text noOfLines={[2, 3]} overflowWrap="anywhere">
             {summary}
           </Text>
-          <Text color="gray.500">
+          <Text color={useColorModeValue('gray.600', 'gray.400')}>
             by {collection.title}
             {readingTimeRounded > 0 && ` • about ${readingTimeRounded} min`}
           </Text>

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Frontend: nicer "article not found" page
+- Frontend: nicer colours in Card layout for light mode
 - Backend: default value for `COOKIE_SECRET` env variable
 
 ## [0.4.1] - 2022-06-15
