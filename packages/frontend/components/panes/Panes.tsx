@@ -84,7 +84,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
           </HStack>
         </Resizable>
 
-        {mainContent ?? <EmptyMain />}
+        {mainContent || <EmptyMain />}
       </HStack>
 
       {/* Mobile view */}

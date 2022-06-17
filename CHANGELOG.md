@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Article page: fixed flashing "If you click on an article, it'll appear here." message
+
 ### Changed
 
 - Frontend: nicer "article not found" page

@@ -16,6 +16,8 @@ interface PanesProps {}
 
 export const Panes: ReactFCC<PanesProps> = ({ children }) => {
   const router = useRouter();
+  const articlePage =
+    router.route === '/collection/[collectionId]/article/[itemId]';
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);
 
@@ -38,12 +40,12 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
           collectionItemHeader={<CollectionItemsHeader />}
           collectionItemList={<CollectionItemsList />}
           mainContent={
-            itemId &&
-            collectionId && (
+            articlePage && (
               <Article
-                collectionId={collectionId}
-                itemId={itemId}
+                collectionId={router.isReady ? collectionId : undefined}
+                itemId={router.isReady ? itemId : undefined}
                 onGoBackClicked={handleGoBack}
+                isRouterReady={router.isReady}
               />
             )
           }
