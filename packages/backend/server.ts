@@ -6,10 +6,7 @@ import fastifyAuth from '@fastify/auth';
 import fastifyCors from '@fastify/cors';
 import fastifyETag from '@fastify/etag';
 import fastifySchedule from '@fastify/schedule';
-import {
-  ajvTypeBoxPlugin,
-  TypeBoxTypeProvider,
-} from '@fastify/type-provider-typebox';
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
 import connectPgSimple from 'connect-pg-simple';
@@ -23,9 +20,6 @@ import { migrator } from '@db/migrator';
 
 const fastify = Fastify({
   logger: logger,
-  ajv: {
-    plugins: [ajvTypeBoxPlugin],
-  },
 }).withTypeProvider<TypeBoxTypeProvider>();
 
 const PostgresStore = connectPgSimple(fastifySession as any);

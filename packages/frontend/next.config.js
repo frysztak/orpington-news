@@ -36,8 +36,6 @@ module.exports = withPlugins(
           : false,
     },
     productionBrowserSourceMaps: process.env.SOURCE_MAPS === 'true',
-    experimental: {
-      outputStandalone: true,
-    },
+    output: 'standalone',
   }
 );

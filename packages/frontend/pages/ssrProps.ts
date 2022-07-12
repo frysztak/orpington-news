@@ -93,8 +93,11 @@ export const getSSProps =
       chakraCookie: cookies[STORAGE_KEY]
         ? `${STORAGE_KEY}=${cookies[STORAGE_KEY]}`
         : '',
+      // @ts-ignore
       sidebarWidth: parseIntCookie(cookies, 'sidebarWidth'),
+      // @ts-ignore
       collectionItemsWidth: parseIntCookie(cookies, 'collectionItemsWidth'),
+      // @ts-ignore
       articleWidth: parseStringCookie(cookies, 'articleWidth'),
     };
 
