@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Article page: fixed articles not being marked as read
 
+### Added
+
+- Collection list: refresh gesture (Pull To Refresh)
+
+### Changed
+
+- Mobile: disable browser's default Pull To Refresh behaviour
+
 ## [0.4.2] - 2022-06-17
 
 ### Fixed
