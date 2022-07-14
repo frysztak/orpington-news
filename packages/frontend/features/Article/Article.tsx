@@ -56,7 +56,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
           Boolean(itemId) &&
           mutateDateRead(
             {
-              collectionId: itemId!,
+              collectionId: collectionId!,
               itemId: itemId!,
               dateRead: getUnixTime(new Date()),
             },
