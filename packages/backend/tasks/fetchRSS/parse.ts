@@ -55,6 +55,8 @@ export const mapFeedItems = (
   Omit<
     DBCollectionItem,
     | 'id'
+    | 'previous_id'
+    | 'next_id'
     | 'date_updated'
     | 'date_read'
     | 'collection_id'

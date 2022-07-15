@@ -2,6 +2,8 @@ import { CollectionIconType, ID } from '@orpington-news/shared';
 
 export interface DBCollectionItem {
   id: ID;
+  previous_id: ID;
+  next_id: ID;
   url: string;
   title: string;
   full_text: string;

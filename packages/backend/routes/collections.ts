@@ -321,7 +321,10 @@ export const collections: FastifyPluginAsync = async (
   fastify.get<{
     Params: CollectionIdType;
     Querystring: PaginationParams;
-    Reply: readonly Omit<CollectionItem, 'fullText'>[];
+    Reply: readonly Omit<
+      CollectionItem,
+      'previousId' | 'nextId' | 'fullText'
+    >[];
   }>(
     '/:id/items',
     {
@@ -384,6 +387,8 @@ export const collections: FastifyPluginAsync = async (
       try {
         const details = await pool.one(getItemDetails(id, itemId));
         const {
+          previous_id,
+          next_id,
           full_text,
           date_published,
           date_read,
@@ -396,6 +401,8 @@ export const collections: FastifyPluginAsync = async (
 
         return {
           ...rest,
+          previousId: previous_id,
+          nextId: next_id,
           fullText: full_text,
           datePublished: timestampMsToSeconds(date_published),
           dateRead: timestampMsToSeconds(date_read),

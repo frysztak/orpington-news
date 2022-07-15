@@ -5,7 +5,12 @@ import { DBCollectionItemDetails, DBCollectionItem } from './types';
 
 type InsertDBCollectionItem = Omit<
   DBCollectionItem,
-  'id' | 'date_read' | 'collection_title' | 'collection_icon'
+  | 'id'
+  | 'next_id'
+  | 'previous_id'
+  | 'date_read'
+  | 'collection_title'
+  | 'collection_icon'
 >;
 
 export const insertCollectionItems = (items: Array<InsertDBCollectionItem>) => {
@@ -122,12 +127,24 @@ export const getAllCollectionItems = (userId: ID) => {
 
 export const getItemDetails = (collectionId: ID, itemId: ID) => {
   return sql<DBCollectionItemDetails>`
-  SELECT collection_items.*
-  FROM collections
-  INNER JOIN (SELECT * FROM collection_items) collection_items
-  ON collections.id = collection_items.collection_id
-  WHERE collections.id = ${collectionId}
-   AND collection_items.id = ${itemId}`;
+  SELECT articles.*
+  FROM (
+    SELECT 
+  	collection_items.*, 
+  	LAG(collection_items.id, 1) OVER (
+  		PARTITION BY collection_items.collection_id
+  		ORDER BY date_published DESC
+  	) previous_id,
+  	LEAD(collection_items.id, 1) OVER (
+  		PARTITION BY collection_items.collection_id
+  		ORDER BY date_published DESC
+  	) next_id
+    FROM collections
+    INNER JOIN (SELECT * FROM collection_items) collection_items
+    ON collections.id = collection_items.collection_id
+    WHERE collections.id = ${collectionId}
+  ) articles
+  WHERE articles.id = ${itemId}`;
 };
 
 export const setItemDateRead = (

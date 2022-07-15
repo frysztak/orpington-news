@@ -74,6 +74,8 @@ export type FlatCollection = Omit<Collection, 'children' | 'parentId'> & {
 
 export interface CollectionItem {
   id: ID;
+  previousId: ID | null;
+  nextId: ID | null;
   url: string;
   title: string;
   summary: string;
