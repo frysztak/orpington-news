@@ -134,7 +134,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
       }
 
       const { previousId, nextId } = query.data;
-      const threshold = 0.55 * window.innerWidth;
+      const threshold = 0.35 * window.innerWidth;
 
       if (offset < -threshold && nextId) {
         router.push(`/collection/${collectionId}/article/${nextId}`);
