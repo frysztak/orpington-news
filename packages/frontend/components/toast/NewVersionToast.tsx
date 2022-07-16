@@ -11,12 +11,13 @@ import {
 
 export interface NewVersionToastProps {
   id: ToastId;
+  isReloading: boolean;
   onClose: () => void;
   onReload: () => void;
 }
 
 export const NewVersionToast: React.FC<NewVersionToastProps> = (props) => {
-  const { id, onClose, onReload } = props;
+  const { id, isReloading, onClose, onReload } = props;
 
   const alertTitleId =
     typeof id !== 'undefined' ? `toast-${id}-title` : undefined;
@@ -40,7 +41,14 @@ export const NewVersionToast: React.FC<NewVersionToastProps> = (props) => {
 
         <AlertDescription display="flex" flexDirection="column">
           A newer version is available, reload to update? <br />
-          <Button onClick={onReload} mt={2} ml="auto" variant="solid" size="sm">
+          <Button
+            onClick={onReload}
+            isLoading={isReloading}
+            mt={2}
+            ml="auto"
+            variant="solid"
+            size="sm"
+          >
             Reload
           </Button>
         </AlertDescription>

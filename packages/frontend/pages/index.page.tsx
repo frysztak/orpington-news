@@ -4,6 +4,7 @@ import Head from 'next/head';
 import { useToast } from '@chakra-ui/react';
 import type { Workbox, WorkboxLifecycleWaitingEvent } from 'workbox-window';
 import { NewVersionToast } from '@components/toast';
+import { noop } from '@orpington-news/shared';
 
 declare global {
   interface Window {
@@ -38,6 +39,7 @@ const Home: NextPage = () => {
               <NewVersionToast
                 id={id}
                 onClose={onClose}
+                isReloading={false}
                 onReload={() => {
                   wb.addEventListener('controlling', (event) => {
                     window.location.reload();
@@ -45,6 +47,18 @@ const Home: NextPage = () => {
 
                   // Send a message to the waiting service worker, instructing it to activate.
                   wb.messageSkipWaiting();
+
+                  toast.update(toastId, {
+                    position: 'bottom-left',
+                    render: ({ id, onClose }) => (
+                      <NewVersionToast
+                        id={id}
+                        onClose={onClose}
+                        isReloading
+                        onReload={noop}
+                      />
+                    ),
+                  });
                 }}
               />
             ),

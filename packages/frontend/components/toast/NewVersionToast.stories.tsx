@@ -15,3 +15,9 @@ export const Default = Template.bind({});
 Default.args = {
   id: 1,
 };
+
+export const Reloading = Template.bind({});
+Reloading.args = {
+  id: 1,
+  isReloading: true,
+};
