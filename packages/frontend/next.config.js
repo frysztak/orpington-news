@@ -1,15 +1,11 @@
 /** @type {import('next').NextConfig} */
 
-const path = require('path');
-
 const withPlugins = require('next-compose-plugins');
-
 const bundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
-
 const PWA = require('next-pwa');
-const runtimeCaching = require('next-pwa/cache');
+const runtimeCaching = require('./pwa/runtimeCaching');
 
 module.exports = withPlugins(
   [
@@ -21,6 +17,8 @@ module.exports = withPlugins(
           dest: 'public',
           runtimeCaching,
           disable: process.env.NODE_ENV !== 'production',
+          register: false,
+          skipWaiting: false,
         },
       },
     ],

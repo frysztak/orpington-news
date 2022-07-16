@@ -8,7 +8,7 @@ import 'focus-visible/dist/focus-visible';
 import { colors } from './colors';
 import { textStyles } from './textStyles';
 import { fonts } from './fonts';
-import { Button, Menu, Drawer } from './components';
+import { Button, Menu, Drawer, Alert } from './components';
 
 const styles = {
   global: (props: any) => ({
@@ -58,6 +58,7 @@ export const theme = extendTheme(
       Menu,
       Button,
       Drawer,
+      Alert,
     },
   },
   withDefaultColorScheme({ colorScheme: 'purple' }),
