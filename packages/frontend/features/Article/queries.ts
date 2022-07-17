@@ -64,6 +64,7 @@ export const useArticleDetails = (
 ) => {
   const api = useApi();
   const { onError } = useHandleError();
+  const queryClient = useQueryClient();
 
   const key = collectionKeys.detail(collectionId!, itemId!);
 
@@ -71,6 +72,18 @@ export const useArticleDetails = (
     enabled: Boolean(collectionId) && Boolean(itemId),
     retry: false,
     onError,
-    onSuccess: options?.onSuccess,
+    onSuccess: (data) => {
+      const { nextId } = data;
+
+      // prefetch next article
+      if (nextId !== null) {
+        const key = collectionKeys.detail(collectionId!, nextId);
+        queryClient.prefetchQuery(key, () =>
+          getItemDetails(api, collectionId!, nextId)
+        );
+      }
+
+      options?.onSuccess?.(data);
+    },
   });
 };
