@@ -138,7 +138,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
       </HStack>
 
       <VStack w="full" align="flex-start" spacing={1} px={4}>
-        <Heading>{title}</Heading>
+        <Heading overflowWrap="anywhere">{title}</Heading>
         <Box>
           <Text color="gray.500" as={HStack}>
             <Icon as={CgCalendar} mr={1} />

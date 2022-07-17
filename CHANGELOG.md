@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Article page: fixed articles not being marked as read
+- Article header: break very long, single-word titles
 
 ### Added
 
