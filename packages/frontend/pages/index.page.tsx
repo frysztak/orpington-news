@@ -50,6 +50,7 @@ const Home: NextPage = () => {
 
                   toast.update(toastId, {
                     position: 'bottom-left',
+                    duration: null,
                     render: ({ id, onClose }) => (
                       <NewVersionToast
                         id={id}
