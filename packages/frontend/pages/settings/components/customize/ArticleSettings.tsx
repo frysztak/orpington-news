@@ -22,14 +22,20 @@ const ArticleFontSizesNames: Record<ArticleFontSize, string> = {
 export const ArticleSettings: React.FC = (props) => {
   return (
     <>
-      <RadioGroupField label="Article font family" name="articleFontFamily">
+      <RadioGroupField
+        label="Article font family"
+        name="articleFontFamily"
+        stackProps={{
+          as: Wrap,
+        }}
+      >
         {({ getRadioProps }) =>
           ArticleFontFamilies.map((value: ArticleFontFamily) => {
             const radio = getRadioProps({ value });
             return (
-              <Radio key={value} {...radio}>
-                {ArticleFontFamiliesNames[value]}
-              </Radio>
+              <WrapItem key={value}>
+                <Radio {...radio}>{ArticleFontFamiliesNames[value]}</Radio>
+              </WrapItem>
             );
           })
         }
@@ -38,14 +44,17 @@ export const ArticleSettings: React.FC = (props) => {
       <RadioGroupField
         label="Article monospace font family"
         name="articleMonoFontFamily"
+        stackProps={{
+          as: Wrap,
+        }}
       >
         {({ getRadioProps }) =>
           ArticleMonoFontFamilies.map((value: ArticleMonoFontFamily) => {
             const radio = getRadioProps({ value });
             return (
-              <Radio key={value} {...radio}>
-                {ArticleMonoFontFamiliesNames[value]}
-              </Radio>
+              <WrapItem key={value}>
+                <Radio {...radio}>{ArticleMonoFontFamiliesNames[value]}</Radio>
+              </WrapItem>
             );
           })
         }

@@ -70,6 +70,7 @@ export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
               direction="column"
               flexShrink={0}
               flexGrow={1}
+              maxW={{ base: 'full', md: 'sm' }}
             >
               <RadioGroupField label="Theme" name="theme">
                 {({ getRadioProps }) =>

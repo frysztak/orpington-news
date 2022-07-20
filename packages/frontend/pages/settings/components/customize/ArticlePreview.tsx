@@ -27,7 +27,7 @@ export const ArticlePreview: React.FC = (props) => {
         _dark={{
           bg: 'gray.900',
         }}
-        maxW={{ base: 'xs', md: 'md', lg: '2xl' }}
+        maxW={{ base: 'full', md: 'md', lg: '2xl' }}
         sx={{
           '--article-font-size-scale': `${ArticleFontSizeValues[articleFontSize]}`,
           '--article-font-family': ArticleFontFamiliesNames[articleFontFamily],

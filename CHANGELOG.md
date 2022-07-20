@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Collection list: refresh gesture (Pull To Refresh)
 - Article page (mobile): swipe to navigate to previous/next article
 - PWA: "Update available" toast
-- Settings: add option to select article font size and font family (Nunito, OpenDyslexic)
+- Settings: add option to select article font size and font family (Nunito, Ubuntu, Lato, OpenDyslexic) and monospace font family (Source Code Pro, Ubuntu Mono, Fira Mono, OpenDyslexic Mono)
 
 ### Changed
 

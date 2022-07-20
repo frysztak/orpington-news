@@ -18,7 +18,47 @@ export const fontFaces = `
        url('/fonts/nunito-v20-latin-700.woff2') format('woff2'),
        url('/fonts/nunito-v20-latin-700.woff') format('woff');
 }
-       
+
+/* ubuntu-regular - latin */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+       url('/fonts/ubuntu-v20-latin-regular.woff2') format('woff2'),
+       url('/fonts/ubuntu-v20-latin-regular.woff') format('woff');
+}
+
+/* ubuntu-700 - latin */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 700;
+  src: local(''),
+       url('/fonts/ubuntu-v20-latin-700.woff2') format('woff2'),
+       url('/fonts/ubuntu-v20-latin-700.woff') format('woff');
+}
+
+/* lato-regular - latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+       url('/fonts/lato-v23-latin-regular.woff2') format('woff2'),
+       url('/fonts/lato-v23-latin-regular.woff') format('woff');
+}
+
+/* lato-700 - latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local(''),
+       url('/fonts/lato-v23-latin-700.woff2') format('woff2'),
+       url('/fonts/lato-v23-latin-700.woff') format('woff');
+}
+
 /* OpenDyslexic Regular */
 @font-face {
   font-family: 'OpenDyslexic';
@@ -36,7 +76,7 @@ export const fontFaces = `
   src: local(''),
        url('/fonts/OpenDyslexic-Bold.woff') format('woff');
 }
-       
+
 /* OpenDyslexic Italic */
 @font-face {
   font-family: 'OpenDyslexic';
@@ -54,7 +94,7 @@ export const fontFaces = `
   src: local(''),
        url('/fonts/OpenDyslexic-Bold-Italic.woff') format('woff');
 }
-       
+
 /* OpenDyslexic Mono */
 @font-face {
   font-family: 'OpenDyslexic Mono';
@@ -63,15 +103,65 @@ export const fontFaces = `
   src: local(''),
        url('/fonts/OpenDyslexicMono-Regular.otf') format('opentype');
 }
-       
+
 /* source-code-pro-regular - latin */
 @font-face {
   font-family: 'Source Code Pro';
   font-style: normal;
   font-weight: 400;
   src: local(''),
-       url('/fonts/source-code-pro-v18-latin-regular.woff2') format('woff2'),
-       url('/fonts/source-code-pro-v18-latin-regular.woff') format('woff');
+       url('/fonts/source-code-pro-v21-latin-regular.woff2') format('woff2'),
+       url('/fonts/source-code-pro-v21-latin-regular.woff') format('woff');
+}
+
+/* source-code-pro-700 - latin */
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 700;
+  src: local(''),
+       url('/fonts/source-code-pro-v21-latin-700.woff2') format('woff2'),
+       url('/fonts/source-code-pro-v21-latin-700.woff') format('woff');
+}
+
+/* fira-mono-700 - latin */
+@font-face {
+  font-family: 'Fira Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: local(''),
+       url('/fonts/fira-mono-v14-latin-700.woff2') format('woff2'),
+       url('/fonts/fira-mono-v14-latin-700.woff') format('woff');
+}
+
+/* fira-mono-regular - latin */
+@font-face {
+  font-family: 'Fira Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+       url('/fonts/fira-mono-v14-latin-regular.woff2') format('woff2'),
+       url('/fonts/fira-mono-v14-latin-regular.woff') format('woff');
+}
+
+/* ubuntu-mono-regular - latin */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: local(''),
+       url('/fonts/ubuntu-mono-v15-latin-regular.woff2') format('woff2'),
+       url('/fonts/ubuntu-mono-v15-latin-regular.woff') format('woff');
+}
+
+/* ubuntu-mono-700 - latin */
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: local(''),
+       url('/fonts/ubuntu-mono-v15-latin-700.woff2') format('woff2'),
+       url('/fonts/ubuntu-mono-v15-latin-700.woff') format('woff');
 }
 `;
 
