@@ -40,7 +40,7 @@ const SyntaxHighlighterWithTheme: ReactFCC<SyntaxHighlighterProps> = ({
       style={style}
       codeTagProps={{
         style: {
-          fontFamily: 'var(--chakra-fonts-mono)',
+          fontFamily: 'var(--article-mono-font-family)',
         },
       }}
     >

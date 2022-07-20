@@ -12,7 +12,17 @@ import {
   ArticleSkeleton,
 } from '@components/article';
 import { useIsTouchscreen } from '@utils';
-import { ArticleWidth, defaultArticleWidth, ID } from '@orpington-news/shared';
+import {
+  ArticleFontFamiliesNames,
+  ArticleFontSizeValues,
+  ArticleMonoFontFamiliesNames,
+  ArticleWidth,
+  defaultArticleFontFamily,
+  defaultArticleFontSize,
+  defaultArticleMonoFontFamily,
+  defaultArticleWidth,
+  ID,
+} from '@orpington-news/shared';
 import { useArticleDateReadMutation, useArticleDetails } from './queries';
 
 export interface ArticleProps {
@@ -112,6 +122,18 @@ export const Article: React.FC<ArticleProps> = (props) => {
     'articleWidth',
     defaultArticleWidth
   );
+  const [articleFontSize] = useLocalStorage(
+    'articleFontSize',
+    defaultArticleFontSize
+  );
+  const [articleFontFamily] = useLocalStorage(
+    'articleFontFamily',
+    defaultArticleFontFamily
+  );
+  const [articleMonoFontFamily] = useLocalStorage(
+    'articleMonoFontFamily',
+    defaultArticleMonoFontFamily
+  );
 
   const isTouchscreen = useIsTouchscreen();
 
@@ -188,7 +210,15 @@ export const Article: React.FC<ArticleProps> = (props) => {
           </VStack>
         ) : (
           query.status === 'success' && (
-            <>
+            <Box
+              sx={{
+                '--article-font-size-scale': `${ArticleFontSizeValues[articleFontSize]}`,
+                '--article-font-family':
+                  ArticleFontFamiliesNames[articleFontFamily],
+                '--article-mono-font-family':
+                  ArticleMonoFontFamiliesNames[articleMonoFontFamily],
+              }}
+            >
               <ArticleHeader
                 article={query.data}
                 onGoBackClicked={onGoBackClicked}
@@ -199,7 +229,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
               <Box w="full" px={4} py={4}>
                 <ArticleContent html={query.data.fullText} />
               </Box>
-            </>
+            </Box>
           )
         )}
       </motion.div>

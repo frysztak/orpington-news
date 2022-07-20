@@ -19,8 +19,11 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
         Settings
       </Box>
 
-      <SettingsCategory title="Collections">
+      <SettingsCategory title="Appearance">
         <SettingsLink href="/settings/appearance">Appearance</SettingsLink>
+      </SettingsCategory>
+
+      <SettingsCategory title="Collections">
         <SettingsLink href="/settings/organize">Organize</SettingsLink>
       </SettingsCategory>
 

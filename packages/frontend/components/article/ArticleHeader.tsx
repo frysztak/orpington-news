@@ -36,6 +36,7 @@ export interface ArticleHeaderProps {
   article: CollectionItemDetails;
   articleWidth?: ArticleWidth;
 
+  disableActionButtons?: boolean;
   onGoBackClicked?: () => void;
   onReadingListToggle?: () => void;
   onMenuItemClicked?: (action: ArticleMenuAction) => void;
@@ -54,6 +55,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
     },
     articleWidth,
 
+    disableActionButtons,
     onGoBackClicked,
     onReadingListToggle,
     onMenuItemClicked,
@@ -76,6 +78,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           variant="ghost"
           mr="auto"
           onClick={onGoBackClicked}
+          isDisabled={disableActionButtons}
           display={{ base: 'inline-flex', lg: 'none' }}
         />
 
@@ -86,6 +89,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           href={url}
           aria-label="Open external link"
           variant="ghost"
+          isDisabled={disableActionButtons}
         />
         {/*<IconButton
           icon={onReadingList ? <BsBookmarkDash /> : <BsBookmarkPlus />}
@@ -104,6 +108,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               icon={<BsThreeDotsVertical />}
               variant="ghost"
               tabIndex={0}
+              isDisabled={disableActionButtons}
             />
             <MenuList data-focus-visible-disabled>
               <MenuItem
@@ -138,8 +143,17 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
       </HStack>
 
       <VStack w="full" align="flex-start" spacing={1} px={4}>
-        <Heading overflowWrap="anywhere">{title}</Heading>
-        <Box>
+        <Heading
+          overflowWrap="anywhere"
+          fontFamily="var(--article-font-family)"
+          fontSize="calc(var(--chakra-fontSizes-3xl) * var(--article-font-size-scale))"
+        >
+          {title}
+        </Heading>
+        <Box
+          fontFamily="var(--article-font-family)"
+          fontSize="calc(1rem * var(--article-font-size-scale))"
+        >
           <Text color="gray.500" as={HStack}>
             <Icon as={CgCalendar} mr={1} />
             <>
