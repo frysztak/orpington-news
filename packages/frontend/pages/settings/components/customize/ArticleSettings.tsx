@@ -79,7 +79,7 @@ export const ArticleSettings: React.FC = (props) => {
         }
       </RadioGroupField>
 
-      <Box display={{ base: 'block', md: 'none' }}>
+      <Box maxW="full" display={{ base: 'block', md: 'none' }}>
         <ArticlePreview />
       </Box>
     </>

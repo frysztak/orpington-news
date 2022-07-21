@@ -57,7 +57,7 @@ export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
   return (
     <Formik initialValues={currentData ?? initialValues} onSubmit={onChange}>
       {({ values }) => (
-        <Form noValidate>
+        <Form noValidate style={{ maxWidth: '100%' }}>
           <Stack
             spacing={{ base: 4, lg: 8 }}
             w="full"
