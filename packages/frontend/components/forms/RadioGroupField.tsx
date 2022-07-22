@@ -3,6 +3,7 @@ import {
   FormControl,
   FormLabel,
   HStack,
+  StackProps,
   useRadioGroup,
 } from '@chakra-ui/react';
 import { BasicField } from './types';
@@ -12,10 +13,11 @@ export type RadioFieldProps = BasicField & {
   children: (args: {
     getRadioProps: ReturnType<typeof useRadioGroup>['getRadioProps'];
   }) => React.ReactNode;
+  stackProps?: StackProps;
 };
 
 export const RadioGroupField: React.FC<RadioFieldProps> = (props) => {
-  const { label, children } = props;
+  const { label, children, stackProps } = props;
   const { formControlProps, meta, helpers } = useFormControl(props);
 
   const onChange = (value: string) => {
@@ -42,7 +44,7 @@ export const RadioGroupField: React.FC<RadioFieldProps> = (props) => {
           {label}
         </FormLabel>
       )}
-      <HStack {...group} spacing={4}>
+      <HStack {...group} spacing={4} {...stackProps}>
         {children({ getRadioProps })}
       </HStack>
     </FormControl>

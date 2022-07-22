@@ -14,6 +14,8 @@ export const generateSampleCollectionItem = (
 
   return {
     id: faker.datatype.number(),
+    previousId: faker.datatype.number(),
+    nextId: faker.datatype.number(),
     url: faker.internet.url(),
     summary: faker.lorem.words(30),
     datePublished: getUnixTime(faker.date.recent()),

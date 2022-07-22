@@ -1,4 +1,3 @@
-import { colors } from './colors';
 import {
   extendTheme,
   withDefaultColorScheme,
@@ -6,12 +5,16 @@ import {
 } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import 'focus-visible/dist/focus-visible';
+import { colors } from './colors';
 import { textStyles } from './textStyles';
 import { fonts } from './fonts';
-import { Button, Menu, Drawer } from './components';
+import { Button, Menu, Drawer, Alert } from './components';
 
 const styles = {
   global: (props: any) => ({
+    body: {
+      overscrollBehaviorY: 'contain',
+    },
     '*': {
       scrollbarWidth: 'thin',
     },
@@ -55,6 +58,7 @@ export const theme = extendTheme(
       Menu,
       Button,
       Drawer,
+      Alert,
     },
   },
   withDefaultColorScheme({ colorScheme: 'purple' }),

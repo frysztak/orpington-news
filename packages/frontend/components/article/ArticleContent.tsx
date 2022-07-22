@@ -56,14 +56,16 @@ const Heading: ReactFCC<{
   domNode: Element;
   level: HeadingLevel;
 }> = (props) => {
-  const { level, domNode, children } = props;
+  const { level, domNode } = props;
   const { id } = attributesToProps(domNode.attribs);
   const text: string = getNodeText(domNode);
+  const fontSize = HeadingFontSize[level];
 
   return (
     <ChakraHeading
       as={level}
-      size={HeadingFontSize[level]}
+      fontSize={`calc(var(--chakra-fontSizes-${fontSize}) * var(--article-font-size-scale))`}
+      fontFamily="var(--article-font-family)"
       display="flex"
       alignItems="center"
       id={id}
@@ -158,7 +160,15 @@ const options: HTMLReactParserOptions = {
         );
       }
       case 'code': {
-        return <Code overflowWrap="anywhere">{children}</Code>;
+        return (
+          <Code
+            overflowWrap="anywhere"
+            fontFamily="var(--article-mono-font-family)"
+            fontSize="calc(var(--chakra-fontSizes-sm) * var(--article-font-size-scale))"
+          >
+            {children}
+          </Code>
+        );
       }
       case 'img': {
         const { src, alt } = domNode.attribs;
@@ -201,7 +211,13 @@ export const ArticleContent: React.FC<ArticleContentProps> = (props) => {
   }, [html]);
 
   return (
-    <VStack w="full" align="flex-start" spacing={4}>
+    <VStack
+      w="full"
+      align="flex-start"
+      spacing={4}
+      fontFamily="var(--article-font-family)"
+      fontSize="calc(1rem * var(--article-font-size-scale))"
+    >
       <>{content}</>
     </VStack>
   );

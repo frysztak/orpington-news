@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2022-07-22
+
+### Fixed
+
+-   Article page: fixed articles not being marked as read
+-   Article header: break very long, single-word titles
+
+### Added
+
+-   Collection list: refresh gesture (Pull To Refresh)
+-   Article page (mobile): swipe to navigate to previous/next article
+-   PWA: "Update available" toast
+-   Settings: add option to select article font size and font family (Nunito, Ubuntu, Lato, OpenDyslexic) and monospace font family (Source Code Pro, Ubuntu Mono, Fira Mono, OpenDyslexic Mono)
+
+### Changed
+
+-   Mobile: disable browser's default Pull To Refresh behaviour
+
 ## [0.4.2] - 2022-06-17
 
 ### Fixed
@@ -92,7 +110,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.4.2...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.5.0...HEAD
+
+[0.5.0]: https://github.com/frysztak/orpington-news/compare/0.4.2...0.5.0
 
 [0.4.2]: https://github.com/frysztak/orpington-news/compare/0.4.1...0.4.2
 

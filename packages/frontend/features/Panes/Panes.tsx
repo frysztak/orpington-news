@@ -42,6 +42,7 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
           mainContent={
             articlePage && (
               <Article
+                key={itemId}
                 collectionId={router.isReady ? collectionId : undefined}
                 itemId={router.isReady ? itemId : undefined}
                 onGoBackClicked={handleGoBack}

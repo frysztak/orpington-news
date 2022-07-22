@@ -55,6 +55,13 @@ IsFetchingMore.args = {
   isFetchingMoreItems: true,
 };
 
+export const HundredItemsIsRefreshing = Template.bind({});
+HundredItemsIsRefreshing.args = {
+  layout: 'magazine',
+  items: items100,
+  isRefreshing: true,
+};
+
 const FetchTemplate: Story<CollectionListProps> = (props) => {
   const [isFetching, setIsFetching] = useState(false);
   const [page, setPage] = useState(0);

@@ -16,7 +16,9 @@ import {
   defaultCollectionLayout,
   genN,
 } from '@orpington-news/shared';
+import { usePullToRefresh } from '@utils';
 import { CardItem, MagazineItem } from '../layouts';
+import { RefreshIndicator } from './RefreshIndicator';
 
 export interface CollectionListProps {
   layout?: CollectionLayout;
@@ -26,6 +28,10 @@ export interface CollectionListProps {
   isFetchingMoreItems?: boolean;
   canFetchMoreItems?: boolean;
   onFetchMoreItems?: () => void;
+
+  // Used by Pull to Refresh
+  isRefreshing?: boolean;
+  onRefresh?: () => void;
 }
 
 const getListItem = (layout: CollectionLayout) => {
@@ -47,6 +53,9 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     isFetchingMoreItems,
     canFetchMoreItems,
     onFetchMoreItems,
+
+    isRefreshing = false,
+    onRefresh,
     ...rest
   } = props;
 
@@ -80,6 +89,11 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     rowVirtualizer.virtualItems,
   ]);
 
+  const { touchMoveHandler, touchStartHandler } = usePullToRefresh({
+    isRefreshing,
+    onRefresh,
+  });
+
   if (isLoading) {
     return (
       <VStack
@@ -111,7 +125,16 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   const Item = getListItem(layout);
 
   return (
-    <Box ref={parentRef} overflow="auto" w="full" h="full" {...rest}>
+    <Box
+      ref={parentRef}
+      overflow="auto"
+      w="full"
+      h="full"
+      onTouchStart={touchStartHandler}
+      onTouchMove={touchMoveHandler}
+      {...rest}
+    >
+      <RefreshIndicator isRefreshing={isRefreshing} />
       <Box
         position="relative"
         w="full"
