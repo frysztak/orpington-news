@@ -1,3 +1,4 @@
+import { TouchEventHandler, useCallback } from 'react';
 import { useColorModeValue } from '@chakra-ui/react';
 import {
   Light as SyntaxHighlighter,
@@ -33,6 +34,11 @@ const SyntaxHighlighterWithTheme: ReactFCC<SyntaxHighlighterProps> = ({
   ...rest
 }) => {
   const style = useColorModeValue(atomOneLight, dracula);
+  // prevent `move` events from bubbling up.
+  // they cause tiny movements of `Article` component (since it supports drag)
+  const handleMove: TouchEventHandler<HTMLDivElement> = useCallback((event) => {
+    event.stopPropagation();
+  }, []);
 
   return (
     <C
@@ -43,6 +49,8 @@ const SyntaxHighlighterWithTheme: ReactFCC<SyntaxHighlighterProps> = ({
           fontFamily: 'var(--article-mono-font-family)',
         },
       }}
+      onTouchMove={handleMove}
+      onPointerMove={handleMove}
     >
       {children}
     </C>
