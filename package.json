@@ -4,17 +4,24 @@
   "scripts": {
     "prepare": "husky install",
     "dev": "cross-env NODE_ENV=development lerna run dev --stream --parallel",
+    "dev:e2e": "cross-env NODE_ENV=development lerna run dev:e2e --stream --parallel",
     "test": "lerna run test --stream --parallel",
     "build": "lerna run build --stream",
-    "audit:fix": "yarn-audit-fix"
+    "audit:fix": "yarn-audit-fix",
+    "cypress:open": "cypress open"
   },
   "devDependencies": {
+    "@slonik/migrator": "^0.11.2",
     "cross-env": "^7.0.3",
+    "cypress": "^10.3.1",
+    "cypress-dark": "^1.8.3",
+    "dotenv": "^16.0.1",
     "husky": "^8.0.1",
     "lerna": "^5.4.3",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
+    "slonik": "^28.1.1",
     "typescript": "^4.7.4",
     "yarn-audit-fix": "^9.3.5"
   },

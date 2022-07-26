@@ -40,6 +40,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
               isDisabled={isLoading}
               isRequired
               autoComplete="username"
+              data-test="username"
             />
 
             <PasswordField
@@ -48,6 +49,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
               isDisabled={isLoading}
               isRequired
               autoComplete="current-password"
+              data-test="password"
             />
 
             <HStack w="full" justify="flex-end">
@@ -56,6 +58,7 @@ export const LoginForm: React.FC<LoginFormProps> = (props) => {
                 w={['full', 40]}
                 mt={4}
                 isLoading={isLoading}
+                data-test="submit"
               >
                 Login
               </Button>
