@@ -14,10 +14,15 @@ export default defineConfig({
     db_host: process.env.DB_HOST,
     db_name: process.env.DB_NAME,
     api_url: process.env.NEXT_PUBLIC_API_URL,
+    codeCoverage: {
+      url: `${process.env.NEXT_PUBLIC_API_URL}/__coverage__`,
+    },
   },
   e2e: {
     baseUrl: 'http://localhost:3000',
     setupNodeEvents(on, config) {
+      require('@cypress/code-coverage/task')(on, config);
+
       on('task', {
         async 'db:seed'() {
           const buildDSN = (): string => {
@@ -39,6 +44,8 @@ export default defineConfig({
           return await migrator.up();
         },
       });
+
+      return config;
     },
   },
 });

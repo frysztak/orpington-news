@@ -12,7 +12,7 @@ import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
 import connectPgSimple from 'connect-pg-simple';
 
-import { auth, collections, preferences, sse } from '@routes';
+import { auth, collections, coverage, preferences, sse } from '@routes';
 import { fastifyVerifySession } from '@plugins';
 import { fetchRSSJob, pingJob } from '@tasks';
 import { logger, readEnvVariable } from '@utils';
@@ -94,6 +94,9 @@ async function setupFastify() {
   await fastify.register(collections, { prefix: '/collections' });
   await fastify.register(sse, { prefix: '/events' });
   await fastify.register(preferences, { prefix: '/preferences' });
+  if (global.__coverage__) {
+    await fastify.register(coverage, { prefix: '/__coverage__' });
+  }
 
   const closeListeners = closeWithGrace(
     { delay: 500 },
