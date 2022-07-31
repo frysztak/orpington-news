@@ -9,7 +9,8 @@
     "build": "lerna run build --stream",
     "audit:fix": "yarn-audit-fix",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "combine:coverage": "sh ./scripts/combine_coverage.sh"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.10.0",
@@ -21,11 +22,15 @@
     "husky": "^8.0.1",
     "lerna": "^5.4.3",
     "lint-staged": "^13.0.3",
+    "nyc": "^15.1.0",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "slonik": "^28.1.1",
     "typescript": "^4.7.4",
     "yarn-audit-fix": "^9.3.5"
+  },
+  "nyc": {
+    "report-dir": "cypress-coverage"
   },
   "workspaces": {
     "packages": [

@@ -20,6 +20,9 @@ const customJestConfig = {
     '^@utils/(.*)$': '<rootDir>/utils/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
+
+  collectCoverage: true,
+  coverageDirectory: 'jest-coverage',
 };
 
 const ignoredModules = ['react-dnd', 'dnd-core', '@react-dnd/*'].join('|');

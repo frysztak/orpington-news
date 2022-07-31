@@ -21,6 +21,10 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+cypress-coverage
+jest-coverage
+full-coverage
+reports
 *.lcov
 
 # nyc test coverage

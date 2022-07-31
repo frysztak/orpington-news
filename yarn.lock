@@ -4873,8 +4873,14 @@ __metadata:
     "@fastify/swagger": ^7.4.1
     "@fastify/type-provider-typebox": ^2.3.0
     "@orpington-news/shared": ^0.0.0
-    "@sinclair/typebox": ^0.24.28
-    "@slonik/migrator": ^0.11.3
+    "@rollup/plugin-babel": ^5.3.1
+    "@rollup/plugin-commonjs": ^22.0.1
+    "@rollup/plugin-json": ^4.1.0
+    "@rollup/plugin-node-resolve": ^13.3.0
+    "@rollup/plugin-run": ^2.1.0
+    "@rollup/plugin-typescript": ^8.3.3
+    "@sinclair/typebox": ^0.24.20
+    "@slonik/migrator": ^0.11.2
     "@types/connect-pg-simple": ^7.0.0
     "@types/jest": ^28.1.7
     "@types/node": ^17.0.45
@@ -4915,7 +4921,6 @@ __metadata:
     reading-time: ^1.5.0
     rimraf: ^3.0.2
     rollup: ^2.77.0
-    rollup-plugin-istanbul: ^3.0.0
     rss-parser: ^3.12.0
     slonik: 29.2.0
     striptags: ^3.2.0
@@ -5129,7 +5134,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-babel@npm:^5.2.0":
+"@rollup/plugin-babel@npm:^5.2.0, @rollup/plugin-babel@npm:^5.3.1":
   version: 5.3.1
   resolution: "@rollup/plugin-babel@npm:5.3.1"
   dependencies:
@@ -5218,16 +5223,6 @@ __metadata:
   peerDependencies:
     rollup: ^1.20.0||^2.0.0
   checksum: 8be16e27863c219edbb25a4e6ec2fe0e1e451d9e917b6a43cf2ae5bc025a6b8faaa40f82a6e53b66d0de37b58ff472c6c3d57a83037ae635041f8df959d6d9aa
-  languageName: node
-  linkType: hard
-
-"@rollup/pluginutils@npm:^4.1.0":
-  version: 4.2.1
-  resolution: "@rollup/pluginutils@npm:4.2.1"
-  dependencies:
-    estree-walker: ^2.0.1
-    picomatch: ^2.2.2
-  checksum: 6bc41f22b1a0f1efec3043899e4d3b6b1497b3dea4d94292d8f83b4cf07a1073ecbaedd562a22d11913ff7659f459677b01b09e9598a98936e746780ecc93a12
   languageName: node
   linkType: hard
 
@@ -16126,7 +16121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"istanbul-lib-instrument@npm:^4.0.0, istanbul-lib-instrument@npm:^4.0.3":
+"istanbul-lib-instrument@npm:^4.0.0":
   version: 4.0.3
   resolution: "istanbul-lib-instrument@npm:4.0.3"
   dependencies:
@@ -19307,6 +19302,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nyc@npm:15.1.0, nyc@npm:^15.1.0":
+  version: 15.1.0
+  resolution: "nyc@npm:15.1.0"
+  dependencies:
+    "@istanbuljs/load-nyc-config": ^1.0.0
+    "@istanbuljs/schema": ^0.1.2
+    caching-transform: ^4.0.0
+    convert-source-map: ^1.7.0
+    decamelize: ^1.2.0
+    find-cache-dir: ^3.2.0
+    find-up: ^4.1.0
+    foreground-child: ^2.0.0
+    get-package-type: ^0.1.0
+    glob: ^7.1.6
+    istanbul-lib-coverage: ^3.0.0
+    istanbul-lib-hook: ^3.0.0
+    istanbul-lib-instrument: ^4.0.0
+    istanbul-lib-processinfo: ^2.0.2
+    istanbul-lib-report: ^3.0.0
+    istanbul-lib-source-maps: ^4.0.0
+    istanbul-reports: ^3.0.2
+    make-dir: ^3.0.0
+    node-preload: ^0.2.1
+    p-map: ^3.0.0
+    process-on-spawn: ^1.0.0
+    resolve-from: ^5.0.0
+    rimraf: ^3.0.0
+    signal-exit: ^3.0.2
+    spawn-wrap: ^2.0.0
+    test-exclude: ^6.0.0
+    yargs: ^15.0.2
+  bin:
+    nyc: bin/nyc.js
+  checksum: 82a7031982df2fd6ab185c9f1b5d032b6221846268007b45b5773c6582e776ab33e96cd22b4231520345942fcef69b4339bd967675b8483f3fa255b56326faef
+  languageName: node
+  linkType: hard
+
 "object-assign@npm:^4.0.1, object-assign@npm:^4.1.1":
   version: 4.1.1
   resolution: "object-assign@npm:4.1.1"
@@ -19616,6 +19648,7 @@ __metadata:
     husky: ^8.0.1
     lerna: ^5.4.3
     lint-staged: ^13.0.3
+    nyc: ^15.1.0
     prettier: ^2.7.1
     rimraf: ^3.0.2
     slonik: ^28.1.1
@@ -22557,18 +22590,6 @@ __metadata:
     globalthis: ^1.0.2
     semver-compare: ^1.0.0
   checksum: 1a0a0c0c607f1e65778384266b303e7969e809a4f068c6846e6f02d9d4615dca146d08171f96846f879e8b54963361042b1164dff668b1d8e261a5eaca978832
-  languageName: node
-  linkType: hard
-
-"rollup-plugin-istanbul@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "rollup-plugin-istanbul@npm:3.0.0"
-  dependencies:
-    "@rollup/pluginutils": ^4.1.0
-    istanbul-lib-instrument: ^4.0.3
-  peerDependencies:
-    rollup: ^1.20.0||^2.0.0
-  checksum: 88263810f6f2a1bdea6222acd9c1d4d8f528455a81dc43560d813d8b44ffea1a57b266026fc2a1a7fa1d3bede009cae093ec0a34fd21ffc4fd2ee6e1481c3c76
   languageName: node
   linkType: hard
 
