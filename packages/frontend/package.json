@@ -8,6 +8,7 @@
     "dev:e2e": "cp ../../.env.e2e .env && mv .babelrc.e2e .babelrc && cross=env INSTRUMENT_COVERAGE=true next dev; mv .babelrc .babelrc.e2e",
     "build": "next build",
     "build:profile": "cross-env SOURCE_MAPS=true next build --profile",
+    "build:e2e": "mv .babelrc.e2e .babelrc && cross=env INSTRUMENT_COVERAGE=true next build; mv .babelrc .babelrc.e2e",
     "start": "next start",
     "lint": "next lint",
     "analyze": "cross-env ANALYZE=true next build",
