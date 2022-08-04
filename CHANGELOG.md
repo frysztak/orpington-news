@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2022-08-04
+
+### Fixed
+
+-   Fonts: use `latin-ext` variants
+-   Card layout: fix little layout imperfection
+
+### Changed
+
+-   Settings sidebar: hide "Organize collections" section on mobile
+
 ## [0.5.0] - 2022-07-22
 
 ### Fixed
@@ -110,7 +121,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.5.1...HEAD
+
+[0.5.1]: https://github.com/frysztak/orpington-news/compare/0.5.0...0.5.1
 
 [0.5.0]: https://github.com/frysztak/orpington-news/compare/0.4.2...0.5.0
 

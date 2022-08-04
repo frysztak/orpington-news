@@ -68,8 +68,10 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
         </HStack>
         <Box
           p={3}
-          w="full"
+          w="calc(100% + 2px)"
+          mb="-1px !important"
           background={useColorModeValue('purple.50', 'gray.700')}
+          borderBottomRadius="md"
         >
           <Text noOfLines={[2, 3]} overflowWrap="anywhere">
             {summary}

@@ -106,14 +106,14 @@ export default class Document extends NextDocument {
 
           <link
             rel="preload"
-            href="/fonts/nunito-v20-latin-regular.woff2"
+            href="/fonts/nunito-v25-latin-ext_latin-regular.woff2"
             as="font"
             type="font/woff2"
             crossOrigin="anonymous"
           />
           <link
             rel="preload"
-            href="/fonts/nunito-v20-latin-700.woff2"
+            href="/fonts/nunito-v25-latin-ext_latin-700.woff2"
             as="font"
             type="font/woff2"
             crossOrigin="anonymous"
