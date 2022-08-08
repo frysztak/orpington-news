@@ -4677,6 +4677,7 @@ __metadata:
     node-fetch: ^3.2.9
     node-html-parser: ^5.3.3
     normalize-url: 7.0.3
+    opml-to-json: ^1.0.1
     pg: ^8.7.3
     pino: ^8.3.0
     pino-pretty: ^8.1.0
@@ -15231,6 +15232,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"isarray@npm:0.0.1":
+  version: 0.0.1
+  resolution: "isarray@npm:0.0.1"
+  checksum: 49191f1425681df4a18c2f0f93db3adb85573bcdd6a4482539d98eac9e705d8961317b01175627e860516a2fc45f8f9302db26e5a380a97a520e272e2a40a8d4
+  languageName: node
+  linkType: hard
+
 "isarray@npm:1.0.0, isarray@npm:^1.0.0, isarray@npm:~1.0.0":
   version: 1.0.0
   resolution: "isarray@npm:1.0.0"
@@ -18516,6 +18524,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"opml-to-json@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "opml-to-json@npm:1.0.1"
+  dependencies:
+    opmlparser: ^0.8.0
+  checksum: 4a4a5ae64b233e972b7fd52d5d8078786b901f3b18747c506c3cdeb8988ae47655420388d3eebe952d1c0538b7dcef82ee7bb2bee87e7adf9020e04ba4dc18fe
+  languageName: node
+  linkType: hard
+
+"opmlparser@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "opmlparser@npm:0.8.0"
+  dependencies:
+    readable-stream: ~1.1.10
+    sax: ~0.6.0
+  checksum: d4bcb90e2749e3ebc6d14c5ebe37ee043ed398e017ab85f013f860fc98727192f644cb51bf74a44b76f56e11cbcbf4ca7fdcf1e6eee22c9e22e82b11eae17af1
+  languageName: node
+  linkType: hard
+
 "optionator@npm:^0.8.1":
   version: 0.8.3
   resolution: "optionator@npm:0.8.3"
@@ -20846,6 +20873,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"readable-stream@npm:~1.1.10":
+  version: 1.1.14
+  resolution: "readable-stream@npm:1.1.14"
+  dependencies:
+    core-util-is: ~1.0.0
+    inherits: ~2.0.1
+    isarray: 0.0.1
+    string_decoder: ~0.10.x
+  checksum: 17dfeae3e909945a4a1abc5613ea92d03269ef54c49288599507fc98ff4615988a1c39a999dcf9aacba70233d9b7040bc11a5f2bfc947e262dedcc0a8b32b5a0
+  languageName: node
+  linkType: hard
+
 "readable-web-to-node-stream@npm:^3.0.2":
   version: 3.0.2
   resolution: "readable-web-to-node-stream@npm:3.0.2"
@@ -21549,6 +21588,13 @@ __metadata:
   version: 1.2.4
   resolution: "sax@npm:1.2.4"
   checksum: d3df7d32b897a2c2f28e941f732c71ba90e27c24f62ee918bd4d9a8cfb3553f2f81e5493c7f0be94a11c1911b643a9108f231dd6f60df3fa9586b5d2e3e9e1fe
+  languageName: node
+  linkType: hard
+
+"sax@npm:~0.6.0":
+  version: 0.6.1
+  resolution: "sax@npm:0.6.1"
+  checksum: 2bd293f9145e412c937dce33d7d2b1aaf33a868ddd742cec53a548cd9733318734b74da971be049b2cae72855b9cf811ae415661f9aafd4aa3bdf03584fd6931
   languageName: node
   linkType: hard
 
@@ -22566,6 +22612,13 @@ __metadata:
   dependencies:
     safe-buffer: ~5.2.0
   checksum: 8417646695a66e73aefc4420eb3b84cc9ffd89572861fe004e6aeb13c7bc00e2f616247505d2dbbef24247c372f70268f594af7126f43548565c68c117bdeb56
+  languageName: node
+  linkType: hard
+
+"string_decoder@npm:~0.10.x":
+  version: 0.10.31
+  resolution: "string_decoder@npm:0.10.31"
+  checksum: fe00f8e303647e5db919948ccb5ce0da7dea209ab54702894dd0c664edd98e5d4df4b80d6fabf7b9e92b237359d21136c95bf068b2f7760b772ca974ba970202
   languageName: node
   linkType: hard
 

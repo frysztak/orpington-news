@@ -41,7 +41,7 @@ export const addCollection = (
     refreshInterval ?? defaultRefreshInterval,
     layout ?? null,
   ];
-  return sql`INSERT INTO collections(
+  return sql<{ id: ID }>`INSERT INTO collections(
     "user_id",
     "title", 
     "icon", 
@@ -52,7 +52,8 @@ export const addCollection = (
     "date_updated", 
     "refresh_interval", 
     "layout"
-    ) VALUES (${sql.join(values, sql`, `)})`;
+    ) VALUES (${sql.join(values, sql`, `)})
+    RETURNING id`;
 };
 
 export const deleteCollection = (collectionId: ID) => {

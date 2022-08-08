@@ -50,6 +50,7 @@ import {
   updateCollections,
   extractFeedUrl,
 } from '@tasks/fetchRSS';
+import { importOPML } from '@services/opml';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -589,6 +590,32 @@ export const collections: FastifyPluginAsync = async (
           .status(418)
           .send({ errorCode: 418, message: 'Invalid RSS/Atom feed.' });
       }
+    }
+  );
+
+  const ImportOPMLBody = Type.Object({
+    opml: Type.String(),
+  });
+
+  fastify.post<{
+    Body: Static<typeof ImportOPMLBody>;
+  }>(
+    '/import/opml',
+    {
+      schema: {
+        body: ImportOPMLBody,
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        body: { opml },
+        session: { userId },
+      } = request;
+
+      await importOPML(opml, userId);
+
+      return true;
     }
   );
 };
