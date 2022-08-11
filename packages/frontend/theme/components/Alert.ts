@@ -1,6 +1,6 @@
 import { alertAnatomy as parts } from '@chakra-ui/anatomy';
 import { mode } from '@chakra-ui/theme-tools';
-import type { PartsStyleFunction } from '@chakra-ui/theme-tools';
+import type { PartsStyleFunction } from '@chakra-ui/styled-system';
 
 const variantSolid: PartsStyleFunction<typeof parts> = (props) => {
   const { status, colorScheme: c } = props;
