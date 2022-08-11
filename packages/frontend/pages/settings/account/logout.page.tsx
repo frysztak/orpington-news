@@ -4,7 +4,7 @@ import type { NextPageWithLayout } from '@pages/types';
 import { Heading, useTimeout } from '@chakra-ui/react';
 import { useQueryClient } from 'react-query';
 import { useLogout } from '@features/Auth';
-import { SettingsLayout } from './SettingsLayout';
+import { SettingsLayout } from '../SettingsLayout';
 
 const Page: NextPageWithLayout = () => {
   const router = useRouter();

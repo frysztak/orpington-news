@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Collections: implement OPML import
 
+### Changed
+
+- Settings: reorganize some of the pages
+
 ## [0.5.1] - 2022-08-04
 
 ### Fixed

@@ -12,11 +12,11 @@ import {
 } from '@chakra-ui/react';
 import { isDemoMode } from '@utils';
 import { useChangePassword } from '@features/Auth';
-import { SettingsLayout } from './SettingsLayout';
+import { SettingsLayout } from '../SettingsLayout';
 import {
   ChangePasswordForm,
   ChangePasswordFormData,
-} from './components/password/ChangePasswordForm';
+} from '../components/password/ChangePasswordForm';
 
 const Page: NextPageWithLayout = () => {
   const toast = useToast();

@@ -3,11 +3,11 @@ import Head from 'next/head';
 import type { NextPageWithLayout } from '@pages/types';
 import { Box, Container, useToast, VStack } from '@chakra-ui/react';
 import { useGetUser, useSetUser } from '@features/Auth';
-import { SettingsLayout } from './SettingsLayout';
+import { SettingsLayout } from '../SettingsLayout';
 import {
   EditAccountForm,
   EditAccountFormData,
-} from './components/account/EditAccountForm';
+} from '../components/account/EditAccountForm';
 
 const Page: NextPageWithLayout = () => {
   const { data: user, isLoading } = useGetUser();
