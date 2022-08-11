@@ -7,7 +7,7 @@ import { useCollectionsList } from '@features/Collections';
 import { FlatCollection } from '@orpington-news/shared';
 import type { NextPageWithLayout } from '@pages/types';
 import { useIsTouchscreen } from '@utils';
-import { SettingsLayout } from './SettingsLayout';
+import { SettingsLayout } from '../SettingsLayout';
 
 const Page: NextPageWithLayout = () => {
   const isTouchscreen = useIsTouchscreen();

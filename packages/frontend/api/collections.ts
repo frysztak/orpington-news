@@ -91,3 +91,6 @@ export const setCollectionLayout = (
     .url(`/collections/${collectionId}/layout`)
     .put({ layout })
     .json<boolean>();
+
+export const importOPML = (api: Wretcher, file: File) =>
+  api.url(`/collections/import/opml`).formData({ file }).post().json<boolean>();
