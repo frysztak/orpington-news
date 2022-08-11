@@ -27,6 +27,7 @@
     "@fastify/cookie": "^7.3.1",
     "@fastify/cors": "^8.0.0",
     "@fastify/etag": "4.0.0",
+    "@fastify/multipart": "^7.1.0",
     "@fastify/schedule": "^3.0.0",
     "@fastify/session": "^9.0.0",
     "@fastify/swagger": "^7.4.1",

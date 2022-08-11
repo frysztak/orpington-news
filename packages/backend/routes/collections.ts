@@ -593,27 +593,23 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  const ImportOPMLBody = Type.Object({
-    opml: Type.String(),
-  });
-
-  fastify.post<{
-    Body: Static<typeof ImportOPMLBody>;
-  }>(
+  fastify.post(
     '/import/opml',
     {
       schema: {
-        body: ImportOPMLBody,
         tags: ['Collections'],
       },
     },
     async (request, reply) => {
       const {
-        body: { opml },
         session: { userId },
       } = request;
 
-      await importOPML(opml, userId);
+      const opmlFile = await request.file();
+      const opmlBuffer = await opmlFile.toBuffer();
+      const opmlString = opmlBuffer.toString();
+
+      await importOPML(opmlString, userId);
 
       return true;
     }
