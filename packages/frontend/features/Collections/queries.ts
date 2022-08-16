@@ -5,7 +5,6 @@ import {
   useQuery,
   useQueryClient,
 } from 'react-query';
-import type { Wretcher } from 'wretch';
 import { lensIndex, set } from 'rambda';
 import {
   useApi,
@@ -15,6 +14,7 @@ import {
   markCollectionAsRead,
   refreshCollection,
   setCollectionLayout,
+  Wretch,
 } from '@api';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 import { inflateCollections } from '@features/OrganizeCollections';
@@ -57,7 +57,7 @@ export const useCollectionById = (collectionId?: ID | string) => {
 };
 
 export const collectionsItemsQueryFn =
-  (api: Wretcher, collectionId: ID | string) =>
+  (api: Wretch, collectionId: ID | string) =>
   ({ pageParam = 0 }) => {
     return getCollectionItems(api, collectionId, pageParam).then((items) => ({
       items,
