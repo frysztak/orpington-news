@@ -115,6 +115,7 @@ export type DBCollection = Omit<
 > & {
   parents: Array<ID>;
   order: number;
+  order_path: Array<number>;
   level: number;
   date_updated: number;
   unread_count: number | null;
@@ -146,7 +147,8 @@ WITH RECURSIVE collections_from_parents AS (
     refresh_interval,
     layout,
     '{}'::int[] AS parents,
-    0 AS level
+    0 AS level,
+    ARRAY["order"]::integer[] AS order_path
   FROM
     collections
   WHERE
@@ -164,7 +166,8 @@ WITH RECURSIVE collections_from_parents AS (
     c.refresh_interval,
     c.layout,
     parents || c.parent_id,
-    level + 1
+    level + 1,
+    order_path || c. "order"
   FROM
     collections_from_parents p
     JOIN collections c ON c.parent_id = p.id
@@ -184,7 +187,8 @@ SELECT
   layout,
   parents,
   level,
-  unread_count
+  unread_count,
+  order_path
 FROM
   collections_from_parents
   LEFT JOIN (
@@ -198,8 +202,7 @@ FROM
     GROUP BY
       collection_id) with_unread_count ON collections_from_parents.id = with_unread_count.collection_id
 ORDER BY
-  level ASC,
-  "order" ASC
+  order_path
 `;
 };
 

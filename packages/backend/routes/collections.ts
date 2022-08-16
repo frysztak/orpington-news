@@ -90,8 +90,14 @@ const ItemDetailsParams = Type.Object({
 type ItemDetailsType = Static<typeof ItemDetailsParams>;
 
 const mapDBCollection = (collection: DBCollection): FlatCollection => {
-  const { date_updated, refresh_interval, unread_count, layout, ...rest } =
-    collection;
+  const {
+    date_updated,
+    refresh_interval,
+    unread_count,
+    layout,
+    order_path,
+    ...rest
+  } = collection;
 
   return {
     ...rest,
@@ -99,6 +105,7 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
     refreshInterval: refresh_interval,
     unreadCount: unread_count ?? 0,
     layout: layout ?? defaultCollectionLayout,
+    orderPath: order_path,
   };
 };
 

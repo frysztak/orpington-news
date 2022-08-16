@@ -69,6 +69,7 @@ export interface Collection {
 export type FlatCollection = Omit<Collection, 'children' | 'parentId'> & {
   parents: Array<ID>;
   order: number;
+  orderPath: Array<number>;
   level: number;
 };
 
