@@ -12,7 +12,8 @@
     "start": "node dist/server.cjs",
     "migrate": "node dist/db/migrate.cjs",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "lint": "eslint '**/*.ts'"
   },
   "dependencies": {
     "pino": "^8.4.1",
@@ -44,6 +45,8 @@
     "@types/jest": "^28.1.7",
     "@types/node": "^17.0.45",
     "@types/proper-url-join": "^2.1.1",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "argon2": "^0.28.7",
@@ -55,6 +58,7 @@
     "date-fns": "^2.29.1",
     "dotenv": "^16.0.1",
     "esbuild": "^0.15.3",
+    "eslint": "^8.22.0",
     "eslint-plugin-sql": "^2.1.0",
     "event-iterator": "^2.0.0",
     "fastify": "^4.4.0",
