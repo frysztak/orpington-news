@@ -71,6 +71,11 @@ const fetchAndInsertCollection = (collection: DBCollection) => {
           sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
         });
     })
+    .catch((err: Error) => {
+      throw new Error(`Updating feed '${collection.url}' failed`, {
+        cause: err,
+      });
+    })
     .finally(() => {
       sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
     });
