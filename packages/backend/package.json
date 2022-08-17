@@ -75,6 +75,7 @@
     "opml-to-json": "^1.0.1",
     "pg": "^8.7.3",
     "proper-url-join": "^2.1.1",
+    "rambda": "^7.2.1",
     "reading-time": "^1.5.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.78.0",

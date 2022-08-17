@@ -2,6 +2,7 @@ import { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
 import { DataIntegrityError, NotFoundError } from 'slonik';
 import { getUnixTime } from 'date-fns';
+import { last } from 'rambda';
 import { pool } from '@db';
 import {
   addCollection,
@@ -96,6 +97,7 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
     unread_count,
     layout,
     order_path,
+    parents,
     ...rest
   } = collection;
 
@@ -105,6 +107,8 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
     refreshInterval: refresh_interval,
     unreadCount: unread_count ?? 0,
     layout: layout ?? defaultCollectionLayout,
+    parents,
+    parentId: last(parents),
     orderPath: order_path,
   };
 };

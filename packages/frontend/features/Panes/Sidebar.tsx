@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import {
   useCollectionsContext,
-  useCollectionsTree,
+  useCollectionsList,
   useMarkCollectionAsRead,
   useRefreshCollection,
 } from '@features/Collections';
@@ -15,7 +15,7 @@ import {
 } from '@features/Preferences';
 import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
-import { Collection, emptyIfUndefined } from '@orpington-news/shared';
+import { emptyIfUndefined, FlatCollection } from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
 import { ModalContext } from './ModalContext';
 
@@ -28,7 +28,7 @@ export const Sidebar: React.FC = () => {
     data: collections,
     isLoading: collectionsLoading,
     isError: collectionsError,
-  } = useCollectionsTree();
+  } = useCollectionsList();
   const { isLoading: preferencesLoading } = useGetPreferences();
   const activeCollection = useActiveCollection();
   const { setActiveCollection } = useSetActiveCollection();
@@ -63,7 +63,7 @@ export const Sidebar: React.FC = () => {
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
   const { mutate: refreshCollection } = useRefreshCollection();
   const handleCollectionMenuItemClicked = useCallback(
-    (collection: Collection, action: CollectionMenuAction) => {
+    (collection: FlatCollection, action: CollectionMenuAction) => {
       switch (action) {
         case 'edit': {
           return onOpenAddCollectionModal(collection);
@@ -88,7 +88,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const handleCollectionClickedAndCloseDrawer = useCallback(
-    (collection: Collection) => {
+    (collection: FlatCollection) => {
       closeDrawer();
       setActiveCollection(collection.id);
     },
@@ -122,7 +122,7 @@ const useExpandedCollections = () => {
   const { mutate: collapseCollection } = useCollapseCollection();
 
   const handleCollectionChevronClicked = useCallback(
-    ({ id }: Collection) => {
+    ({ id }: FlatCollection) => {
       const idx = expandedCollectionIds?.findIndex((id_) => id_ === id);
       if (idx === undefined) {
         return;

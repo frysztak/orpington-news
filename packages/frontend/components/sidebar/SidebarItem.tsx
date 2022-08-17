@@ -31,6 +31,7 @@ export interface SidebarItemProps {
   chevron?: 'top' | 'bottom';
   menuItems?: JSX.Element;
   isLoading?: boolean;
+  level?: number;
 
   onClick: () => void;
   onChevronClick?: () => void;
@@ -47,6 +48,7 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
     isLoading,
     onClick,
     onChevronClick,
+    level,
     ...rest
   } = props;
 
@@ -124,13 +126,14 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
 
   const refs = useMergeRefs(internalRef, ref);
 
+  const paddingLeft = (chevron ? 0 : 3) + (level || 0) * 2;
+
   return (
     <HStack
       ref={refs}
       w="full"
       spacing={4}
       pr={3}
-      pl={chevron ? 0 : 6}
       minH={10}
       align="center"
       _hover={{
@@ -148,6 +151,9 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}
+      style={{
+        paddingLeft: `calc(${paddingLeft} * var(--chakra-space-2))`,
+      }}
       {...rest}
     >
       {chevron && (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { AddCollectionForm, AddCollectionFormProps } from './AddCollectionForm';
-import { generateSampleCollection } from '../sampleData';
+import { generateSampleCollection, sampleFlatCollections } from '../sampleData';
 import { action } from '@storybook/addon-actions';
 
 export default {
@@ -39,11 +39,7 @@ export const URLVerified = Template.bind({});
 URLVerified.args = {
   ...Default.args,
   isUrlVerified: true,
-  collections: [
-    generateSampleCollection(),
-    collectionWithChildren,
-    generateSampleCollection(),
-  ],
+  collections: sampleFlatCollections,
 };
 
 export const Edit = Template.bind({});
@@ -54,7 +50,8 @@ Edit.args = {
     icon: 'HackerNews',
     title: 'Sample Feed',
     description: 'test',
-    parentId: collectionWithChildren.children[0].id,
+    parentId: sampleFlatCollections[3].id,
     refreshInterval: 30,
+    level: 0,
   },
 };

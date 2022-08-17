@@ -23,6 +23,7 @@ const flattenJSON = (
 export const inflateCollections = (
   collections: readonly FlatCollection[]
 ): Collection[] => {
+  // @ts-ignore
   const json = collections.reduce((acc, col) => {
     if (col.parents.length === 0) {
       return {

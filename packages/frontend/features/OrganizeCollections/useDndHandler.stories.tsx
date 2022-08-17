@@ -6,7 +6,6 @@ import { Collection, FlatCollection } from '@orpington-news/shared';
 import { DraggableCollections } from './DraggableCollections';
 import { useDndHandler } from './useDndHandler';
 import { inflateCollections } from './inflateCollections';
-import { flatSampleCollections } from './sampleFlatCollection';
 
 interface UseDndHandlerWrapperProps {
   flatCollections?: FlatCollection[];

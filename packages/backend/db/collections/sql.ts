@@ -114,6 +114,7 @@ export type DBCollection = Omit<
   'children' | 'parentId' | 'dateUpdated' | 'unreadCount' | 'refreshInterval'
 > & {
   parents: Array<ID>;
+  children: Array<ID>;
   order: number;
   order_path: Array<number>;
   level: number;
@@ -133,64 +134,100 @@ WHERE
 `;
 };
 
+/*
+ * massive kudos to http://jarnoluu.com/2019/09/12/querying-hierarchical-menu-with-postgresql/ <3
+ */
 export const getCollections = (userId: ID) => {
   return sql<DBCollection>`
-WITH RECURSIVE collections_from_parents AS (
+WITH RECURSIVE data AS (
   SELECT
-    id,
-    title,
-    icon,
-    "order",
-    description,
-    url,
-    date_updated,
-    refresh_interval,
-    layout,
-    '{}'::int[] AS parents,
+    m.id,
+    m.title,
+    m.icon,
+    m.order,
+    m.description,
+    m.url,
+    m.date_updated,
+    m.refresh_interval,
+    m.layout,
+    ARRAY[]::integer[] AS parents,
     0 AS level,
-    ARRAY["order"]::integer[] AS order_path
+    ARRAY[m.order]::integer[] AS order_path,
+    ARRAY[]::integer[] AS children,
+    id as root
   FROM
-    collections
+    collections m
   WHERE
-    parent_id IS NULL
+    m.parent_id IS NULL
     AND "user_id" = ${userId}
   UNION ALL
   SELECT
     c.id,
     c.title,
     c.icon,
-    c. "order",
+    c.order,
     c.description,
     c.url,
     c.date_updated,
     c.refresh_interval,
     c.layout,
-    parents || c.parent_id,
-    level + 1,
-    order_path || c. "order"
+    d.parents || c.parent_id,
+    d.level + 1,
+    d.order_path || c.order,
+    d.children,
+    d.root
   FROM
-    collections_from_parents p
-    JOIN collections c ON c.parent_id = p.id
+    data d
+    INNER JOIN collections c ON c.parent_id = d.id
   WHERE
     NOT c.id = ANY (parents)
     AND c. "user_id" = ${userId}
+),
+roots AS (
+  SELECT
+    c.id,
+    c.id AS root
+  FROM
+    collections c
+  WHERE
+    "user_id" = ${userId}
+  UNION ALL
+  SELECT
+    c.id,
+    r.root
+  FROM
+    roots r
+    INNER JOIN collections c ON c.parent_id = r.id
+),
+children AS (
+  SELECT DISTINCT
+    m.id,
+    ARRAY_REMOVE(ARRAY_AGG(r.id), m.id) AS children
+  FROM
+    roots r
+    INNER JOIN collections m ON m.id = r.root
+  GROUP BY
+    r.root,
+    m.id
 )
 SELECT
-  id,
-  title,
-  icon,
-  "order",
-  description,
-  url,
-  date_updated,
-  refresh_interval,
-  layout,
-  parents,
-  level,
-  unread_count,
-  order_path
+  d.id,
+  d.title,
+  d.icon,
+  d.order,
+  d.description,
+  d.url,
+  d.date_updated,
+  d.refresh_interval,
+  d.layout,
+  d.level,
+  d.order_path,
+  d.parents,
+  de.children,
+  with_unread_count.unread_count
 FROM
-  collections_from_parents
+  data d
+  LEFT JOIN children de ON de.id = d.id
   LEFT JOIN (
     SELECT
       collection_id,
@@ -200,9 +237,9 @@ FROM
     WHERE
       date_read IS NULL
     GROUP BY
-      collection_id) with_unread_count ON collections_from_parents.id = with_unread_count.collection_id
+      collection_id) with_unread_count ON d.id = with_unread_count.collection_id
 ORDER BY
-  order_path
+  d.order_path
 `;
 };
 
