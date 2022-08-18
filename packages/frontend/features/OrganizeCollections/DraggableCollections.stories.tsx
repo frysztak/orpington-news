@@ -2,11 +2,11 @@ import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Box } from '@chakra-ui/react';
-import { sampleCollections } from '@components/sidebar/sampleCollection';
 import {
   DraggableCollections,
   DraggableCollectionsProps,
 } from './DraggableCollections';
+import { sampleFlatCollections } from '../../components/collection/sampleData';
 
 export default {
   title: 'Features/OrganizeCollections/DraggableCollections',
@@ -14,7 +14,7 @@ export default {
 } as Meta;
 
 const Template: Story<DraggableCollectionsProps> = (props) => (
-  <Box ml={32}>
+  <Box ml={32} h={80}>
     <DraggableCollections {...props} />
   </Box>
 );
@@ -29,14 +29,14 @@ Empty.args = {
 export const SomeFeeds = Template.bind({});
 SomeFeeds.args = {
   ...Empty.args,
-  collections: sampleCollections,
+  collections: sampleFlatCollections,
   expandedCollectionIDs: new Set([3]),
 };
 
 export const DropLocationForbidden = Template.bind({});
 DropLocationForbidden.args = {
   ...Empty.args,
-  collections: sampleCollections,
+  collections: sampleFlatCollections,
   expandedCollectionIDs: new Set([3]),
   hoverStatus: {
     status: 'dropLocationForbidden',
@@ -48,7 +48,7 @@ DropLocationForbidden.args = {
 export const DropLocationChild = Template.bind({});
 DropLocationChild.args = {
   ...Empty.args,
-  collections: sampleCollections,
+  collections: sampleFlatCollections,
   expandedCollectionIDs: new Set([3]),
   hoverStatus: {
     status: 'dropLocationAllowed',
@@ -60,7 +60,7 @@ DropLocationChild.args = {
 export const DropLocationBelow = Template.bind({});
 DropLocationBelow.args = {
   ...Empty.args,
-  collections: sampleCollections,
+  collections: sampleFlatCollections,
   expandedCollectionIDs: new Set([3]),
   hoverStatus: {
     status: 'dropLocationAllowed',
@@ -72,7 +72,7 @@ DropLocationBelow.args = {
 export const DropLocationBelowParent = Template.bind({});
 DropLocationBelowParent.args = {
   ...Empty.args,
-  collections: sampleCollections,
+  collections: sampleFlatCollections,
   expandedCollectionIDs: new Set([3]),
   hoverStatus: {
     status: 'dropLocationAllowed',

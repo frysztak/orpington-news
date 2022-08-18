@@ -49,6 +49,7 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
     onClick,
     onChevronClick,
     level,
+    style,
     ...rest
   } = props;
 
@@ -152,6 +153,7 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
       onKeyDown={handleKeyDown}
       tabIndex={0}
       style={{
+        ...style,
         paddingLeft: `calc(${paddingLeft} * var(--chakra-space-2))`,
       }}
       {...rest}

@@ -17,7 +17,6 @@ import {
   Wretch,
 } from '@api';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
-import { inflateCollections } from '@features/OrganizeCollections';
 import type {
   CollectionLayout,
   FlatCollection,
@@ -39,10 +38,6 @@ export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
     refetchOnMount: false,
     notifyOnChangeProps: 'tracked',
   });
-};
-
-export const useCollectionsTree = () => {
-  return useCollectionsList({ select: inflateCollections });
 };
 
 export const useCollectionById = (collectionId?: ID | string) => {

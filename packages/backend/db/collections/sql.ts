@@ -117,10 +117,13 @@ export type DBCollection = Omit<
   children: Array<ID>;
   order: number;
   order_path: Array<number>;
+  parent_order: number | null;
+  parent_id: ID | null;
   level: number;
   date_updated: number;
   unread_count: number | null;
   refresh_interval: number;
+  is_last_child: boolean;
 };
 
 export const getCollectionOwner = (id: ID) => {
@@ -142,6 +145,7 @@ export const getCollections = (userId: ID) => {
 WITH RECURSIVE data AS (
   SELECT
     m.id,
+    m.parent_id,
     m.title,
     m.icon,
     m.order,
@@ -163,6 +167,7 @@ WITH RECURSIVE data AS (
   UNION ALL
   SELECT
     c.id,
+    c.parent_id,
     c.title,
     c.icon,
     c.order,
@@ -223,8 +228,11 @@ SELECT
   d.level,
   d.order_path,
   d.parents,
+  d.parent_id,
   de.children,
-  with_unread_count.unread_count
+  with_unread_count.unread_count,
+  with_parent_order.parent_order,
+  d.order = with_max_order.max_order as is_last_child
 FROM
   data d
   LEFT JOIN children de ON de.id = d.id
@@ -238,6 +246,20 @@ FROM
       date_read IS NULL
     GROUP BY
       collection_id) with_unread_count ON d.id = with_unread_count.collection_id
+  LEFT JOIN (
+    SELECT
+      id,
+      "order" as parent_order
+    FROM
+      collections) with_parent_order ON with_parent_order.id = d.parents[array_length(d.parents, 1)]
+  LEFT JOIN (
+    SELECT
+      parent_id,
+      MAX("order") as max_order
+    FROM
+      collections
+    GROUP BY
+      (parent_id)) with_max_order ON with_max_order.parent_id = d.parent_id
 ORDER BY
   d.order_path
 `;

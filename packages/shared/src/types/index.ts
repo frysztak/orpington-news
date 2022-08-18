@@ -72,6 +72,8 @@ export type FlatCollection = Omit<Collection, 'children'> & {
   order: number;
   orderPath: Array<number>;
   level: number;
+  isLastChild: boolean;
+  parentOrder?: number;
 };
 
 export interface CollectionItem {

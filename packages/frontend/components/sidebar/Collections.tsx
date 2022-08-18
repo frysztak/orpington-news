@@ -11,6 +11,7 @@ import { ID, FlatCollection } from '@orpington-news/shared';
 import { SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
 import { CollectionsSkeleton } from './CollectionsSkeleton';
+import { filterVisibleCollections } from './filterVisibleCollections';
 
 export type CollectionMenuAction = 'markAsRead' | 'refresh' | 'edit' | 'delete';
 
@@ -103,28 +104,6 @@ const ItemContent: React.FC<ItemContentProps> = ({
       }
     />
   );
-};
-
-const filterVisibleCollections = (
-  collections: FlatCollection[],
-  expandedCollectionIDs?: number[]
-): FlatCollection[] => {
-  const set = new Set(expandedCollectionIDs);
-  return collections.filter(({ parents }) => {
-    // always show main-level items
-    if (parents.length === 0) {
-      return true;
-    }
-
-    // check whole parent chain
-    for (const parent of parents) {
-      if (!set.has(parent)) {
-        return false;
-      }
-    }
-
-    return true;
-  });
 };
 
 export interface CollectionsProps {

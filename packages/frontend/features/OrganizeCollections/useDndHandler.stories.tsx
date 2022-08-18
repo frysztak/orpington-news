@@ -1,25 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Box } from '@chakra-ui/react';
-import { Collection, FlatCollection } from '@orpington-news/shared';
+import { FlatCollection } from '@orpington-news/shared';
 import { DraggableCollections } from './DraggableCollections';
 import { useDndHandler } from './useDndHandler';
-import { inflateCollections } from './inflateCollections';
+import { sampleFlatCollections } from '../../components/collection/sampleData';
 
 interface UseDndHandlerWrapperProps {
-  flatCollections?: FlatCollection[];
+  flatCollections: FlatCollection[];
 }
 
 const UseDndHandlerWrapper: React.FC<UseDndHandlerWrapperProps> = (props) => {
   const { flatCollections } = props;
-  const [collections, setCollections] = useState<Collection[]>([]);
-
-  useEffect(() => {
-    if (flatCollections) {
-      setCollections(inflateCollections(flatCollections));
-    }
-  }, [flatCollections]);
 
   const {
     hoverStatus,
@@ -33,16 +26,14 @@ const UseDndHandlerWrapper: React.FC<UseDndHandlerWrapperProps> = (props) => {
   );
 
   return (
-    <Box>
-      <DraggableCollections
-        collections={collections}
-        hoverStatus={hoverStatus}
-        expandedCollectionIDs={expandedCollections}
-        parentsMap={parentsMap}
-        onDnDEvent={onDnDEvent}
-        onChevronClicked={onChevronClicked}
-      />
-    </Box>
+    <DraggableCollections
+      collections={flatCollections}
+      hoverStatus={hoverStatus}
+      expandedCollectionIDs={expandedCollections}
+      parentsMap={parentsMap}
+      onDnDEvent={onDnDEvent}
+      onChevronClicked={onChevronClicked}
+    />
   );
 };
 
@@ -52,12 +43,12 @@ export default {
 } as Meta;
 
 const Template: Story<UseDndHandlerWrapperProps> = (props) => (
-  <Box ml={32}>
+  <Box ml={32} h={80}>
     <UseDndHandlerWrapper {...props} />
   </Box>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  flatCollections: flatSampleCollections,
+  flatCollections: sampleFlatCollections,
 };

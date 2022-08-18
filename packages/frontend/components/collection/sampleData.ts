@@ -52,6 +52,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     level: 0,
     order: 0,
     orderPath: [0],
+    isLastChild: false,
   },
   {
     id: 2,
@@ -63,6 +64,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     level: 0,
     order: 1,
     orderPath: [1],
+    isLastChild: false,
   },
   {
     id: 3,
@@ -74,6 +76,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     level: 0,
     order: 2,
     orderPath: [2],
+    isLastChild: false,
   },
   {
     id: 301,
@@ -85,6 +88,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     level: 1,
     order: 0,
     orderPath: [2, 0],
+    isLastChild: false,
   },
   {
     id: 302,
@@ -96,6 +100,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     level: 1,
     order: 1,
     orderPath: [2, 1],
+    isLastChild: true,
   },
   {
     id: 30201,
@@ -107,6 +112,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     level: 2,
     order: 0,
     orderPath: [2, 1, 0],
+    isLastChild: true,
   },
   {
     id: 4,
@@ -118,5 +124,6 @@ export const sampleFlatCollections: FlatCollection[] = [
     level: 0,
     order: 3,
     orderPath: [3],
+    isLastChild: false,
   },
 ];

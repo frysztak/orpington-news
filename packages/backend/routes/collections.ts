@@ -98,6 +98,9 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
     layout,
     order_path,
     parents,
+    parent_id,
+    parent_order,
+    is_last_child,
     ...rest
   } = collection;
 
@@ -108,7 +111,9 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
     unreadCount: unread_count ?? 0,
     layout: layout ?? defaultCollectionLayout,
     parents,
-    parentId: last(parents),
+    parentId: parent_id ?? undefined,
+    parentOrder: parent_order ?? undefined,
+    isLastChild: is_last_child ?? false,
     orderPath: order_path,
   };
 };
