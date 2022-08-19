@@ -11,7 +11,7 @@ import {
 } from '@orpington-news/shared';
 import { getCollectionIcon } from '@components/sidebar/CollectionIcon';
 import { SidebarItem } from '@components/sidebar/SidebarItem';
-import { filterVisibleCollections } from '@components/sidebar';
+import { calcItemPadding, filterVisibleCollections } from '@components/sidebar';
 import type { ParentsMap } from '@features/Collections';
 import type {
   DnDEvent,
@@ -175,8 +175,16 @@ const ItemContent: React.FC<ItemContentProps> = (props) => {
 
   drag(drop(ref));
 
+  const chevron = hasChildren ? (isOpen ? 'bottom' : 'top') : undefined;
+
   return (
-    <>
+    <div
+      style={
+        {
+          '--extra-padding-left': calcItemPadding(chevron, collection.level),
+        } as React.CSSProperties
+      }
+    >
       <MotionHoverStatusWrapper
         layout="position"
         layoutId={id.toString()}
@@ -192,13 +200,13 @@ const ItemContent: React.FC<ItemContentProps> = (props) => {
           icon={icon}
           isActive={false}
           level={collection.level}
-          chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
+          chevron={chevron}
           onClick={noop}
           onChevronClick={handleChevronClick(collection)}
           style={{ opacity }}
         />
       </MotionHoverStatusWrapper>
-    </>
+    </div>
   );
 };
 

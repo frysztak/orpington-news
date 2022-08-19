@@ -22,6 +22,7 @@ import {
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { Chevron } from './Chevron';
 import { useIconFill } from '@utils/icon';
+import { calcItemPadding } from './calcItemPadding';
 
 export interface SidebarItemProps {
   isActive: boolean;
@@ -127,8 +128,6 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
 
   const refs = useMergeRefs(internalRef, ref);
 
-  const paddingLeft = (chevron ? 0 : 3) + (level || 0) * 2;
-
   return (
     <HStack
       ref={refs}
@@ -154,7 +153,7 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
       tabIndex={0}
       style={{
         ...style,
-        paddingLeft: `calc(${paddingLeft} * var(--chakra-space-2))`,
+        paddingLeft: calcItemPadding(chevron, level),
       }}
       {...rest}
     >
@@ -221,3 +220,4 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
     </HStack>
   );
 });
+SidebarItem.displayName = 'SidebarItem';
