@@ -16,8 +16,8 @@
     "lint": "eslint '**/*.ts'"
   },
   "dependencies": {
-    "pino": "^8.4.1",
-    "pino-pretty": "^9.0.0"
+    "pino": "^8.4.2",
+    "pino-pretty": "^9.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
@@ -45,8 +45,8 @@
     "@types/jest": "^28.1.7",
     "@types/node": "^17.0.45",
     "@types/proper-url-join": "^2.1.1",
-    "@typescript-eslint/eslint-plugin": "latest",
-    "@typescript-eslint/parser": "latest",
+    "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "@typescript-eslint/parser": "^5.33.1",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "argon2": "^0.28.7",
@@ -55,11 +55,11 @@
     "close-with-grace": "^1.1.0",
     "connect-pg-simple": "^7.0.0",
     "data-uri-to-buffer": "^4.0.0",
-    "date-fns": "^2.29.1",
+    "date-fns": "^2.29.2",
     "dotenv": "^16.0.1",
-    "esbuild": "^0.15.3",
+    "esbuild": "^0.15.5",
     "eslint": "^8.22.0",
-    "eslint-plugin-sql": "^2.1.0",
+    "eslint-plugin-sql": "^2.2.1",
     "event-iterator": "^2.0.0",
     "fastify": "^4.4.0",
     "fastify-sse-v2": "^2.2.1",
@@ -78,7 +78,7 @@
     "rambda": "^7.2.1",
     "reading-time": "^1.5.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.78.0",
+    "rollup": "^2.78.1",
     "rss-parser": "^3.12.0",
     "slonik": "29.2.0",
     "striptags": "^3.2.0",
