@@ -7,7 +7,7 @@ import {
   defaultRefreshInterval,
   ID,
 } from '@orpington-news/shared';
-import { normalizeUrl } from '@utils';
+import { MAX_INT, normalizeUrl } from '@utils';
 
 export const recalculateCollectionsOrder = () => {
   return sql`CALL collections_recalculate_order();`;
@@ -33,7 +33,7 @@ export const addCollection = (
     userId,
     title,
     icon ?? defaultIcon,
-    2147483647, // put new collection at the end
+    MAX_INT, // put new collection at the end
     parentId ?? null,
     description ?? null,
     url ?? null,
@@ -57,6 +57,17 @@ VALUES (
   ${sql.join(values, sql`, `)})
 RETURNING
   id
+`;
+};
+
+export const getCollectionById = (collectionId: ID) => {
+  return sql<DBCollection>`
+SELECT
+  *
+from
+  collections
+WHERE
+  id = ${collectionId}
 `;
 };
 

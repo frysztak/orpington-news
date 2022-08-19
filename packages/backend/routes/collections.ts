@@ -2,12 +2,12 @@ import { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
 import { Static, Type } from '@sinclair/typebox';
 import { DataIntegrityError, NotFoundError } from 'slonik';
 import { getUnixTime } from 'date-fns';
-import { last } from 'rambda';
 import { pool } from '@db';
 import {
   addCollection,
   DBCollection,
   deleteCollections,
+  getCollectionById,
   getCollectionChildrenIds,
   getCollectionOwner,
   getCollections,
@@ -42,7 +42,7 @@ import {
   CollectionLayouts,
   defaultCollectionLayout,
 } from '@orpington-news/shared';
-import { normalizeUrl, Nullable } from '@utils';
+import { MAX_INT, normalizeUrl, Nullable } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
 import {
@@ -229,13 +229,24 @@ export const collections: FastifyPluginAsync = async (
         body,
         session: { userId },
       } = request;
-      if (body.id === body.parentId) {
+
+      const { id, parentId } = body;
+
+      if (id === parentId) {
         reply.status(500);
         return {
           errorCode: 500,
           message: 'Collection cannot be its own parent',
         };
       }
+
+      const { parent_id: currentParentId } = await pool.one(
+        getCollectionById(body.id)
+      );
+      if (parentId !== undefined && currentParentId !== parentId) {
+        await pool.any(moveCollections(id, parentId, MAX_INT));
+      }
+
       await pool.any(updateCollection(body));
 
       if (body.parentId) {
