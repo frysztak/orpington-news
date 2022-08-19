@@ -84,6 +84,8 @@ export const sampleFlatCollections: FlatCollection[] = [
     unreadCount: 112,
     icon: defaultIcon,
     parents: [3],
+    parentId: 3,
+    parentOrder: 2,
     children: [],
     level: 1,
     order: 0,

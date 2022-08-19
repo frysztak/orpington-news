@@ -30,7 +30,7 @@ export const MotionHoverStatusWrapper =
   motion<HoverStatusWrapperProps>(HoverStatusWrapper);
 
 interface ItemContentProps {
-  index: number;
+  order: number;
   parentId?: ID;
   parentIndex?: number;
   isLast: boolean;
@@ -45,7 +45,7 @@ interface ItemContentProps {
 
 const ItemContent: React.FC<ItemContentProps> = (props) => {
   const {
-    index,
+    order,
     parentId,
     parentIndex,
     isLast,
@@ -142,12 +142,12 @@ const ItemContent: React.FC<ItemContentProps> = (props) => {
           targetCollectionParentId: parentId,
           targetCollectionParentIndex: parentIndex,
           targetCollectionLastChild: isLast,
-          targetCollectionIndex: index,
+          targetCollectionIndex: order,
           targetCollectionHasChildren: children ? children.length > 0 : false,
         },
       };
     },
-    [children, getHoverPosition, id, index, isLast, parentId, parentIndex]
+    [children, getHoverPosition, id, order, isLast, parentId, parentIndex]
   );
 
   const [, drop] = useDrop({
@@ -267,7 +267,7 @@ export const DraggableCollections: React.FC<DraggableCollectionsProps> = (
         return (
           <ItemContent
             collection={collection}
-            index={index}
+            order={collection.order}
             isLast={collection.isLastChild}
             parentId={collection.parentId}
             parentIndex={collection.parentOrder}
