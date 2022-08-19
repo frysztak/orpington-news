@@ -17,6 +17,14 @@ export const CollectionsSkeleton: React.FC = () => {
       <SidebarItemSkeleton nested />
       <SidebarItemSkeleton />
       <SidebarItemSkeleton />
+      <SidebarItemSkeleton />
+      <SidebarItemSkeleton nested />
+      <SidebarItemSkeleton nested />
+      <SidebarItemSkeleton nested />
+      <SidebarItemSkeleton />
+      <SidebarItemSkeleton />
+      <SidebarItemSkeleton nested />
+      <SidebarItemSkeleton />
       <SidebarItemSkeleton nested />
     </VStack>
   );
