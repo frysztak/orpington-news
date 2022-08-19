@@ -175,6 +175,7 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
           style={{ height: '100%', width: '100%' }}
           data={visibleCollections}
           computeItemKey={(_, item) => item.id}
+          defaultItemHeight={40}
           itemContent={(index) => (
             <ItemContent
               collection={visibleCollections[index]}
