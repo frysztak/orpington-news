@@ -15,6 +15,7 @@ const prodExternals = [
   'argon2',
   'pino',
   'pino-pretty',
+  'tinypool',
   // packages that are not even installed
   {
     long: 'commonjs long',

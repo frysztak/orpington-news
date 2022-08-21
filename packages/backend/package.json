@@ -18,7 +18,8 @@
   "dependencies": {
     "argon2": "^0.28.7",
     "pino": "^8.4.2",
-    "pino-pretty": "^9.0.1"
+    "pino-pretty": "^9.0.1",
+    "tinypool": "^0.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
@@ -76,7 +77,6 @@
     "rss-parser": "^3.12.0",
     "slonik": "29.2.0",
     "striptags": "^3.2.0",
-    "tinypool": "^0.2.4",
     "toad-scheduler": "^1.6.1",
     "truncate-html": "^1.0.4",
     "ts-jest": "^28.0.8",
