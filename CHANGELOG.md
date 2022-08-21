@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Collections: implement OPML import
 - Collections: implement virtualization
 - Backend: better error logging
+- Backend: run feed updates in a separate thread
 
 ### Changed
 

@@ -1,20 +1,27 @@
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
-import { getUnixTime } from 'date-fns';
+import Tinypool from 'tinypool';
+import path from 'path';
 import { pool } from '@db';
-import {
-  DBCollection,
-  getCollectionsToRefresh,
-  setCollectionDateUpdated,
-} from '@db/collections';
-import { fetchFeed, mapFeedItems } from './parse';
+import { DBCollection, getCollectionsToRefresh } from '@db/collections';
 import { logger } from '@utils/logger';
-import { insertCollectionItems } from '@db/collectionItems';
 import {
   isRejected,
   makeUpdatedFeedsMsg,
   makeUpdatingFeedsMsg,
 } from '@orpington-news/shared';
 import { sseEmit } from '@sse';
+
+const pathPrefix = process.env.NODE_ENV === 'development' ? './dist' : '.';
+const workerPool = new Tinypool({
+  filename: path.join(pathPrefix, './fetchRSS.worker.mjs'),
+  maxThreads: 2,
+});
+
+const updateCollection = async (collection: DBCollection) => {
+  return workerPool.run(collection).finally(() => {
+    sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection.id] }));
+  });
+};
 
 export const updateCollections = (collections: readonly DBCollection[]) => {
   logger.info(`Found ${collections.length} feeds to update...`);
@@ -26,7 +33,7 @@ export const updateCollections = (collections: readonly DBCollection[]) => {
     );
   }
 
-  return Promise.allSettled(collections.map(fetchAndInsertCollection)).then(
+  return Promise.allSettled(collections.map(updateCollection)).then(
     (results) => {
       const failures = results.filter(isRejected);
       if (failures.length === 0) {
@@ -42,43 +49,6 @@ export const updateCollections = (collections: readonly DBCollection[]) => {
       }
     }
   );
-};
-
-const fetchAndInsertCollection = (collection: DBCollection) => {
-  if (!collection.url) {
-    return Promise.reject(`Collection ${collection.id} without URL!`);
-  }
-
-  const collection_id = collection.id;
-  const now = getUnixTime(new Date());
-
-  return fetchFeed(collection.url)
-    .then((feed) => {
-      const feedItems = mapFeedItems(feed.items);
-      return feedItems.map((feedItem) => ({
-        ...feedItem,
-        collection_id,
-        date_updated: now,
-      }));
-    })
-    .then((feedItems) => {
-      return pool
-        .transaction(async (con) => {
-          await con.query(insertCollectionItems(feedItems));
-          await con.query(setCollectionDateUpdated(collection_id, now));
-        })
-        .then(() => {
-          sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
-        });
-    })
-    .catch((err: Error) => {
-      throw new Error(`Updating feed '${collection.url}' failed`, {
-        cause: err,
-      });
-    })
-    .finally(() => {
-      sseEmit(makeUpdatedFeedsMsg({ feedIds: [collection_id] }));
-    });
 };
 
 const task = new AsyncTask(

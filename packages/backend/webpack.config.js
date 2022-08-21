@@ -10,18 +10,21 @@ const require = createRequire(import.meta.url);
 const __dirname = new URL('.', import.meta.url).pathname;
 
 const isDev = process.env.NODE_ENV === 'development';
-const prodExternals = ['argon2', 'pg-native', 'canvas', 'pino', 'pino-pretty'];
-
-export default {
-  mode: isDev ? 'development' : 'production',
-  entry: {
-    server: './src/server.ts',
-    ...(isDev
-      ? {
-          migrate: './db/migrate.ts',
-        }
-      : {}),
+const prodExternals = [
+  // packages that can't be easily bundled (either native modules, or make use of worker threads)
+  'argon2',
+  'pino',
+  'pino-pretty',
+  // packages that are not even installed
+  {
+    long: 'commonjs long',
+    'utf-8-validate': 'commonjs utf-8-validate',
+    bufferutil: 'commonjs bufferutil',
   },
+];
+
+const config = {
+  mode: isDev ? 'development' : 'production',
   target: 'node',
   externalsPresets: { node: true },
   module: {
@@ -45,12 +48,8 @@ export default {
       ]
     : prodExternals,
   plugins: [
-    new NodemonPlugin(),
     new webpack.IgnorePlugin({
-      resourceRegExp: /^canvas$/,
-    }),
-    new webpack.IgnorePlugin({
-      resourceRegExp: /^pg-native$/,
+      resourceRegExp: /^(canvas|pg-native)$/,
     }),
     new webpack.NormalModuleReplacementPlugin(
       /^hexoid$/,
@@ -60,7 +59,6 @@ export default {
   output: {
     path: path.resolve(__dirname, 'dist'),
     chunkFormat: 'module',
-    clean: true,
   },
   experiments: {
     outputModule: true,
@@ -69,3 +67,31 @@ export default {
     __dirname: 'mock',
   },
 };
+
+const serverConfig = {
+  ...config,
+  entry: {
+    server: './src/server.ts',
+    ...(isDev
+      ? {
+          migrate: './db/migrate.ts',
+        }
+      : {}),
+  },
+  plugins: [...config.plugins, new NodemonPlugin()],
+};
+
+const workerConfig = {
+  ...config,
+  entry: {
+    'fetchRSS.worker': './tasks/fetchRSS/worker.ts',
+  },
+  output: {
+    ...config.output,
+    library: {
+      type: 'module',
+    },
+  },
+};
+
+export default [serverConfig, workerConfig];

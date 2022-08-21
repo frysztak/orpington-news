@@ -7,8 +7,8 @@
   "typings": "dist/index.d.ts",
   "license": "ISC",
   "scripts": {
-    "dev": "cp ../../.env.local .env && NODE_ENV=development webpack --watch",
-    "build": "webpack",
+    "dev": "cp ../../.env.local .env && rimraf dist && NODE_ENV=development webpack --watch",
+    "build": "rimraf dist && webpack",
     "start": "node dist/server.mjs",
     "migrate": "node dist/migrate.mjs",
     "test": "jest",
@@ -76,6 +76,7 @@
     "rss-parser": "^3.12.0",
     "slonik": "29.2.0",
     "striptags": "^3.2.0",
+    "tinypool": "^0.2.4",
     "toad-scheduler": "^1.6.1",
     "truncate-html": "^1.0.4",
     "ts-jest": "^28.0.8",
