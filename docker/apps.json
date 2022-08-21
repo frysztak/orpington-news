@@ -14,7 +14,7 @@
     {
       "name": "api",
       "cwd": "/app/packages/backend/",
-      "script": "server.cjs",
+      "script": "server.mjs",
       "env": {
         "NODE_ENV": "production",
         "PORT": "5000"
