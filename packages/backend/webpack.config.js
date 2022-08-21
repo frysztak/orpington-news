@@ -15,7 +15,7 @@ const prodExternals = ['argon2', 'pg-native', 'canvas', 'pino', 'pino-pretty'];
 export default {
   mode: isDev ? 'development' : 'production',
   entry: {
-    server: './server.ts',
+    server: './src/server.ts',
     ...(isDev
       ? {
           migrate: './db/migrate.ts',
