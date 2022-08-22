@@ -41,6 +41,7 @@ import {
   CollectionItem,
   CollectionLayouts,
   defaultCollectionLayout,
+  ID,
 } from '@orpington-news/shared';
 import { MAX_INT, normalizeUrl, Nullable } from '@utils';
 import { logger } from '@utils/logger';
@@ -118,6 +119,30 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
   };
 };
 
+const calculateUnreadCount = (
+  collections: FlatCollection[]
+): FlatCollection[] => {
+  const lut = new Map<ID, number>(
+    collections.map(({ id, unreadCount }) => [id, unreadCount])
+  );
+  return collections.map((collection) => {
+    const { unreadCount, children } = collection;
+    const childrenUnreadCount = children.reduce((acc, childrenId) => {
+      return acc + (lut.get(childrenId) ?? 0);
+    }, 0);
+
+    return {
+      ...collection,
+      unreadCount: unreadCount + childrenUnreadCount,
+    };
+  });
+};
+
+const queryCollections = async (userId: ID) => {
+  const collections = await pool.any(getCollections(userId));
+  return calculateUnreadCount(collections.map(mapDBCollection));
+};
+
 const verifyCollectionOwner = async (
   request: FastifyRequest<{ Params: CollectionIdType }>,
   reply: FastifyReply
@@ -149,9 +174,10 @@ export const collections: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      const userId = request.session.userId;
-      const collections = await pool.any(getCollections(userId));
-      return collections.map(mapDBCollection);
+      const {
+        session: { userId },
+      } = request;
+      return await queryCollections(userId);
     }
   );
 
@@ -190,8 +216,7 @@ export const collections: FastifyPluginAsync = async (
         await pool.query(pruneExpandedCollections(userId));
       }
 
-      const collections = await pool.any(getCollections(userId));
-      return collections.map(mapDBCollection);
+      return await queryCollections(userId);
     }
   );
 
@@ -211,8 +236,8 @@ export const collections: FastifyPluginAsync = async (
 
       await pool.any(moveCollections(collectionId, newParentId, newOrder));
       await pool.query(pruneExpandedCollections(userId));
-      const collections = await pool.any(getCollections(userId));
-      return collections.map(mapDBCollection);
+
+      return await queryCollections(userId);
     }
   );
 
@@ -256,8 +281,7 @@ export const collections: FastifyPluginAsync = async (
         await pool.query(pruneExpandedCollections(userId));
       }
 
-      const collections = await pool.any(getCollections(userId));
-      return collections.map(mapDBCollection);
+      return await queryCollections(userId);
     }
   );
 
