@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   Box,
   BoxProps,
@@ -58,7 +58,13 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     ...rest
   } = props;
 
-  const { touchMoveHandler, touchStartHandler } = usePullToRefresh({
+  const scrollerRef = useRef<HTMLElement | null>(null);
+  const handleScrollerRef = useCallback((ref: any) => {
+    scrollerRef.current = ref;
+  }, []);
+
+  usePullToRefresh({
+    scrollerRef,
     isRefreshing,
     onRefresh,
   });
@@ -94,22 +100,18 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   const Item = getListItem(layout);
 
   return (
-    <Box
-      overflow="auto"
-      w="full"
-      h="full"
-      onTouchStart={touchStartHandler}
-      onTouchMove={touchMoveHandler}
-      {...rest}
-    >
+    <Box overflow="auto" w="full" h="full" {...rest}>
       <RefreshIndicator isRefreshing={isRefreshing} />
       <Virtuoso
         style={{ height: '100%', width: '100%' }}
         data={items}
         computeItemKey={(_, item) => item.id}
         endReached={onFetchMoreItems}
+        scrollerRef={handleScrollerRef}
         itemContent={(index, data) => <Item item={data} py={2} pr={3} />}
-        components={{ Footer: canFetchMoreItems ? SkeletonBox : undefined }}
+        components={{
+          Footer: canFetchMoreItems ? SkeletonBox : undefined,
+        }}
       />
     </Box>
   );
