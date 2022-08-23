@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Collections: implement virtualization
 - Backend: better error logging
 - Backend: run feed updates in a separate thread
+- Backend: handle feeds in various encodings (that includes ISO-8859-2)
 
 ### Changed
 

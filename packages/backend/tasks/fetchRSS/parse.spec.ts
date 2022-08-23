@@ -1,4 +1,5 @@
-import { mapFeedItems, parser } from './parse';
+import { TextEncoder } from 'util';
+import { detectXMLEncoding, mapFeedItems, parser } from './parse';
 
 describe('RSS parser', () => {
   it('works for Atom feed with thumbnail url and categories', async () => {
@@ -97,5 +98,31 @@ describe('RSS parser', () => {
         comments: 'https://news.ycombinator.com/item?id=29852270',
       },
     ]);
+  });
+});
+
+describe('detectXMLEncoding', () => {
+  it('works for empty string', () => {
+    const arrayBuffer = new TextEncoder().encode('');
+    expect(detectXMLEncoding(arrayBuffer)).toBe('UTF-8');
+  });
+
+  it('works for ISO', () => {
+    const arrayBuffer = new TextEncoder().encode(
+      '<?xml version="1.0" encoding="ISO-8851-2"?>'
+    );
+    expect(detectXMLEncoding(arrayBuffer)).toBe('ISO-8851-2');
+  });
+
+  it('works for extraneous characters', () => {
+    const arrayBuffer = new TextEncoder().encode(
+      '<?xml version="1.0" encoding="ISO-8851-2"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" '
+    );
+    expect(detectXMLEncoding(arrayBuffer)).toBe('ISO-8851-2');
+  });
+
+  it('works for missing encoding', () => {
+    const arrayBuffer = new TextEncoder().encode('<?xml version="1.0"?>');
+    expect(detectXMLEncoding(arrayBuffer)).toBe('UTF-8');
   });
 });
