@@ -26,7 +26,7 @@ RUN yarn build && rm -rf packages/**/node_modules
 # RUNTIME
 FROM nginx:alpine as runtime
 
-RUN apk add --no-cache nodejs yarn
+RUN apk add --no-cache nodejs icu-data-full yarn
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn global add pm2
 
 WORKDIR /app
