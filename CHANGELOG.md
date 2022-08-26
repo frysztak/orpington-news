@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.2] - 2022-08-26
+
+### Changed
+
+-   Disable Linux ARM64 builds for now
+
 ## [0.6.1] - 2022-08-26
 
 ### Fixed
@@ -141,7 +147,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.6.1...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.6.2...HEAD
+
+[0.6.2]: https://github.com/frysztak/orpington-news/compare/0.6.1...0.6.2
 
 [0.6.1]: https://github.com/frysztak/orpington-news/compare/0.6.0...0.6.1
 
