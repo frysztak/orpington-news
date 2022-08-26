@@ -6,7 +6,7 @@ FROM base as builder
 
 # fix for @parcel/watcher missing pre-built package for Linux ARM64
 # https://github.com/parcel-bundler/watcher/issues/102
-RUN apk add --no-cache git make clang build-base
+RUN apk add --no-cache git make clang build-base python3
 WORKDIR /app
 COPY package.json yarn.lock lerna.json .yarnrc.yml ./
 COPY .yarn/ ./.yarn/
