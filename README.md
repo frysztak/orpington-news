@@ -20,7 +20,7 @@ Orpington News is a self-hosted RSS/Atom feed reader with PWA support.
 - Mobile-friendly UI
 - PWA support
 - RSS feed auto-detection from page URL
-- Small Docker image size (< 130 MB uncompressed)
+- Small Docker image size (170 MB uncompressed)
 
 Demo instance is available [here](https://news-demo.orpington.software/).
 
