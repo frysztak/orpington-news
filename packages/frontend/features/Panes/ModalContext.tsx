@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { createContext } from 'use-context-selector';
-import { Collection, ID, noop } from '@orpington-news/shared';
+import { FlatCollection, ID, noop } from '@orpington-news/shared';
 import { ReactFCC, useToggle } from '@utils';
 import { AddModalState } from './AddModal';
 
@@ -13,7 +13,7 @@ export type ModalContextData = {
 } & {
   addModalState: AddModalState;
   setAddModalState: Dispatch<SetStateAction<AddModalState>>;
-  openAddModalWithData: (collection?: Collection) => void;
+  openAddModalWithData: (collection?: FlatCollection) => void;
 
   deleteModalState?: ID;
   setDeleteModalState: Dispatch<SetStateAction<ID | undefined>>;
@@ -80,7 +80,7 @@ const useAddModal = () => {
   } = useToggle();
 
   const openAddModalWithData = useCallback(
-    (initialData?: Collection) => {
+    (initialData?: FlatCollection) => {
       if (initialData) {
         setAddModalState({
           verifiedUrl: initialData.url,

@@ -26,16 +26,21 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
         <SettingsLink href="/settings/appearance">Appearance</SettingsLink>
       </SettingsCategory>
 
-      {!isTouchscreen && (
-        <SettingsCategory title="Collections">
-          <SettingsLink href="/settings/organize">Organize</SettingsLink>
-        </SettingsCategory>
-      )}
+      <SettingsCategory title="Collections">
+        {!isTouchscreen && (
+          <SettingsLink href="/settings/collections/organize">
+            Organize
+          </SettingsLink>
+        )}
+        <SettingsLink href="/settings/collections/import">Import</SettingsLink>
+      </SettingsCategory>
 
       <SettingsCategory title="Account">
-        <SettingsLink href="/settings/info">Info</SettingsLink>
-        <SettingsLink href="/settings/password">Change password</SettingsLink>
-        <SettingsLink href="/settings/logout">Log out</SettingsLink>
+        <SettingsLink href="/settings/account/info">Info</SettingsLink>
+        <SettingsLink href="/settings/account/password">
+          Change password
+        </SettingsLink>
+        <SettingsLink href="/settings/account/logout">Log out</SettingsLink>
       </SettingsCategory>
 
       <SettingsCategory title="About">

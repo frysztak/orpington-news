@@ -32,6 +32,8 @@
       "@tasks": ["tasks/index.ts"],
       "@tasks/*": ["tasks/*"],
 
+      "@services/*": ["services/*"],
+
       "@sse": ["sse/index.ts"]
     }
   }

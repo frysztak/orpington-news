@@ -7,6 +7,7 @@ import {
   addCollection,
   DBCollection,
   deleteCollections,
+  getCollectionById,
   getCollectionChildrenIds,
   getCollectionOwner,
   getCollections,
@@ -40,8 +41,9 @@ import {
   CollectionItem,
   CollectionLayouts,
   defaultCollectionLayout,
+  ID,
 } from '@orpington-news/shared';
-import { normalizeUrl, Nullable } from '@utils';
+import { MAX_INT, normalizeUrl, Nullable } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
 import {
@@ -50,6 +52,7 @@ import {
   updateCollections,
   extractFeedUrl,
 } from '@tasks/fetchRSS';
+import { importOPML } from '@services/opml';
 
 const PostCollection = Type.Object({
   title: Type.String(),
@@ -89,8 +92,18 @@ const ItemDetailsParams = Type.Object({
 type ItemDetailsType = Static<typeof ItemDetailsParams>;
 
 const mapDBCollection = (collection: DBCollection): FlatCollection => {
-  const { date_updated, refresh_interval, unread_count, layout, ...rest } =
-    collection;
+  const {
+    date_updated,
+    refresh_interval,
+    unread_count,
+    layout,
+    order_path,
+    parents,
+    parent_id,
+    parent_order,
+    is_last_child,
+    ...rest
+  } = collection;
 
   return {
     ...rest,
@@ -98,7 +111,36 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
     refreshInterval: refresh_interval,
     unreadCount: unread_count ?? 0,
     layout: layout ?? defaultCollectionLayout,
+    parents,
+    parentId: parent_id ?? undefined,
+    parentOrder: parent_order ?? undefined,
+    isLastChild: is_last_child ?? false,
+    orderPath: order_path,
   };
+};
+
+const calculateUnreadCount = (
+  collections: FlatCollection[]
+): FlatCollection[] => {
+  const lut = new Map<ID, number>(
+    collections.map(({ id, unreadCount }) => [id, unreadCount])
+  );
+  return collections.map((collection) => {
+    const { unreadCount, children } = collection;
+    const childrenUnreadCount = children.reduce((acc, childrenId) => {
+      return acc + (lut.get(childrenId) ?? 0);
+    }, 0);
+
+    return {
+      ...collection,
+      unreadCount: unreadCount + childrenUnreadCount,
+    };
+  });
+};
+
+const queryCollections = async (userId: ID) => {
+  const collections = await pool.any(getCollections(userId));
+  return calculateUnreadCount(collections.map(mapDBCollection));
 };
 
 const verifyCollectionOwner = async (
@@ -132,9 +174,10 @@ export const collections: FastifyPluginAsync = async (
       },
     },
     async (request, reply) => {
-      const userId = request.session.userId;
-      const collections = await pool.any(getCollections(userId));
-      return collections.map(mapDBCollection);
+      const {
+        session: { userId },
+      } = request;
+      return await queryCollections(userId);
     }
   );
 
@@ -173,8 +216,7 @@ export const collections: FastifyPluginAsync = async (
         await pool.query(pruneExpandedCollections(userId));
       }
 
-      const collections = await pool.any(getCollections(userId));
-      return collections.map(mapDBCollection);
+      return await queryCollections(userId);
     }
   );
 
@@ -194,8 +236,8 @@ export const collections: FastifyPluginAsync = async (
 
       await pool.any(moveCollections(collectionId, newParentId, newOrder));
       await pool.query(pruneExpandedCollections(userId));
-      const collections = await pool.any(getCollections(userId));
-      return collections.map(mapDBCollection);
+
+      return await queryCollections(userId);
     }
   );
 
@@ -212,13 +254,24 @@ export const collections: FastifyPluginAsync = async (
         body,
         session: { userId },
       } = request;
-      if (body.id === body.parentId) {
+
+      const { id, parentId } = body;
+
+      if (id === parentId) {
         reply.status(500);
         return {
           errorCode: 500,
           message: 'Collection cannot be its own parent',
         };
       }
+
+      const { parent_id: currentParentId } = await pool.one(
+        getCollectionById(body.id)
+      );
+      if (parentId !== undefined && currentParentId !== parentId) {
+        await pool.any(moveCollections(id, parentId, MAX_INT));
+      }
+
       await pool.any(updateCollection(body));
 
       if (body.parentId) {
@@ -228,8 +281,7 @@ export const collections: FastifyPluginAsync = async (
         await pool.query(pruneExpandedCollections(userId));
       }
 
-      const collections = await pool.any(getCollections(userId));
-      return collections.map(mapDBCollection);
+      return await queryCollections(userId);
     }
   );
 
@@ -589,6 +641,28 @@ export const collections: FastifyPluginAsync = async (
           .status(418)
           .send({ errorCode: 418, message: 'Invalid RSS/Atom feed.' });
       }
+    }
+  );
+
+  fastify.post(
+    '/import/opml',
+    {
+      schema: {
+        tags: ['Collections'],
+      },
+    },
+    async (request, reply) => {
+      const {
+        session: { userId },
+      } = request;
+
+      const opmlFile = await request.file();
+      const opmlBuffer = await opmlFile.toBuffer();
+      const opmlString = opmlBuffer.toString();
+
+      await importOPML(opmlString, userId);
+
+      return true;
     }
   );
 };

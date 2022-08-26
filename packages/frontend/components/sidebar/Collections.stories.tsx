@@ -1,15 +1,20 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
-import { Collections, CollectionsProps } from './Collections';
-import { Collection, defaultIcon } from '@orpington-news/shared';
 import { action } from '@storybook/addon-actions';
+import { Box } from '@chakra-ui/react';
+import { Collections, CollectionsProps } from './Collections';
+import { sampleFlatCollections } from '../collection/sampleData';
 
 export default {
   title: 'Components/Sidebar/Collections',
   component: Collections,
 } as Meta;
 
-const Template: Story<CollectionsProps> = (props) => <Collections {...props} />;
+const Template: Story<CollectionsProps> = (props) => (
+  <Box height="300px">
+    <Collections {...props} />
+  </Box>
+);
 
 export const Empty = Template.bind({});
 Empty.args = {
@@ -19,55 +24,6 @@ Empty.args = {
   onCollectionMenuActionClicked: action('onCollectionMenuActionClicked'),
 };
 
-const sampleCollections: Collection[] = [
-  {
-    id: 1,
-    title: 'Feed 01',
-    unreadCount: 9,
-    icon: 'React',
-  },
-  {
-    id: 2,
-    title: 'Feed 02',
-    unreadCount: 10,
-    icon: 'TypeScript',
-    children: [],
-  },
-  {
-    id: 3,
-    title: 'A Little Bit Longer Category 01',
-    unreadCount: 11,
-    icon: defaultIcon,
-    children: [
-      {
-        id: 301,
-        title: 'Feed 03-01',
-        unreadCount: 112,
-        icon: defaultIcon,
-      },
-      {
-        id: 302,
-        title: 'Category 02',
-        unreadCount: 113,
-        icon: defaultIcon,
-        children: [
-          {
-            id: 30201,
-            title: 'Feed 03-02-01',
-            unreadCount: 114,
-            icon: defaultIcon,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: 'Feed 04',
-    unreadCount: 9,
-    icon: defaultIcon,
-  },
-];
 export const Loading = Template.bind({});
 Loading.args = {
   ...Empty.args,
@@ -85,19 +41,19 @@ Error.args = {
 export const SomeFeeds = Template.bind({});
 SomeFeeds.args = {
   ...Empty.args,
-  collections: sampleCollections,
+  collections: sampleFlatCollections,
 };
 
 export const InitialActive = Template.bind({});
 InitialActive.args = {
   ...Empty.args,
-  collections: sampleCollections,
+  collections: sampleFlatCollections,
   activeCollectionId: 4,
 };
 
 export const InitialExpanded = Template.bind({});
 InitialExpanded.args = {
   ...Empty.args,
-  collections: sampleCollections,
+  collections: sampleFlatCollections,
   expandedCollectionIDs: [3],
 };

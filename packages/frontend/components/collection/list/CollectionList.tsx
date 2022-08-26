@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   Box,
   BoxProps,
@@ -7,8 +7,7 @@ import {
   VStack,
   Text,
 } from '@chakra-ui/react';
-import { useVirtual } from '@utils/useVirtual';
-import { last } from 'rambda';
+import { Virtuoso } from 'react-virtuoso';
 import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
 import {
   CollectionItem,
@@ -59,37 +58,13 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     ...rest
   } = props;
 
-  const parentRef = useRef<HTMLDivElement | null>(null);
+  const scrollerRef = useRef<HTMLElement | null>(null);
+  const handleScrollerRef = useCallback((ref: any) => {
+    scrollerRef.current = ref;
+  }, []);
 
-  const rowVirtualizer = useVirtual({
-    size: canFetchMoreItems ? items.length + 1 : items.length,
-    parentRef,
-    estimateSize: useCallback((idx: number) => 80, []),
-    overscan: 4,
-  });
-
-  useEffect(() => {
-    const lastItem = last(rowVirtualizer.virtualItems);
-    if (!lastItem) {
-      return;
-    }
-
-    if (
-      lastItem.index >= items.length - 1 &&
-      canFetchMoreItems &&
-      !isFetchingMoreItems
-    ) {
-      onFetchMoreItems?.();
-    }
-  }, [
-    canFetchMoreItems,
-    isFetchingMoreItems,
-    items.length,
-    onFetchMoreItems,
-    rowVirtualizer.virtualItems,
-  ]);
-
-  const { touchMoveHandler, touchStartHandler } = usePullToRefresh({
+  usePullToRefresh({
+    scrollerRef,
     isRefreshing,
     onRefresh,
   });
@@ -125,55 +100,26 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   const Item = getListItem(layout);
 
   return (
-    <Box
-      ref={parentRef}
-      overflow="auto"
-      w="full"
-      h="full"
-      onTouchStart={touchStartHandler}
-      onTouchMove={touchMoveHandler}
-      {...rest}
-    >
+    <Box overflow="auto" w="full" h="full" {...rest}>
       <RefreshIndicator isRefreshing={isRefreshing} />
-      <Box
-        position="relative"
-        w="full"
-        style={{
-          height: `${rowVirtualizer.totalSize}px`,
+      <Virtuoso
+        style={{ height: '100%', width: '100%' }}
+        data={items}
+        computeItemKey={(_, item) => item.id}
+        endReached={onFetchMoreItems}
+        scrollerRef={handleScrollerRef}
+        itemContent={(index, data) => <Item item={data} py={2} pr={3} />}
+        components={{
+          Footer: canFetchMoreItems ? SkeletonBox : undefined,
         }}
-      >
-        {rowVirtualizer.virtualItems.map((virtualRow) => {
-          const isLoaderRow = virtualRow.index > items.length - 1;
-          return (
-            <Box
-              key={virtualRow.index}
-              data-key={virtualRow.index}
-              ref={virtualRow.measureRef}
-              py={2}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              {isLoaderRow ? (
-                <SkeletonBox />
-              ) : (
-                <Item item={items[virtualRow.index]} py={2} />
-              )}
-            </Box>
-          );
-        })}
-      </Box>
+      />
     </Box>
   );
 };
 
 const SkeletonBox: React.FC = (props) => {
   return (
-    <Box>
+    <Box pb={4}>
       <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
       <SkeletonText mt="4" noOfLines={2} spacing="4" />
     </Box>

@@ -3,11 +3,11 @@ import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import {
-  Collection,
   CollectionIcons,
   CollectionIconType,
   defaultIcon,
   defaultRefreshInterval,
+  FlatCollection,
   ID,
   numberToString,
 } from '@orpington-news/shared';
@@ -27,7 +27,7 @@ export interface AddCollectionFormProps {
   verifiedUrl?: string;
 
   areCollectionsLoading?: boolean;
-  collections: Collection[];
+  collections: FlatCollection[];
 
   onVerifyUrlClicked?: (url: string) => void;
   onSubmit: (data: AddCollectionFormData) => void;

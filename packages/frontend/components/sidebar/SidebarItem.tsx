@@ -22,6 +22,7 @@ import {
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { Chevron } from './Chevron';
 import { useIconFill } from '@utils/icon';
+import { calcItemPadding } from './calcItemPadding';
 
 export interface SidebarItemProps {
   isActive: boolean;
@@ -31,6 +32,7 @@ export interface SidebarItemProps {
   chevron?: 'top' | 'bottom';
   menuItems?: JSX.Element;
   isLoading?: boolean;
+  level?: number;
 
   onClick: () => void;
   onChevronClick?: () => void;
@@ -47,6 +49,8 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
     isLoading,
     onClick,
     onChevronClick,
+    level,
+    style,
     ...rest
   } = props;
 
@@ -130,7 +134,6 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
       w="full"
       spacing={4}
       pr={3}
-      pl={chevron ? 0 : 6}
       minH={10}
       align="center"
       _hover={{
@@ -148,6 +151,10 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}
+      style={{
+        ...style,
+        paddingLeft: calcItemPadding(chevron, level),
+      }}
       {...rest}
     >
       {chevron && (
@@ -213,3 +220,4 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
     </HStack>
   );
 });
+SidebarItem.displayName = 'SidebarItem';

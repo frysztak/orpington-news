@@ -5,7 +5,7 @@ import {
   AddCollectionFormData,
   AddCollectionModal,
 } from '@components/collection/add';
-import { useCollectionsTree } from '@features/Collections';
+import { useCollectionsList } from '@features/Collections';
 import { defaultIcon, emptyIfUndefined, ID } from '@orpington-news/shared';
 import { ModalContext } from './ModalContext';
 import {
@@ -55,7 +55,7 @@ export const AddModal: React.FC = () => {
   });
 
   const { isLoading: areCollectionsLoading, data: collections } =
-    useCollectionsTree();
+    useCollectionsList();
 
   const onVerifyUrlClicked = useCallback(
     (url: string) => {

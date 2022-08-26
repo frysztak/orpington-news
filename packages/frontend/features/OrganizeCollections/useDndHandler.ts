@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Collection, FlatCollection, ID } from '@orpington-news/shared';
+import { FlatCollection, ID } from '@orpington-news/shared';
 import { buildParentsChildrenMap, ParentsMap } from '@features/Collections';
 import type {
   DnDEvent,
@@ -107,7 +107,7 @@ export const useDndHandler = (
     [childrenMap, expandCollection, expandedCollections, onDrop, parentsMap]
   );
 
-  const onChevronClicked = useCallback((collection: Collection) => {
+  const onChevronClicked = useCallback((collection: FlatCollection) => {
     setExpandedCollections((collections) => {
       const newSet = new Set(collections);
       if (collections.has(collection.id)) {

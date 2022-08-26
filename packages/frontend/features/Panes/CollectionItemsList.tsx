@@ -44,7 +44,7 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
       <CollectionList
         layout={activeCollection?.layout}
         items={allItems}
-        px={3}
+        pl={3}
         mt={3}
         flex="1 1 0"
         h="full"

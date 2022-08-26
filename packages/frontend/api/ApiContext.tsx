@@ -1,11 +1,10 @@
 import { createContext, useContext, useMemo } from 'react';
-import type { Wretcher } from 'wretch';
-import { getUrls, makeApi } from '@api';
+import { getUrls, makeApi, Wretch } from '@api';
 import { ReactFCC } from '@utils/react';
 import { useHandleUnauthorized } from './useHandleUnauthorized';
 
 export interface ApiContextData {
-  api: Wretcher;
+  api: Wretch;
 }
 
 const ApiContext = createContext<ApiContextData | null>(null);

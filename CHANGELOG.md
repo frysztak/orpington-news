@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2022-08-26
+
+### Added
+
+-   Collections: implement OPML import
+-   Collections: implement virtualization
+-   Backend: better error logging
+-   Backend: run feed updates in a separate thread
+-   Backend: handle feeds in various encodings (that includes ISO-8859-2)
+
+### Changed
+
+-   Settings: reorganize some of the pages
+
 ## [0.5.1] - 2022-08-04
 
 ### Fixed
@@ -121,7 +135,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.5.1...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.6.0...HEAD
+
+[0.6.0]: https://github.com/frysztak/orpington-news/compare/0.5.1...0.6.0
 
 [0.5.1]: https://github.com/frysztak/orpington-news/compare/0.5.0...0.5.1
 

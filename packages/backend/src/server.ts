@@ -6,6 +6,7 @@ import fastifyAuth from '@fastify/auth';
 import fastifyCors from '@fastify/cors';
 import fastifyETag from '@fastify/etag';
 import fastifySchedule from '@fastify/schedule';
+import fastifyMultipart from '@fastify/multipart';
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
@@ -87,6 +88,7 @@ async function setupFastify() {
   await fastify.register(fastifyVerifySession);
   await fastify.register(fastifySchedule);
   await fastify.register(FastifySSEPlugin);
+  await fastify.register(fastifyMultipart);
 
   await fastify.register(auth, { prefix: '/auth' });
   await fastify.register(collections, { prefix: '/collections' });

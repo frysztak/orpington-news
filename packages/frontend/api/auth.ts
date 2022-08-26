@@ -1,26 +1,26 @@
-import type { Wretcher } from 'wretch';
+import type { Wretch } from '@api';
 import type { LoginFormData, SignupFormData } from '@features/Auth';
 import type { User } from '@orpington-news/shared';
 
-export const registerUser = (api: Wretcher, data: SignupFormData) =>
+export const registerUser = (api: Wretch, data: SignupFormData) =>
   api.url('/auth/register').post(data).json();
 
-export const loginUser = (api: Wretcher, data: LoginFormData) =>
+export const loginUser = (api: Wretch, data: LoginFormData) =>
   api.url('/auth/login').post(data).json();
 
-export const logoutUser = (api: Wretcher) =>
+export const logoutUser = (api: Wretch) =>
   api.url('/auth/session').delete().json();
 
 export interface ChangePasswordData {
   currentPassword: string;
   newPassword: string;
 }
-export const changePassword = (api: Wretcher, data: ChangePasswordData) =>
+export const changePassword = (api: Wretch, data: ChangePasswordData) =>
   api.url('/auth/password').put(data).json<boolean>();
 
-export const getUser = (api: Wretcher) =>
+export const getUser = (api: Wretch) =>
   api.url('/auth/user').get().json<User>();
 
 export type SetUserData = Pick<User, 'displayName'> & { avatar?: string };
-export const setUser = (api: Wretcher, data: SetUserData) =>
+export const setUser = (api: Wretch, data: SetUserData) =>
   api.url('/auth/user').put(data).json<User>();

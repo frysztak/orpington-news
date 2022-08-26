@@ -1,60 +1,52 @@
 import React, { useCallback, useMemo } from 'react';
-import {
-  Box,
-  Icon,
-  MenuDivider,
-  Text,
-  MenuItem,
-  VStack,
-  Collapse,
-} from '@chakra-ui/react';
+import { Icon, MenuDivider, Text, MenuItem, VStack } from '@chakra-ui/react';
 import { CgRemove } from '@react-icons/all-files/cg/CgRemove';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import { AiTwotoneEdit } from '@react-icons/all-files/ai/AiTwotoneEdit';
 import ExclamationCircleIcon from '@heroicons/react/solid/ExclamationCircleIcon';
 import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
+import { Virtuoso } from 'react-virtuoso';
+import { ID, FlatCollection } from '@orpington-news/shared';
 import { SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
 import { CollectionsSkeleton } from './CollectionsSkeleton';
-import { ID, Collection } from '@orpington-news/shared';
+import { filterVisibleCollections } from './filterVisibleCollections';
 
 export type CollectionMenuAction = 'markAsRead' | 'refresh' | 'edit' | 'delete';
 
-export interface CollapsibleCollectionListProps {
-  collection: Collection;
+interface ItemContentProps {
+  collection: FlatCollection;
+
   activeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
   collectionsCurrentlyUpdated?: Set<ID>;
 
-  onCollectionClicked: (collection: Collection) => void;
-  onChevronClicked: (collection: Collection) => void;
-  onCollectionMenuActionClicked?: (
-    collection: Collection,
+  onCollectionClicked: (collection: FlatCollection) => void;
+  onChevronClicked: (collection: FlatCollection) => void;
+  onCollectionMenuActionClicked: (
+    collection: FlatCollection,
     action: CollectionMenuAction
   ) => void;
 }
 
-const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
-  props
-) => {
-  const {
-    collection,
-    activeCollectionId,
-    expandedCollectionIDs,
-    collectionsCurrentlyUpdated,
-    onCollectionClicked,
-    onChevronClicked,
-    onCollectionMenuActionClicked,
-  } = props;
-  const { id, title, unreadCount, children } = collection;
+const ItemContent: React.FC<ItemContentProps> = ({
+  collection,
+  activeCollectionId,
+  expandedCollectionIDs,
+  collectionsCurrentlyUpdated,
+  onCollectionClicked,
+  onChevronClicked,
+  onCollectionMenuActionClicked,
+}) => {
+  const { title, id, unreadCount, level, children } = collection;
 
-  const hasChildren = Boolean(children) && children?.length !== 0;
   const isOpen = expandedCollectionIDs?.includes(id) ?? false;
+  const hasChildren = children?.length > 0;
 
   const handleChevronClick = useCallback(
-    (collection: Collection) => onChevronClicked(collection),
-    [onChevronClicked]
+    () => onChevronClicked(collection),
+    [collection, onChevronClicked]
   );
   const handleClick = useCallback(
     () => onCollectionClicked(collection),
@@ -68,87 +60,64 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
 
   const handleMenuItemClick = useCallback(
     (action: CollectionMenuAction) => () => {
-      onCollectionMenuActionClicked?.(collection, action);
+      onCollectionMenuActionClicked(collection, action);
     },
     [collection, onCollectionMenuActionClicked]
   );
 
   return (
-    <>
-      <SidebarItem
-        title={title}
-        isActive={activeCollectionId === id}
-        icon={icon}
-        counter={unreadCount}
-        isLoading={collectionsCurrentlyUpdated?.has(id) ?? false}
-        chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
-        onClick={handleClick}
-        onChevronClick={useCallback(
-          () => handleChevronClick(collection),
-          [collection, handleChevronClick]
-        )}
-        menuItems={
-          <>
-            <MenuItem
-              icon={<IoCheckmarkDone />}
-              onClick={handleMenuItemClick('markAsRead')}
-            >
-              Mark as read
-            </MenuItem>
-            <MenuItem
-              icon={<IoRefresh />}
-              onClick={handleMenuItemClick('refresh')}
-            >
-              Refresh
-            </MenuItem>
-            <MenuItem
-              icon={<AiTwotoneEdit />}
-              onClick={handleMenuItemClick('edit')}
-            >
-              Edit
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
-              icon={<CgRemove />}
-              onClick={handleMenuItemClick('delete')}
-            >
-              Delete
-            </MenuItem>
-          </>
-        }
-      />
-      <Box pl={4} w="full">
-        <Collapse in={isOpen} animateOpacity>
-          {children?.map((collection: Collection) => (
-            <CollapsibleCollectionList
-              key={collection.id}
-              collection={collection}
-              activeCollectionId={activeCollectionId}
-              expandedCollectionIDs={expandedCollectionIDs}
-              collectionsCurrentlyUpdated={collectionsCurrentlyUpdated}
-              onCollectionClicked={onCollectionClicked}
-              onChevronClicked={handleChevronClick}
-              onCollectionMenuActionClicked={onCollectionMenuActionClicked}
-            />
-          ))}
-        </Collapse>
-      </Box>
-    </>
+    <SidebarItem
+      title={title}
+      isActive={activeCollectionId === id}
+      icon={icon}
+      level={level}
+      counter={unreadCount}
+      isLoading={collectionsCurrentlyUpdated?.has(id) ?? false}
+      chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
+      onClick={handleClick}
+      onChevronClick={handleChevronClick}
+      menuItems={
+        <>
+          <MenuItem
+            icon={<IoCheckmarkDone />}
+            onClick={handleMenuItemClick('markAsRead')}
+          >
+            Mark as read
+          </MenuItem>
+          <MenuItem
+            icon={<IoRefresh />}
+            onClick={handleMenuItemClick('refresh')}
+          >
+            Refresh
+          </MenuItem>
+          <MenuItem
+            icon={<AiTwotoneEdit />}
+            onClick={handleMenuItemClick('edit')}
+          >
+            Edit
+          </MenuItem>
+          <MenuDivider />
+          <MenuItem icon={<CgRemove />} onClick={handleMenuItemClick('delete')}>
+            Delete
+          </MenuItem>
+        </>
+      }
+    />
   );
 };
 
 export interface CollectionsProps {
   isLoading?: boolean;
   isError?: boolean;
-  collections: Collection[];
+  collections: FlatCollection[];
   activeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
   collectionsCurrentlyUpdated?: Set<ID>;
 
-  onCollectionClicked: (collection: Collection) => void;
-  onChevronClicked: (collection: Collection) => void;
-  onCollectionMenuActionClicked?: (
-    collection: Collection,
+  onCollectionClicked: (collection: FlatCollection) => void;
+  onChevronClicked: (collection: FlatCollection) => void;
+  onCollectionMenuActionClicked: (
+    collection: FlatCollection,
     action: CollectionMenuAction
   ) => void;
 }
@@ -166,8 +135,13 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
     onCollectionMenuActionClicked,
   } = props;
 
+  const visibleCollections = useMemo(
+    () => filterVisibleCollections(collections, expandedCollectionIDs),
+    [collections, expandedCollectionIDs]
+  );
+
   return (
-    <VStack w="full" spacing={1}>
+    <VStack w="full" h="full" spacing={1}>
       {isLoading ? (
         <CollectionsSkeleton />
       ) : isError ? (
@@ -197,18 +171,23 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
           </Text>
         </>
       ) : (
-        collections.map((collection: Collection) => (
-          <CollapsibleCollectionList
-            key={collection.id}
-            collection={collection}
-            activeCollectionId={activeCollectionId}
-            expandedCollectionIDs={expandedCollectionIDs}
-            collectionsCurrentlyUpdated={collectionsCurrentlyUpdated}
-            onCollectionClicked={onCollectionClicked}
-            onChevronClicked={onChevronClicked}
-            onCollectionMenuActionClicked={onCollectionMenuActionClicked}
-          />
-        ))
+        <Virtuoso
+          style={{ height: '100%', width: '100%' }}
+          data={visibleCollections}
+          computeItemKey={(_, item) => item.id}
+          defaultItemHeight={40}
+          itemContent={(index) => (
+            <ItemContent
+              collection={visibleCollections[index]}
+              activeCollectionId={activeCollectionId}
+              collectionsCurrentlyUpdated={collectionsCurrentlyUpdated}
+              expandedCollectionIDs={expandedCollectionIDs}
+              onCollectionClicked={onCollectionClicked}
+              onChevronClicked={onChevronClicked}
+              onCollectionMenuActionClicked={onCollectionMenuActionClicked}
+            />
+          )}
+        />
       )}
     </VStack>
   );

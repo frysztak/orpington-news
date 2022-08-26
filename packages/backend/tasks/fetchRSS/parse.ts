@@ -1,4 +1,5 @@
 import Parser from 'rss-parser';
+import fetch from 'node-fetch';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { Static, Type } from '@sinclair/typebox';
@@ -9,6 +10,7 @@ import { decode } from 'html-entities';
 import DOMPurify from 'isomorphic-dompurify';
 import { getUnixTime, parseISO } from 'date-fns';
 import { URL } from 'url';
+import { TextDecoder } from 'util';
 import { DBCollectionItem } from '@db/collectionItems';
 import { logger } from '@utils/logger';
 import { notEmpty } from '@orpington-news/shared';
@@ -45,8 +47,28 @@ const ajv = addFormats(new Ajv({}), ['date-time'])
   .addKeyword('modifier');
 const validateFeedItem = ajv.compile<FeedItemType>(FeedItem);
 
+export const detectXMLEncoding = (xml: ArrayBuffer): string => {
+  // '<?xml version="1.0" encoding="UTF-8"?>' is 38 characters, so read a bit more than that
+  const slice = xml.slice(0, 80);
+  const utf8Decoder = new TextDecoder('utf-8');
+  const xmlHeader = utf8Decoder.decode(slice);
+  const encoding = xmlHeader.match(/encoding="(.*?)"/);
+  return encoding?.[1] ?? 'UTF-8';
+};
+
 export const fetchFeed = async (feedUrl: string) => {
-  return parser.parseURL(feedUrl);
+  const response = await fetch(feedUrl);
+
+  if (!response.ok) {
+    throw new Error(
+      `Fetching feed '${feedUrl}' failed with status code ${response.status}`
+    );
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+  const encoding = detectXMLEncoding(arrayBuffer);
+  const decoder = new TextDecoder(encoding);
+  return parser.parseString(decoder.decode(arrayBuffer));
 };
 
 export const mapFeedItems = (

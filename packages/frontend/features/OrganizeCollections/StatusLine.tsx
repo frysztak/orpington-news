@@ -13,13 +13,13 @@ const Line = chakra('line');
 const getPadding = (position: LogicalPosition): number => {
   switch (position) {
     case 'belowParent':
-      return 0;
+      return 1;
     case 'below':
-      return 4;
+      return 2;
     case 'above':
-      return 4;
+      return 2;
     case 'child':
-      return 12;
+      return 6;
   }
 };
 
@@ -29,7 +29,15 @@ export const StatusLine: React.FC<StatusLineProps> = (props) => {
   const stroke = error ? 'red.600' : 'green.400';
 
   return (
-    <HStack w="full" spacing={0} pl={getPadding(logicalPosition)}>
+    <HStack
+      w="full"
+      spacing={0}
+      style={{
+        paddingLeft: `calc(var(--extra-padding-left) + var(--chakra-space-${getPadding(
+          logicalPosition
+        )}))`,
+      }}
+    >
       <Svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 10 10"

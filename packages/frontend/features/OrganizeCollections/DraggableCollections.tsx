@@ -1,15 +1,17 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { Box, Collapse, VStack } from '@chakra-ui/react';
 import { DropTargetMonitor, useDrag, useDrop, XYCoord } from 'react-dnd';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
+import { Virtuoso } from 'react-virtuoso';
 import {
   Collection,
+  FlatCollection,
   ID,
   inhibitUntilArgsChanged,
   noop,
 } from '@orpington-news/shared';
 import { getCollectionIcon } from '@components/sidebar/CollectionIcon';
 import { SidebarItem } from '@components/sidebar/SidebarItem';
+import { calcItemPadding, filterVisibleCollections } from '@components/sidebar';
 import type { ParentsMap } from '@features/Collections';
 import type {
   DnDEvent,
@@ -27,25 +29,23 @@ import { resolveIfCanDrop } from './resolvers';
 export const MotionHoverStatusWrapper =
   motion<HoverStatusWrapperProps>(HoverStatusWrapper);
 
-interface CollapsibleCollectionListProps {
-  index: number;
+interface ItemContentProps {
+  order: number;
   parentId?: ID;
   parentIndex?: number;
   isLast: boolean;
-  collection: Collection;
+  collection: FlatCollection;
   expandedCollectionIDs?: Set<ID>;
   hoverStatus?: HoverStatus;
   parentsMap: ParentsMap;
 
-  onChevronClicked: (collection: Collection) => void;
+  onChevronClicked: (collection: FlatCollection) => void;
   onDnDEvent: (event: DnDEvent) => void;
 }
 
-const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
-  props
-) => {
+const ItemContent: React.FC<ItemContentProps> = (props) => {
   const {
-    index,
+    order,
     parentId,
     parentIndex,
     isLast,
@@ -62,7 +62,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
   const hasChildren = Boolean(children) && children?.length !== 0;
   const isOpen = expandedCollectionIDs?.has(id) ?? false;
 
-  const handleChevronClick = (collection: Collection) => () =>
+  const handleChevronClick = (collection: FlatCollection) => () =>
     onChevronClicked(collection);
 
   const icon = useMemo(
@@ -80,7 +80,7 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
         isDragging: monitor.isDragging(),
         opacity: monitor.isDragging() ? 0.5 : 1,
       }),
-      end: (draggedItem: Collection) => {
+      end: (draggedItem: FlatCollection) => {
         onDnDEvent({ type: 'dragEnd' });
       },
     }),
@@ -142,12 +142,12 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
           targetCollectionParentId: parentId,
           targetCollectionParentIndex: parentIndex,
           targetCollectionLastChild: isLast,
-          targetCollectionIndex: index,
+          targetCollectionIndex: order,
           targetCollectionHasChildren: children ? children.length > 0 : false,
         },
       };
     },
-    [children, getHoverPosition, id, index, isLast, parentId, parentIndex]
+    [children, getHoverPosition, id, order, isLast, parentId, parentIndex]
   );
 
   const [, drop] = useDrop({
@@ -175,8 +175,16 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
 
   drag(drop(ref));
 
+  const chevron = hasChildren ? (isOpen ? 'bottom' : 'top') : undefined;
+
   return (
-    <>
+    <div
+      style={
+        {
+          '--extra-padding-left': calcItemPadding(chevron, collection.level),
+        } as React.CSSProperties
+      }
+    >
       <MotionHoverStatusWrapper
         layout="position"
         layoutId={id.toString()}
@@ -191,42 +199,24 @@ const CollapsibleCollectionList: React.FC<CollapsibleCollectionListProps> = (
           title={title}
           icon={icon}
           isActive={false}
-          chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
+          level={collection.level}
+          chevron={chevron}
           onClick={noop}
           onChevronClick={handleChevronClick(collection)}
           style={{ opacity }}
         />
       </MotionHoverStatusWrapper>
-      <Box pl={4} w="full">
-        <Collapse in={isOpen} animateOpacity>
-          {children?.map((collection: Collection, idx: number, array) => (
-            <CollapsibleCollectionList
-              key={collection.id}
-              index={idx}
-              parentId={id}
-              parentIndex={index}
-              isLast={idx === array.length - 1}
-              collection={collection}
-              expandedCollectionIDs={expandedCollectionIDs}
-              hoverStatus={hoverStatus}
-              parentsMap={parentsMap}
-              onChevronClicked={handleChevronClick(collection)}
-              onDnDEvent={onDnDEvent}
-            />
-          ))}
-        </Collapse>
-      </Box>
-    </>
+    </div>
   );
 };
 
 export interface DraggableCollectionsProps {
-  collections: Collection[];
+  collections: FlatCollection[];
   expandedCollectionIDs?: Set<ID>;
   hoverStatus?: HoverStatus;
   parentsMap: ParentsMap;
 
-  onChevronClicked: (collection: Collection) => void;
+  onChevronClicked: (collection: FlatCollection) => void;
   onDnDEvent: (event: DnDEvent) => void;
 }
 
@@ -258,23 +248,37 @@ export const DraggableCollections: React.FC<DraggableCollectionsProps> = (
     [debouncedDndEvent, onDnDEvent]
   );
 
+  const visibleCollections = useMemo(
+    () =>
+      filterVisibleCollections(
+        collections,
+        Array.from(expandedCollectionIDs ?? [])
+      ),
+    [collections, expandedCollectionIDs]
+  );
+
   return (
-    <VStack w="full" spacing={1}>
-      <AnimatePresence initial={false}>
-        {collections.map((collection: Collection, idx: number, array) => (
-          <CollapsibleCollectionList
-            key={collection.id}
-            index={idx}
-            isLast={idx === array.length - 1}
+    <Virtuoso
+      style={{ height: '100%', width: '100%' }}
+      data={visibleCollections}
+      computeItemKey={(_, item) => item.id}
+      itemContent={(index) => {
+        const collection = visibleCollections[index];
+        return (
+          <ItemContent
             collection={collection}
-            expandedCollectionIDs={expandedCollectionIDs}
+            order={collection.order}
+            isLast={collection.isLastChild}
+            parentId={collection.parentId}
+            parentIndex={collection.parentOrder}
             hoverStatus={hoverStatus}
             parentsMap={parentsMap}
+            expandedCollectionIDs={expandedCollectionIDs}
             onChevronClicked={onChevronClicked}
             onDnDEvent={handleDnDEvent}
           />
-        ))}
-      </AnimatePresence>
-    </VStack>
+        );
+      }}
+    />
   );
 };

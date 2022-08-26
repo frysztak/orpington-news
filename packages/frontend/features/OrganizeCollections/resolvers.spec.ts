@@ -7,7 +7,7 @@ import {
   resolveLogicalPosition,
   resolveNewParentAfterDrop,
 } from './resolvers';
-import { flatSampleCollections } from './sampleFlatCollection';
+import { sampleFlatCollections } from '@components/collection/sampleData';
 
 describe('resolveLogicalPosition', () => {
   it(`returns 'child' when hovering in the middle`, () => {
@@ -74,7 +74,7 @@ describe('resolveLogicalPosition', () => {
 });
 
 describe('resolveIfCanDrop', () => {
-  const { parentsMap } = buildParentsChildrenMap(flatSampleCollections);
+  const { parentsMap } = buildParentsChildrenMap(sampleFlatCollections);
 
   it('returns false when hovering collection over itself', () => {
     const event: HoverEvent = {
@@ -151,6 +151,8 @@ describe('resolveNewParentAfterDrop', () => {
       level: 0,
       refreshInterval: 60,
       unreadCount: 0,
+      children: [],
+      orderPath: [0],
     },
     {
       id: 2,
@@ -161,6 +163,8 @@ describe('resolveNewParentAfterDrop', () => {
       level: 0,
       refreshInterval: 60,
       unreadCount: 0,
+      children: [],
+      orderPath: [1],
     },
     {
       id: 3,
@@ -171,6 +175,8 @@ describe('resolveNewParentAfterDrop', () => {
       level: 0,
       refreshInterval: 60,
       unreadCount: 0,
+      children: [3, 31],
+      orderPath: [2],
     },
     {
       id: 31,
@@ -181,6 +187,8 @@ describe('resolveNewParentAfterDrop', () => {
       level: 1,
       refreshInterval: 60,
       unreadCount: 0,
+      children: [311],
+      orderPath: [2, 0],
     },
     {
       id: 311,
@@ -191,6 +199,8 @@ describe('resolveNewParentAfterDrop', () => {
       level: 2,
       refreshInterval: 60,
       unreadCount: 0,
+      children: [3111],
+      orderPath: [2, 0, 0],
     },
     {
       id: 3111,
@@ -201,6 +211,8 @@ describe('resolveNewParentAfterDrop', () => {
       level: 3,
       refreshInterval: 60,
       unreadCount: 0,
+      children: [],
+      orderPath: [2, 0, 0, 0],
     },
   ];
 

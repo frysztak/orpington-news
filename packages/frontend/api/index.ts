@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 import wretch from 'wretch';
+import formDataAddon from 'wretch/addons/formData';
+import queryStringAddon from 'wretch/addons/queryString';
 import { useHandleUnauthorized } from './useHandleUnauthorized';
 
 export const getUrls = () => {
@@ -11,9 +13,13 @@ export const getUrls = () => {
 
 export const makeApi = (url: string) =>
   wretch()
+    .addon(formDataAddon)
+    .addon(queryStringAddon)
     .url(url)
     .options({ credentials: 'include', mode: 'cors' })
     .errorType('json');
+
+export type Wretch = ReturnType<typeof makeApi>;
 
 export const ssrApi = () => {
   const { ssrApiUrl } = getUrls();

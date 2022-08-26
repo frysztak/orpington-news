@@ -66,10 +66,14 @@ export interface Collection {
   layout?: CollectionLayout;
 }
 
-export type FlatCollection = Omit<Collection, 'children' | 'parentId'> & {
+export type FlatCollection = Omit<Collection, 'children'> & {
   parents: Array<ID>;
+  children: Array<ID>;
   order: number;
+  orderPath: Array<number>;
   level: number;
+  isLastChild: boolean;
+  parentOrder?: number;
 };
 
 export interface CollectionItem {
