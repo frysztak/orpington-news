@@ -37,7 +37,7 @@ export default defineConfig({
             ),
             migrationTableName: 'migration',
             slonik: createPool(buildDSN()),
-            logger: console,
+            logger: undefined,
           });
 
           await migrator.down({ to: 0 });
