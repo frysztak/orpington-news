@@ -13,23 +13,23 @@ export default defineConfig({
     db_pass: process.env.DB_PASS,
     db_host: process.env.DB_HOST,
     db_name: process.env.DB_NAME,
+    db_port: process.env.DB_PORT,
     api_url: process.env.NEXT_PUBLIC_API_URL,
     codeCoverage: {
       url: `${process.env.NEXT_PUBLIC_API_URL}/__coverage__`,
     },
   },
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'http://localhost:8000',
     setupNodeEvents(on, config) {
       require('@cypress/code-coverage/task')(on, config);
+      const buildDSN = (): string => {
+        const { db_user, db_pass, db_host, db_name, db_port } = config.env;
+        return `postgres://${db_user}:${db_pass}@${db_host}:${db_port}/${db_name}`;
+      };
 
       on('task', {
         async 'db:seed'() {
-          const buildDSN = (): string => {
-            const { db_user, db_pass, db_host, db_name } = config.env;
-            return `postgres://${db_user}:${db_pass}@${db_host}/${db_name}`;
-          };
-
           const migrator = new SlonikMigrator({
             migrationsPath: join(
               process.cwd(),

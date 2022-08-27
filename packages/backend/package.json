@@ -8,9 +8,7 @@
   "license": "ISC",
   "scripts": {
     "dev": "cp ../../.env.local .env && rimraf dist && NODE_ENV=development webpack --watch",
-    "dev:e2e": "cp ../../.env.e2e .env && node dist/server.js",
     "build": "rimraf dist && webpack",
-    "build:e2e": "rimraf dist && tsc --noEmit && INSTRUMENT_COVERAGE=true rollup -c && mv dist/server.js dist/server.cjs",
     "start": "node dist/server.mjs",
     "migrate": "node dist/migrate.mjs",
     "test": "jest",

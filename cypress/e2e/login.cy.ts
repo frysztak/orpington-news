@@ -8,7 +8,7 @@ describe('login page', () => {
   it('can successfully log in', () => {
     cy.intercept({
       method: 'POST',
-      path: '/auth/login',
+      path: '/api/auth/login',
     }).as('apiAuthLogin');
 
     cy.visit('/login');

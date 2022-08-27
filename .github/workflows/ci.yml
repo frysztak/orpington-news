@@ -1,9 +1,11 @@
 name: CI
 
-on: pull_request
+on:
+  - pull_request
+  - workflow_dispatch
 
 jobs:
-  build:
+  unit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,11 +18,27 @@ jobs:
       - name: Install deps
         run: |
           yarn install --immutable
+        env:
+          CYPRESS_INSTALL_BINARY: 0
 
-      - name: Build
-        run: |
-          yarn build
-
-      - name: Test
+      - name: Run unit tests
         run: |
           yarn test
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build & start Docker container
+        run: |
+          docker-compose -f docker-compose.e2e.yml up --build --detach
+          sleep 10  # wait for database to be ready
+
+      - uses: cypress-io/github-action@v4
+        with:
+          install-command: yarn --immutable
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

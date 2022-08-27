@@ -2,7 +2,7 @@ describe('signup page', () => {
   it('can successfully sign up', () => {
     cy.intercept({
       method: 'POST',
-      path: '/auth/register',
+      path: '/api/auth/register',
     }).as('apiAuthRegister');
 
     cy.visit('/signup');

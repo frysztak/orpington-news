@@ -2850,20 +2850,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/eslintrc@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@eslint/eslintrc@npm:1.3.0"
+"@eslint/eslintrc@npm:^1.3.0, @eslint/eslintrc@npm:^1.3.1":
+  version: 1.3.1
+  resolution: "@eslint/eslintrc@npm:1.3.1"
   dependencies:
     ajv: ^6.12.4
     debug: ^4.3.2
-    espree: ^9.3.2
+    espree: ^9.4.0
     globals: ^13.15.0
     ignore: ^5.2.0
     import-fresh: ^3.2.1
     js-yaml: ^4.1.0
     minimatch: ^3.1.2
     strip-json-comments: ^3.1.1
-  checksum: a1e734ad31a8b5328dce9f479f185fd4fc83dd7f06c538e1fa457fd8226b89602a55cc6458cd52b29573b01cdfaf42331be8cfc1fec732570086b591f4ed6515
+  checksum: 9844dcc58a44399649926d5a17a2d53d529b80d3e8c3e9d0964ae198bac77ee6bb1cf44940f30cd9c2e300f7568ec82500be42ace6cacefb08aebf9905fe208e
   languageName: node
   linkType: hard
 
@@ -3073,6 +3073,13 @@ __metadata:
   version: 1.0.2
   resolution: "@humanwhocodes/gitignore-to-minimatch@npm:1.0.2"
   checksum: aba5c40c9e3770ed73a558b0bfb53323842abfc2ce58c91d7e8b1073995598e6374456d38767be24ab6176915f0a8d8b23eaae5c85e2b488c0dccca6d795e2ad
+  languageName: node
+  linkType: hard
+
+"@humanwhocodes/module-importer@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@humanwhocodes/module-importer@npm:1.0.1"
+  checksum: 0fd22007db8034a2cdf2c764b140d37d9020bbfce8a49d3ec5c05290e77d4b0263b1b972b752df8c89e5eaa94073408f2b7d977aed131faf6cf396ebb5d7fb61
   languageName: node
   linkType: hard
 
@@ -5300,7 +5307,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@slonik/migrator@npm:^0.11.2, @slonik/migrator@npm:^0.11.3":
+"@slonik/migrator@npm:^0.11.3":
   version: 0.11.3
   resolution: "@slonik/migrator@npm:0.11.3"
   dependencies:
@@ -11129,7 +11136,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^10.3.1":
+"cypress@npm:^10.6.0":
   version: 10.6.0
   resolution: "cypress@npm:10.6.0"
   dependencies:
@@ -11943,9 +11950,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.202":
-  version: 1.4.232
-  resolution: "electron-to-chromium@npm:1.4.232"
-  checksum: 6b2317fb2a348e7daf0ad840d683ed0283f72c1a03d3786486503c795cd732563d20ec9123a9d3eda937ee451a657b02a2e22777bfd8e8801d0b1780867d5782
+  version: 1.4.233
+  resolution: "electron-to-chromium@npm:1.4.233"
+  checksum: 5cf2bdad13a66453303891adaf1b8e4aa649b161309c51d41e65192958876042289fd73abdb7c75274ca903b86a26d9c71f20baad0575988255593a4be5e6905
   languageName: node
   linkType: hard
 
@@ -12427,8 +12434,8 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-react@npm:^7.29.4":
-  version: 7.31.0
-  resolution: "eslint-plugin-react@npm:7.31.0"
+  version: 7.31.1
+  resolution: "eslint-plugin-react@npm:7.31.1"
   dependencies:
     array-includes: ^3.1.5
     array.prototype.flatmap: ^1.3.0
@@ -12446,7 +12453,7 @@ __metadata:
     string.prototype.matchall: ^4.0.7
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 465829bb477f3adf0ce96294c2b9c97147414a449d14f4dde21711f38213924a4facd567f7263be67958f284edf5ea25cf9f996bc95240d74cfa2ee95b1c81a6
+  checksum: 6217d4c4e36c8fea24facd0cdcf22b2fd38a3603db94ec7c0a6f430046c8564b6c6884e0a9d4a4b8766201f66e8b18af594002210421bf9b6623b1fc32e15a3a
   languageName: node
   linkType: hard
 
@@ -12556,7 +12563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.22.0, eslint@npm:^8.22.0":
+"eslint@npm:8.22.0":
   version: 8.22.0
   resolution: "eslint@npm:8.22.0"
   dependencies:
@@ -12605,14 +12612,63 @@ __metadata:
   languageName: node
   linkType: hard
 
-"espree@npm:^9.3.2, espree@npm:^9.3.3":
-  version: 9.3.3
-  resolution: "espree@npm:9.3.3"
+"eslint@npm:^8.22.0":
+  version: 8.23.0
+  resolution: "eslint@npm:8.23.0"
+  dependencies:
+    "@eslint/eslintrc": ^1.3.1
+    "@humanwhocodes/config-array": ^0.10.4
+    "@humanwhocodes/gitignore-to-minimatch": ^1.0.2
+    "@humanwhocodes/module-importer": ^1.0.1
+    ajv: ^6.10.0
+    chalk: ^4.0.0
+    cross-spawn: ^7.0.2
+    debug: ^4.3.2
+    doctrine: ^3.0.0
+    escape-string-regexp: ^4.0.0
+    eslint-scope: ^7.1.1
+    eslint-utils: ^3.0.0
+    eslint-visitor-keys: ^3.3.0
+    espree: ^9.4.0
+    esquery: ^1.4.0
+    esutils: ^2.0.2
+    fast-deep-equal: ^3.1.3
+    file-entry-cache: ^6.0.1
+    find-up: ^5.0.0
+    functional-red-black-tree: ^1.0.1
+    glob-parent: ^6.0.1
+    globals: ^13.15.0
+    globby: ^11.1.0
+    grapheme-splitter: ^1.0.4
+    ignore: ^5.2.0
+    import-fresh: ^3.0.0
+    imurmurhash: ^0.1.4
+    is-glob: ^4.0.0
+    js-yaml: ^4.1.0
+    json-stable-stringify-without-jsonify: ^1.0.1
+    levn: ^0.4.1
+    lodash.merge: ^4.6.2
+    minimatch: ^3.1.2
+    natural-compare: ^1.4.0
+    optionator: ^0.9.1
+    regexpp: ^3.2.0
+    strip-ansi: ^6.0.1
+    strip-json-comments: ^3.1.0
+    text-table: ^0.2.0
+  bin:
+    eslint: bin/eslint.js
+  checksum: ff6075daa28d817a7ac4508f31bc108a04d9ab5056608c8651b5bf9cfea5d708ca16dea6cdab2c3c0ae99b0bf0e726af8504eaa8e17c8e12e242cb68237ead64
+  languageName: node
+  linkType: hard
+
+"espree@npm:^9.3.3, espree@npm:^9.4.0":
+  version: 9.4.0
+  resolution: "espree@npm:9.4.0"
   dependencies:
     acorn: ^8.8.0
     acorn-jsx: ^5.3.2
     eslint-visitor-keys: ^3.3.0
-  checksum: 33e8a36fc15d082e68672e322e22a53856b564d60aad8f291a667bfc21b2c900c42412d37dd3c7a0f18b9d0d8f8858dabe8776dbd4b4c2f72c5cf4d6afeabf65
+  checksum: 2e3020dde67892d2ba3632413b44d0dc31d92c29ce72267d7ec24216a562f0a6494d3696e2fa39a3ec8c0e0088d773947ab2925fbb716801a11eb8dd313ac89c
   languageName: node
   linkType: hard
 
@@ -19138,7 +19194,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nyc@npm:15.1.0, nyc@npm:^15.1.0":
+"nyc@npm:15.1.0":
   version: 15.1.0
   resolution: "nyc@npm:15.1.0"
   dependencies:
@@ -19476,18 +19532,17 @@ __metadata:
   resolution: "orpington-news@workspace:."
   dependencies:
     "@cypress/code-coverage": ^3.10.0
-    "@slonik/migrator": ^0.11.2
+    "@slonik/migrator": ^0.11.3
     cross-env: ^7.0.3
-    cypress: ^10.3.1
+    cypress: ^10.6.0
     cypress-dark: ^1.8.3
     dotenv: ^16.0.1
     husky: ^8.0.1
     lerna: ^5.4.3
     lint-staged: ^13.0.3
-    nyc: ^15.1.0
     prettier: ^2.7.1
     rimraf: ^3.0.2
-    slonik: ^28.1.1
+    slonik: ^29.2.0
     typescript: ^4.7.4
     yarn-audit-fix: ^9.3.5
   languageName: unknown
@@ -23014,7 +23069,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slonik@npm:29.2.0":
+"slonik@npm:29.2.0, slonik@npm:^29.2.0":
   version: 29.2.0
   resolution: "slonik@npm:29.2.0"
   dependencies:
@@ -23037,32 +23092,6 @@ __metadata:
     serialize-error: ^8.0.0
     through2: ^4.0.2
   checksum: d342e91b7dfd490d3142eeba5c7a7040adc24f03ae0d04f03b83a4bf0c8c5498ad288495655e85418a104939773e87487e0783ec4089749ec2a28a2102bfec41
-  languageName: node
-  linkType: hard
-
-"slonik@npm:^28.1.1":
-  version: 28.2.0
-  resolution: "slonik@npm:28.2.0"
-  dependencies:
-    concat-stream: ^2.0.0
-    es6-error: ^4.1.1
-    fast-safe-stringify: ^2.1.1
-    get-stack-trace: ^2.1.1
-    hyperid: ^2.3.1
-    is-plain-object: ^5.0.0
-    iso8601-duration: ^1.3.0
-    p-defer: ^3.0.0
-    pg: ^8.7.3
-    pg-copy-streams: ^6.0.2
-    pg-copy-streams-binary: ^2.2.0
-    pg-cursor: ^2.7.3
-    pg-protocol: ^1.5.0
-    postgres-array: ^3.0.1
-    postgres-interval: ^4.0.0
-    roarr: ^7.11.0
-    serialize-error: ^8.0.0
-    through2: ^4.0.2
-  checksum: 0baa5d6259705123fa56d17d23394a15bae8c4f55d2f0eca8614d086458cba092b9ce9349c49a94d5a1114dcb2c2b2dbd426ee4d007644a4be0a38c937c4155b
   languageName: node
   linkType: hard
 

@@ -1,0 +1,33 @@
+version: '3'
+services:
+  orpington-news:
+    container_name: orpington-news-e2e
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        - INSTRUMENT_COVERAGE=true
+    environment:
+      - APP_URL=http://localhost:8000
+      - DB_HOST=db
+      - DB_PASS=dbpass
+    ports:
+      - '8000:8000'
+    networks:
+      - orpington-news
+    restart: always
+
+  db:
+    image: postgres:14-alpine
+    container_name: orpington-news-e2e-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dbpass
+    networks:
+      - orpington-news
+    ports:
+      - '8001:5432'
+    restart: always
+
+networks:
+  orpington-news:

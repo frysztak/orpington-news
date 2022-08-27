@@ -3,6 +3,7 @@
     "target": "es2019",
     "module": "es6",
     "lib": ["es5", "dom"],
+    "moduleResolution": "node",
     "types": ["cypress", "node"]
   },
   "include": ["**/*.ts"]
