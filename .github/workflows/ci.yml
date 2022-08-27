@@ -42,6 +42,7 @@ jobs:
       - uses: cypress-io/github-action@v4
         with:
           install-command: yarn --immutable
+          browser: chrome
           record: true
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
