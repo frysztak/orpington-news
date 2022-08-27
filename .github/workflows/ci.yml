@@ -15,6 +15,10 @@ jobs:
           node-version: '16.x'
           cache: 'yarn'
 
+      - name: Build shared package
+        run: |
+          yarn workspace @orpington-news/shared run build
+
       - name: Install deps
         run: |
           yarn install --immutable
