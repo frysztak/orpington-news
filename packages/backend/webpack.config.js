@@ -5,6 +5,7 @@ import { createRequire } from 'module';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 import nodeExternals from 'webpack-node-externals';
 import NodemonPlugin from 'nodemon-webpack-plugin';
+import ProgressBarPlugin from 'progress-bar-webpack-plugin';
 
 const require = createRequire(import.meta.url);
 const __dirname = new URL('.', import.meta.url).pathname;
@@ -49,6 +50,7 @@ const config = {
       ]
     : prodExternals,
   plugins: [
+    new ProgressBarPlugin(),
     new webpack.IgnorePlugin({
       resourceRegExp: /^(canvas|pg-native)$/,
     }),

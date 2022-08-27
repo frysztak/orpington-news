@@ -4945,6 +4945,7 @@ __metadata:
     pg: ^8.7.3
     pino: ^8.4.2
     pino-pretty: ^9.0.1
+    progress-bar-webpack-plugin: ^2.1.0
     proper-url-join: ^2.1.1
     rambda: ^7.2.1
     reading-time: ^1.5.0
@@ -20893,6 +20894,25 @@ __metadata:
   version: 0.11.10
   resolution: "process@npm:0.11.10"
   checksum: bfcce49814f7d172a6e6a14d5fa3ac92cc3d0c3b9feb1279774708a719e19acd673995226351a082a9ae99978254e320ccda4240ddc474ba31a76c79491ca7c3
+  languageName: node
+  linkType: hard
+
+"progress-bar-webpack-plugin@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "progress-bar-webpack-plugin@npm:2.1.0"
+  dependencies:
+    chalk: ^3.0.0
+    progress: ^2.0.3
+  peerDependencies:
+    webpack: ^1.3.0 || ^2 || ^3 || ^4 || ^5
+  checksum: 90d765f363bd2b5c220c75cdd66037453690500e20206838d7dc67e49813dc742079a69d663663a4d4405c70b43738add347abe31d1c4abd4ab52f473019321a
+  languageName: node
+  linkType: hard
+
+"progress@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "progress@npm:2.0.3"
+  checksum: f67403fe7b34912148d9252cb7481266a354bd99ce82c835f79070643bb3c6583d10dbcfda4d41e04bbc1d8437e9af0fb1e1f2135727878f5308682a579429b7
   languageName: node
   linkType: hard
 
