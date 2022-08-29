@@ -1,8 +1,10 @@
+import { getApiPath } from './utils';
+
 describe('signup page', () => {
   it('can successfully sign up', () => {
     cy.intercept({
       method: 'POST',
-      path: '/api/auth/register',
+      url: getApiPath('/auth/register'),
     }).as('apiAuthRegister');
 
     cy.visit('/signup');

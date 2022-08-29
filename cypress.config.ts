@@ -20,7 +20,7 @@ export default defineConfig({
     },
   },
   e2e: {
-    baseUrl: 'http://localhost:8000',
+    baseUrl: process.env.APP_URL,
     setupNodeEvents(on, config) {
       require('@cypress/code-coverage/task')(on, config);
       const buildDSN = (): string => {

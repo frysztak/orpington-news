@@ -1,3 +1,5 @@
+import { getApiPath } from './utils';
+
 describe('login page', () => {
   beforeEach(() => {
     cy.signupByApi('end2end', 'end2endpass', 'E2E');
@@ -8,7 +10,7 @@ describe('login page', () => {
   it('can successfully log in', () => {
     cy.intercept({
       method: 'POST',
-      path: '/api/auth/login',
+      url: getApiPath('/auth/login'),
     }).as('apiAuthLogin');
 
     cy.visit('/login');
