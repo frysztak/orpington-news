@@ -10,6 +10,7 @@ import {
   FlatCollection,
   ID,
   numberToString,
+  urlRegex,
 } from '@orpington-news/shared';
 import {
   FieldListener,
@@ -51,7 +52,7 @@ type InternalFormData = Omit<
 };
 
 const validationSchema = Yup.object({
-  url: Yup.string().url('Please enter valid URL').nullable(),
+  url: Yup.string().matches(urlRegex, 'Please enter valid URL').nullable(),
   title: Yup.string().required('Please enter title'),
   description: Yup.string().nullable(),
   icon: Yup.string().oneOf(CollectionIcons as unknown as string[]),
