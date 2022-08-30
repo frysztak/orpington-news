@@ -138,6 +138,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
                 label="RSS/Atom feed URL"
                 placeholder="Feed URL"
                 isDisabled={isLoading}
+                data-test="feedUrl"
               />
               <FieldListener value={values.url} cb={setFeedUrl} />
 
@@ -149,6 +150,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
                   isDisabled={
                     isLoading || !values.url || !!errors.url || isUrlVerified
                   }
+                  data-test="verifyUrl"
                 >
                   Verify URL
                 </Button>
@@ -170,6 +172,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
                   placeholder="Feed name"
                   isRequired
                   isDisabled={isLoading}
+                  data-test="feedName"
                 />
               </HStack>
 
@@ -202,6 +205,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
                   type="submit"
                   isLoading={isLoading}
                   isDisabled={Boolean(values.url) && !isUrlVerified}
+                  data-test="addFeedButton"
                 >
                   {initialData ? 'Save' : 'Add'}
                 </Button>

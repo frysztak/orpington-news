@@ -73,6 +73,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
         icon={RiAddBoxFill}
         isActive={false}
         onClick={handleClick('addFeed')}
+        data-test="addFeed"
       />
 
       <Divider />

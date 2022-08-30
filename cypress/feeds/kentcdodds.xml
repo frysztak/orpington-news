@@ -1,0 +1,43 @@
+<rss xmlns:blogChannel="https://kentcdodds.com/blog" version="2.0">
+  <channel>
+    <title>Kent C. Dodds Blog</title>
+    <link>https://kentcdodds.com/blog</link>
+    <description>The Kent C. Dodds Blog</description>
+    <language>en-us</language>
+    <generator>Kody the Koala</generator>
+    <ttl>40</ttl>
+    <item>
+      <title>
+        <![CDATA[Remix: The Yang to React's Yin]]>
+      </title>
+      <description>
+        <![CDATA[Remix fills the missing piece that all React web applications need: The Network Chasm]]>
+      </description>
+      <pubDate>2022-03-04</pubDate>
+      <link>https://kentcdodds.com/blog/remix-the-yang-to-react-s-yin</link>
+      <guid>https://kentcdodds.com/blog/remix-the-yang-to-react-s-yin</guid>
+    </item>
+    <item>
+      <title>
+        <![CDATA[How I help you build better websites]]>
+      </title>
+      <description>
+        <![CDATA[I'm making a career move to more effectively help you make the web (and the world) better.]]>
+      </description>
+      <pubDate>2021-11-01</pubDate>
+      <link>https://kentcdodds.com/blog/how-i-help-you-build-better-websites</link>
+      <guid>https://kentcdodds.com/blog/how-i-help-you-build-better-websites</guid>
+    </item>
+    <item>
+      <title>
+        <![CDATA[Why I Love Remix]]>
+      </title>
+      <description>
+        <![CDATA[I've written tens of thousands of lines of code with Remix and I want to tell you why I love using this framework.]]>
+      </description>
+      <pubDate>2021-11-06</pubDate>
+      <link>https://kentcdodds.com/blog/why-i-love-remix</link>
+      <guid>https://kentcdodds.com/blog/why-i-love-remix</guid>
+    </item>
+  </channel>
+</rss>

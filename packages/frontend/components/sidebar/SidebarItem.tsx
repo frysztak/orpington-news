@@ -167,10 +167,17 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
           icon={<Chevron pointTo={chevron} />}
           onKeyDown={handleChevronKeyDown}
           onClick={handleChevronClick}
+          data-test="chevron"
         />
       )}
       {icon && <Icon as={icon} w={6} h={6} fill={fg} />}
-      <Text flexGrow={1} color={fg} fontWeight={isActive ? 700 : 400} py={2}>
+      <Text
+        flexGrow={1}
+        color={fg}
+        fontWeight={isActive ? 700 : 400}
+        py={2}
+        data-test="title"
+      >
         {title}
       </Text>
 
@@ -189,6 +196,7 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
               _groupHover={{
                 display: menuItems ? 'none' : '',
               }}
+              data-test="badge"
             >
               <Center h="full">{counter > 999 ? '999+' : counter}</Center>
             </Badge>

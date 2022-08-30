@@ -102,6 +102,7 @@ const ItemContent: React.FC<ItemContentProps> = ({
           </MenuItem>
         </>
       }
+      data-test={`collection-id-${id}`}
     />
   );
 };
