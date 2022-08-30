@@ -4,7 +4,9 @@ import { createPool } from 'slonik';
 import { SlonikMigrator } from '@slonik/migrator';
 import { join } from 'path';
 
-dotenv.config({ path: '.env.e2e' });
+dotenv.config({
+  path: process.env.NODE_ENV === 'development' ? '.env.e2e.local' : '.env.e2e',
+});
 
 export default defineConfig({
   projectId: '9fra5f',

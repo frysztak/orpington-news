@@ -70,7 +70,9 @@ async function setupFastify() {
     secret: getCookieSecret(),
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV !== 'development',
+      secure:
+        (process.env.DISABLE_SECURE_COOKIE === 'true' ? false : undefined) ??
+        process.env.NODE_ENV !== 'development',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     },
     store: new PostgresStore({

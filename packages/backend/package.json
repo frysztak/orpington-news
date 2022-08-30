@@ -8,6 +8,7 @@
   "license": "ISC",
   "scripts": {
     "dev": "cp ../../.env.local .env && rimraf dist && NODE_ENV=development webpack --watch",
+    "dev:e2e": "cp ../../.env.e2e.local .env && rimraf dist && NODE_ENV=development webpack --watch",
     "build": "rimraf dist && webpack",
     "start": "node dist/server.mjs",
     "migrate": "node dist/migrate.mjs",

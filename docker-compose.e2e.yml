@@ -11,6 +11,7 @@ services:
       - APP_URL=http://localhost:8000
       - DB_HOST=db
       - DB_PASS=dbpass
+      - DISABLE_SECURE_COOKIE=true
     ports:
       - '8000:8000'
     networks:
