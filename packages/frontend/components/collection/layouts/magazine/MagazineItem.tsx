@@ -54,6 +54,7 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
               <Heading
                 fontSize={['lg', '2xl']}
                 fontWeight={Boolean(dateRead) ? 500 : 700}
+                data-test="title"
               >
                 {title}
               </Heading>

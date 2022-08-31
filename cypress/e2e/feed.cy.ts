@@ -1,6 +1,8 @@
 import { getApiPath } from './utils';
 
 describe('feed page', () => {
+  const baseUrl = Cypress.config('baseUrl');
+
   beforeEach(() => {
     cy.signupByApi('end2end', 'end2endpass', 'E2E').loginByApi(
       'end2end',
@@ -38,5 +40,92 @@ describe('feed page', () => {
       })
       .should('exist')
       .and('be.visible');
+  });
+
+  it('clicking on feed sets active view', () => {
+    cy.intercept({
+      method: 'PUT',
+      url: getApiPath('/preferences/activeView'),
+    }).as('apiPreferencesActiveView');
+
+    cy.addFeedByApi({
+      title: 'Kent C. Dodds Blog',
+      url: 'http://localhost:8002/kentcdodds.xml',
+      icon: 'Code',
+      refreshInterval: 120,
+    });
+
+    cy.visit('/');
+    cy.getBySel('collection-id-1').click();
+    cy.wait('@apiPreferencesActiveView').then(({ request, response }) => {
+      expect(request.body).to.deep.eq({
+        activeView: 'collection',
+        activeCollectionId: 1,
+      });
+      expect(response.statusCode).to.eq(200);
+    });
+  });
+
+  it('clicking on feed shows feed items', () => {
+    cy.addFeedByApi({
+      title: 'Kent C. Dodds Blog',
+      url: 'http://localhost:8002/kentcdodds.xml',
+      icon: 'Code',
+      refreshInterval: 120,
+    });
+
+    cy.visit('/');
+    cy.getBySel('collection-id-1').click();
+    cy.url().should('equal', `${baseUrl}/`);
+    cy.getBySel('collectionItemList')
+      .within(() => {
+        cy.getBySel('item-id-1')
+          .within(() => {
+            cy.getBySel('title').should(
+              'have.text',
+              "Remix: The Yang to React's Yin"
+            );
+          })
+          .should('exist');
+
+        cy.getBySel('item-id-2')
+          .within(() => {
+            cy.getBySel('title').should(
+              'have.text',
+              'How I help you build better websites'
+            );
+          })
+          .should('exist');
+
+        cy.getBySel('item-id-3')
+          .within(() => {
+            cy.getBySel('title').should('have.text', 'Why I Love Remix');
+          })
+          .should('exist');
+      })
+      .should('exist');
+  });
+
+  it('clicking on feed item opens it', () => {
+    cy.addFeedByApi({
+      title: 'Kent C. Dodds Blog',
+      url: 'http://localhost:8002/kentcdodds.xml',
+      icon: 'Code',
+      refreshInterval: 120,
+    });
+
+    cy.visit('/');
+    cy.getBySel('collection-id-1').click();
+    cy.getBySel('item-id-1').click();
+    cy.url().should('equal', `${baseUrl}/collection/1/article/1`);
+    cy.getBySel('collection-id-1').within(() => {
+      cy.getBySel('badge').should('exist').and('have.text', '2');
+    });
+    cy.getBySel('panesDesktop').within(() => {
+      cy.getBySel('articleHeader').should(
+        'have.text',
+        "Remix: The Yang to React's Yin"
+      );
+    });
   });
 });

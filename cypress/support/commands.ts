@@ -48,3 +48,7 @@ Cypress.Commands.add('loginByApi', (username, password) => {
     password,
   });
 });
+
+Cypress.Commands.add('addFeedByApi', (data) => {
+  return cy.request('POST', `${Cypress.env('api_url')}/collections`, data);
+});

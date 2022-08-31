@@ -26,6 +26,19 @@ declare namespace Cypress {
      */
     loginByApi(username: string, password: string): Chainable<Response<void>>;
 
+    /**
+     * Add feed by API
+     */
+    addFeedByApi(data: {
+      title: string;
+      icon: string;
+      url?: string;
+      parentId?: number;
+      description?: string;
+      refreshInterval?: number;
+      layout?: string;
+    }): Chainable<Response<void>>;
+
     //       login(email: string, password: string): Chainable<void>
     //       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
     //       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
