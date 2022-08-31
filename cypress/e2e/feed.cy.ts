@@ -1,4 +1,4 @@
-import { getApiPath } from './utils';
+import { getApiPath, getFeedUrl } from './utils';
 
 describe('feed page', () => {
   const baseUrl = Cypress.config('baseUrl');
@@ -23,7 +23,7 @@ describe('feed page', () => {
     cy.visit('/');
     cy.getBySel('addFeed').click();
     cy.getBySel('addCollectionModal').should('be.visible');
-    cy.getBySel('feedUrl').type('http://localhost:8002/kentcdodds.xml').blur();
+    cy.getBySel('feedUrl').type(getFeedUrl('kentcdodds.xml')).blur();
     cy.getBySel('verifyUrl').click();
     cy.wait('@apiCollectionsVerify')
       .its('response.statusCode')
@@ -50,7 +50,7 @@ describe('feed page', () => {
 
     cy.addFeedByApi({
       title: 'Kent C. Dodds Blog',
-      url: 'http://localhost:8002/kentcdodds.xml',
+      url: getFeedUrl('kentcdodds.xml'),
       icon: 'Code',
       refreshInterval: 120,
     });
@@ -69,7 +69,7 @@ describe('feed page', () => {
   it('clicking on feed shows feed items', () => {
     cy.addFeedByApi({
       title: 'Kent C. Dodds Blog',
-      url: 'http://localhost:8002/kentcdodds.xml',
+      url: getFeedUrl('kentcdodds.xml'),
       icon: 'Code',
       refreshInterval: 120,
     });
@@ -109,7 +109,7 @@ describe('feed page', () => {
   it('clicking on feed item opens it', () => {
     cy.addFeedByApi({
       title: 'Kent C. Dodds Blog',
-      url: 'http://localhost:8002/kentcdodds.xml',
+      url: getFeedUrl('kentcdodds.xml'),
       icon: 'Code',
       refreshInterval: 120,
     });

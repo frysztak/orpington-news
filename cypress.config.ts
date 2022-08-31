@@ -17,6 +17,7 @@ export default defineConfig({
     db_name: process.env.DB_NAME,
     db_port: process.env.DB_PORT,
     api_url: process.env.NEXT_PUBLIC_API_URL,
+    feeds_url: process.env.FEEDS_URL,
     codeCoverage: {
       url: `${process.env.NEXT_PUBLIC_API_URL}/__coverage__`,
     },
