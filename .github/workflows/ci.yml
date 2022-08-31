@@ -10,14 +10,18 @@ jobs:
     name: Unit tests
     steps:
       - uses: actions/checkout@v2
+        name: Checkout actions
       - uses: ./.github/actions/unit
+        name: Run unit tests
 
   e2e:
     runs-on: ubuntu-latest
     name: E2E tests
     steps:
       - uses: actions/checkout@v2
+        name: Checkout actions
       - uses: ./.github/actions/e2e
+        name: Run E2E tests
         with:
           cypress-key: ${{ secrets.CYPRESS_RECORD_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
