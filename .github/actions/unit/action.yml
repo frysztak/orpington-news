@@ -1,4 +1,5 @@
-name: 'Run unit tests'
+name: 'Unit tests'
+description: 'Runs unit tests using Jest'
 
 runs:
   using: 'composite'
@@ -11,15 +12,18 @@ runs:
         cache: 'yarn'
 
     - name: Install deps
+      shell: bash
       run: |
         yarn install --immutable
       env:
-        CYPRESS_INSTALL_BINARY: 0
+        CYPRESS_INSTALL_BINARY: '0'
 
     - name: Build shared package
+      shell: bash
       run: |
         yarn workspace @orpington-news/shared run build
 
     - name: Run unit tests
+      shell: bash
       run: |
         yarn test

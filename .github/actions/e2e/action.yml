@@ -1,4 +1,5 @@
-name: 'Run E2E Cypress tests'
+name: 'E2E tests'
+description: 'Runs E2E tests using Cypress'
 inputs:
   cypress-key:
     description: 'Cypress record key'
@@ -13,6 +14,7 @@ runs:
     - uses: actions/checkout@v3
 
     - name: Build & start Docker container
+      shell: bash
       run: |
         DOCKER_BUILDKIT=1 docker-compose -f docker-compose.e2e.yml up --build --detach
         sleep 10  # wait for database to be ready
