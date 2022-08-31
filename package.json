@@ -7,11 +7,13 @@
     "dev:e2e": "cross-env NODE_ENV=development lerna run dev:e2e --stream --parallel",
     "test": "lerna run test --stream --parallel",
     "start": "lerna run start --stream",
+    "start:e2e": "docker-compose -f docker-compose.e2e.yml up --build --detach",
     "build": "lerna run build --stream",
-    "build:e2e": "lerna run build:e2e --stream",
     "audit:fix": "yarn-audit-fix",
     "cypress:open": "cross-env NODE_ENV=development cypress open",
     "cypress:run": "cross-env NODE_ENV=development cypress run",
+    "cypress:open-docker": "cypress open",
+    "cypress:run-docker": "cypress run",
     "combine:coverage": "sh ./scripts/combine_coverage.sh"
   },
   "devDependencies": {
