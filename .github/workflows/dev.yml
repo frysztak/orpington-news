@@ -1,49 +1,54 @@
-name: CI/CD DEV
+name: CD DEV
 
 on:
   push:
     branches:
       - 'dev'
-  #pull_request:
-  #  branches:
-  #    - 'dev'
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build:
-    name: Build and test
+  lint:
     runs-on: ubuntu-latest
+    name: Linter
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+        name: Checkout
+      - uses: ./.github/actions/lint
+        name: Run ESLint
+
+  unit:
+    runs-on: ubuntu-latest
+    name: Unit tests
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+      - uses: ./.github/actions/unit
+        name: Run unit tests
+
+  e2e:
+    runs-on: ubuntu-latest
+    name: E2E tests
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+      - uses: ./.github/actions/e2e
+        name: Run E2E tests
         with:
-          node-version: '16.x'
-          cache: 'yarn'
-
-      - name: Install deps
-        run: |
-          yarn install --immutable
-
-      - name: Build
-        run: |
-          yarn build
-
-      - name: Test
-        run: |
-          yarn test
+          cypress-key: ${{ secrets.CYPRESS_RECORD_KEY }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   docker:
-    if: github.event_name != 'pull_request'
     name: Push to Docker Registry
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [lint, unit, e2e]
     outputs:
       image_sha: ${{ steps.buildDocker.outputs.digest }}
     steps:
       - uses: actions/checkout@v3
+        name: Checkout
         with:
           fetch-depth: 0
 
@@ -86,7 +91,6 @@ jobs:
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-buildcache,mode=max
 
   deploy:
-    if: github.event_name != 'pull_request'
     name: Deploy to Dokku
     runs-on: ubuntu-latest
     needs: [docker]
