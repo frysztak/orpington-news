@@ -5,6 +5,15 @@ on:
   - workflow_dispatch
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Linter
+    steps:
+      - uses: actions/checkout@v2
+        name: Checkout actions
+      - uses: ./.github/actions/lint
+        name: Run ESLint
+
   unit:
     runs-on: ubuntu-latest
     name: Unit tests

@@ -9,6 +9,7 @@
     "start": "lerna run start --stream",
     "start:e2e": "docker-compose -f docker-compose.e2e.yml up --build --detach",
     "build": "lerna run build --stream",
+    "lint": "lerna run lint --stream",
     "audit:fix": "yarn-audit-fix",
     "cypress:open": "cross-env NODE_ENV=development cypress open",
     "cypress:run": "cross-env NODE_ENV=development cypress run",
@@ -29,7 +30,7 @@
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "slonik": "^29.2.0",
-    "typescript": "^4.7.4",
+    "typescript": "4.7",
     "yarn-audit-fix": "^9.3.5"
   },
   "workspaces": [
