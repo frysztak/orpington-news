@@ -34,6 +34,18 @@ Cypress.Commands.add('getBySelLike', (selector, ...args) => {
   return cy.get(`[data-test*=${selector}]`, ...args);
 });
 
+Cypress.Commands.add('openDrawerIfExists', () => {
+  const selector = '[data-test=hamburgerButton]:visible';
+  return cy.getBySel('panesMobile').then(($body) => {
+    if ($body.find(selector).length > 0) {
+      cy.get(selector).then(($button) => {
+        $button.trigger('click');
+        cy.getBySel('drawer');
+      });
+    }
+  });
+});
+
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {
   return cy.request('POST', `${Cypress.env('api_url')}/auth/register`, {
     username,

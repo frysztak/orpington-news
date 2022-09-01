@@ -12,6 +12,8 @@ declare namespace Cypress {
       args?: any
     ): Chainable<JQuery<HTMLElement>>;
 
+    openDrawerIfExists(): Chainable<JQuery<HTMLElement>>;
+
     /**
      * Signs user up by using API request
      */
