@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Linter
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout actions
+      - uses: actions/checkout@v3
+        name: Checkout
       - uses: ./.github/actions/lint
         name: Run ESLint
 
@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Unit tests
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout actions
+      - uses: actions/checkout@v3
+        name: Checkout
       - uses: ./.github/actions/unit
         name: Run unit tests
 
@@ -27,8 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     name: E2E tests
     steps:
-      - uses: actions/checkout@v2
-        name: Checkout actions
+      - uses: actions/checkout@v3
+        name: Checkout
       - uses: ./.github/actions/e2e
         name: Run E2E tests
         with:
