@@ -36,6 +36,7 @@ sizes.forEach((size) => {
 
       cy.getBySel('addFeedButton').click();
       cy.wait('@apiCollections').its('response.statusCode').should('eq', 200);
+      cy.getBySel('addCollectionModal').should('not.exist');
 
       cy.getBySel('collection-id-1')
         .within(() => {
