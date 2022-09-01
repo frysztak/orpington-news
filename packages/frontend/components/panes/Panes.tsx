@@ -52,6 +52,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         alignItems="stretch"
         h="full"
         display={{ base: 'none', lg: 'flex' }}
+        data-test="panesDesktop"
         {...rest}
       >
         <Resizable
@@ -88,7 +89,12 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
       </HStack>
 
       {/* Mobile view */}
-      <Box display={{ base: 'flex', lg: 'none' }} h="100vh" {...rest}>
+      <Box
+        display={{ base: 'flex', lg: 'none' }}
+        h="100vh"
+        data-test="panesMobile"
+        {...rest}
+      >
         {mainContent && (
           <Box position="absolute" top={0} left={0} h="full" w="full">
             {mainContent}

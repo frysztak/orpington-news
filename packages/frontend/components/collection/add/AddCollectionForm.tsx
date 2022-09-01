@@ -10,6 +10,7 @@ import {
   FlatCollection,
   ID,
   numberToString,
+  urlRegex,
 } from '@orpington-news/shared';
 import {
   FieldListener,
@@ -51,7 +52,7 @@ type InternalFormData = Omit<
 };
 
 const validationSchema = Yup.object({
-  url: Yup.string().url('Please enter valid URL').nullable(),
+  url: Yup.string().matches(urlRegex, 'Please enter valid URL').nullable(),
   title: Yup.string().required('Please enter title'),
   description: Yup.string().nullable(),
   icon: Yup.string().oneOf(CollectionIcons as unknown as string[]),
@@ -137,6 +138,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
                 label="RSS/Atom feed URL"
                 placeholder="Feed URL"
                 isDisabled={isLoading}
+                data-test="feedUrl"
               />
               <FieldListener value={values.url} cb={setFeedUrl} />
 
@@ -148,6 +150,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
                   isDisabled={
                     isLoading || !values.url || !!errors.url || isUrlVerified
                   }
+                  data-test="verifyUrl"
                 >
                   Verify URL
                 </Button>
@@ -169,6 +172,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
                   placeholder="Feed name"
                   isRequired
                   isDisabled={isLoading}
+                  data-test="feedName"
                 />
               </HStack>
 
@@ -201,6 +205,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
                   type="submit"
                   isLoading={isLoading}
                   isDisabled={Boolean(values.url) && !isUrlVerified}
+                  data-test="addFeedButton"
                 >
                   {initialData ? 'Save' : 'Add'}
                 </Button>

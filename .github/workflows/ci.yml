@@ -1,26 +1,36 @@
 name: CI
 
-on: pull_request
+on:
+  - pull_request
+  - workflow_dispatch
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
+    name: Linter
     steps:
       - uses: actions/checkout@v3
+        name: Checkout
+      - uses: ./.github/actions/lint
+        name: Run ESLint
 
-      - uses: actions/setup-node@v2
+  unit:
+    runs-on: ubuntu-latest
+    name: Unit tests
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+      - uses: ./.github/actions/unit
+        name: Run unit tests
+
+  e2e:
+    runs-on: ubuntu-latest
+    name: E2E tests
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+      - uses: ./.github/actions/e2e
+        name: Run E2E tests
         with:
-          node-version: '16.x'
-          cache: 'yarn'
-
-      - name: Install deps
-        run: |
-          yarn install --immutable
-
-      - name: Build
-        run: |
-          yarn build
-
-      - name: Test
-        run: |
-          yarn test
+          cypress-key: ${{ secrets.CYPRESS_RECORD_KEY }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}

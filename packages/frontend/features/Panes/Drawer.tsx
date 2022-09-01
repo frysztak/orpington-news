@@ -33,7 +33,7 @@ export const Drawer: React.FC<DrawerProps> = ({ sidebar }) => {
       blockScrollOnMount={false}
     >
       <DrawerOverlay />
-      <DrawerContent>
+      <DrawerContent data-test="drawer">
         <DrawerCloseButton />
         <DrawerBody p={0}>{sidebar}</DrawerBody>
       </DrawerContent>

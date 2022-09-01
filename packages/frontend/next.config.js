@@ -18,6 +18,7 @@ module.exports = () => {
     pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
     swcMinify: true,
     compiler: {
+      reactRemoveProperties: process.env.INSTRUMENT_COVERAGE !== 'true',
       removeConsole:
         process.env.NODE_ENV === 'production'
           ? { exclude: ['error', 'warn'] }

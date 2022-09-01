@@ -147,6 +147,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           overflowWrap="anywhere"
           fontFamily="var(--article-font-family)"
           fontSize="calc(var(--chakra-fontSizes-3xl) * var(--article-font-size-scale))"
+          data-test="articleHeader"
         >
           {title}
         </Heading>

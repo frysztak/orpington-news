@@ -1,0 +1,29 @@
+name: 'E2E tests'
+description: 'Runs E2E tests using Cypress'
+inputs:
+  cypress-key:
+    description: 'Cypress record key'
+    required: true
+  github-token:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Build & start Docker container
+      shell: bash
+      run: |
+        DOCKER_BUILDKIT=1 docker-compose -f docker-compose.e2e.yml up --build --detach
+        sleep 10  # wait for database to be ready
+
+    - uses: cypress-io/github-action@v4
+      with:
+        install-command: yarn --immutable
+        browser: chrome
+        record: true
+      env:
+        CYPRESS_RECORD_KEY: ${{ inputs.cypress-key }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
