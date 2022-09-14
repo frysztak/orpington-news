@@ -45,6 +45,18 @@ describe('extractFeedUrl', () => {
     expect(result).toEqual<Status>({ status: 'isXML' });
   });
 
+  it('handles text/XML', async () => {
+    nock(url)
+      .defaultReplyHeaders({
+        'Content-Type': 'text/xml',
+      })
+      .head('/')
+      .reply(200);
+
+    const result = await extractFeedUrl(url);
+    expect(result).toEqual<Status>({ status: 'isXML' });
+  });
+
   it('handles wrong content type', async () => {
     nock(url)
       .defaultReplyHeaders({

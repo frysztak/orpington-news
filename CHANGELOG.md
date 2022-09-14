@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix handling of HTTP responses with `text/xml` content type
+
 ### Changed
 
 - Change default feed refresh interval to 6h

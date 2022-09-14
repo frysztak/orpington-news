@@ -27,7 +27,8 @@ export const extractFeedUrl = async (inputUrl: string): Promise<Status> => {
   if (
     contentType.includes('application/atom+xml') ||
     contentType.includes('application/rss+xml') ||
-    contentType.includes('application/xml')
+    contentType.includes('application/xml') ||
+    contentType.includes('text/xml')
   ) {
     return { status: 'isXML' };
   }
