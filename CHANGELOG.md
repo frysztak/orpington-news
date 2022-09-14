@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Change default feed refresh interval to 6h
+- Collections list: increase overscan for smoother scrolling experience
 
 ## [0.6.3] - 2022-08-26
 

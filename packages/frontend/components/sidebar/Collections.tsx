@@ -177,6 +177,7 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
           data={visibleCollections}
           computeItemKey={(_, item) => item.id}
           defaultItemHeight={40}
+          increaseViewportBy={40 * 5}
           itemContent={(index) => (
             <ItemContent
               collection={visibleCollections[index]}
