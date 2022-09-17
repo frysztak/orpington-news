@@ -120,6 +120,30 @@ describe('extractFeedUrl', () => {
     });
   });
 
+  it('handles relative feed url when input url contains path', async () => {
+    nock(url)
+      .defaultReplyHeaders({
+        'Content-Type': 'text/html',
+      })
+      .head('/blog')
+      .reply(200)
+      .get('/blog')
+      .reply(
+        200,
+        `<html>
+          <meta>
+            <link rel="alternate" type="application/rss+xml" title="Fun Blog" href="/feed.xml">
+          </meta>
+      </html>`
+      );
+
+    const result = await extractFeedUrl(`${url}/blog`);
+    expect(result).toEqual<Status>({
+      status: 'OK',
+      feedUrl: `${url}/feed.xml`,
+    });
+  });
+
   it('handles atom feed url', async () => {
     nock(url)
       .defaultReplyHeaders({

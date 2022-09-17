@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix handling of HTTP responses with `text/xml` content type
+- Fix feed detection for URLs with non-empty pathname (e.g. `https://example.com/blog`)
 
 ### Changed
 
