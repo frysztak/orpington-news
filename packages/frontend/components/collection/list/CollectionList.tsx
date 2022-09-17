@@ -100,7 +100,13 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   const Item = getListItem(layout);
 
   return (
-    <Box overflow="auto" w="full" h="full" {...rest}>
+    <Box
+      overflow="auto"
+      w="full"
+      h="full"
+      data-test="collectionItemList"
+      {...rest}
+    >
       <RefreshIndicator isRefreshing={isRefreshing} />
       <Virtuoso
         style={{ height: '100%', width: '100%' }}
@@ -108,7 +114,9 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         computeItemKey={(_, item) => item.id}
         endReached={onFetchMoreItems}
         scrollerRef={handleScrollerRef}
-        itemContent={(index, data) => <Item item={data} py={2} pr={3} />}
+        itemContent={(index, data) => (
+          <Item item={data} py={2} pr={3} data-test={`item-id-${data.id}`} />
+        )}
         components={{
           Footer: canFetchMoreItems ? SkeletonBox : undefined,
         }}

@@ -47,6 +47,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
               isDisabled={isDisabled || isLoading}
               autoComplete="username"
               isRequired
+              data-test="username"
             />
 
             <HStack w="full" align="center">
@@ -56,6 +57,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
                 helperText="Friendly username."
                 isDisabled={isDisabled || isLoading}
                 isRequired
+                data-test="displayName"
               />
               <Box flexBasis="20%" maxW={14} pr={2}>
                 <AvatarField name="avatar" displayName={displayName} />
@@ -69,6 +71,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
               isDisabled={isDisabled || isLoading}
               autoComplete="new-password"
               isRequired
+              data-test="password"
             />
 
             <PasswordField
@@ -78,6 +81,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
               isDisabled={isDisabled || isLoading}
               autoComplete="new-password"
               isRequired
+              data-test="passwordConfirm"
             />
 
             <HStack w="full" justify="flex-end">
@@ -87,6 +91,7 @@ export const SignupForm: React.FC<SignupFormProps> = (props) => {
                 mt={4}
                 isDisabled={isDisabled || !isValid}
                 isLoading={isLoading}
+                data-test="submit"
               >
                 Signup
               </Button>

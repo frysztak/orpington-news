@@ -30,7 +30,7 @@ export const AddCollectionModal: React.FC<AddCollectionModalProps> = (
       size={{ base: 'full', sm: 'lg' }}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent data-test="addCollectionModal">
         <ModalHeader>{modalTitle}</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={4}>

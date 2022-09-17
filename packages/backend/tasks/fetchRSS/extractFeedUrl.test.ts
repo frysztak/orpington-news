@@ -45,6 +45,18 @@ describe('extractFeedUrl', () => {
     expect(result).toEqual<Status>({ status: 'isXML' });
   });
 
+  it('handles text/XML', async () => {
+    nock(url)
+      .defaultReplyHeaders({
+        'Content-Type': 'text/xml',
+      })
+      .head('/')
+      .reply(200);
+
+    const result = await extractFeedUrl(url);
+    expect(result).toEqual<Status>({ status: 'isXML' });
+  });
+
   it('handles wrong content type', async () => {
     nock(url)
       .defaultReplyHeaders({
@@ -102,6 +114,30 @@ describe('extractFeedUrl', () => {
       );
 
     const result = await extractFeedUrl(url);
+    expect(result).toEqual<Status>({
+      status: 'OK',
+      feedUrl: `${url}/feed.xml`,
+    });
+  });
+
+  it('handles relative feed url when input url contains path', async () => {
+    nock(url)
+      .defaultReplyHeaders({
+        'Content-Type': 'text/html',
+      })
+      .head('/blog')
+      .reply(200)
+      .get('/blog')
+      .reply(
+        200,
+        `<html>
+          <meta>
+            <link rel="alternate" type="application/rss+xml" title="Fun Blog" href="/feed.xml">
+          </meta>
+      </html>`
+      );
+
+    const result = await extractFeedUrl(`${url}/blog`);
     expect(result).toEqual<Status>({
       status: 'OK',
       feedUrl: `${url}/feed.xml`,

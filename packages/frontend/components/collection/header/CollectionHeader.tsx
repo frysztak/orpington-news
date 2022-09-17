@@ -59,6 +59,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
           variant="ghost"
           ref={menuButtonRef}
           onClick={onHamburgerClicked}
+          data-test="hamburgerButton"
         />
 
         <HStack>

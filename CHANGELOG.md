@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.4] - 2022-09-17
+
+### Fixed
+
+-   Fix handling of HTTP responses with `text/xml` content type
+-   Fix feed detection for URLs with non-empty pathname (e.g. `https://example.com/blog`)
+
+### Changed
+
+-   Change default feed refresh interval to 6h
+-   Collections list: increase overscan for smoother scrolling experience
+-   Collection item list: show date an article was published
+
 ## [0.6.3] - 2022-08-26
 
 ### Fixed
@@ -153,7 +166,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.6.3...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.6.4...HEAD
+
+[0.6.4]: https://github.com/frysztak/orpington-news/compare/0.6.3...0.6.4
 
 [0.6.3]: https://github.com/frysztak/orpington-news/compare/0.6.2...0.6.3
 

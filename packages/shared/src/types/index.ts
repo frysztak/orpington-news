@@ -49,7 +49,7 @@ export const CollectionIcons = [
 
 export type CollectionIconType = typeof CollectionIcons[number];
 export const defaultIcon: CollectionIconType = 'Code';
-export const defaultRefreshInterval: number = 120;
+export const defaultRefreshInterval: number = 360; // 6h
 
 export interface Collection {
   id: ID;

@@ -12,6 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
+import { format, fromUnixTime } from 'date-fns';
 import { CollectionItemProps } from '../../types';
 
 export type CardItemProps = CollectionItemProps &
@@ -28,6 +29,7 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
     collection,
     readingTime,
     dateRead,
+    datePublished,
     onReadingList,
   } = item;
   const readingTimeRounded = Math.ceil(readingTime);
@@ -51,6 +53,7 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
                 fontSize={['lg', '2xl']}
                 p={3}
                 fontWeight={Boolean(dateRead) ? 500 : 700}
+                data-test="title"
               >
                 {title}
               </Heading>
@@ -77,7 +80,8 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
             {summary}
           </Text>
           <Text color={useColorModeValue('gray.600', 'gray.400')}>
-            by {collection.title}
+            by {collection.title} •{' '}
+            {format(fromUnixTime(datePublished), 'dd/MM/yyyy')}
             {readingTimeRounded > 0 && ` • about ${readingTimeRounded} min`}
           </Text>
         </Box>

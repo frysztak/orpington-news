@@ -4,28 +4,41 @@
   "scripts": {
     "prepare": "husky install",
     "dev": "cross-env NODE_ENV=development lerna run dev --stream --parallel",
+    "dev:e2e": "cross-env NODE_ENV=development lerna run dev:e2e --stream --parallel",
     "test": "lerna run test --stream --parallel",
+    "start": "lerna run start --stream",
+    "start:e2e": "docker-compose -f docker-compose.e2e.yml up --build --detach",
     "build": "lerna run build --stream",
-    "audit:fix": "yarn-audit-fix"
+    "lint": "lerna run lint --stream",
+    "audit:fix": "yarn-audit-fix",
+    "cypress:open": "cross-env NODE_ENV=development cypress open",
+    "cypress:run": "cross-env NODE_ENV=development cypress run",
+    "cypress:open-docker": "cypress open",
+    "cypress:run-docker": "cypress run",
+    "combine:coverage": "sh ./scripts/combine_coverage.sh"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.10.0",
+    "@slonik/migrator": "^0.11.3",
     "cross-env": "^7.0.3",
+    "cypress": "^10.7.0",
+    "cypress-dark": "^1.8.3",
+    "dotenv": "^16.0.1",
     "husky": "^8.0.1",
     "lerna": "^5.4.3",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.7.4",
+    "slonik": "^29.2.0",
+    "typescript": "4.7",
     "yarn-audit-fix": "^9.3.5"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
+  "workspaces": [
+    "packages/*"
+  ],
   "lint-staged": {
     "*.{js,cjs,css,md,ts,tsx,json,yml,yaml}": "prettier --write"
   },
   "packageManager": "yarn@3.2.0",
-  "version": "0.6.3"
+  "version": "0.6.4"
 }

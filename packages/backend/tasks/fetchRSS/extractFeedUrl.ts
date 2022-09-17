@@ -27,7 +27,8 @@ export const extractFeedUrl = async (inputUrl: string): Promise<Status> => {
   if (
     contentType.includes('application/atom+xml') ||
     contentType.includes('application/rss+xml') ||
-    contentType.includes('application/xml')
+    contentType.includes('application/xml') ||
+    contentType.includes('text/xml')
   ) {
     return { status: 'isXML' };
   }
@@ -49,8 +50,9 @@ export const extractFeedUrl = async (inputUrl: string): Promise<Status> => {
   );
   const rssLink = rssLinkEl.attr('href');
   if (rssLink) {
+    const inputUrlOrigin = new URL(inputUrl).origin;
     const feedUrl = isRelativeUrl(rssLink)
-      ? urlJoin(inputUrl, rssLink)
+      ? urlJoin(inputUrlOrigin, rssLink)
       : rssLink;
     return { status: 'OK', feedUrl };
   }
