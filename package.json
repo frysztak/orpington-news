@@ -40,5 +40,5 @@
     "*.{js,cjs,css,md,ts,tsx,json,yml,yaml}": "prettier --write"
   },
   "packageManager": "yarn@3.2.0",
-  "version": "0.6.3"
+  "version": "0.6.4"
 }
