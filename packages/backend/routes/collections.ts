@@ -373,10 +373,6 @@ export const collections: FastifyPluginAsync = async (
   fastify.get<{
     Params: CollectionIdType;
     Querystring: PaginationParams;
-    Reply: readonly Omit<
-      CollectionItem,
-      'previousId' | 'nextId' | 'fullText'
-    >[];
   }>(
     '/:id/items',
     {
@@ -405,9 +401,9 @@ export const collections: FastifyPluginAsync = async (
         title: dbItem.title,
         summary: dbItem.summary,
         thumbnailUrl: dbItem.thumbnail_url ?? undefined,
-        datePublished: dbItem.date_published,
-        dateUpdated: dbItem.date_updated,
-        dateRead: dbItem.date_read ?? undefined,
+        datePublished: timestampMsToSeconds(dbItem.date_published),
+        dateUpdated: timestampMsToSeconds(dbItem.date_updated),
+        dateRead: timestampMsToSeconds(dbItem.date_read),
         categories: dbItem.categories ?? undefined,
         comments: dbItem.comments ?? undefined,
         readingTime: dbItem.reading_time,
