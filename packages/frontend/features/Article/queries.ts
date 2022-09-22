@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getItemDetails, setDateRead, useApi, useHandleError } from '@api';
 import { CollectionItemDetails, ID } from '@orpington-news/shared';
 import { collectionKeys } from '@features';

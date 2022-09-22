@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import type { AppPropsWithLayout } from './types';
 import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
-import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { Panes } from '@features/Panes';
 import { CollectionsContextProvider } from '@features/Collections';
 import { EventListenerContextProvider } from '@features/EventListener';
@@ -32,7 +36,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dehydratedState}>
+      <Hydrate state={(pageProps as any).dehydratedState}>
         <ChakraProvider theme={theme}>
           <Compose
             components={[
