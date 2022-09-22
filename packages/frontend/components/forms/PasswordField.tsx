@@ -11,8 +11,7 @@ import {
   InputRightElement,
   useDisclosure,
 } from '@chakra-ui/react';
-import EyeIcon from '@heroicons/react/solid/EyeIcon';
-import EyeOffIcon from '@heroicons/react/solid/EyeOffIcon';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
 import { useFormControl } from './useFormControl';
 import type { StringFieldProps } from './StringField';
 
@@ -38,7 +37,11 @@ export const PasswordField = forwardRef<PasswordFieldProps, 'input'>(
               onClick={onToggle}
               size="xs"
               icon={
-                show ? <EyeOffIcon height="100%" /> : <EyeIcon height="100%" />
+                show ? (
+                  <EyeSlashIcon height="100%" />
+                ) : (
+                  <EyeIcon height="100%" />
+                )
               }
               variant="ghost"
             />

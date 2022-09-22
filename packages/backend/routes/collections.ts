@@ -653,10 +653,14 @@ export const collections: FastifyPluginAsync = async (
       } = request;
 
       const opmlFile = await request.file();
-      const opmlBuffer = await opmlFile.toBuffer();
-      const opmlString = opmlBuffer.toString();
+      const opmlBuffer = await opmlFile?.toBuffer();
+      const opmlString = opmlBuffer?.toString();
 
-      await importOPML(opmlString, userId);
+      if (opmlString) {
+        await importOPML(opmlString, userId);
+      } else {
+        reply.status(400).send({ errorCode: 400, message: 'Invalid file.' });
+      }
 
       return true;
     }

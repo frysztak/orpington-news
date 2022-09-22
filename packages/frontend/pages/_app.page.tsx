@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dehydratedState}>
+      <Hydrate state={(pageProps as any).dehydratedState}>
         <ChakraProvider theme={theme}>
           <Compose
             components={[
