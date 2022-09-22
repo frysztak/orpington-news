@@ -4,7 +4,7 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { lensIndex, set } from 'rambda';
 import {
   useApi,
@@ -36,7 +36,6 @@ export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
     select: opts?.select,
     enabled: opts?.enabled,
     refetchOnMount: false,
-    notifyOnChangeProps: 'tracked',
   });
 };
 

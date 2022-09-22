@@ -1,5 +1,5 @@
 import { useContext, createContext, useCallback } from 'react';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import type { ID, Msg } from '@orpington-news/shared';
 import { useSet } from '@utils';
 import { collectionKeys } from '@features/queryKeys';

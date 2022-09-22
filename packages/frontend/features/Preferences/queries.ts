@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { without } from 'rambda';
 import {
   collapseCollection,
@@ -20,7 +20,6 @@ export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
   return useQuery(preferencesKeys.base, () => getPreferences(api), {
     onError,
     select: opts?.select,
-    notifyOnChangeProps: 'tracked',
   });
 };
 

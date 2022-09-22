@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useColorMode, useToast } from '@chakra-ui/react';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useLocalStorage } from 'usehooks-ts';
 import { useGetPreferences } from '@features/Preferences';
 import {

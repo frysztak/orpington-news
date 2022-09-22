@@ -1,6 +1,6 @@
 import { importOPML, useApi, useHandleError } from '@api';
 import { useToast } from '@chakra-ui/react';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 
 export const useImportOPML = () => {
   const toast = useToast();
