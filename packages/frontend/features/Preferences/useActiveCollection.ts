@@ -1,8 +1,4 @@
-import {
-  defaultCollectionLayout,
-  ID,
-  Preferences,
-} from '@orpington-news/shared';
+import { defaultCollectionLayout, Preferences } from '@orpington-news/shared';
 import { useCollectionById } from '@features/Collections';
 import { useGetPreferences } from './queries';
 
@@ -19,7 +15,7 @@ export const useActiveCollection = () => {
       };
     },
   });
-  const activeCollectionId: ID | 'home' | undefined = data?.activeCollectionId;
+  const activeCollectionId = data?.activeCollectionId;
   const { data: collection } = useCollectionById(activeCollectionId);
 
   if (collection === undefined || activeCollectionId === undefined) {

@@ -1,4 +1,4 @@
-import { ID } from '.';
+import { ID } from './id';
 
 export interface UpdatingFeedsMsg {
   type: 'updatingFeeds';

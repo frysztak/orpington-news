@@ -4,9 +4,7 @@ import { Formik, Form } from 'formik';
 import { MoonIcon, SunIcon } from '@heroicons/react/24/solid';
 import {
   AvatarStyle,
-  AvatarStyles,
   CollectionLayout,
-  CollectionLayouts,
   defaultArticleFontFamily,
   defaultArticleFontSize,
   defaultArticleMonoFontFamily,
@@ -91,7 +89,7 @@ export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
                 name="defaultCollectionLayout"
               >
                 {({ getRadioProps }) =>
-                  CollectionLayouts.map((value: CollectionLayout) => {
+                  CollectionLayout.options.map((value: CollectionLayout) => {
                     const radio = getRadioProps({ value });
                     return (
                       <Radio key={value} {...radio}>
@@ -104,7 +102,7 @@ export const CustomizeAppearance: React.FC<CustomizeAppearanceProps> = (
 
               <RadioGroupField label="Avatar style" name="avatarStyle">
                 {({ getRadioProps }) =>
-                  AvatarStyles.map((value: AvatarStyle) => {
+                  AvatarStyle.options.map((value: AvatarStyle) => {
                     const radio = getRadioProps({ value });
                     return (
                       <Radio key={value} {...radio}>

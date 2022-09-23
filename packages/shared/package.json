@@ -25,6 +25,7 @@
     "ts-jest": "^28.0.8"
   },
   "dependencies": {
-    "rambda": "^7.2.1"
+    "rambda": "^7.2.1",
+    "zod": "^3.19.1"
   }
 }

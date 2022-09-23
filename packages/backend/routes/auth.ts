@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from 'fastify';
-import { Static, Type } from '@sinclair/typebox';
+import { z } from 'zod';
 import argon2 from 'argon2';
 import { fileTypeFromBuffer } from 'file-type';
 import { defaultPreferences, ID } from '@orpington-news/shared';
@@ -16,13 +16,13 @@ import {
 import { insertPreferences } from '@db/preferences';
 
 export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
-  const PostRegister = Type.Object({
-    username: Type.String(),
-    password: Type.String(),
-    displayName: Type.String(),
-    avatar: Type.Optional(Type.String()),
+  const PostRegister = z.object({
+    username: z.string(),
+    password: z.string(),
+    displayName: z.string(),
+    avatar: z.string().optional(),
   });
-  fastify.post<{ Body: Static<typeof PostRegister> }>(
+  fastify.post<{ Body: z.infer<typeof PostRegister> }>(
     '/register',
     {
       schema: {
@@ -61,11 +61,11 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
   );
 
-  const PostLogin = Type.Object({
-    username: Type.String(),
-    password: Type.String(),
+  const PostLogin = z.object({
+    username: z.string(),
+    password: z.string(),
   });
-  fastify.post<{ Body: Static<typeof PostLogin> }>(
+  fastify.post<{ Body: z.infer<typeof PostLogin> }>(
     '/login',
     {
       schema: {
@@ -98,11 +98,11 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
   );
 
-  const PasswordBody = Type.Object({
-    currentPassword: Type.String(),
-    newPassword: Type.String(),
+  const PasswordBody = z.object({
+    currentPassword: z.string(),
+    newPassword: z.string(),
   });
-  fastify.put<{ Body: Static<typeof PasswordBody> }>(
+  fastify.put<{ Body: z.infer<typeof PasswordBody> }>(
     '/password',
     {
       schema: {
@@ -166,11 +166,11 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
     }
   );
 
-  const PutUser = Type.Object({
-    displayName: Type.String(),
-    avatarUrl: Type.Optional(Type.String()),
+  const PutUser = z.object({
+    displayName: z.string(),
+    avatarUrl: z.string().optional(),
   });
-  fastify.put<{ Body: Static<typeof PutUser> }>(
+  fastify.put<{ Body: z.infer<typeof PutUser> }>(
     '/user',
     {
       schema: {

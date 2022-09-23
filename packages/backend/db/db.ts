@@ -12,4 +12,4 @@ export const buildDsn = (): string => {
   return `postgresql://${user}:${pass}@${host}:${port}/${name}`;
 };
 
-export const pool = createPool(buildDsn());
+export const pool = await createPool(buildDsn());

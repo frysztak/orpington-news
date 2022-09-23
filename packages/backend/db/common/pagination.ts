@@ -1,17 +1,16 @@
-import { Static, Type } from '@sinclair/typebox';
-import { sql, TaggedTemplateLiteralInvocation } from 'slonik';
+import { z } from 'zod';
+import { sql, SqlSqlToken } from 'slonik';
+import { numeric } from '@orpington-news/shared';
 
-type UserQueryResultRow = Record<string, any>;
-
-export const PaginationSchema = Type.Object({
-  pageSize: Type.Optional(Type.Integer()),
-  pageIndex: Type.Optional(Type.Integer()),
+export const PaginationSchema = z.object({
+  pageSize: numeric(z.number().int().optional()),
+  pageIndex: numeric(z.number().int().optional()),
 });
-export type PaginationParams = Static<typeof PaginationSchema>;
+export type PaginationParams = z.infer<typeof PaginationSchema>;
 
-export const addPagination = <TResult extends UserQueryResultRow>(
+export const addPagination = (
   paginationParams: PaginationParams,
-  query: TaggedTemplateLiteralInvocation<TResult>
+  query: SqlSqlToken
 ) => {
   const { pageIndex = 0, pageSize = 20 } = paginationParams;
   const offset = pageIndex * pageSize;

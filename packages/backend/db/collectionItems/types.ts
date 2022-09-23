@@ -1,24 +1,32 @@
-import { CollectionIconType, ID } from '@orpington-news/shared';
+import { z } from 'zod';
+import { CollectionIcons, ID } from '@orpington-news/shared';
 
-export interface DBCollectionItem {
-  id: ID;
-  previous_id: ID;
-  next_id: ID;
-  url: string;
-  title: string;
-  full_text: string;
-  summary: string;
-  thumbnail_url: string | null;
-  date_published: number;
-  date_updated: number;
-  date_read: number | null;
-  categories: string[] | null;
-  comments: string | null;
-  reading_time: number;
-  collection_id: ID;
-  collection_title: string;
-  collection_icon: CollectionIconType;
-}
+export const DBCollectionItem = z.object({
+  id: ID,
+  previous_id: ID,
+  next_id: ID,
+  url: z.string(),
+  title: z.string(),
+  full_text: z.string(),
+  summary: z.string(),
+  thumbnail_url: z.string().nullable(),
+  date_published: z.number(),
+  date_updated: z.number(),
+  date_read: z.number().nullable(),
+  categories: z.string().array().nullable(),
+  comments: z.string().nullable(),
+  reading_time: z.number(),
+  collection_id: ID,
+  collection_title: z.string(),
+  collection_icon: CollectionIcons,
+});
+export type DBCollectionItem = z.infer<typeof DBCollectionItem>;
+export const DBCollectionItemWithoutText = DBCollectionItem.omit({
+  full_text: true,
+});
+export type DBCollectionItemWithoutText = z.infer<
+  typeof DBCollectionItemWithoutText
+>;
 
 export type DBCollectionItemDetails = Omit<
   DBCollectionItem,

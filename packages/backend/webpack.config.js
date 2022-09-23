@@ -65,6 +65,7 @@ const config = {
   },
   experiments: {
     outputModule: true,
+    topLevelAwait: true,
   },
   node: {
     __dirname: 'mock',
