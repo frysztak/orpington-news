@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Migrated to React Query 4
+- Migrated to Slonik 31
 
 ## [0.6.4] - 2022-09-17
 
