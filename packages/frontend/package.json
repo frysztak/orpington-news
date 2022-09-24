@@ -89,7 +89,8 @@
     "usehooks-ts": "^2.7.0",
     "webpack": "^5.74.0",
     "wretch": "^2.1.1",
-    "yup": "^0.32.11"
+    "yup": "^0.32.11",
+    "zod": "^3.19.1"
   },
   "installConfig": {
     "hoistingLimits": "workspaces",
