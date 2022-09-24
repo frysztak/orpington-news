@@ -39,7 +39,7 @@ export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
   });
 };
 
-export const useCollectionById = (collectionId?: ID | string) => {
+export const useCollectionById = (collectionId?: ID | string | null) => {
   return useCollectionsList({
     enabled: collectionId !== undefined,
     select: useCallback(

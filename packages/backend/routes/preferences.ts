@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from 'fastify';
-import { Static, Type } from '@sinclair/typebox';
+import { z } from 'zod';
 import { pool } from '@db';
 import {
   getPreferences,
@@ -7,9 +7,12 @@ import {
   pruneExpandedCollections,
   savePreferences,
   setActiveView,
-  ViewPreferenceCodec,
 } from '@db/preferences';
-import type { Preferences, ViewPreference } from '@orpington-news/shared';
+import {
+  CollectionId,
+  Preferences,
+  ViewPreferences,
+} from '@orpington-news/shared';
 
 export const preferences: FastifyPluginAsync = async (
   fastify,
@@ -32,11 +35,17 @@ export const preferences: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Reply: Preferences; Body: Preferences }>(
+  const PutPreferences = Preferences.pick({
+    defaultCollectionLayout: true,
+    avatarStyle: true,
+  });
+
+  fastify.put<{ Reply: Preferences; Body: z.infer<typeof PutPreferences> }>(
     '/',
     {
       schema: {
         tags: ['Preferences'],
+        body: PutPreferences,
       },
     },
     async (request, reply) => {
@@ -48,12 +57,7 @@ export const preferences: FastifyPluginAsync = async (
     }
   );
 
-  const CollectionId = Type.Object({
-    id: Type.Integer(),
-  });
-  type CollectionIdType = Static<typeof CollectionId>;
-
-  fastify.put<{ Reply: Preferences; Params: CollectionIdType }>(
+  fastify.put<{ Reply: Preferences; Params: CollectionId }>(
     '/expand/:id',
     {
       schema: {
@@ -72,7 +76,7 @@ export const preferences: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Reply: Preferences; Params: CollectionIdType }>(
+  fastify.put<{ Reply: Preferences; Params: CollectionId }>(
     '/collapse/:id',
     {
       schema: {
@@ -91,11 +95,11 @@ export const preferences: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Reply: Preferences; Body: ViewPreference }>(
+  fastify.put<{ Reply: Preferences; Body: ViewPreferences }>(
     '/activeView',
     {
       schema: {
-        body: ViewPreferenceCodec,
+        body: ViewPreferences,
         tags: ['Preferences'],
       },
     },

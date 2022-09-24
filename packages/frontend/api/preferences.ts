@@ -1,5 +1,5 @@
 import type { Wretch } from '@api';
-import type { ID, Preferences, ViewPreference } from '@orpington-news/shared';
+import type { ID, Preferences, ViewPreferences } from '@orpington-news/shared';
 
 export const getPreferences = (api: Wretch) =>
   api.url(`/preferences`).get().json<Preferences>();
@@ -16,5 +16,5 @@ export const expandCollection = (api: Wretch, collectionId: ID) =>
 export const collapseCollection = (api: Wretch, collectionId: ID) =>
   api.url(`/preferences/collapse/${collectionId}`).put().json<Preferences>();
 
-export const setActiveView = (api: Wretch, activeView: ViewPreference) =>
+export const setActiveView = (api: Wretch, activeView: ViewPreferences) =>
   api.url(`/preferences/activeView`).put(activeView).json<Preferences>();

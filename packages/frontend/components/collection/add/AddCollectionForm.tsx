@@ -55,7 +55,7 @@ const validationSchema = Yup.object({
   url: Yup.string().matches(urlRegex, 'Please enter valid URL').nullable(),
   title: Yup.string().required('Please enter title'),
   description: Yup.string().nullable(),
-  icon: Yup.string().oneOf(CollectionIcons as unknown as string[]),
+  icon: Yup.string().oneOf(CollectionIcons.options),
   parentId: Yup.string().optional(),
 });
 

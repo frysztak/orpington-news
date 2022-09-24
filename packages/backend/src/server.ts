@@ -7,7 +7,11 @@ import fastifyCors from '@fastify/cors';
 import fastifyETag from '@fastify/etag';
 import fastifySchedule from '@fastify/schedule';
 import fastifyMultipart from '@fastify/multipart';
-import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import {
+  serializerCompiler,
+  validatorCompiler,
+  ZodTypeProvider,
+} from 'fastify-type-provider-zod';
 import { FastifySSEPlugin } from 'fastify-sse-v2';
 import closeWithGrace from 'close-with-grace';
 import connectPgSimple from 'connect-pg-simple';
@@ -21,7 +25,10 @@ import { migrator } from '@db/migrator';
 
 const fastify = Fastify({
   logger: logger,
-}).withTypeProvider<TypeBoxTypeProvider>();
+}).withTypeProvider<ZodTypeProvider>();
+
+fastify.setValidatorCompiler(validatorCompiler);
+fastify.setSerializerCompiler(serializerCompiler);
 
 const PostgresStore = connectPgSimple(fastifySession as any);
 

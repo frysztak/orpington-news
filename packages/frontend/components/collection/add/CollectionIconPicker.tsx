@@ -30,7 +30,7 @@ export const CollectionIconPicker: React.FC<CollectionIconPickerProps> = (
 
   return (
     <Wrap spacing={2} {...rest}>
-      {CollectionIcons.map((icon: CollectionIconType) => {
+      {CollectionIcons.options.map((icon: CollectionIconType) => {
         return (
           <WrapItem key={icon}>
             <Tooltip

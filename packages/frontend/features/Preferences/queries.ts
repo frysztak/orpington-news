@@ -9,7 +9,7 @@ import {
   useHandleError,
 } from '@api';
 import { preferencesKeys } from '@features/queryKeys';
-import type { ID, Preferences, ViewPreference } from '@orpington-news/shared';
+import type { ID, Preferences, ViewPreferences } from '@orpington-news/shared';
 
 export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
   select?: (data: Preferences) => TSelectedData;
@@ -96,7 +96,7 @@ export const useSetActiveView = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    (activeView: ViewPreference) => setActiveView(api, activeView),
+    (activeView: ViewPreferences) => setActiveView(api, activeView),
     {
       onMutate: async (activeView) => {
         const key = preferencesKeys.base;
