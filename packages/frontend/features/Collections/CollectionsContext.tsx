@@ -7,51 +7,49 @@ import { useAddEventListener } from '@features/EventListener';
 import { ReactFCC } from '@utils/react';
 import { useCollectionsList, buildParentsChildrenMap, getParents } from '.';
 
+interface CollectionSet {
+  set: Set<ID>;
+  add: (ids: Array<ID>) => void;
+  remove: (ids: Array<ID>) => void;
+}
+
 export interface CollectionsContextData {
-  currentlyUpdatedCollections: Set<ID>;
-  addCurrentlyUpdatedCollection: (ids: Array<ID>) => void;
-  deleteCurrentlyUpdatedCollection: (ids: Array<ID>) => void;
+  currentlyUpdatedCollections: CollectionSet;
+  beingMarkedAsRead: CollectionSet;
 }
 
 const CollectionsContext = createContext<CollectionsContextData | null>(null);
 
 export const CollectionsContextProvider: ReactFCC = ({ children }) => {
-  const {
-    set: currentlyUpdatedCollections,
-    add: addCurrentlyUpdatedCollection,
-    remove: deleteCurrentlyUpdatedCollection,
-  } = useCurrentlyUpdatedCollections();
+  const currentlyUpdatedCollections = useCurrentlyUpdatedCollections();
 
   const queryClient = useQueryClient();
   const eventHandler = useCallback(
     (msg: Msg) => {
       switch (msg.type) {
         case 'updatingFeeds': {
-          return addCurrentlyUpdatedCollection(msg.data.feedIds);
+          return currentlyUpdatedCollections.add(msg.data.feedIds);
         }
         case 'updatedFeeds': {
           for (const feedId of msg.data.feedIds) {
             queryClient.invalidateQueries(collectionKeys.list(feedId));
           }
           queryClient.invalidateQueries(collectionKeys.tree);
-          return deleteCurrentlyUpdatedCollection(msg.data.feedIds);
+          return currentlyUpdatedCollections.remove(msg.data.feedIds);
         }
       }
     },
-    [
-      addCurrentlyUpdatedCollection,
-      deleteCurrentlyUpdatedCollection,
-      queryClient,
-    ]
+    [currentlyUpdatedCollections, queryClient]
   );
   useAddEventListener(eventHandler);
+
+  const beingMarkedAsRead = useMarkAsReadCollections();
 
   return (
     <CollectionsContext.Provider
       value={{
         currentlyUpdatedCollections,
-        addCurrentlyUpdatedCollection,
-        deleteCurrentlyUpdatedCollection,
+        beingMarkedAsRead,
       }}
     >
       {children}
@@ -99,5 +97,15 @@ const useCurrentlyUpdatedCollections = () => {
     set,
     add: handleAdd,
     remove: handleRemove,
+  };
+};
+
+const useMarkAsReadCollections = () => {
+  const { set, add, remove } = useSet<ID>();
+
+  return {
+    set,
+    add,
+    remove,
   };
 };

@@ -352,6 +352,7 @@ export const collections: FastifyPluginAsync = async (
     },
     async (request, reply) => {
       const {
+        session: { userId },
         params: { id },
       } = request;
       if (id === 'home') {
@@ -362,9 +363,12 @@ export const collections: FastifyPluginAsync = async (
         };
       }
 
-      await pool.any(markCollectionAsRead(id, getUnixTime(new Date())));
+      const timestamp = getUnixTime(new Date());
+      await pool.any(markCollectionAsRead(id, timestamp));
       const children = await pool.any(getCollectionChildrenIds(id));
-      return { ids: children.map(({ children_id }) => children_id) };
+      const ids = children.map(({ children_id }) => children_id);
+      const collections = await queryCollections(userId);
+      return { ids, collections, timestamp };
     }
   );
 

@@ -20,11 +20,12 @@ export const CollectionItemsHeader: React.FC = () => {
   const drawerButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const activeCollection = useActiveCollection();
-  const { currentlyUpdatedCollections } = useCollectionsContext();
+  const { currentlyUpdatedCollections, beingMarkedAsRead } =
+    useCollectionsContext();
 
   const isRefreshing =
     activeCollection && typeof activeCollection.id === 'number'
-      ? currentlyUpdatedCollections.has(activeCollection.id)
+      ? currentlyUpdatedCollections.set.has(activeCollection.id)
       : false;
 
   const { mutate: refreshCollection } = useRefreshCollection();
@@ -88,10 +89,14 @@ export const CollectionItemsHeader: React.FC = () => {
     [handleMarkAsRead, handleRefreshClick]
   );
 
+  const showBgLoadingIndicator = beingMarkedAsRead.set.has(
+    activeCollection?.id as any
+  );
+
   return (
     <CollectionHeader
       collection={activeCollection}
-      isRefreshing={isRefreshing}
+      isRefreshing={isRefreshing || showBgLoadingIndicator}
       menuButtonRef={drawerButtonRef}
       onHamburgerClicked={toggleDrawer}
       onChangeLayout={handleCollectionLayoutChanged}

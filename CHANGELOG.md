@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Improved UX of when marking entire collection as read
+
 ### Changed
 
 - Migrated to React Query 4

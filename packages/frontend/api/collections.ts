@@ -68,7 +68,7 @@ export const markCollectionAsRead = (api: Wretch, collectionId: ID) =>
   api
     .url(`/collections/${collectionId}/markAsRead`)
     .post()
-    .json<{ ids: ID[] }>();
+    .json<{ ids: ID[]; timestamp: number; collections: FlatCollection[] }>();
 
 export const refreshCollection = (api: Wretch, collectionId: ID | 'home') =>
   api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();

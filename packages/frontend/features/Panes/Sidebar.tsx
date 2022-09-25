@@ -108,7 +108,7 @@ export const Sidebar: React.FC = () => {
       onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
       activeCollectionId={activeCollection?.id}
       expandedCollectionIDs={expandedCollectionIds}
-      collectionsCurrentlyUpdated={currentlyUpdatedCollections}
+      collectionsCurrentlyUpdated={currentlyUpdatedCollections.set}
       footer={<SidebarFooter />}
     />
   );
