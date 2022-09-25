@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrated to React Query 4
 - Migrated to Slonik 31
+- Migrated to Jest 29
+- Migrated to TypeScript 4.8
 
 ## [0.6.4] - 2022-09-17
 

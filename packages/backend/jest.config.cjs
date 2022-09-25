@@ -5,17 +5,17 @@ const { compilerOptions } = require('./tsconfig');
 module.exports = {
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   transformIgnorePatterns: [
     'node_modules/(?!(normalize-url|is-relative-url|is-absolute-url|node-fetch|data-uri-to-buffer|fetch-blob|formdata-polyfill)/)',
   ],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+      },
+    ],
     '^.+\\.jsx?$': 'babel-jest',
   },
   moduleNameMapper: {
