@@ -23,6 +23,12 @@ export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
   });
 };
 
+export const usePrefetchPreferences = () => {
+  const api = useApi();
+  const queryClient = useQueryClient();
+  queryClient.prefetchQuery(preferencesKeys.base, () => getPreferences(api));
+};
+
 export const useExpandedCollections = () => {
   return useGetPreferences({
     select: (preferences) => preferences.expandedCollectionIds,
