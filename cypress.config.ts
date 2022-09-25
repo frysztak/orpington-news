@@ -39,7 +39,7 @@ export default defineConfig({
               '/packages/backend/db/migrations'
             ),
             migrationTableName: 'migration',
-            slonik: createPool(buildDSN()),
+            slonik: await createPool(buildDSN()),
             logger: undefined,
           });
 

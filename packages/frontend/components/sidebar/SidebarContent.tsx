@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { AiOutlineHome } from '@react-icons/all-files/ai/AiOutlineHome';
 import { RiAddBoxFill } from '@react-icons/all-files/ri/RiAddBoxFill';
-import RssIcon from '@heroicons/react/outline/RssIcon';
+import { RssIcon } from '@heroicons/react/24/outline';
 import type { ID } from '@orpington-news/shared';
 import { SidebarItem } from './SidebarItem';
 import { Collections, CollectionsProps } from './Collections';

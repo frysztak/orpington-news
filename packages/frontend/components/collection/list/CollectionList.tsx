@@ -8,7 +8,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Virtuoso } from 'react-virtuoso';
-import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
+import { InformationCircleIcon } from '@heroicons/react/24/solid';
 import {
   CollectionItem,
   CollectionLayout,

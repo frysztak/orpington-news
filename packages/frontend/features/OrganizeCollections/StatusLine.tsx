@@ -33,7 +33,7 @@ export const StatusLine: React.FC<StatusLineProps> = (props) => {
       w="full"
       spacing={0}
       style={{
-        paddingLeft: `calc(var(--extra-padding-left) + var(--chakra-space-${getPadding(
+        paddingLeft: `calc(var(--extra-padding-left, 0px) + var(--chakra-space-${getPadding(
           logicalPosition
         )}))`,
       }}

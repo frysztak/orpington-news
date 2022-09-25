@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2022-09-25
+
+### Added
+
+-   Improved UX of when marking entire collection as read
+-   Improved loading performance
+
+### Changed
+
+-   Migrated to React Query 4
+-   Migrated to Slonik 31
+-   Migrated to Jest 29
+-   Migrated to TypeScript 4.8
+
 ## [0.6.4] - 2022-09-17
 
 ### Fixed
@@ -166,7 +180,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.6.4...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.7.0...HEAD
+
+[0.7.0]: https://github.com/frysztak/orpington-news/compare/0.6.4...0.7.0
 
 [0.6.4]: https://github.com/frysztak/orpington-news/compare/0.6.3...0.6.4
 

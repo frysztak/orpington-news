@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { useLocalStorage } from 'usehooks-ts';
 import { Panes as PanesComponent } from '@components/panes';
 import { Article } from '@features/Article';
+import { usePrefetchPreferences } from '@features/Preferences';
 import { ReactFCC, getNumber, ClientRender } from '@utils';
 import { CollectionItemsList } from './CollectionItemsList';
 import { Sidebar } from './Sidebar';
@@ -30,6 +31,8 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
     'collectionItemsWidth',
     400
   );
+
+  usePrefetchPreferences();
 
   return (
     <ModalContextProvider>

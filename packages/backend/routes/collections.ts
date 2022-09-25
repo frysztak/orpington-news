@@ -1,5 +1,5 @@
 import { FastifyPluginAsync, FastifyReply, FastifyRequest } from 'fastify';
-import { Static, Type } from '@sinclair/typebox';
+import { z } from 'zod';
 import { DataIntegrityError, NotFoundError } from 'slonik';
 import { getUnixTime } from 'date-fns';
 import { pool } from '@db';
@@ -21,7 +21,7 @@ import {
   updateCollection,
 } from '@db/collections';
 import {
-  DBCollectionItem,
+  DBCollectionItemWithoutText,
   getAllCollectionItems,
   getCollectionItems,
   getItemDetails,
@@ -36,14 +36,16 @@ import {
 } from '@db/preferences';
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
 import {
+  Collection,
   FlatCollection,
-  CollectionIcons,
-  CollectionItem,
-  CollectionLayouts,
+  CollectionLayout,
   defaultCollectionLayout,
   ID,
+  CollectionId,
+  HomeCollectionId,
+  numeric,
 } from '@orpington-news/shared';
-import { MAX_INT, normalizeUrl, Nullable } from '@utils';
+import { MAX_INT, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
 import { timestampMsToSeconds } from '@utils/time';
 import {
@@ -54,42 +56,32 @@ import {
 } from '@tasks/fetchRSS';
 import { importOPML } from '@services/opml';
 
-const PostCollection = Type.Object({
-  title: Type.String(),
-  icon: Type.Union(CollectionIcons.map((icon) => Type.Literal(icon))),
-  parentId: Type.Optional(Type.Integer()),
-  description: Type.Optional(Type.String()),
-  url: Type.Optional(Type.String()),
-  refreshInterval: Type.Integer(),
+const PostCollection = Collection.pick({
+  title: true,
+  icon: true,
+  parentId: true,
+  description: true,
+  url: true,
+  refreshInterval: true,
 });
 
-type PostCollectionType = Static<typeof PostCollection>;
+const PutCollection = PostCollection.merge(
+  z.object({
+    id: ID,
+  })
+);
 
-const PutCollection = Type.Intersect([
-  PostCollection,
-  Type.Object({
-    id: Type.Integer(),
-  }),
-]);
-type PutCollectionType = Static<typeof PutCollection>;
-
-const CollectionId = Type.Object({
-  id: Type.Union([Type.Integer(), Type.Literal('home')]),
+const MoveCollection = z.object({
+  collectionId: ID,
+  newParentId: ID.nullable(),
+  newOrder: z.number(),
 });
-type CollectionIdType = Static<typeof CollectionId>;
 
-const MoveCollection = Type.Object({
-  collectionId: Type.Integer(),
-  newParentId: Nullable(Type.Integer()),
-  newOrder: Type.Integer(),
-});
-type MoveCollectionType = Static<typeof MoveCollection>;
-
-const ItemDetailsParams = Type.Object({
-  id: Type.Integer(),
-  itemId: Type.Number(),
-});
-type ItemDetailsType = Static<typeof ItemDetailsParams>;
+const ItemDetailsParams = HomeCollectionId.merge(
+  z.object({
+    itemId: numeric(ID),
+  })
+);
 
 const mapDBCollection = (collection: DBCollection): FlatCollection => {
   const {
@@ -144,7 +136,7 @@ const queryCollections = async (userId: ID) => {
 };
 
 const verifyCollectionOwner = async (
-  request: FastifyRequest<{ Params: CollectionIdType }>,
+  request: FastifyRequest<{ Params: z.infer<typeof HomeCollectionId> }>,
   reply: FastifyReply
 ) => {
   const {
@@ -181,7 +173,10 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Body: PostCollectionType; Reply: Array<FlatCollection> }>(
+  fastify.post<{
+    Body: z.infer<typeof PostCollection>;
+    Reply: Array<FlatCollection>;
+  }>(
     '/',
     {
       schema: {
@@ -220,7 +215,10 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Body: MoveCollectionType; Reply: Array<FlatCollection> }>(
+  fastify.post<{
+    Body: z.infer<typeof MoveCollection>;
+    Reply: Array<FlatCollection>;
+  }>(
     '/move',
     {
       schema: {
@@ -241,7 +239,7 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Body: PutCollectionType }>(
+  fastify.put<{ Body: z.infer<typeof PutCollection> }>(
     '/',
     {
       schema: {
@@ -285,11 +283,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.delete<{ Params: CollectionIdType }>(
+  fastify.delete<{ Params: z.infer<typeof HomeCollectionId> }>(
     '/:id',
     {
       schema: {
-        params: CollectionId,
+        params: HomeCollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -315,7 +313,7 @@ export const collections: FastifyPluginAsync = async (
 
       const deletingCurrentlyActiveCollection =
         preferences.activeView === 'collection' &&
-        idsToDelete.includes(preferences.activeCollectionId);
+        idsToDelete.includes(preferences.activeCollectionId!);
 
       const deletedIds = await pool.transaction(async (conn) => {
         if (deletingCurrentlyActiveCollection) {
@@ -343,17 +341,18 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Params: CollectionIdType }>(
+  fastify.post<{ Params: z.infer<typeof HomeCollectionId> }>(
     '/:id/markAsRead',
     {
       schema: {
-        params: CollectionId,
+        params: HomeCollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
       const {
+        session: { userId },
         params: { id },
       } = request;
       if (id === 'home') {
@@ -364,20 +363,23 @@ export const collections: FastifyPluginAsync = async (
         };
       }
 
-      await pool.any(markCollectionAsRead(id, getUnixTime(new Date())));
+      const timestamp = getUnixTime(new Date());
+      await pool.any(markCollectionAsRead(id, timestamp));
       const children = await pool.any(getCollectionChildrenIds(id));
-      return { ids: children.map(({ children_id }) => children_id) };
+      const ids = children.map(({ children_id }) => children_id);
+      const collections = await queryCollections(userId);
+      return { ids, collections, timestamp };
     }
   );
 
   fastify.get<{
-    Params: CollectionIdType;
+    Params: z.infer<typeof HomeCollectionId>;
     Querystring: PaginationParams;
   }>(
     '/:id/items',
     {
       schema: {
-        params: CollectionId,
+        params: HomeCollectionId,
         querystring: PaginationSchema,
         tags: ['Collections'],
       },
@@ -389,11 +391,12 @@ export const collections: FastifyPluginAsync = async (
         query: pagination,
         session: { userId },
       } = request;
+      console.log(id);
       const itemsQuery =
         id === 'home' ? getAllCollectionItems(userId) : getCollectionItems(id);
-      const items = await pool.any<Omit<DBCollectionItem, 'full_text'>>(
+      const items = (await pool.any(
         addPagination(pagination, itemsQuery)
-      );
+      )) as readonly DBCollectionItemWithoutText[];
 
       return items.map((dbItem) => ({
         id: dbItem.id,
@@ -418,7 +421,7 @@ export const collections: FastifyPluginAsync = async (
   );
 
   fastify.get<{
-    Params: ItemDetailsType;
+    Params: z.infer<typeof ItemDetailsParams>;
   }>(
     '/:id/item/:itemId',
     {
@@ -431,6 +434,10 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const { params } = request;
       const { id, itemId } = params;
+      // TODO
+      if (id === 'home') {
+        return;
+      }
 
       try {
         const details = await pool.one(getItemDetails(id, itemId));
@@ -476,12 +483,12 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  const DateReadBody = Type.Object({
-    dateRead: Nullable(Type.Number()),
+  const DateReadBody = z.object({
+    dateRead: z.number().nullable(),
   });
   fastify.put<{
-    Params: ItemDetailsType;
-    Body: Static<typeof DateReadBody>;
+    Params: z.infer<typeof ItemDetailsParams>;
+    Body: z.infer<typeof DateReadBody>;
   }>(
     '/:id/item/:itemId/dateRead',
     {
@@ -498,16 +505,21 @@ export const collections: FastifyPluginAsync = async (
         body: { dateRead },
       } = request;
 
+      // TODO
+      if (id === 'home') {
+        return;
+      }
+
       await pool.any(setItemDateRead(id, itemId, dateRead));
       return true;
     }
   );
 
-  fastify.post<{ Params: Static<typeof CollectionId> }>(
+  fastify.post<{ Params: z.infer<typeof HomeCollectionId> }>(
     '/:id/refresh',
     {
       schema: {
-        params: CollectionId,
+        params: HomeCollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -539,13 +551,13 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  const LayoutBody = Type.Object({
-    layout: Type.Union(CollectionLayouts.map((layout) => Type.Literal(layout))),
+  const LayoutBody = z.object({
+    layout: CollectionLayout,
   });
 
   fastify.put<{
-    Params: Static<typeof CollectionId>;
-    Body: Static<typeof LayoutBody>;
+    Params: z.infer<typeof CollectionId>;
+    Body: z.infer<typeof LayoutBody>;
   }>(
     '/:id/layout',
     {
@@ -573,12 +585,12 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  const VerifyURLParams = Type.Object({
-    url: Type.String(),
+  const VerifyURLParams = z.object({
+    url: z.string().url(),
   });
 
   fastify.post<{
-    Body: Static<typeof VerifyURLParams>;
+    Body: z.infer<typeof VerifyURLParams>;
   }>(
     '/verifyUrl',
     {
@@ -653,10 +665,14 @@ export const collections: FastifyPluginAsync = async (
       } = request;
 
       const opmlFile = await request.file();
-      const opmlBuffer = await opmlFile.toBuffer();
-      const opmlString = opmlBuffer.toString();
+      const opmlBuffer = await opmlFile?.toBuffer();
+      const opmlString = opmlBuffer?.toString();
 
-      await importOPML(opmlString, userId);
+      if (opmlString) {
+        await importOPML(opmlString, userId);
+      } else {
+        reply.status(400).send({ errorCode: 400, message: 'Invalid file.' });
+      }
 
       return true;
     }

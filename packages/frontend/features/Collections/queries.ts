@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import {
+  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { lensIndex, set } from 'rambda';
 import {
   useApi,
@@ -18,11 +19,13 @@ import {
 } from '@api';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 import type {
+  CollectionItem,
   CollectionLayout,
   FlatCollection,
   ID,
   Preferences,
 } from '@orpington-news/shared';
+import { useCollectionsContext } from './CollectionsContext';
 
 export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
   enabled?: boolean;
@@ -36,11 +39,10 @@ export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
     select: opts?.select,
     enabled: opts?.enabled,
     refetchOnMount: false,
-    notifyOnChangeProps: 'tracked',
   });
 };
 
-export const useCollectionById = (collectionId?: ID | string) => {
+export const useCollectionById = (collectionId?: ID | string | null) => {
   return useCollectionsList({
     enabled: collectionId !== undefined,
     select: useCallback(
@@ -86,14 +88,41 @@ export const useMarkCollectionAsRead = () => {
   const api = useApi();
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
+  const { beingMarkedAsRead } = useCollectionsContext();
 
   return useMutation(({ id }: { id: ID }) => markCollectionAsRead(api, id), {
+    onMutate: ({ id }) => {
+      beingMarkedAsRead.add([id]);
+    },
     onError,
-    onSuccess: ({ ids }) => {
+    onSuccess: ({ ids, collections, timestamp }) => {
+      queryClient.setQueryData(collectionKeys.tree, collections);
+
       for (const id of ids) {
+        queryClient.setQueryData(
+          collectionKeys.list(id),
+          (old?: InfiniteData<{ items: CollectionItem[] }>) => {
+            return (
+              old && {
+                ...old,
+                pages: old.pages.map((page) => ({
+                  ...page,
+                  items: page.items.map((item) => ({
+                    ...item,
+                    dateRead: timestamp,
+                  })),
+                })),
+              }
+            );
+          }
+        );
+
         queryClient.invalidateQueries(collectionKeys.allForId(id));
       }
       queryClient.invalidateQueries(collectionKeys.tree);
+    },
+    onSettled: (_, __, { id }) => {
+      beingMarkedAsRead.remove([id]);
     },
   });
 };

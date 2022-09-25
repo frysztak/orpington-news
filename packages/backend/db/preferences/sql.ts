@@ -1,9 +1,10 @@
 import { sql } from 'slonik';
-import type {
+import { z } from 'zod';
+import {
   CollectionLayout,
   ID,
   Preferences,
-  ViewPreference,
+  ViewPreferences,
 } from '@orpington-news/shared';
 
 export const pruneExpandedCollections = (userId: ID) => {
@@ -36,22 +37,36 @@ VALUES (
 };
 
 export const getPreferences = (userId: ID) => {
-  return sql<Preferences>`
+  return sql.type(Preferences)`
 SELECT
   active_view as "activeView",
   active_collection_id as "activeCollectionId",
+  COALESCE(collection_title, 'Home') as "activeCollectionTitle",
+  COALESCE(collection_layout, home_collection_layout) as "activeCollectionLayout",
   COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds",
   default_collection_layout as "defaultCollectionLayout",
   home_collection_layout as "homeCollectionLayout",
   avatar_style as "avatarStyle"
 FROM
   preferences
+LEFT OUTER JOIN (SELECT
+  id as collection_id,
+  title as collection_title,
+  layout as collection_layout
+    FROM
+      collections) collections ON collections.collection_id = preferences.active_collection_id
 WHERE
   "user_id" = ${userId}
 `;
 };
 
-export const savePreferences = (p: Preferences, userId: ID) => {
+const SavePreferences = Preferences.pick({
+  defaultCollectionLayout: true,
+  avatarStyle: true,
+});
+type SavePreferences = z.infer<typeof SavePreferences>;
+
+export const savePreferences = (p: SavePreferences, userId: ID) => {
   return sql`
 UPDATE
   preferences p
@@ -103,7 +118,7 @@ WHERE
 `;
 };
 
-export const setActiveView = (view: ViewPreference, userId: ID) => {
+export const setActiveView = (view: ViewPreferences, userId: ID) => {
   switch (view.activeView) {
     case 'home':
       return sql`
@@ -116,12 +131,13 @@ WHERE
   p.user_id = ${userId}
 `;
     case 'collection':
+      /* when activeView is 'collection', activeCollectionId is guaranteed to be set */
       return sql`
 UPDATE
   preferences p
 SET
   active_view = ${view.activeView},
-  active_collection_id = ${view.activeCollectionId}
+  active_collection_id = ${view.activeCollectionId!}
 WHERE
   p.user_id = ${userId}
 `;

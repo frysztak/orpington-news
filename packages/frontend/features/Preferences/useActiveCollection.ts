@@ -1,9 +1,4 @@
-import {
-  defaultCollectionLayout,
-  ID,
-  Preferences,
-} from '@orpington-news/shared';
-import { useCollectionById } from '@features/Collections';
+import { Preferences } from '@orpington-news/shared';
 import { useGetPreferences } from './queries';
 
 export const useActiveCollection = () => {
@@ -13,30 +8,23 @@ export const useActiveCollection = () => {
         activeCollectionId: prefs
           ? prefs.activeView === 'home'
             ? 'home'
-            : prefs.activeCollectionId
+            : prefs.activeCollectionId!
           : ('home' as const),
         homeCollectionLayout: prefs.homeCollectionLayout,
+        activeCollectionTitle: prefs.activeCollectionTitle,
+        activeCollectionLayout: prefs.activeCollectionLayout,
       };
     },
   });
-  const activeCollectionId: ID | 'home' | undefined = data?.activeCollectionId;
-  const { data: collection } = useCollectionById(activeCollectionId);
 
-  if (collection === undefined || activeCollectionId === undefined) {
-    // collection list is still being loaded
+  if (data === undefined) {
+    // preferences or collection list are still being loaded
     return;
-  } else if (collection === null || activeCollectionId === 'home') {
-    // collection with given ID was not found, or home collection is active
-    return {
-      id: 'home',
-      title: 'Home',
-      layout: data?.homeCollectionLayout ?? defaultCollectionLayout,
-    } as const;
   }
 
   return {
-    id: activeCollectionId!,
-    title: collection?.title ?? '',
-    layout: collection?.layout ?? defaultCollectionLayout,
+    id: data.activeCollectionId,
+    title: data.activeCollectionTitle,
+    layout: data.activeCollectionLayout,
   } as const;
 };

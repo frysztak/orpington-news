@@ -18,7 +18,7 @@ import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
-import { CollectionLayout, CollectionLayouts } from '@orpington-news/shared';
+import { CollectionLayout } from '@orpington-news/shared';
 import { ActiveCollection, CollectionLayoutName } from '../types';
 
 export type MenuAction = 'refresh' | 'markAsRead';
@@ -92,7 +92,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                     title="Layout"
                     type="radio"
                   >
-                    {CollectionLayouts.map((layout) => (
+                    {CollectionLayout.options.map((layout) => (
                       <MenuItemOption
                         key={layout}
                         value={layout}

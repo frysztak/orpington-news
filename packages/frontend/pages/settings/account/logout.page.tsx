@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import type { NextPageWithLayout } from '@pages/types';
 import { Heading, useTimeout } from '@chakra-ui/react';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useLogout } from '@features/Auth';
 import { SettingsLayout } from '../SettingsLayout';
 

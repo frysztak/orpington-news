@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { without } from 'rambda';
 import {
   collapseCollection,
@@ -9,7 +9,7 @@ import {
   useHandleError,
 } from '@api';
 import { preferencesKeys } from '@features/queryKeys';
-import type { ID, Preferences, ViewPreference } from '@orpington-news/shared';
+import type { ID, Preferences, ViewPreferences } from '@orpington-news/shared';
 
 export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
   select?: (data: Preferences) => TSelectedData;
@@ -20,8 +20,13 @@ export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
   return useQuery(preferencesKeys.base, () => getPreferences(api), {
     onError,
     select: opts?.select,
-    notifyOnChangeProps: 'tracked',
   });
+};
+
+export const usePrefetchPreferences = () => {
+  const api = useApi();
+  const queryClient = useQueryClient();
+  queryClient.prefetchQuery(preferencesKeys.base, () => getPreferences(api));
 };
 
 export const useExpandedCollections = () => {
@@ -97,7 +102,7 @@ export const useSetActiveView = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    (activeView: ViewPreference) => setActiveView(api, activeView),
+    (activeView: ViewPreferences) => setActiveView(api, activeView),
     {
       onMutate: async (activeView) => {
         const key = preferencesKeys.base;

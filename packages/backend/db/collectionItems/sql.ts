@@ -1,7 +1,11 @@
 import { sql } from 'slonik';
 import { ID } from '@orpington-news/shared';
 import { getCollectionChildrenIds } from '@db/collections';
-import { DBCollectionItemDetails, DBCollectionItem } from './types';
+import {
+  DBCollectionItemDetails,
+  DBCollectionItem,
+  DBCollectionItemWithoutText,
+} from './types';
 
 type InsertDBCollectionItem = Omit<
   DBCollectionItem,
@@ -68,7 +72,7 @@ ON CONFLICT (collection_id,
 };
 
 export const getCollectionItems = (collectionId: ID) => {
-  return sql<Omit<DBCollectionItem, 'full_text'>>`
+  return sql.type(DBCollectionItemWithoutText)`
 SELECT
   collection_items.id,
   collection_items.title,
@@ -103,7 +107,7 @@ ORDER BY
 };
 
 export const getAllCollectionItems = (userId: ID) => {
-  return sql<Omit<DBCollectionItem, 'full_text'>>`
+  return sql.type(DBCollectionItemWithoutText)`
 SELECT
   collection_items.id,
   collection_items.title,

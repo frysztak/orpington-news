@@ -4,8 +4,10 @@ import { CgRemove } from '@react-icons/all-files/cg/CgRemove';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import { AiTwotoneEdit } from '@react-icons/all-files/ai/AiTwotoneEdit';
-import ExclamationCircleIcon from '@heroicons/react/solid/ExclamationCircleIcon';
-import InformationCircleIcon from '@heroicons/react/solid/InformationCircleIcon';
+import {
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+} from '@heroicons/react/24/solid';
 import { Virtuoso } from 'react-virtuoso';
 import { ID, FlatCollection } from '@orpington-news/shared';
 import { SidebarItem } from './SidebarItem';
