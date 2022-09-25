@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Improved UX of when marking entire collection as read
+- Improved loading performance
 
 ### Changed
 

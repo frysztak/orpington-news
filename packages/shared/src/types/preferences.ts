@@ -13,6 +13,8 @@ export const Preferences = z.object({
   avatarStyle: AvatarStyle,
   activeView: z.union([z.literal('home'), z.literal('collection')]),
   activeCollectionId: ID.nullish(),
+  activeCollectionTitle: z.string(),
+  activeCollectionLayout: CollectionLayout,
 });
 
 export type Preferences = z.infer<typeof Preferences>;
@@ -25,6 +27,8 @@ export type ViewPreferences = z.infer<typeof ViewPreferences>;
 
 export const defaultPreferences: Preferences = {
   activeView: 'home',
+  activeCollectionTitle: 'Home',
+  activeCollectionLayout: defaultCollectionLayout,
   defaultCollectionLayout,
   homeCollectionLayout: defaultCollectionLayout,
   expandedCollectionIds: [],

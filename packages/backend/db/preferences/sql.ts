@@ -41,12 +41,20 @@ export const getPreferences = (userId: ID) => {
 SELECT
   active_view as "activeView",
   active_collection_id as "activeCollectionId",
+  COALESCE(collection_title, 'Home') as "activeCollectionTitle",
+  COALESCE(collection_layout, home_collection_layout) as "activeCollectionLayout",
   COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds",
   default_collection_layout as "defaultCollectionLayout",
   home_collection_layout as "homeCollectionLayout",
   avatar_style as "avatarStyle"
 FROM
   preferences
+LEFT OUTER JOIN (SELECT
+  id as collection_id,
+  title as collection_title,
+  layout as collection_layout
+    FROM
+      collections) collections ON collections.collection_id = preferences.active_collection_id
 WHERE
   "user_id" = ${userId}
 `;
