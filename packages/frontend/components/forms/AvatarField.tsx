@@ -51,7 +51,7 @@ export const AvatarField = forwardRef<AvatarFieldProps, 'input'>(
       <FormControl {...formControlProps}>
         {label && <FormLabel htmlFor={formControlProps.id}>{label}</FormLabel>}
         <VStack align="center">
-          <input {...getInputProps()} />
+          <input {...getInputProps()} data-test="avatarInput" />
           <Avatar
             name={displayName}
             src={meta.value}

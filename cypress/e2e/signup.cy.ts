@@ -17,6 +17,19 @@ sizes.forEach((size) => {
       cy.visit('/signup');
       cy.getBySel('username').type('end2end');
       cy.getBySel('displayName').type('E2E');
+      cy.getBySel('avatarBadgeUpload').should('be.visible');
+      cy.getBySel('avatarBadgeDelete').should('not.exist');
+      cy.getBySel('avatarInput').selectFile(
+        {
+          contents: 'cypress/fixtures/media/avatar.jpg',
+          fileName: 'av.jpg',
+          mimeType: 'image/jpeg',
+        },
+        { force: true }
+      );
+      cy.getBySel('avatar').find('img').should('be.visible');
+      cy.getBySel('avatarBadgeUpload').should('not.exist');
+      cy.getBySel('avatarBadgeDelete').should('be.visible');
       cy.getBySel('password').type('end2endpass');
       cy.getBySel('passwordConfirm').type('end2endpass');
       cy.getBySel('submit').click();
