@@ -5181,6 +5181,7 @@ __metadata:
     react-virtuoso: ^2.19.0
     storybook-addon-next-router: ^4.0.0
     string-to-color: ^2.2.2
+    swc-plugin-coverage-instrument: ^0.0.12
     tsconfig-paths-webpack-plugin: ^4.0.0
     use-context-selector: ^1.4.1
     usehooks-ts: ^2.7.1
@@ -24106,6 +24107,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
+  languageName: node
+  linkType: hard
+
+"swc-plugin-coverage-instrument@npm:^0.0.12":
+  version: 0.0.12
+  resolution: "swc-plugin-coverage-instrument@npm:0.0.12"
+  checksum: 9c049e63e5ee389f9d58074ca17e7ca2443cb8990c7fd87953ac73021debc79c130afe8d272666a39b70afe879136869ea97a6b0cc823085a06545dd882de135
   languageName: node
   linkType: hard
 

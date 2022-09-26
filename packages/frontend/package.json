@@ -84,6 +84,7 @@
     "react-test-renderer": "^18.2.0",
     "storybook-addon-next-router": "^4.0.0",
     "string-to-color": "^2.2.2",
+    "swc-plugin-coverage-instrument": "^0.0.12",
     "tsconfig-paths-webpack-plugin": "^4.0.0",
     "use-context-selector": "^1.4.1",
     "usehooks-ts": "^2.7.1",
