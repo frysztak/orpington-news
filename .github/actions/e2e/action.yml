@@ -27,3 +27,5 @@ runs:
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.cypress-key }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
+
+    - uses: codecov/codecov-action@v3
