@@ -13,6 +13,15 @@ declare namespace Cypress {
     ): Chainable<JQuery<HTMLElement>>;
 
     openDrawerIfExists(): Chainable<JQuery<HTMLElement>>;
+    closeDrawerIfExists(): Chainable<JQuery<HTMLElement>>;
+    getReadItems(): Chainable<JQuery<HTMLElement>>;
+    getUnreadItems(): Chainable<JQuery<HTMLElement>>;
+
+    clickCollection(id: string): Chainable<JQuery<HTMLElement>>;
+    clickSidebarAction(
+      collectionId: string,
+      action: string
+    ): Chainable<JQuery<HTMLElement>>;
 
     /**
      * Signs user up by using API request

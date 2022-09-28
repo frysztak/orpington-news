@@ -54,6 +54,7 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
                 p={3}
                 fontWeight={Boolean(dateRead) ? 500 : 700}
                 data-test="title"
+                data-test-read={Boolean(dateRead)}
               >
                 {title}
               </Heading>

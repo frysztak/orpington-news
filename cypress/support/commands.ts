@@ -46,6 +46,41 @@ Cypress.Commands.add('openDrawerIfExists', () => {
   });
 });
 
+Cypress.Commands.add('closeDrawerIfExists', () => {
+  const selector = '[data-test=closeDrawer]:visible';
+  return cy.getBySel('panesMobile').then(($body) => {
+    if ($body.find(selector).length > 0) {
+      cy.get(selector).then(($button) => {
+        $button.trigger('click');
+        cy.getBySel('drawer').should('not.exist');
+      });
+    }
+  });
+});
+
+Cypress.Commands.add('getReadItems', (...args) => {
+  return cy.get(`[data-test-read="true"]`, ...args);
+});
+
+Cypress.Commands.add('getUnreadItems', (...args) => {
+  return cy.get(`[data-test-read="false"]`, ...args);
+});
+
+Cypress.Commands.add('clickCollection', (id: string) => {
+  return cy.getBySel(`collection-id-${id}`).click();
+});
+
+Cypress.Commands.add(
+  'clickSidebarAction',
+  (collectionId: string, action: string) => {
+    return cy.getBySel(`collection-id-${collectionId}`).within((item) => {
+      cy.getBySel('menuButton').click({ force: true });
+      cy.getBySel('menuList').should('be.visible');
+      cy.getBySel(action).click();
+    });
+  }
+);
+
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {
   return cy.request('POST', `${Cypress.env('api_url')}/auth/register`, {
     username,
