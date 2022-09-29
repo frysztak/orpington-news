@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Allow to mark Home collection as read
+
 ### Fixed
 
 - Mark as read: properly refresh home collection
