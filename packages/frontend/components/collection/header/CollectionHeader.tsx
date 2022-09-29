@@ -46,7 +46,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
   const isLoading = collection === undefined;
 
   return (
-    <VStack spacing={0} w="full">
+    <VStack spacing={0} w="full" data-test="collectionHeader">
       <HStack
         spacing={0}
         w="full"
@@ -116,11 +116,13 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                 icon={<BsThreeDotsVertical />}
                 variant="ghost"
                 tabIndex={0}
+                data-test="menuButton"
               />
-              <MenuList data-focus-visible-disabled>
+              <MenuList data-focus-visible-disabled data-test="menuList">
                 <MenuItem
                   icon={<IoCheckmarkDone />}
                   onClick={() => onMenuActionClicked?.('markAsRead')}
+                  data-test="markAsRead"
                 >
                   Mark as read
                 </MenuItem>

@@ -81,6 +81,15 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add('clickCollectionHeaderMenuAction', (action: string) => {
+  const selector = '[data-test=collectionHeader]:visible';
+  return cy.get(selector).within((item) => {
+    cy.getBySel('menuButton').click({ force: true });
+    cy.getBySel('menuList').should('be.visible');
+    cy.getBySel(action).click();
+  });
+});
+
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {
   return cy.request('POST', `${Cypress.env('api_url')}/auth/register`, {
     username,
