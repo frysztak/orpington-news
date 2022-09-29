@@ -7,6 +7,9 @@ inputs:
   github-token:
     description: 'GitHub token'
     required: true
+  codecov-token:
+    description: 'Codecov.io token'
+    required: true
 
 runs:
   using: 'composite'
@@ -30,4 +33,4 @@ runs:
 
     - uses: codecov/codecov-action@v3
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+        token: ${{ inputs.github-token }}
