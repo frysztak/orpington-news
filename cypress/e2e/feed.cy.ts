@@ -179,5 +179,52 @@ sizes.forEach((size) => {
         cy.wrap(itemList).getReadItems().should('have.length', 3);
       });
     });
+
+    it('can mark feed as read (from sidebar) while on home page', () => {
+      cy.intercept({
+        method: 'POST',
+        url: getApiPath('/collections/1/markAsRead'),
+      }).as('apiMarkAsRead');
+
+      cy.intercept({
+        method: 'GET',
+        url: getApiPath('/collections/home/items?pageIndex=0'),
+      }).as('apiGetHomeItems');
+
+      cy.addFeedByApi({
+        title: 'Kent C. Dodds Blog',
+        url: getFeedUrl('kentcdodds.xml'),
+        icon: 'Code',
+        refreshInterval: 120,
+      });
+
+      cy.visit('/');
+
+      // all unread
+      cy.getBySel('collectionItemList').within((itemList) => {
+        cy.wrap(itemList).getUnreadItems().should('have.length', 3);
+      });
+
+      cy.openDrawerIfExists();
+      // mark as read
+      cy.clickSidebarAction('1', 'markAsRead');
+      cy.closeDrawerIfExists();
+      cy.wait('@apiMarkAsRead').then(({ request, response }) => {
+        expect(response.statusCode).to.eq(200);
+      });
+
+      cy.wait('@apiGetHomeItems').then(({ request, response }) => {
+        expect(response.statusCode).to.eq(200);
+      });
+
+      cy.openDrawerIfExists();
+      cy.getBySel('collection-id-1').within(() => {
+        cy.getBySel('badge').should('not.exist');
+      });
+
+      cy.getBySel('collectionItemList').within((itemList) => {
+        cy.wrap(itemList).getReadItems().should('have.length', 3);
+      });
+    });
   });
 });

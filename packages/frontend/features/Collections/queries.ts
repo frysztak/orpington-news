@@ -84,6 +84,20 @@ export const useCollectionItems = (collectionId?: ID | string) => {
   return { ...rest, data, allItems };
 };
 
+const mutatePageData =
+  <T>(updater: (data: T) => T) =>
+  (oldData: InfiniteData<{ items: T[] }> | undefined) => {
+    return (
+      oldData && {
+        ...oldData,
+        pages: oldData.pages.map((page) => ({
+          ...page,
+          items: page.items.map(updater),
+        })),
+      }
+    );
+  };
+
 export const useMarkCollectionAsRead = () => {
   const api = useApi();
   const { onError } = useHandleError();
@@ -101,24 +115,24 @@ export const useMarkCollectionAsRead = () => {
       for (const id of ids) {
         queryClient.setQueryData(
           collectionKeys.list(id),
-          (old?: InfiniteData<{ items: CollectionItem[] }>) => {
-            return (
-              old && {
-                ...old,
-                pages: old.pages.map((page) => ({
-                  ...page,
-                  items: page.items.map((item) => ({
-                    ...item,
-                    dateRead: timestamp,
-                  })),
-                })),
-              }
-            );
-          }
+          mutatePageData<CollectionItem>((item) => ({
+            ...item,
+            dateRead: timestamp,
+          }))
         );
 
         queryClient.invalidateQueries(collectionKeys.allForId(id));
       }
+
+      queryClient.setQueryData(
+        collectionKeys.list('home'),
+        mutatePageData<CollectionItem>((item) =>
+          ids.includes(item.collection.id)
+            ? { ...item, dateRead: timestamp }
+            : item
+        )
+      );
+      queryClient.invalidateQueries(collectionKeys.allForId('home'));
       queryClient.invalidateQueries(collectionKeys.tree);
     },
     onSettled: (_, __, { id }) => {
