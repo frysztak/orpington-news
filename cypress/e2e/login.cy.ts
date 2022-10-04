@@ -1,24 +1,29 @@
 import { getApiPath } from './utils';
 
-describe('login page', () => {
-  beforeEach(() => {
-    cy.signupByApi('end2end', 'end2endpass', 'E2E');
-  });
+const sizes = ['macbook-13', 'iphone-6'];
 
-  const baseUrl = Cypress.config('baseUrl');
+sizes.forEach((size) => {
+  describe(`login page, size '${size}'`, () => {
+    beforeEach(() => {
+      cy.viewport(size as any);
+      cy.signupByApi('end2end', 'end2endpass', 'E2E');
+    });
 
-  it('can successfully log in', () => {
-    cy.intercept({
-      method: 'POST',
-      url: getApiPath('/auth/login'),
-    }).as('apiAuthLogin');
+    const baseUrl = Cypress.config('baseUrl');
 
-    cy.visit('/login');
-    cy.getBySel('username').type('end2end');
-    cy.getBySel('password').type('end2endpass');
-    cy.getBySel('submit').click();
+    it('can successfully log in', () => {
+      cy.intercept({
+        method: 'POST',
+        url: getApiPath('/auth/login'),
+      }).as('apiAuthLogin');
 
-    cy.wait('@apiAuthLogin').its('response.statusCode').should('eq', 200);
-    cy.url().should('equal', `${baseUrl}/`);
+      cy.visit('/login');
+      cy.getBySel('username').type('end2end');
+      cy.getBySel('password').type('end2endpass');
+      cy.getBySel('submit').click();
+
+      cy.wait('@apiAuthLogin').its('response.statusCode').should('eq', 200);
+      cy.url().should('equal', `${baseUrl}/`);
+    });
   });
 });

@@ -83,23 +83,30 @@ const ItemContent: React.FC<ItemContentProps> = ({
           <MenuItem
             icon={<IoCheckmarkDone />}
             onClick={handleMenuItemClick('markAsRead')}
+            data-test="markAsRead"
           >
             Mark as read
           </MenuItem>
           <MenuItem
             icon={<IoRefresh />}
             onClick={handleMenuItemClick('refresh')}
+            data-test="refresh"
           >
             Refresh
           </MenuItem>
           <MenuItem
             icon={<AiTwotoneEdit />}
             onClick={handleMenuItemClick('edit')}
+            data-test="edit"
           >
             Edit
           </MenuItem>
           <MenuDivider />
-          <MenuItem icon={<CgRemove />} onClick={handleMenuItemClick('delete')}>
+          <MenuItem
+            icon={<CgRemove />}
+            onClick={handleMenuItemClick('delete')}
+            data-test="delete"
+          >
             Delete
           </MenuItem>
         </>

@@ -155,6 +155,7 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
         ...style,
         paddingLeft: calcItemPadding(chevron, level),
       }}
+      data-test="group"
       {...rest}
     >
       {chevron && (
@@ -219,8 +220,11 @@ export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
                 variant="ghost"
                 size="sm"
                 tabIndex={0}
+                data-test="menuButton"
               />
-              <MenuList data-focus-visible-disabled>{menuItems}</MenuList>
+              <MenuList data-focus-visible-disabled data-test="menuList">
+                {menuItems}
+              </MenuList>
             </Menu>
           </Box>
         )}

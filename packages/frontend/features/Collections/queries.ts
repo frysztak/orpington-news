@@ -84,47 +84,68 @@ export const useCollectionItems = (collectionId?: ID | string) => {
   return { ...rest, data, allItems };
 };
 
+const mutatePageData =
+  <T>(updater: (data: T) => T) =>
+  (oldData: InfiniteData<{ items: T[] }> | undefined) => {
+    return (
+      oldData && {
+        ...oldData,
+        pages: oldData.pages.map((page) => ({
+          ...page,
+          items: page.items.map(updater),
+        })),
+      }
+    );
+  };
+
 export const useMarkCollectionAsRead = () => {
   const api = useApi();
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
   const { beingMarkedAsRead } = useCollectionsContext();
 
-  return useMutation(({ id }: { id: ID }) => markCollectionAsRead(api, id), {
-    onMutate: ({ id }) => {
-      beingMarkedAsRead.add([id]);
-    },
-    onError,
-    onSuccess: ({ ids, collections, timestamp }) => {
-      queryClient.setQueryData(collectionKeys.tree, collections);
+  return useMutation(
+    ({ id }: { id: ID | 'home' }) => markCollectionAsRead(api, id),
+    {
+      onMutate: ({ id }) => {
+        if (typeof id === 'number') {
+          beingMarkedAsRead.add([id]);
+        }
+      },
+      onError,
+      onSuccess: ({ ids, collections, timestamp }) => {
+        queryClient.setQueryData(collectionKeys.tree, collections);
 
-      for (const id of ids) {
+        for (const id of ids) {
+          queryClient.setQueryData(
+            collectionKeys.list(id),
+            mutatePageData<CollectionItem>((item) => ({
+              ...item,
+              dateRead: timestamp,
+            }))
+          );
+
+          queryClient.invalidateQueries(collectionKeys.allForId(id));
+        }
+
         queryClient.setQueryData(
-          collectionKeys.list(id),
-          (old?: InfiniteData<{ items: CollectionItem[] }>) => {
-            return (
-              old && {
-                ...old,
-                pages: old.pages.map((page) => ({
-                  ...page,
-                  items: page.items.map((item) => ({
-                    ...item,
-                    dateRead: timestamp,
-                  })),
-                })),
-              }
-            );
-          }
+          collectionKeys.list('home'),
+          mutatePageData<CollectionItem>((item) =>
+            ids.includes(item.collection.id)
+              ? { ...item, dateRead: timestamp }
+              : item
+          )
         );
-
-        queryClient.invalidateQueries(collectionKeys.allForId(id));
-      }
-      queryClient.invalidateQueries(collectionKeys.tree);
-    },
-    onSettled: (_, __, { id }) => {
-      beingMarkedAsRead.remove([id]);
-    },
-  });
+        queryClient.invalidateQueries(collectionKeys.allForId('home'));
+        queryClient.invalidateQueries(collectionKeys.tree);
+      },
+      onSettled: (_, __, { id }) => {
+        if (typeof id === 'number') {
+          beingMarkedAsRead.remove([id]);
+        }
+      },
+    }
+  );
 };
 
 export const useRefreshCollection = () => {

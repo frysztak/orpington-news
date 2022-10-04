@@ -40,6 +40,7 @@ export const Avatar: React.FC<AvatarProps> = (props) => {
       icon={<AiOutlineUser fontSize="1.5rem" />}
       userSelect="none"
       title={name}
+      data-test="avatar"
     >
       {badge === 'upload' ? (
         <ChakraAvatarBadge boxSize="1.25em" bg="green.500">
@@ -51,6 +52,7 @@ export const Avatar: React.FC<AvatarProps> = (props) => {
             borderRadius="full"
             color="white"
             onClick={onOpenAvatarSelection}
+            data-test="avatarBadgeUpload"
           />
         </ChakraAvatarBadge>
       ) : badge === 'delete' ? (
@@ -63,6 +65,7 @@ export const Avatar: React.FC<AvatarProps> = (props) => {
             borderRadius="full"
             color="white"
             onClick={onDeleteAvatar}
+            data-test="avatarBadgeDelete"
           />
         </ChakraAvatarBadge>
       ) : null}

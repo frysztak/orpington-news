@@ -64,7 +64,7 @@ export const deleteCollection = (api: Wretch, collectionId: ID) =>
     .delete()
     .json<{ ids: ID[]; navigateHome: boolean }>();
 
-export const markCollectionAsRead = (api: Wretch, collectionId: ID) =>
+export const markCollectionAsRead = (api: Wretch, collectionId: ID | 'home') =>
   api
     .url(`/collections/${collectionId}/markAsRead`)
     .post()

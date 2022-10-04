@@ -1,4 +1,4 @@
-import { sql } from 'slonik';
+import { sql, SqlSqlToken } from 'slonik';
 import { getUnixTime } from 'date-fns';
 import {
   Collection,
@@ -68,6 +68,17 @@ from
   collections
 WHERE
   id = ${collectionId}
+`;
+};
+
+export const getAllCollectionIds = (userId: ID) => {
+  return sql<{ id: ID }>`
+SELECT
+  id
+from
+  collections
+WHERE
+  "user_id" = ${userId}
 `;
 };
 
@@ -277,7 +288,7 @@ ORDER BY
 };
 
 export const getCollectionChildrenIds = (rootId: ID) => {
-  return sql<{ children_id: ID }>`
+  return sql<{ id: ID }>`
 WITH RECURSIVE tree AS (
   SELECT
     id,
@@ -297,10 +308,10 @@ WITH RECURSIVE tree AS (
     collections.parent_id = tree.id
 )
 SELECT
-  ${rootId} as children_id
+  ${rootId} as id
 UNION
 SELECT
-  id as children_id
+  id
 FROM
   tree
 `;
@@ -367,7 +378,7 @@ WHERE
 };
 
 export const markCollectionAsRead = (
-  collectionId: ID,
+  collectionIds: SqlSqlToken<{ id: ID }>,
   dateRead: number | null
 ) => {
   return sql`
@@ -376,7 +387,7 @@ UPDATE
 SET
   date_read = TO_TIMESTAMP(${dateRead})
 WHERE
-  collection_id = ANY (${getCollectionChildrenIds(collectionId)})
+  collection_id = ANY (${collectionIds})
 `;
 };
 

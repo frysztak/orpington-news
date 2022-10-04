@@ -34,3 +34,4 @@ jobs:
         with:
           cypress-key: ${{ secrets.CYPRESS_RECORD_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          codecov-token: ${{ secrets.CODECOV_TOKEN }}

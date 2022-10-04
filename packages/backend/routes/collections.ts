@@ -7,6 +7,7 @@ import {
   addCollection,
   DBCollection,
   deleteCollections,
+  getAllCollectionIds,
   getCollectionById,
   getCollectionChildrenIds,
   getCollectionOwner,
@@ -306,7 +307,7 @@ export const collections: FastifyPluginAsync = async (
       const [idsToDelete, preferences] = await Promise.all([
         pool
           .many(getCollectionChildrenIds(id))
-          .then((result) => result.map((x) => x.children_id)),
+          .then((result) => result.map((x) => x.id)),
 
         pool.one(getPreferences(userId)),
       ]);
@@ -355,18 +356,24 @@ export const collections: FastifyPluginAsync = async (
         session: { userId },
         params: { id },
       } = request;
-      if (id === 'home') {
-        reply.status(500);
-        return {
-          errorCode: 500,
-          message: 'Cannot mark home collection as read',
-        };
-      }
 
       const timestamp = getUnixTime(new Date());
-      await pool.any(markCollectionAsRead(id, timestamp));
-      const children = await pool.any(getCollectionChildrenIds(id));
-      const ids = children.map(({ children_id }) => children_id);
+
+      await pool.any(
+        markCollectionAsRead(
+          id === 'home'
+            ? getAllCollectionIds(userId)
+            : getCollectionChildrenIds(id),
+          timestamp
+        )
+      );
+      const children = await pool.any(
+        id === 'home'
+          ? getAllCollectionIds(userId)
+          : getCollectionChildrenIds(id)
+      );
+
+      const ids = children.map(({ id }) => id);
       const collections = await queryCollections(userId);
       return { ids, collections, timestamp };
     }
@@ -540,7 +547,7 @@ export const collections: FastifyPluginAsync = async (
           return { ids: children.map(({ id }) => id) };
         } else {
           const children = await pool.any(getCollectionChildrenIds(id));
-          return { ids: children.map(({ children_id }) => children_id) };
+          return { ids: children.map(({ id }) => id) };
         }
       } else {
         const noun = collections.length > 1 ? 'Feeds' : 'Feed';

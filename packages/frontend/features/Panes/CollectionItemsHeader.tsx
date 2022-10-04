@@ -63,12 +63,7 @@ export const CollectionItemsHeader: React.FC = () => {
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
   const handleMarkAsRead = useCallback(() => {
     if (activeCollection) {
-      const collectionId = activeCollection.id;
-      if (typeof collectionId === 'string' && collectionId === 'home') {
-        return;
-      }
-
-      markCollectionAsRead({ id: collectionId });
+      markCollectionAsRead({ id: activeCollection.id });
     } else {
       console.error(`handleMarkAsRead() without active collection`);
     }
