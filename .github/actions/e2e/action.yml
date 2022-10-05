@@ -33,4 +33,4 @@ runs:
 
     - uses: codecov/codecov-action@v3
       with:
-        token: ${{ inputs.github-token }}
+        token: ${{ inputs.codecov-token }}
