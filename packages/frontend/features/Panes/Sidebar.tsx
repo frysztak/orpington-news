@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import {
@@ -20,6 +21,7 @@ import { SidebarFooter } from './SidebarFooter';
 import { ModalContext } from './ModalContext';
 
 export const Sidebar: React.FC = () => {
+  const { push } = useRouter();
   const closeDrawer = useContextSelector(
     ModalContext,
     (ctx) => ctx.closeDrawer
@@ -89,10 +91,11 @@ export const Sidebar: React.FC = () => {
 
   const handleCollectionClickedAndCloseDrawer = useCallback(
     (collection: FlatCollection) => {
+      push('/');
       closeDrawer();
       setActiveCollection(collection.id);
     },
-    [setActiveCollection, closeDrawer]
+    [closeDrawer, setActiveCollection, push]
   );
 
   const { currentlyUpdatedCollections } = useCollectionsContext();

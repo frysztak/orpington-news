@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow to mark Home collection as read
 - Improved UX of when marking article as read
 
+### Changed
+
+- Hide article when changing active collection
+
 ### Fixed
 
 - Mark as read: properly refresh home collection
