@@ -194,7 +194,7 @@ export const AddCollectionForm: React.FC<AddCollectionFormProps> = (props) => {
               <NumberField
                 name="refreshInterval"
                 label="Refresh interval (minutes)"
-                decimalSeparator="0"
+                decimalScale={0}
                 isLoading={areCollectionsLoading}
                 isDisabled={isLoading}
               />

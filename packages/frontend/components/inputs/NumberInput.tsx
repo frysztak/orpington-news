@@ -1,10 +1,10 @@
 import React from 'react';
 import { chakra, forwardRef, Input, InputProps } from '@chakra-ui/react';
-import NumberFormat, { NumberFormatProps } from 'react-number-format';
+import { NumericFormat, NumericFormatProps } from 'react-number-format';
 
-export type NumberInputProps = InputProps & NumberFormatProps;
+export type NumberInputProps = InputProps & NumericFormatProps;
 
-const ChakraNumberFormat = chakra(NumberFormat, {
+const ChakraNumberFormat = chakra(NumericFormat, {
   shouldForwardProp: (prop: string) => prop !== 'isLoading',
 });
 
