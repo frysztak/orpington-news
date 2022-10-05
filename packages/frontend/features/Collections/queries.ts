@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import {
-  InfiniteData,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -25,6 +24,7 @@ import type {
   ID,
   Preferences,
 } from '@orpington-news/shared';
+import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
 
 export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
@@ -83,20 +83,6 @@ export const useCollectionItems = (collectionId?: ID | string) => {
 
   return { ...rest, data, allItems };
 };
-
-const mutatePageData =
-  <T>(updater: (data: T) => T) =>
-  (oldData: InfiniteData<{ items: T[] }> | undefined) => {
-    return (
-      oldData && {
-        ...oldData,
-        pages: oldData.pages.map((page) => ({
-          ...page,
-          items: page.items.map(updater),
-        })),
-      }
-    );
-  };
 
 export const useMarkCollectionAsRead = () => {
   const api = useApi();

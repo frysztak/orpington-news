@@ -1,8 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getItemDetails, setDateRead, useApi, useHandleError } from '@api';
-import { CollectionItemDetails, ID } from '@orpington-news/shared';
+import {
+  CollectionItem,
+  CollectionItemDetails,
+  ID,
+} from '@orpington-news/shared';
 import { collectionKeys } from '@features';
 import { useActiveCollection } from '@features/Preferences';
+import { mutatePageData } from '@utils';
 
 export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
   const api = useApi();
@@ -36,11 +41,36 @@ export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
           });
         }
 
-        return { previousDetails };
+        // Optimistically update active list
+        const activeListKey =
+          activeCollection && collectionKeys.list(activeCollection.id);
+        const previousList =
+          activeListKey && queryClient.getQueryData(activeListKey);
+
+        if (activeCollection) {
+          queryClient.setQueryData(
+            collectionKeys.list(activeCollection.id),
+            mutatePageData<CollectionItem>((item) =>
+              item.id === itemId
+                ? {
+                    ...item,
+                    dateRead: dateRead ?? undefined,
+                  }
+                : item
+            )
+          );
+        }
+
+        return { previousDetails, activeListKey, previousList };
       },
       onError: (err, { dateRead }, context) => {
         onError(err);
-        queryClient.setQueryData(detailKey, (context as any).previousDetails);
+        if (context) {
+          queryClient.setQueryData(detailKey, context.previousDetails);
+        }
+        if (context?.activeListKey) {
+          queryClient.setQueryData(context.activeListKey, context.previousList);
+        }
       },
       onSettled: () => {
         queryClient.invalidateQueries(collectionKeys.allForId(collectionId!));

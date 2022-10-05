@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Allow to mark Home collection as read
+- Improved UX of when marking article as read
 
 ### Fixed
 
