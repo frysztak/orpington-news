@@ -26,6 +26,14 @@ module.exports = () => {
     },
     productionBrowserSourceMaps: process.env.SOURCE_MAPS === 'true',
     output: 'standalone',
+    experimental: {
+      swcPlugins: [
+        process.env.INSTRUMENT_COVERAGE === 'true' && [
+          'swc-plugin-coverage-instrument',
+          {},
+        ],
+      ],
+    },
   };
 
   return plugins.reduce((acc, plugin) => plugin(acc), { ...nextConfig });

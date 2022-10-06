@@ -7,6 +7,9 @@ inputs:
   github-token:
     description: 'GitHub token'
     required: true
+  codecov-token:
+    description: 'Codecov.io token'
+    required: true
 
 runs:
   using: 'composite'
@@ -27,3 +30,7 @@ runs:
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.cypress-key }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
+
+    - uses: codecov/codecov-action@v3
+      with:
+        token: ${{ inputs.codecov-token }}

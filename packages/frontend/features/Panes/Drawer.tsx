@@ -34,7 +34,7 @@ export const Drawer: React.FC<DrawerProps> = ({ sidebar }) => {
     >
       <DrawerOverlay />
       <DrawerContent data-test="drawer">
-        <DrawerCloseButton />
+        <DrawerCloseButton data-test="closeDrawer" />
         <DrawerBody p={0}>{sidebar}</DrawerBody>
       </DrawerContent>
     </ChakraDrawer>

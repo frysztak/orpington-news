@@ -20,12 +20,14 @@ export default defineConfig({
     feeds_url: process.env.FEEDS_URL,
     codeCoverage: {
       url: `${process.env.NEXT_PUBLIC_API_URL}/__coverage__`,
+      exclude: ['**/node_modules/**/*'],
     },
   },
   e2e: {
     baseUrl: process.env.APP_URL,
     setupNodeEvents(on, config) {
       require('@cypress/code-coverage/task')(on, config);
+
       const buildDSN = (): string => {
         const { db_user, db_pass, db_host, db_name, db_port } = config.env;
         return `postgres://${db_user}:${db_pass}@${db_host}:${db_port}/${db_name}`;
