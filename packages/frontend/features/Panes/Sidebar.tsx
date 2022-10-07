@@ -16,7 +16,11 @@ import {
 } from '@features/Preferences';
 import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
-import { emptyIfUndefined, FlatCollection } from '@orpington-news/shared';
+import {
+  defaultCollectionLayout,
+  emptyIfUndefined,
+  FlatCollection,
+} from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
 import { ModalContext } from './ModalContext';
 
@@ -52,7 +56,7 @@ export const Sidebar: React.FC = () => {
       switch (item) {
         case 'home': {
           closeDrawer();
-          return setActiveCollection('home');
+          return setActiveCollection({ id: 'home' });
         }
         case 'addFeed': {
           return onOpenAddCollectionModal();
@@ -93,7 +97,11 @@ export const Sidebar: React.FC = () => {
     (collection: FlatCollection) => {
       push('/');
       closeDrawer();
-      setActiveCollection(collection.id);
+      setActiveCollection({
+        id: collection.id,
+        title: collection.title,
+        layout: collection.layout ?? defaultCollectionLayout,
+      });
     },
     [closeDrawer, setActiveCollection, push]
   );

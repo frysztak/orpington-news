@@ -1,8 +1,8 @@
 import type { Wretch } from '@api';
 import type { ID, Preferences, ViewPreferences } from '@orpington-news/shared';
 
-export const getPreferences = (api: Wretch) =>
-  api.url(`/preferences`).get().json<Preferences>();
+export const getPreferences = (api: Wretch, signal: AbortSignal | undefined) =>
+  api.options({ signal }).url(`/preferences`).get().json<Preferences>();
 
 export type SaveablePreferences = Pick<Preferences, 'defaultCollectionLayout'>;
 export const savePreferences = (
