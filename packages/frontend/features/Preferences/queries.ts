@@ -56,21 +56,20 @@ export const useExpandCollection = () => {
       const key = preferencesKeys.base;
       await queryClient.cancelQueries(key);
       const previousPrefs = queryClient.getQueryData<Preferences>(key);
-      if (previousPrefs) {
-        queryClient.setQueryData(key, {
-          ...previousPrefs,
-          expandedCollectionIds: [...previousPrefs.expandedCollectionIds, id],
-        });
-      }
+      queryClient.setQueryData(
+        key,
+        (old?: Preferences) =>
+          old && {
+            ...old,
+            expandedCollectionIds: [...old.expandedCollectionIds, id],
+          }
+      );
 
       return { previousPrefs };
     },
     onError: (err, { id }, context: any) => {
       onError(err);
       queryClient.setQueryData(preferencesKeys.base, context.previousPrefs);
-    },
-    onSuccess: (prefs: Preferences) => {
-      queryClient.setQueryData(preferencesKeys.base, prefs);
     },
   });
 };
@@ -85,24 +84,20 @@ export const useCollapseCollection = () => {
       const key = preferencesKeys.base;
       await queryClient.cancelQueries(key);
       const previousPrefs = queryClient.getQueryData<Preferences>(key);
-      if (previousPrefs) {
-        queryClient.setQueryData(key, {
-          ...previousPrefs,
-          expandedCollectionIds: without(
-            [id],
-            previousPrefs.expandedCollectionIds
-          ),
-        });
-      }
+      queryClient.setQueryData(
+        key,
+        (old?: Preferences) =>
+          old && {
+            ...old,
+            expandedCollectionIds: without([id], old.expandedCollectionIds),
+          }
+      );
 
       return { previousPrefs };
     },
     onError: (err, { id }, context: any) => {
       onError(err);
       queryClient.setQueryData(preferencesKeys.base, context.previousPrefs);
-    },
-    onSuccess: (prefs: Preferences) => {
-      queryClient.setQueryData(preferencesKeys.base, prefs);
     },
   });
 };
