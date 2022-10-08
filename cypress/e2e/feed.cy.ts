@@ -68,6 +68,8 @@ sizes.forEach((size) => {
         expect(request.body).to.deep.eq({
           activeView: 'collection',
           activeCollectionId: 1,
+          activeCollectionLayout: 'card',
+          activeCollectionTitle: 'Kent C. Dodds Blog',
         });
         expect(response.statusCode).to.eq(200);
       });
