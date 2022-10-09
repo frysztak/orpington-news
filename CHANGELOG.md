@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2] - 2022-10-09
+
+### Fixed
+
+-   Improve UX of setting active collection and collapsing/expanding collections in high-latency scenarios
+-   Fixed flickering when navigating to main page while not being logged-in
+
 ## [0.7.1] - 2022-10-06
 
 ### Added
@@ -195,7 +202,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.7.1...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.7.2...HEAD
+
+[0.7.2]: https://github.com/frysztak/orpington-news/compare/0.7.1...0.7.2
 
 [0.7.1]: https://github.com/frysztak/orpington-news/compare/0.7.0...0.7.1
 

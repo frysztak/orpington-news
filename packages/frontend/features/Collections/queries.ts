@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import {
+  QueryFunctionContext,
   useInfiniteQuery,
   useMutation,
   useQuery,
@@ -55,11 +56,13 @@ export const useCollectionById = (collectionId?: ID | string | null) => {
 
 export const collectionsItemsQueryFn =
   (api: Wretch, collectionId: ID | string) =>
-  ({ pageParam = 0 }) => {
-    return getCollectionItems(api, collectionId, pageParam).then((items) => ({
-      items,
-      pageParam,
-    }));
+  ({ pageParam = 0, signal }: QueryFunctionContext) => {
+    return getCollectionItems(api, signal, collectionId, pageParam).then(
+      (items) => ({
+        items,
+        pageParam,
+      })
+    );
   };
 
 export const useCollectionItems = (collectionId?: ID | string) => {

@@ -13,10 +13,12 @@ export const getCollections = (api: Wretch) =>
 
 export const getCollectionItems = (
   api: Wretch,
+  signal: AbortSignal | undefined,
   collectionId: string | ID,
   pageIndex?: number
 ) =>
   api
+    .options({ signal })
     .url(`/collections/${collectionId}/items`)
     .query({ pageIndex })
     .get()

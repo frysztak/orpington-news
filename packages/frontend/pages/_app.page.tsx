@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import type { AppPropsWithLayout } from './types';
 import { ChakraProvider, Flex } from '@chakra-ui/react';
 import { Global } from '@emotion/react';
@@ -10,9 +10,22 @@ import {
 import { Panes } from '@features/Panes';
 import { CollectionsContextProvider } from '@features/Collections';
 import { EventListenerContextProvider } from '@features/EventListener';
-import { ApiContextProvider } from '@api';
+import { useGetUser } from '@features/Auth';
+import { ApiContextProvider, useApiContext } from '@api';
 import { theme, fontFaces, MetaTheme } from 'theme';
 import Compose from '@utils/Compose';
+
+const AuthGuard: React.FC<PropsWithChildren> = ({ children }) => {
+  const { showAppContent, setShowAppContent } = useApiContext();
+
+  useGetUser({
+    onSuccess: () => {
+      setShowAppContent(true);
+    },
+  });
+
+  return showAppContent ? <>{children}</> : <></>;
+};
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [queryClient] = useState(
@@ -49,7 +62,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
             <Flex minH="100vh" direction="column">
               <MetaTheme />
-              {getLayout(<Component {...pageProps} />)}
+              <AuthGuard>{getLayout(<Component {...pageProps} />)}</AuthGuard>
             </Flex>
           </Compose>
         </ChakraProvider>

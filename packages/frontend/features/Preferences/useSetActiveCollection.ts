@@ -1,15 +1,33 @@
-import { ID } from '@orpington-news/shared';
+import { CollectionLayout, ID } from '@orpington-news/shared';
 import { useCallback } from 'react';
 import { useSetActiveView } from './queries';
+
+type SetActiveCollectionData =
+  | {
+      id: 'home';
+    }
+  | {
+      id: ID;
+      title: string;
+      layout: CollectionLayout;
+    };
 
 export const useSetActiveCollection = () => {
   const { mutate: setActiveView } = useSetActiveView();
   const setActiveCollection = useCallback(
-    (id: ID | 'home') => {
+    (data: SetActiveCollectionData) => {
       setActiveView(
-        id === 'home'
-          ? { activeView: 'home' }
-          : { activeView: 'collection', activeCollectionId: id }
+        data.id === 'home'
+          ? {
+              activeView: 'home',
+              activeCollectionTitle: 'Home',
+            }
+          : {
+              activeView: 'collection',
+              activeCollectionId: data.id,
+              activeCollectionTitle: data.title,
+              activeCollectionLayout: data.layout,
+            }
       );
     },
     [setActiveView]

@@ -121,7 +121,7 @@ export const useDeleteCollection = ({
       queryClient.invalidateQueries(collectionKeys.tree);
 
       if (navigateHome) {
-        setActiveCollection('home');
+        setActiveCollection({ id: 'home' });
         router.push('/');
         queryClient.invalidateQueries(preferencesKeys.base);
       }

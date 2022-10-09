@@ -1,23 +1,30 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { getUrls, makeApi, Wretch } from '@api';
 import { ReactFCC } from '@utils/react';
 import { useHandleUnauthorized } from './useHandleUnauthorized';
 
 export interface ApiContextData {
   api: Wretch;
+  showAppContent: boolean;
+  setShowAppContent: (value: boolean) => void;
 }
 
 const ApiContext = createContext<ApiContextData | null>(null);
 
 export const ApiContextProvider: ReactFCC = ({ children }) => {
-  const onUnauthorized = useHandleUnauthorized();
+  const [showAppContent, setShowAppContent] = useState(false);
+  const onUnauthorized = useHandleUnauthorized(setShowAppContent);
   const { apiUrl } = useMemo(() => getUrls(), []);
 
   const api = useMemo(() => {
     return makeApi(apiUrl).catcher(401, onUnauthorized);
   }, [apiUrl, onUnauthorized]);
 
-  return <ApiContext.Provider value={{ api }}>{children}</ApiContext.Provider>;
+  return (
+    <ApiContext.Provider value={{ api, showAppContent, setShowAppContent }}>
+      {children}
+    </ApiContext.Provider>
+  );
 };
 
 export const useApiContext = () => {
