@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+} from '@tanstack/react-query';
 import {
   changePassword,
   ChangePasswordData,
@@ -51,12 +56,15 @@ export const useChangePassword = () => {
   });
 };
 
-export const useGetUser = () => {
+type UseGetUserArgs = Pick<UseQueryOptions<User>, 'onSuccess' | 'onError'>;
+
+export const useGetUser = (args?: UseGetUserArgs) => {
   const { onError } = useHandleError();
   const api = useApi();
 
   return useQuery(userKeys.info, () => getUser(api), {
-    onError,
+    onError: args?.onError ?? onError,
+    onSuccess: args?.onSuccess,
     refetchOnMount: false,
   });
 };

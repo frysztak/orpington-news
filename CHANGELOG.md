@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Improve UX of setting active collection and collapsing/expanding collections in high-latency scenarios
+- Fixed flickering when navigating to main page while not being logged-in
 
 ## [0.7.1] - 2022-10-06
 

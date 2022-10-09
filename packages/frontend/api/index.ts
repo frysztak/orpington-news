@@ -1,9 +1,7 @@
-import { useMemo } from 'react';
 import wretch from 'wretch';
 import formDataAddon from 'wretch/addons/formData';
 import queryStringAddon from 'wretch/addons/queryString';
 import abortAddon from 'wretch/addons/abort';
-import { useHandleUnauthorized } from './useHandleUnauthorized';
 
 export const getUrls = () => {
   const apiUrl: string = process.env.NEXT_PUBLIC_API_URL ?? '/api';
@@ -22,21 +20,6 @@ export const makeApi = (url: string) =>
     .errorType('json');
 
 export type Wretch = ReturnType<typeof makeApi>;
-
-export const ssrApi = () => {
-  const { ssrApiUrl } = getUrls();
-  return makeApi(ssrApiUrl);
-};
-
-export const useApi = () => {
-  const onUnauthorized = useHandleUnauthorized();
-  const { apiUrl } = useMemo(() => getUrls(), []);
-
-  return useMemo(
-    () => makeApi(apiUrl).catcher(401, onUnauthorized),
-    [apiUrl, onUnauthorized]
-  );
-};
 
 export * from './ApiContext';
 export * from './useHandleError';
