@@ -38,34 +38,32 @@
   <br />
   <br />
   <a href="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" target="_blank">
-    <img src="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" width="440px" alt="dark theme screenshot" />
+    <img src="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" width="640px" alt="dark theme screenshot" />
   </a>
 </p>
 
 ## Features
 
 <ul>
-  <li>Supports RSS 1.0/RSS 2.0/Atom feeds<br/></li>
-  <li>Supports nested collections drag-n-drop
+  <li>RSS 1.0/RSS 2.0/Atom feed support<br/></li>
+  <li>Nested collections drag-n-drop
     <video src="https://user-images.githubusercontent.com/217806/195674330-62585a3f-f430-42a0-aa77-5aa576752137.mp4"></video>
   </li>
   </li>
   <li>Light and dark theme<br/>
     <a href="https://user-images.githubusercontent.com/217806/195675963-59a88540-2ac8-4876-a580-fe9e9884999c.png" target="_blank">
-      <img src="https://user-images.githubusercontent.com/217806/195675963-59a88540-2ac8-4876-a580-fe9e9884999c.png" width="440px" alt="light theme screenshot" />
+      <img src="https://user-images.githubusercontent.com/217806/195675963-59a88540-2ac8-4876-a580-fe9e9884999c.png" width="390px" alt="light theme screenshot" />
     </a>
     <a href="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" target="_blank">
-      <img src="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" width="440px" alt="dark theme screenshot" />
+      <img src="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" width="390px" alt="dark theme screenshot" />
     </a>
   </li>
-  <li>Mobile-friendly UI
+  <li>Mobile-friendly UI with PWA support
     <video src="https://user-images.githubusercontent.com/217806/195639397-26eac0d2-4527-472a-bf7e-01cbed5e0e42.mp4"></video>
   </li>
   <li>Syntax highlighting in code snippets</li>
-  <li>
-    <details>
-    <summary>Configurable fonts</summary>
-    <br/>
+  <li>Configurable fonts
+    <br/><br/>
     Supported article fonts:
     <ul>
       <li>Nunito (default)</li>
@@ -82,11 +80,11 @@
       <li>OpenDyslexic Mono</li>
     </ul>
     <br/>
+    Settings live preview:<br/>
     <a href="https://user-images.githubusercontent.com/217806/195675969-1b50efd8-925c-4965-bfde-0443878c4a0d.png" target="_blank">
-      <img src="https://user-images.githubusercontent.com/217806/195675969-1b50efd8-925c-4965-bfde-0443878c4a0d.png" width="440px" alt="settings screenshot" />
+      <img src="https://user-images.githubusercontent.com/217806/195675969-1b50efd8-925c-4965-bfde-0443878c4a0d.png" width="640px" alt="settings screenshot" />
     </a>
-  </details>
-  <li>PWA support</li>
+  </li>
   <li>RSS feed auto-detection from page URL<br/>
     <video src="https://user-images.githubusercontent.com/217806/195674349-ab6a9a31-8dcd-4e2a-87f1-98cf2a16a0c2.mp4"></video>
   </li>
