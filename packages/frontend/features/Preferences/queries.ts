@@ -35,6 +35,11 @@ export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
 export const usePrefetchPreferences = () => {
   const api = useApi();
   const queryClient = useQueryClient();
+
+  if (queryClient.getQueryData(preferencesKeys.base)) {
+    return;
+  }
+
   queryClient.prefetchQuery(preferencesKeys.base, ({ signal }) =>
     getPreferences(api, signal)
   );
