@@ -1,28 +1,97 @@
-# Orpington News
+<p align="center">
+  <img src="https://raw.githubusercontent.com/frysztak/orpington-news/master/assets/logo.png" width="200px" height="200px" alt="logo">
+  <h1 align="center">Orpington News</h2>
+  <p align="center">
+    Orpington News is a self-hosted RSS/Atom feed reader with PWA support.
+    <br>
+    <br>
+    <a href="https://news-demo.orpington.software">🎮 View Demo</a>
+  </p>
+</p>
 
-[![release](https://img.shields.io/github/v/release/frysztak/orpington-news)](https://github.com/frysztak/orpington-news/releases)
-[![image-size](https://ghcr-badge.herokuapp.com/frysztak/orpington-news/size)](https://github.com/frysztak/orpington-news/pkgs/container/orpington-news)
-[![license](https://img.shields.io/github/license/frysztak/orpington-news)](https://github.com/frysztak/orpington-news/blob/master/LICENSE)
+<p align="center">
+  <a href="https://github.com/frysztak/orpington-news/releases" target="_blank">
+    <img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/frysztak/orpington-news">
+  </a>
+  <a href="https://github.com/frysztak/orpington-news/pkgs/container/orpington-news" target="_blank">
+    <img alt="Docker image size" src="https://ghcr-badge.herokuapp.com/frysztak/orpington-news/size">
+  </a>
+  <a href="https://github.com/frysztak/orpington-news/blob/master/LICENSE" target="_blank">
+    <img alt="License" src="https://img.shields.io/github/license/frysztak/orpington-news">
+  </a>
+  <a href="https://codecov.io/gh/frysztak/orpington-news" target="_blank">
+    <img alt="Codecov" src="https://codecov.io/gh/frysztak/orpington-news/branch/master/graph/badge.svg" />
+  </a>
+  <br />
+  <a href="https://github.com/frysztak/orpington-news/actions/workflows/dev.yml" target="_blank">
+    <img alt="Dev pipeline" src="https://github.com/frysztak/orpington-news/actions/workflows/dev.yml/badge.svg">
+  </a>
+  <a href="https://github.com/frysztak/orpington-news/actions/workflows/main.yml" target="_blank">
+    <img alt="Main pipeline" src="https://github.com/frysztak/orpington-news/actions/workflows/main.yml/badge.svg">
+  </a>
+</p>
 
-[![cicd-dev](https://github.com/frysztak/orpington-news/actions/workflows/dev.yml/badge.svg)](https://github.com/frysztak/orpington-news/actions/workflows/dev.yml)
-[![cicd-master](https://github.com/frysztak/orpington-news/actions/workflows/main.yml/badge.svg)](https://github.com/frysztak/orpington-news/actions/workflows/main.yml)
-
-Orpington News is a self-hosted RSS/Atom feed reader with PWA support.
-
-![screenshot-1](./assets/screenshot.webp)
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#development-quick-start">Development Quick Start</a>
+  <br />
+  <br />
+  <a href="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" target="_blank">
+    <img src="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" width="640px" alt="dark theme screenshot" />
+  </a>
+</p>
 
 ## Features
 
-- Supports RSS 1.0/RSS 2.0/Atom feeds
-- Supports nested collections (groups of feeds)
-- Light and dark theme
-- Syntax highlighting in code snippets
-- Mobile-friendly UI
-- PWA support
-- RSS feed auto-detection from page URL
-- Small Docker image size (170 MB uncompressed)
-
-Demo instance is available [here](https://news-demo.orpington.software/).
+<ul>
+  <li>RSS 1.0/RSS 2.0/Atom feed support<br/></li>
+  <li>Nested collections drag-n-drop
+    <video src="https://user-images.githubusercontent.com/217806/195674330-62585a3f-f430-42a0-aa77-5aa576752137.mp4"></video>
+  </li>
+  </li>
+  <li>Light and dark theme<br/>
+    <a href="https://user-images.githubusercontent.com/217806/195675963-59a88540-2ac8-4876-a580-fe9e9884999c.png" target="_blank">
+      <img src="https://user-images.githubusercontent.com/217806/195675963-59a88540-2ac8-4876-a580-fe9e9884999c.png" width="390px" alt="light theme screenshot" />
+    </a>
+    <a href="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" target="_blank">
+      <img src="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" width="390px" alt="dark theme screenshot" />
+    </a>
+  </li>
+  <li>Mobile-friendly UI with PWA support
+    <video src="https://user-images.githubusercontent.com/217806/195639397-26eac0d2-4527-472a-bf7e-01cbed5e0e42.mp4"></video>
+  </li>
+  <li>Syntax highlighting in code snippets</li>
+  <li>Configurable fonts
+    <br/><br/>
+    Supported article fonts:
+    <ul>
+      <li>Nunito (default)</li>
+      <li>Ubuntu</li>
+      <li>Lato</li>
+      <li>OpenDyslexic</li>
+    </ul>
+    <br/>
+    Supported monospace fonts:
+    <ul>
+      <li>Source Code Pro (default)</li>
+      <li>Ubuntu Mono</li>
+      <li>Fira Mono</li>
+      <li>OpenDyslexic Mono</li>
+    </ul>
+    <br/>
+    Settings live preview:<br/>
+    <a href="https://user-images.githubusercontent.com/217806/195675969-1b50efd8-925c-4965-bfde-0443878c4a0d.png" target="_blank">
+      <img src="https://user-images.githubusercontent.com/217806/195675969-1b50efd8-925c-4965-bfde-0443878c4a0d.png" width="640px" alt="settings screenshot" />
+    </a>
+  </li>
+  <li>RSS feed auto-detection from page URL<br/>
+    <video src="https://user-images.githubusercontent.com/217806/195674349-ab6a9a31-8dcd-4e2a-87f1-98cf2a16a0c2.mp4"></video>
+  </li>
+  </li>
+  <li>OPML import</li>
+  <li>Small Docker image size (170 MB uncompressed)</li>
+</ul>
 
 ## Installation
 

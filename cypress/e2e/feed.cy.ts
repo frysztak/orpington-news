@@ -185,6 +185,11 @@ sizes.forEach((size) => {
 
       it('from collection header', () => {
         cy.intercept({
+          method: 'GET',
+          url: getApiPath('/collections/1/items?pageIndex=0'),
+        }).as('apiGetItems');
+
+        cy.intercept({
           method: 'POST',
           url: getApiPath('/collections/1/markAsRead'),
         }).as('apiMarkAsRead');
@@ -206,6 +211,7 @@ sizes.forEach((size) => {
         // make collection active
         cy.openDrawerIfExists();
         cy.clickCollection('1');
+        cy.wait('@apiGetItems');
         // mark as read
         cy.clickCollectionHeaderMenuAction('markAsRead');
 

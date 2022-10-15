@@ -95,12 +95,13 @@ export const Sidebar: React.FC = () => {
 
   const handleCollectionClickedAndCloseDrawer = useCallback(
     (collection: FlatCollection) => {
-      push('/');
       closeDrawer();
-      setActiveCollection({
-        id: collection.id,
-        title: collection.title,
-        layout: collection.layout ?? defaultCollectionLayout,
+      push('/', '/', { shallow: true }).then(() => {
+        setActiveCollection({
+          id: collection.id,
+          title: collection.title,
+          layout: collection.layout ?? defaultCollectionLayout,
+        });
       });
     },
     [closeDrawer, setActiveCollection, push]

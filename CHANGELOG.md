@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.3] - 2022-10-15
+
+### Fixed
+
+-   Fixed navigation when changing active collections on Firefox
+
 ## [0.7.2] - 2022-10-09
 
 ### Fixed
@@ -202,7 +208,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.7.2...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.7.3...HEAD
+
+[0.7.3]: https://github.com/frysztak/orpington-news/compare/0.7.2...0.7.3
 
 [0.7.2]: https://github.com/frysztak/orpington-news/compare/0.7.1...0.7.2
 
