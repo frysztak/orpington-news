@@ -31,6 +31,18 @@ runs:
         CYPRESS_RECORD_KEY: ${{ inputs.cypress-key }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
 
+    - name: Fix coverage file
+      shell: bash
+      run: |
+        ./scripts/fix_nyc.sh
+
+    - name: Generate Lcov report
+      shell: bash
+      run: |
+        rm -rf coverage
+        npx nyc report --reporter=lcov
+
     - uses: codecov/codecov-action@v3
       with:
         token: ${{ inputs.codecov-token }}
+        directory: coverage
