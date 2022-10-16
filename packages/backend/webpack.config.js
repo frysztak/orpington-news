@@ -33,7 +33,12 @@ const config = {
     rules: [
       {
         test: /\.ts?$/,
-        use: 'ts-loader',
+        use: [
+          process.env.INSTRUMENT_COVERAGE === 'true'
+            ? '@theintern/istanbul-loader'
+            : null,
+          'ts-loader',
+        ].filter(Boolean),
         exclude: /node_modules/,
       },
     ],
