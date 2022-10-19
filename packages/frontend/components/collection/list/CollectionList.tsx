@@ -105,6 +105,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       w="full"
       h="full"
       data-test="collectionItemList"
+      data-test-layout={layout}
       {...rest}
     >
       <RefreshIndicator isRefreshing={isRefreshing} />
