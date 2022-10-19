@@ -563,13 +563,13 @@ export const collections: FastifyPluginAsync = async (
   });
 
   fastify.put<{
-    Params: z.infer<typeof CollectionId>;
+    Params: z.infer<typeof HomeCollectionId>;
     Body: z.infer<typeof LayoutBody>;
   }>(
     '/:id/layout',
     {
       schema: {
-        params: CollectionId,
+        params: HomeCollectionId,
         body: LayoutBody,
         tags: ['Collections'],
       },

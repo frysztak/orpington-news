@@ -27,6 +27,8 @@ declare namespace Cypress {
       action: string
     ): Chainable<JQuery<HTMLElement>>;
 
+    clickCollectionHeaderLayout(layout: string): Chainable<JQuery<HTMLElement>>;
+
     /**
      * Signs user up by using API request
      */

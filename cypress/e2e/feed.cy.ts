@@ -321,5 +321,67 @@ sizes.forEach((size) => {
         });
       });
     });
+
+    describe('change collection layout', () => {
+      it('home collection', () => {
+        cy.intercept({
+          method: 'PUT',
+          url: getApiPath('/collections/home/layout'),
+        }).as('apiPutLayout');
+
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+
+        cy.visit('/');
+
+        cy.get(`[data-test-layout=card]`).should('exist').and('be.visible');
+
+        cy.clickCollectionHeaderLayout('magazine');
+
+        cy.wait('@apiPutLayout');
+
+        cy.get(`[data-test-layout=magazine]`).should('exist').and('be.visible');
+        cy.get(`[data-test-layout=card]`).should('not.exist');
+      });
+
+      it('other collection', () => {
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath('/collections/1/items?pageIndex=0'),
+        }).as('apiGetItems');
+
+        cy.intercept({
+          method: 'PUT',
+          url: getApiPath('/collections/1/layout'),
+        }).as('apiPutLayout');
+
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+
+        cy.visit('/');
+
+        // make collection active
+        cy.openDrawerIfExists();
+        cy.clickCollection('1');
+        cy.wait('@apiGetItems');
+
+        cy.get(`[data-test-layout=card]`).should('exist').and('be.visible');
+
+        cy.clickCollectionHeaderLayout('magazine');
+
+        cy.wait('@apiPutLayout');
+
+        cy.get(`[data-test-layout=magazine]`).should('exist').and('be.visible');
+        cy.get(`[data-test-layout=card]`).should('not.exist');
+      });
+    });
   });
 });

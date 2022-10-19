@@ -168,44 +168,52 @@ export const useSetCollectionLayout = () => {
       onError,
       onMutate: ({ id, layout }) => {
         if (id === 'home') {
-          const oldPreferences = queryClient.getQueryData<Preferences>(
-            preferencesKeys.base
+          queryClient.setQueryData(
+            preferencesKeys.base,
+            (old?: Preferences) =>
+              old && {
+                ...old,
+                homeCollectionLayout: layout,
+              }
           );
-          if (oldPreferences) {
-            queryClient.setQueryData<Preferences>(preferencesKeys.base, {
-              ...oldPreferences,
-              homeCollectionLayout: layout,
-            });
-          }
 
           return;
         }
 
-        const oldCollections = queryClient.getQueryData<FlatCollection[]>(
-          collectionKeys.tree
+        queryClient.setQueryData(
+          preferencesKeys.base,
+          (old?: Preferences) =>
+            old && {
+              ...old,
+              activeCollectionLayout: layout,
+            }
         );
 
-        if (oldCollections) {
-          const idx = oldCollections.findIndex((c) => c.id === id);
-          if (idx === -1) {
-            return oldCollections;
+        queryClient.setQueryData(
+          collectionKeys.tree,
+          (old?: FlatCollection[]) => {
+            if (!old) {
+              return old;
+            }
+
+            const idx = old.findIndex((c) => c.id === id);
+            if (idx === -1) {
+              return old;
+            }
+
+            const updatedCollection = {
+              ...old[idx]!,
+              layout,
+            };
+
+            return set(lensIndex(idx), updatedCollection, old);
           }
-
-          const updatedCollection = {
-            ...oldCollections[idx]!,
-            layout,
-          };
-
-          queryClient.setQueryData<FlatCollection[]>(
-            collectionKeys.tree,
-            set(lensIndex(idx), updatedCollection, oldCollections)
-          );
-        }
+        );
       },
       onSuccess: (_, { id }) => {
-        if (id === 'home') {
-          queryClient.invalidateQueries(preferencesKeys.base);
-        } else {
+        queryClient.invalidateQueries(preferencesKeys.base);
+
+        if (id !== 'home') {
           queryClient.invalidateQueries(collectionKeys.tree);
         }
       },
