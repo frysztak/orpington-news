@@ -2,6 +2,7 @@ import { CollectionItem, CollectionLayout, ID } from '@orpington-news/shared';
 
 export interface CollectionItemProps {
   item: CollectionItem;
+  isActive?: boolean;
 }
 
 export interface CollectionLayoutProps {
