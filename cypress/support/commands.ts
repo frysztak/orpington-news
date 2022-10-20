@@ -95,6 +95,15 @@ Cypress.Commands.add('clickCollectionHeaderMenuAction', (action: string) => {
   });
 });
 
+Cypress.Commands.add('clickCollectionHeaderLayout', (layout: string) => {
+  const selector = '[data-test=collectionHeader]:visible';
+  return cy.get(selector).within((item) => {
+    cy.getBySel('layoutButton').click();
+    cy.getBySel('layoutMenuList').should('be.visible');
+    cy.getBySel(`layout-${layout}`).click();
+  });
+});
+
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {
   return cy.request('POST', `${Cypress.env('api_url')}/auth/register`, {
     username,

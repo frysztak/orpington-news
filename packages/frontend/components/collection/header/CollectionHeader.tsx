@@ -84,8 +84,9 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                 icon={<BsLayoutWtf />}
                 aria-label="Layout"
                 variant="ghost"
+                data-test="layoutButton"
               />
-              <MenuList data-focus-visible-disabled>
+              <MenuList data-focus-visible-disabled data-test="layoutMenuList">
                 {collection && (
                   <MenuOptionGroup
                     value={collection.layout}
@@ -97,6 +98,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                         key={layout}
                         value={layout}
                         onClick={() => onChangeLayout?.(layout)}
+                        data-test={`layout-${layout}`}
                       >
                         {CollectionLayoutName[layout]}
                       </MenuItemOption>

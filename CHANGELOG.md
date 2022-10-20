@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.4] - 2022-10-20
+
+### Fixed
+
+-   Fixed changing layouts
+
 ## [0.7.3] - 2022-10-15
 
 ### Fixed
@@ -208,7 +214,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.7.3...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.7.4...HEAD
+
+[0.7.4]: https://github.com/frysztak/orpington-news/compare/0.7.3...0.7.4
 
 [0.7.3]: https://github.com/frysztak/orpington-news/compare/0.7.2...0.7.3
 
