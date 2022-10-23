@@ -14,6 +14,7 @@ import {
   CollectionLayout,
   defaultCollectionLayout,
   genN,
+  ID,
 } from '@orpington-news/shared';
 import { usePullToRefresh } from '@utils';
 import { CardItem, MagazineItem } from '../layouts';
@@ -27,6 +28,8 @@ export interface CollectionListProps {
   isFetchingMoreItems?: boolean;
   canFetchMoreItems?: boolean;
   onFetchMoreItems?: () => void;
+
+  activeArticleId?: ID;
 
   // Used by Pull to Refresh
   isRefreshing?: boolean;
@@ -52,6 +55,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     isFetchingMoreItems,
     canFetchMoreItems,
     onFetchMoreItems,
+    activeArticleId,
 
     isRefreshing = false,
     onRefresh,
@@ -116,7 +120,13 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         endReached={onFetchMoreItems}
         scrollerRef={handleScrollerRef}
         itemContent={(index, data) => (
-          <Item item={data} py={2} pr={3} data-test={`item-id-${data.id}`} />
+          <Item
+            item={data}
+            py={2}
+            pr={3}
+            isActive={data.id === activeArticleId}
+            data-test={`item-id-${data.id}`}
+          />
         )}
         components={{
           Footer: canFetchMoreItems ? SkeletonBox : undefined,

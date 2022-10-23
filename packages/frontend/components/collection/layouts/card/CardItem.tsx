@@ -21,7 +21,7 @@ export type CardItemProps = CollectionItemProps &
   };
 
 export const CardItem = forwardRef((props: CardItemProps, ref) => {
-  const { item, onReadingListButtonClicked, ...rest } = props;
+  const { item, isActive, onReadingListButtonClicked, ...rest } = props;
   const {
     id,
     title,
@@ -34,6 +34,10 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
   } = item;
   const readingTimeRounded = Math.ceil(readingTime);
 
+  const inactiveBorder = useColorModeValue('purple.50', 'gray.700');
+  const activeBorder = useColorModeValue('purple.300', 'gray.500');
+  const borderColor = isActive ? activeBorder : inactiveBorder;
+
   return (
     <LinkBox as="article" ref={ref} {...rest}>
       <VStack
@@ -41,7 +45,8 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
         justifyContent="space-between"
         borderRadius="md"
         border="1px"
-        borderColor={useColorModeValue('purple.50', 'gray.700')}
+        borderColor={borderColor}
+        transition="border-color 0.2s"
       >
         <HStack w="full" justifyContent="space-between" alignItems="flex-start">
           <NextLink
@@ -75,7 +80,10 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
           w="calc(100% + 2px)"
           mb="-1px !important"
           background={useColorModeValue('purple.50', 'gray.700')}
+          borderColor={borderColor}
+          borderWidth="0px 1px 1px 1px"
           borderBottomRadius="md"
+          transition="border-color 0.2s"
         >
           <Text noOfLines={[2, 3]} overflowWrap="anywhere">
             {summary}

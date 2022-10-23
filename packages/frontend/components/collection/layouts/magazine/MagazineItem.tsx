@@ -9,6 +9,7 @@ import {
   VStack,
   forwardRef,
   BoxProps,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { format, fromUnixTime } from 'date-fns';
@@ -17,7 +18,7 @@ import { CollectionItemProps } from '../../types';
 export type MagazineItemProps = CollectionItemProps & BoxProps;
 
 export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
-  const { item, ...rest } = props;
+  const { item, isActive, ...rest } = props;
   const {
     id,
     title,
@@ -30,9 +31,19 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
   } = item;
   const readingTimeRounded = Math.ceil(readingTime);
 
+  const activeBorder = useColorModeValue('purple.300', 'gray.500');
+
   return (
     <LinkBox as="article" ref={ref} {...rest}>
-      <HStack spacing={4} align="stretch">
+      <HStack
+        spacing={4}
+        p={2}
+        align="stretch"
+        borderWidth="1px"
+        borderRadius="md"
+        borderColor={isActive ? activeBorder : 'transparent'}
+        transition="border-color 0.2s"
+      >
         {thumbnailUrl && (
           <Image
             src={thumbnailUrl}

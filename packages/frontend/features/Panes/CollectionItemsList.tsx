@@ -6,13 +6,16 @@ import {
 import { useActiveCollection } from '@features/Preferences';
 import { CollectionList } from '@components/collection/list';
 import { ClientRender } from '@utils';
+import { ID } from '@orpington-news/shared';
 
-interface CollectionItemsListProps {}
+interface CollectionItemsListProps {
+  activeArticleId?: ID;
+}
 
 export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
   props
 ) => {
-  const {} = props;
+  const { activeArticleId } = props;
 
   const activeCollection = useActiveCollection();
   const {
@@ -53,6 +56,7 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
         canFetchMoreItems={hasNextPage}
         isRefreshing={isRefreshing}
         onRefresh={handleRefreshClick}
+        activeArticleId={activeArticleId}
       />
     </ClientRender>
   );
