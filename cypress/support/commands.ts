@@ -30,6 +30,10 @@ Cypress.Commands.add('getBySel', (selector, ...args) => {
   return cy.get(`[data-test=${selector}]`, ...args);
 });
 
+Cypress.Commands.add('getBySelVisible', (selector, ...args) => {
+  return cy.get(`[data-test=${selector}]:visible`, ...args);
+});
+
 Cypress.Commands.add('getBySelLike', (selector, ...args) => {
   return cy.get(`[data-test*=${selector}]`, ...args);
 });
@@ -60,6 +64,12 @@ Cypress.Commands.add('closeDrawerIfExists', () => {
         cy.getBySel('drawer').should('not.exist');
       });
     }
+  });
+});
+
+Cypress.Commands.add('waitForDrawerToClose', () => {
+  return cy.getBySel('panesMobile').then(($body) => {
+    cy.getBySel('drawer').should('not.exist');
   });
 });
 
@@ -101,6 +111,17 @@ Cypress.Commands.add('clickCollectionHeaderLayout', (layout: string) => {
     cy.getBySel('layoutButton').click();
     cy.getBySel('layoutMenuList').should('be.visible');
     cy.getBySel(`layout-${layout}`).click();
+  });
+});
+
+Cypress.Commands.add('clickGoBackIfExists', () => {
+  const selector = '[data-test=goBack]:visible';
+  return cy.getBySel('panesMobile').then(($body) => {
+    if ($body.find(selector).length > 0) {
+      cy.get(selector).then(($button) => {
+        $button.trigger('click');
+      });
+    }
   });
 });
 

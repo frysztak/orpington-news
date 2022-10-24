@@ -6,6 +6,10 @@ declare namespace Cypress {
       dataTestAttribute: string,
       args?: any
     ): Chainable<JQuery<HTMLElement>>;
+    getBySelVisible(
+      dataTestAttribute: string,
+      args?: any
+    ): Chainable<JQuery<HTMLElement>>;
 
     getBySelLike(
       dataTestPrefixAttribute: string,
@@ -14,6 +18,8 @@ declare namespace Cypress {
 
     openDrawerIfExists(): Chainable<JQuery<HTMLElement>>;
     closeDrawerIfExists(): Chainable<JQuery<HTMLElement>>;
+    waitForDrawerToClose(): Chainable<JQuery<HTMLElement>>;
+
     getReadItems(): Chainable<JQuery<HTMLElement>>;
     getUnreadItems(): Chainable<JQuery<HTMLElement>>;
 
@@ -28,6 +34,8 @@ declare namespace Cypress {
     ): Chainable<JQuery<HTMLElement>>;
 
     clickCollectionHeaderLayout(layout: string): Chainable<JQuery<HTMLElement>>;
+
+    clickGoBackIfExists(): Chainable<JQuery<HTMLElement>>;
 
     /**
      * Signs user up by using API request

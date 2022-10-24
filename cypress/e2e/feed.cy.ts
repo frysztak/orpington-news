@@ -123,21 +123,36 @@ sizes.forEach((size) => {
         icon: 'Code',
         refreshInterval: 120,
       });
+      cy.intercept({
+        method: 'GET',
+        url: getApiPath('/collections/1/items?pageIndex=0'),
+      }).as('apiGetItems');
+      cy.intercept({
+        method: 'GET',
+        url: getApiPath('/collections/1/item/1'),
+      }).as('apiGetArticle');
 
       cy.visit('/');
       cy.openDrawerIfExists();
       cy.getBySel('collection-id-1').click();
+      cy.wait('@apiGetItems');
       cy.getBySel('item-id-1').click();
       cy.url().should('equal', `${baseUrl}/collection/1/article/1`);
+      cy.wait('@apiGetArticle');
+
+      cy.getBySelVisible('articleHeader').should(
+        'have.text',
+        "Remix: The Yang to React's Yin"
+      );
+
+      cy.clickGoBackIfExists();
+      if (size.includes('iphone')) {
+        cy.url().should('equal', `${baseUrl}/`);
+      }
+      cy.getBySel('collectionItemList').should('exist').and('be.visible');
       cy.openDrawerIfExists();
       cy.getBySel('collection-id-1').within(() => {
         cy.getBySel('badge').should('exist').and('have.text', '2');
-      });
-      cy.getBySel('panesDesktop').within(() => {
-        cy.getBySel('articleHeader').should(
-          'have.text',
-          "Remix: The Yang to React's Yin"
-        );
       });
     });
 

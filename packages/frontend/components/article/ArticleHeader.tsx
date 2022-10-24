@@ -80,6 +80,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           onClick={onGoBackClicked}
           isDisabled={disableActionButtons}
           display={{ base: 'inline-flex', lg: 'none' }}
+          data-test="goBack"
         />
 
         <IconButton
