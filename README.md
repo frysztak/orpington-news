@@ -107,7 +107,18 @@ Docker image (`ghcr.io/frysztak/orpington-news`) exposes the app on port `8000`.
 For `DB_PASS` and `COOKIE_SECRET`, `_FILE` suffix is also supported. For example, `DB_PASS_FILE=./secrets/db_pass` will read database
 password from file `secrets/db_pass`. All variables are described in [Wiki page](https://github.com/frysztak/orpington-news/wiki/Env-variables).
 
-Sample `docker-compose.yml` using Traefik is available [here](https://github.com/frysztak/orpington-news/blob/master/docker-compose.yml).
+Sample Docker invocation:
+
+```
+docker run -it --name orpington-news --restart=always \
+-e APP_URL=[ your public URL ]  \
+-e DB_HOST=[ your DB address ]  \
+-e DB_PASS=[ your DB password ]  \
+-p [ public port ]:8000  \
+-d ghcr.io/frysztak/orpington-news
+```
+
+Sample `docker-compose.yml` is available [here](https://github.com/frysztak/orpington-news/blob/master/docker-compose.template.yml).
 
 ## Development quick start
 

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  orpington-news:
+    image: ghcr.io/frysztak/orpington-news-api:latest
+    container_name: orpington-news
+    environment:
+      - APP_URL=https://news.my.domain # please change to your actual domain
+      - DB_HOST=orpington-news-postgres
+      - DB_PASS=dbpass # same pass like `POSTGRES_PASSWORD` below
+      - COOKIE_SECRET=<generate unique cookie secret, for details see README>
+    networks:
+      - orpington-news
+    restart: always
+
+  orpington-news-postgres:
+    image: postgres:14-alpine
+    container_name: orpington-news-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dbpass
+    volumes:
+      - <local directory>:/var/lib/postgresql/data
+    networks:
+      - orpington-news
+    restart: always
+
+networks:
+  orpington-news:
