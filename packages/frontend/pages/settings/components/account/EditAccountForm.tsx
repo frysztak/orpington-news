@@ -38,13 +38,14 @@ export const EditAccountForm: React.FC<EditAccountFormProps> = (props) => {
       onSubmit={handleSubmit}
     >
       {({ isValid, values: { displayName } }) => (
-        <Form noValidate>
+        <Form noValidate data-test="editAccountForm">
           <VStack spacing={4} w="full">
             <StringField
               name="username"
               helperText="You'll use this to log in into the app."
               label="Username"
               isDisabled={true}
+              data-test="username"
             />
 
             <HStack w="full" align="center">
@@ -54,6 +55,7 @@ export const EditAccountForm: React.FC<EditAccountFormProps> = (props) => {
                 label="Display name"
                 isDisabled={isDisabled || isLoading}
                 isRequired
+                data-test="displayName"
               />
               <Box flexBasis="20%" maxW={14} pr={2}>
                 <AvatarField name="avatarUrl" displayName={displayName} />
@@ -67,6 +69,7 @@ export const EditAccountForm: React.FC<EditAccountFormProps> = (props) => {
                 mt={4}
                 isDisabled={isDisabled || !isValid}
                 isLoading={isLoading}
+                data-test="save"
               >
                 Save
               </Button>

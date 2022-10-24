@@ -47,7 +47,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
       onSubmit={handleSubmit}
     >
       {({ isValid }) => (
-        <Form noValidate>
+        <Form noValidate data-test="changePasswordForm">
           <VStack spacing={4} w="full">
             <PasswordField
               name="currentPassword"
@@ -55,6 +55,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
               isDisabled={isDisabled || isLoading}
               autoComplete="current-password"
               isRequired
+              data-test="currentPassword"
             />
 
             <PasswordField
@@ -63,6 +64,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
               isDisabled={isDisabled || isLoading}
               autoComplete="new-password"
               isRequired
+              data-test="newPassword"
             />
 
             <PasswordField
@@ -71,6 +73,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
               isDisabled={isDisabled || isLoading}
               autoComplete="new-password"
               isRequired
+              data-test="newPasswordConfirm"
             />
 
             <HStack w="full" justify="flex-end">
@@ -80,6 +83,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = (
                 mt={4}
                 isDisabled={!isValid || isDisabled}
                 isLoading={isLoading}
+                data-test="savePassword"
               >
                 Save password
               </Button>

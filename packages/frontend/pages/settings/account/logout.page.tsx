@@ -28,7 +28,7 @@ const Page: NextPageWithLayout = () => {
         <title>Log out</title>
       </Head>
 
-      <Heading py={4} fontSize="xl">
+      <Heading py={4} fontSize="xl" data-test="logoutMessage">
         Logging you out...
       </Heading>
     </>
