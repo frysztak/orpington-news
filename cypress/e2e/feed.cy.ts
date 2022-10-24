@@ -209,6 +209,11 @@ sizes.forEach((size) => {
           url: getApiPath('/collections/1/markAsRead'),
         }).as('apiMarkAsRead');
 
+        cy.intercept({
+          method: 'PUT',
+          url: getApiPath('/preferences/activeView'),
+        }).as('apiPreferencesActiveView');
+
         cy.addFeedByApi({
           title: 'Kent C. Dodds Blog',
           url: getFeedUrl('kentcdodds.xml'),
@@ -226,6 +231,7 @@ sizes.forEach((size) => {
         // make collection active
         cy.openDrawerIfExists();
         cy.clickCollection('1');
+        cy.wait('@apiPreferencesActiveView');
         cy.wait('@apiGetItems');
         // mark as read
         cy.clickCollectionHeaderMenuAction('markAsRead');
