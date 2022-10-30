@@ -3,10 +3,13 @@ FROM node:16.15.0-alpine as base
 
 # BUILDER
 FROM base as builder
+ARG TARGETARCH
 
 # fix for @parcel/watcher missing pre-built package for Linux ARM64
 # https://github.com/parcel-bundler/watcher/issues/102
-RUN apk add --no-cache git make clang build-base python3
+RUN if [ "arm64" = "$TARGETARCH" ]; then \
+      apk add --no-cache git make clang build-base python3; \
+    fi
 WORKDIR /app
 COPY package.json yarn.lock lerna.json .yarnrc.yml ./
 COPY .yarn/ ./.yarn/
