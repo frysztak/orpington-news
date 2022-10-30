@@ -42,7 +42,6 @@ import {
   CollectionLayout,
   defaultCollectionLayout,
   ID,
-  CollectionId,
   HomeCollectionId,
   numeric,
 } from '@orpington-news/shared';
@@ -78,11 +77,10 @@ const MoveCollection = z.object({
   newOrder: z.number(),
 });
 
-const ItemDetailsParams = HomeCollectionId.merge(
-  z.object({
-    itemId: numeric(ID),
-  })
-);
+const ItemDetailsParams = z.object({
+  id: numeric(ID),
+  itemId: numeric(ID),
+});
 
 const mapDBCollection = (collection: DBCollection): FlatCollection => {
   const {
@@ -441,10 +439,6 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const { params } = request;
       const { id, itemId } = params;
-      // TODO
-      if (id === 'home') {
-        return;
-      }
 
       try {
         const details = await pool.one(getItemDetails(id, itemId));
@@ -511,11 +505,6 @@ export const collections: FastifyPluginAsync = async (
         params: { id, itemId },
         body: { dateRead },
       } = request;
-
-      // TODO
-      if (id === 'home') {
-        return;
-      }
 
       await pool.any(setItemDateRead(id, itemId, dateRead));
       return true;
