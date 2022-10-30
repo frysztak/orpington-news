@@ -52,7 +52,7 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
         h="full"
         isLoading={isLoading}
         isFetchingMoreItems={isFetchingNextPage}
-        onFetchMoreItems={fetchNextPage}
+        onFetchMoreItems={() => fetchNextPage({ cancelRefetch: false })}
         canFetchMoreItems={hasNextPage}
         isRefreshing={isRefreshing}
         onRefresh={handleRefreshClick}

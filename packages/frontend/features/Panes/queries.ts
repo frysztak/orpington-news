@@ -115,11 +115,13 @@ export const useDeleteCollection = ({
     onSuccess: ({ ids, navigateHome }) => {
       onSuccess?.(ids);
       queryClient.invalidateQueries(collectionKeys.tree);
+      queryClient.invalidateQueries(collectionKeys.list('home'));
 
       if (navigateHome) {
-        setActiveCollection({ id: 'home' });
-        router.push('/');
-        queryClient.invalidateQueries(preferencesKeys.base);
+        router.push('/', '/', { shallow: true }).then(() => {
+          setActiveCollection({ id: 'home' });
+          queryClient.invalidateQueries(preferencesKeys.base);
+        });
       }
     },
   });

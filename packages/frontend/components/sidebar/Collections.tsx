@@ -176,7 +176,7 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
             mt={4}
             mb={2}
           />
-          <Text fontSize="xl" fontWeight="bold">
+          <Text fontSize="xl" fontWeight="bold" data-test="thereAreNoFeedsYet">
             There are no feeds yet.
           </Text>
         </>

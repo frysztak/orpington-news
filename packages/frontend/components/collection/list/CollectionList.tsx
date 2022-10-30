@@ -92,7 +92,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
 
   if (!isLoading && items.length === 0) {
     return (
-      <VStack w="full" pt={8} justify="center">
+      <VStack w="full" pt={8} justify="center" data-test="thisFeedHasNoItems">
         <Icon as={InformationCircleIcon} boxSize={12} color="blue.400" />
         <Text fontSize="xl" fontWeight="bold">
           This feed has no items.
