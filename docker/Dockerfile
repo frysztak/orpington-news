@@ -1,5 +1,5 @@
 # BASE
-FROM node:16-alpine as base
+FROM node:16.15.0-alpine as base
 
 # BUILDER
 FROM base as builder
