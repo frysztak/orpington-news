@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { FlatCollection, ID } from '@orpington-news/shared';
+import { Collection, ID } from '@orpington-news/shared';
 import { buildParentsChildrenMap, ParentsMap } from '@features/Collections';
 import type {
   DnDEvent,
@@ -40,7 +40,7 @@ const resolveHoverStatus = (
 
 export const useDndHandler = (
   onDrop: (newParent: MoveCollectionEvent) => void,
-  flatCollections?: FlatCollection[]
+  Collections?: Collection[]
 ) => {
   const [hoverStatus, setHoverStatus] = useState<HoverStatus>();
   const [expandedCollections, setExpandedCollections] = useState<Set<ID>>(
@@ -54,8 +54,8 @@ export const useDndHandler = (
   }, []);
 
   const { parentsMap, childrenMap } = useMemo(
-    () => buildParentsChildrenMap(flatCollections),
-    [flatCollections]
+    () => buildParentsChildrenMap(Collections),
+    [Collections]
   );
 
   const onDnDEvent = useCallback(
@@ -107,7 +107,7 @@ export const useDndHandler = (
     [childrenMap, expandCollection, expandedCollections, onDrop, parentsMap]
   );
 
-  const onChevronClicked = useCallback((collection: FlatCollection) => {
+  const onChevronClicked = useCallback((collection: Collection) => {
     setExpandedCollections((collections) => {
       const newSet = new Set(collections);
       if (collections.has(collection.id)) {

@@ -1,11 +1,14 @@
 import { sql, SqlSqlToken } from 'slonik';
+import { z } from 'zod';
 import { getUnixTime } from 'date-fns';
 import {
+  AddCollection,
   Collection,
   CollectionLayout,
   defaultIcon,
   defaultRefreshInterval,
   ID,
+  UpdateCollection,
 } from '@orpington-news/shared';
 import { MAX_INT, normalizeUrl } from '@utils';
 
@@ -13,10 +16,7 @@ export const recalculateCollectionsOrder = () => {
   return sql`CALL collections_recalculate_order();`;
 };
 
-export const addCollection = (
-  collection: Omit<Collection, 'id' | 'unreadCount' | 'children'>,
-  userId: ID
-) => {
+export const addCollection = (collection: AddCollection, userId: ID) => {
   const {
     title,
     icon,
@@ -100,9 +100,7 @@ RETURNING
 `;
 };
 
-export const updateCollection = (
-  collection: Omit<Collection, 'unreadCount' | 'children'>
-) => {
+export const updateCollection = (collection: UpdateCollection) => {
   const { id, title, icon, parentId, description, refreshInterval } =
     collection;
 

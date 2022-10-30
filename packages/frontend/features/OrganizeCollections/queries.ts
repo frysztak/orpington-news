@@ -5,7 +5,7 @@ import {
   useApi,
   useHandleError,
 } from '@api';
-import { FlatCollection } from '@orpington-news/shared';
+import { Collection } from '@orpington-news/shared';
 import { collectionKeys } from '@features/queryKeys';
 
 export const useMoveCollection = () => {
@@ -15,8 +15,8 @@ export const useMoveCollection = () => {
 
   return useMutation((body: MoveCollectionBody) => moveCollection(api, body), {
     onError,
-    onSuccess: (flatCollections: FlatCollection[]) => {
-      queryClient.setQueryData(collectionKeys.tree, flatCollections);
+    onSuccess: (Collections: Collection[]) => {
+      queryClient.setQueryData(collectionKeys.tree, Collections);
     },
   });
 };

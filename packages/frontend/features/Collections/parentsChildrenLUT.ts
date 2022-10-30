@@ -1,19 +1,19 @@
-import { FlatCollection, ID } from '@orpington-news/shared';
+import { Collection, ID } from '@orpington-news/shared';
 
 export type ParentsMap = Map<ID, Set<ID>>;
 export type ChildrenMap = ParentsMap;
 
 export const buildParentsChildrenMap = (
-  flatCollections?: FlatCollection[]
+  Collections?: Collection[]
 ): { parentsMap: ParentsMap; childrenMap: ChildrenMap } => {
   const parentsMap = new Map<ID, Set<ID>>();
   const childrenMap = new Map<ID, Set<ID>>();
 
-  if (!flatCollections) {
+  if (!Collections) {
     return { parentsMap, childrenMap };
   }
 
-  for (const collection of flatCollections) {
+  for (const collection of Collections) {
     parentsMap.set(collection.id, new Set(collection.parents));
 
     for (const parent of collection.parents) {

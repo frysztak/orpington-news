@@ -38,12 +38,13 @@ import {
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
 import {
   Collection,
-  FlatCollection,
   CollectionLayout,
   defaultCollectionLayout,
   ID,
   HomeCollectionId,
   numeric,
+  UpdateCollection,
+  AddCollection,
 } from '@orpington-news/shared';
 import { MAX_INT, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
@@ -56,20 +57,9 @@ import {
 } from '@tasks/fetchRSS';
 import { importOPML } from '@services/opml';
 
-const PostCollection = Collection.pick({
-  title: true,
-  icon: true,
-  parentId: true,
-  description: true,
-  url: true,
-  refreshInterval: true,
+const PostCollection = AddCollection.omit({
+  layout: true,
 });
-
-const PutCollection = PostCollection.merge(
-  z.object({
-    id: ID,
-  })
-);
 
 const MoveCollection = z.object({
   collectionId: ID,
@@ -82,7 +72,7 @@ const ItemDetailsParams = z.object({
   itemId: numeric(ID),
 });
 
-const mapDBCollection = (collection: DBCollection): FlatCollection => {
+const mapDBCollection = (collection: DBCollection): Collection => {
   const {
     date_updated,
     refresh_interval,
@@ -110,9 +100,7 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
   };
 };
 
-const calculateUnreadCount = (
-  collections: FlatCollection[]
-): FlatCollection[] => {
+const calculateUnreadCount = (collections: Collection[]): Collection[] => {
   const lut = new Map<ID, number>(
     collections.map(({ id, unreadCount }) => [id, unreadCount])
   );
@@ -157,7 +145,7 @@ export const collections: FastifyPluginAsync = async (
 ): Promise<void> => {
   fastify.addHook('preHandler', fastify.auth([fastify.verifySession]));
 
-  fastify.get<{ Reply: Array<FlatCollection> }>(
+  fastify.get<{ Reply: Array<Collection> }>(
     '/',
     {
       schema: {
@@ -174,7 +162,7 @@ export const collections: FastifyPluginAsync = async (
 
   fastify.post<{
     Body: z.infer<typeof PostCollection>;
-    Reply: Array<FlatCollection>;
+    Reply: Array<Collection>;
   }>(
     '/',
     {
@@ -216,7 +204,7 @@ export const collections: FastifyPluginAsync = async (
 
   fastify.post<{
     Body: z.infer<typeof MoveCollection>;
-    Reply: Array<FlatCollection>;
+    Reply: Array<Collection>;
   }>(
     '/move',
     {
@@ -238,11 +226,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Body: z.infer<typeof PutCollection> }>(
+  fastify.put<{ Body: UpdateCollection }>(
     '/',
     {
       schema: {
-        body: PutCollection,
+        body: UpdateCollection,
         tags: ['Collections'],
       },
     },

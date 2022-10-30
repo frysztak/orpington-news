@@ -3,7 +3,7 @@ import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Box } from '@chakra-ui/react';
 import { Collections, CollectionsProps } from './Collections';
-import { sampleFlatCollections } from '../collection/sampleData';
+import { sampleCollections } from '../collection/sampleData';
 
 export default {
   title: 'Components/Sidebar/Collections',
@@ -41,19 +41,19 @@ Error.args = {
 export const SomeFeeds = Template.bind({});
 SomeFeeds.args = {
   ...Empty.args,
-  collections: sampleFlatCollections,
+  collections: sampleCollections,
 };
 
 export const InitialActive = Template.bind({});
 InitialActive.args = {
   ...Empty.args,
-  collections: sampleFlatCollections,
+  collections: sampleCollections,
   activeCollectionId: 4,
 };
 
 export const InitialExpanded = Template.bind({});
 InitialExpanded.args = {
   ...Empty.args,
-  collections: sampleFlatCollections,
+  collections: sampleCollections,
   expandedCollectionIDs: [3],
 };

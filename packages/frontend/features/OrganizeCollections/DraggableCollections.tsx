@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Virtuoso } from 'react-virtuoso';
 import {
   Collection,
-  FlatCollection,
   ID,
   inhibitUntilArgsChanged,
   noop,
@@ -34,12 +33,12 @@ interface ItemContentProps {
   parentId?: ID;
   parentIndex?: number;
   isLast: boolean;
-  collection: FlatCollection;
+  collection: Collection;
   expandedCollectionIDs?: Set<ID>;
   hoverStatus?: HoverStatus;
   parentsMap: ParentsMap;
 
-  onChevronClicked: (collection: FlatCollection) => void;
+  onChevronClicked: (collection: Collection) => void;
   onDnDEvent: (event: DnDEvent) => void;
 }
 
@@ -62,7 +61,7 @@ const ItemContent: React.FC<ItemContentProps> = (props) => {
   const hasChildren = Boolean(children) && children?.length !== 0;
   const isOpen = expandedCollectionIDs?.has(id) ?? false;
 
-  const handleChevronClick = (collection: FlatCollection) => () =>
+  const handleChevronClick = (collection: Collection) => () =>
     onChevronClicked(collection);
 
   const icon = useMemo(
@@ -80,7 +79,7 @@ const ItemContent: React.FC<ItemContentProps> = (props) => {
         isDragging: monitor.isDragging(),
         opacity: monitor.isDragging() ? 0.5 : 1,
       }),
-      end: (draggedItem: FlatCollection) => {
+      end: (draggedItem: Collection) => {
         onDnDEvent({ type: 'dragEnd' });
       },
     }),
@@ -211,12 +210,12 @@ const ItemContent: React.FC<ItemContentProps> = (props) => {
 };
 
 export interface DraggableCollectionsProps {
-  collections: FlatCollection[];
+  collections: Collection[];
   expandedCollectionIDs?: Set<ID>;
   hoverStatus?: HoverStatus;
   parentsMap: ParentsMap;
 
-  onChevronClicked: (collection: FlatCollection) => void;
+  onChevronClicked: (collection: Collection) => void;
   onDnDEvent: (event: DnDEvent) => void;
 }
 

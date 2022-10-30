@@ -7,7 +7,7 @@ import {
   CollectionIconType,
   defaultIcon,
   defaultRefreshInterval,
-  FlatCollection,
+  Collection,
   ID,
   numberToString,
   urlRegex,
@@ -28,7 +28,7 @@ export interface AddCollectionFormProps {
   verifiedUrl?: string;
 
   areCollectionsLoading?: boolean;
-  collections: FlatCollection[];
+  collections: Collection[];
 
   onVerifyUrlClicked?: (url: string) => void;
   onSubmit: (data: AddCollectionFormData) => void;

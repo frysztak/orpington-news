@@ -1,15 +1,16 @@
 import {
+  AddCollection,
   Collection,
   CollectionItem,
   CollectionItemDetails,
   CollectionLayout,
-  FlatCollection,
   ID,
+  UpdateCollection,
 } from '@orpington-news/shared';
 import type { Wretch } from '@api';
 
 export const getCollections = (api: Wretch) =>
-  api.url('/collections').get().json<FlatCollection[]>();
+  api.url('/collections').get().json<Collection[]>();
 
 export const getCollectionItems = (
   api: Wretch,
@@ -49,16 +50,11 @@ export const verifyFeedUrl = (api: Wretch, url: string) =>
 
 export const addCollection = (
   api: Wretch,
-  collection: Omit<
-    Collection,
-    'id' | 'unreadCount' | 'children' | 'dateUpdated'
-  >
-) => api.url(`/collections`).post(collection).json<FlatCollection[]>();
+  collection: Omit<AddCollection, 'layout'>
+) => api.url(`/collections`).post(collection).json<Collection[]>();
 
-export const editCollection = (
-  api: Wretch,
-  collection: Omit<Collection, 'unreadCount' | 'children' | 'dateUpdated'>
-) => api.url(`/collections`).put(collection).json<FlatCollection[]>();
+export const editCollection = (api: Wretch, collection: UpdateCollection) =>
+  api.url(`/collections`).put(collection).json<Collection[]>();
 
 export const deleteCollection = (api: Wretch, collectionId: ID) =>
   api
@@ -70,7 +66,7 @@ export const markCollectionAsRead = (api: Wretch, collectionId: ID | 'home') =>
   api
     .url(`/collections/${collectionId}/markAsRead`)
     .post()
-    .json<{ ids: ID[]; timestamp: number; collections: FlatCollection[] }>();
+    .json<{ ids: ID[]; timestamp: number; collections: Collection[] }>();
 
 export const refreshCollection = (api: Wretch, collectionId: ID | 'home') =>
   api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();
@@ -82,7 +78,7 @@ export interface MoveCollectionBody {
 }
 
 export const moveCollection = (api: Wretch, body: MoveCollectionBody) =>
-  api.url(`/collections/move`).post(body).json<FlatCollection[]>();
+  api.url(`/collections/move`).post(body).json<Collection[]>();
 
 export const setCollectionLayout = (
   api: Wretch,

@@ -11,11 +11,7 @@ import {
 import type { AddCollectionFormData } from '@components/collection/add';
 import { useSetActiveCollection } from '@features/Preferences';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
-import {
-  defaultRefreshInterval,
-  FlatCollection,
-  ID,
-} from '@orpington-news/shared';
+import { defaultRefreshInterval, Collection, ID } from '@orpington-news/shared';
 
 export const useVerifyFeedURL = () => {
   const api = useApi();
@@ -48,7 +44,7 @@ export const useSaveCollection = ({
       }),
     {
       onError,
-      onSuccess: (data: FlatCollection[], formData: AddCollectionFormData) => {
+      onSuccess: (data: Collection[], formData: AddCollectionFormData) => {
         onSuccess?.();
         queryClient.setQueryData(collectionKeys.tree, data);
 
@@ -87,7 +83,7 @@ export const useEditCollection = ({
       }),
     {
       onError,
-      onSuccess: (data: FlatCollection[], formData: AddCollectionFormData) => {
+      onSuccess: (data: Collection[], formData: AddCollectionFormData) => {
         onSuccess?.();
         queryClient.setQueryData(collectionKeys.tree, data);
         queryClient.invalidateQueries(collectionKeys.allForId(id));

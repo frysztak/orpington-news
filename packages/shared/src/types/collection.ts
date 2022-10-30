@@ -73,43 +73,45 @@ export const Collection = z.object({
   unreadCount: z.number(),
   icon: CollectionIcons,
   parentId: z.optional(ID),
-  children: z.optional(z.array(z.number())),
-  // ^ remove that shit
 
   description: z.optional(z.string()),
   url: z.optional(z.string()),
   dateUpdated: z.optional(z.number()),
   refreshInterval: z.optional(z.number()),
   layout: z.optional(CollectionLayout),
+
+  parents: z.array(ID),
+  children: z.array(ID),
+  order: z.number(),
+  orderPath: z.array(z.number()),
+  level: z.number(),
+  isLastChild: z.boolean(),
+  parentOrder: z.optional(z.number()),
 });
 export type Collection = z.infer<typeof Collection>;
 
-export const FlatCollection = Collection.omit({
-  children: true,
-}).merge(
-  z.object({
-    parents: z.array(ID),
-    children: z.array(ID),
-    order: z.number(),
-    orderPath: z.array(z.number()),
-    level: z.number(),
-    isLastChild: z.boolean(),
-    parentOrder: z.optional(z.number()),
-  })
-);
-export type FlatCollection = z.infer<typeof FlatCollection>;
+export const AddCollection = Collection.pick({
+  title: true,
+  icon: true,
+  parentId: true,
+  description: true,
+  url: true,
+  refreshInterval: true,
+  dateUpdated: true,
+  layout: true,
+});
+export type AddCollection = z.infer<typeof AddCollection>;
 
-/*
-export type FlatCollection = Omit<Collection, 'children'> & {
-  parents: Array<ID>;
-  children: Array<ID>;
-  order: number;
-  orderPath: Array<number>;
-  level: number;
-  isLastChild: boolean;
-  parentOrder?: number;
-};
-*/
+export const UpdateCollection = Collection.pick({
+  id: true,
+  title: true,
+  icon: true,
+  parentId: true,
+  description: true,
+  url: true,
+  refreshInterval: true,
+});
+export type UpdateCollection = z.infer<typeof UpdateCollection>;
 
 export const CollectionItem = z.object({
   id: ID,
@@ -126,7 +128,7 @@ export const CollectionItem = z.object({
   categories: z.string().array().optional(),
   comments: z.string().optional(),
 
-  collection: FlatCollection.pick({
+  collection: Collection.pick({
     id: true,
     title: true,
     icon: true,
@@ -135,27 +137,6 @@ export const CollectionItem = z.object({
   onReadingList: z.boolean(),
 });
 export type CollectionItem = z.infer<typeof CollectionItem>;
-
-/*
-export interface CollectionItem {
-  id: ID;
-  previousId: ID | null;
-  nextId: ID | null;
-  url: string;
-  title: string;
-  summary: string;
-  fullText: string;
-  thumbnailUrl?: string;
-  datePublished: number;
-  dateUpdated: number;
-  dateRead?: number;
-  categories?: string[];
-  comments?: string;
-
-  collection: Pick<FlatCollection, 'id' | 'title' | 'icon'>;
-  readingTime: number;
-  onReadingList: boolean;
-}*/
 
 export type CollectionItemDetails = Omit<
   CollectionItem,

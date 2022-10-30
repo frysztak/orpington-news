@@ -1,15 +1,15 @@
 import { useCallback } from 'react';
-import { FlatCollection } from '@orpington-news/shared';
+import { Collection } from '@orpington-news/shared';
 import { useDndHandler } from './useDndHandler';
 import { useMoveCollection } from './queries';
 import { MoveCollectionEvent, DraggableCollections } from '.';
 
 export interface OrganizeCollectionsProps {
-  flatCollections: FlatCollection[];
+  Collections: Collection[];
 }
 
 export const OrganizeCollections: React.FC<OrganizeCollectionsProps> = ({
-  flatCollections,
+  Collections,
 }) => {
   const { mutate: moveCollection } = useMoveCollection();
 
@@ -26,11 +26,11 @@ export const OrganizeCollections: React.FC<OrganizeCollectionsProps> = ({
     parentsMap,
     onDnDEvent,
     onChevronClicked,
-  } = useDndHandler(onDrop, flatCollections);
+  } = useDndHandler(onDrop, Collections);
 
   return (
     <DraggableCollections
-      collections={flatCollections}
+      collections={Collections}
       hoverStatus={hoverStatus}
       expandedCollectionIDs={expandedCollections}
       parentsMap={parentsMap}

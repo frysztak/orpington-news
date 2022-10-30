@@ -1,4 +1,4 @@
-import { FlatCollection } from '@orpington-news/shared';
+import { Collection } from '@orpington-news/shared';
 import { buildParentsChildrenMap } from '@features/Collections';
 import { DropEvent } from '.';
 import { HoverEvent, TargetInfo } from './dndTypes';
@@ -7,7 +7,7 @@ import {
   resolveLogicalPosition,
   resolveNewParentAfterDrop,
 } from './resolvers';
-import { sampleFlatCollections } from '@components/collection/sampleData';
+import { sampleCollections } from '@components/collection/sampleData';
 
 describe('resolveLogicalPosition', () => {
   it(`returns 'child' when hovering in the middle`, () => {
@@ -74,7 +74,7 @@ describe('resolveLogicalPosition', () => {
 });
 
 describe('resolveIfCanDrop', () => {
-  const { parentsMap } = buildParentsChildrenMap(sampleFlatCollections);
+  const { parentsMap } = buildParentsChildrenMap(sampleCollections);
 
   it('returns false when hovering collection over itself', () => {
     const event: HoverEvent = {
@@ -141,7 +141,7 @@ describe('resolveIfCanDrop', () => {
 });
 
 describe('resolveNewParentAfterDrop', () => {
-  const flatCollections: FlatCollection[] = [
+  const Collections: Collection[] = [
     {
       id: 1,
       title: 'Hacker News',
@@ -216,7 +216,7 @@ describe('resolveNewParentAfterDrop', () => {
     },
   ];
 
-  const { parentsMap } = buildParentsChildrenMap(flatCollections);
+  const { parentsMap } = buildParentsChildrenMap(Collections);
 
   describe(`logicalPosition 'above'`, () => {
     it('works for collection without children', () => {

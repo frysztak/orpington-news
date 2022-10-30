@@ -4,14 +4,14 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { OrganizeCollections } from '@features/OrganizeCollections';
 import { useCollectionsList } from '@features/Collections';
-import { FlatCollection } from '@orpington-news/shared';
+import { Collection } from '@orpington-news/shared';
 import type { NextPageWithLayout } from '@pages/types';
 import { useIsTouchscreen } from '@utils';
 import { SettingsLayout } from '../SettingsLayout';
 
 const Page: NextPageWithLayout = () => {
   const isTouchscreen = useIsTouchscreen();
-  const query = useCollectionsList<FlatCollection[]>();
+  const query = useCollectionsList<Collection[]>();
 
   return (
     <>
@@ -32,7 +32,7 @@ const Page: NextPageWithLayout = () => {
         ) : query.status === 'loading' ? (
           <Progress />
         ) : query.status === 'success' ? (
-          <OrganizeCollections flatCollections={query.data} />
+          <OrganizeCollections Collections={query.data} />
         ) : null}
       </VStack>
     </>
