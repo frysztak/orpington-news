@@ -416,6 +416,7 @@ sizes.forEach((size) => {
 
         cy.visit('/');
 
+        cy.openDrawerIfExists();
         cy.clickSidebarAction('1', 'delete');
 
         cy.intercept({
@@ -428,6 +429,8 @@ sizes.forEach((size) => {
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();
+        cy.closeDrawerIfExists();
+
         cy.wait('@apiDeleteCollection').then(({ response }) => {
           expect(response.body).to.deep.eq({
             navigateHome: false,
@@ -455,6 +458,7 @@ sizes.forEach((size) => {
         cy.visit('/');
         cy.changeActiveCollection('1');
 
+        cy.openDrawerIfExists();
         cy.clickSidebarAction('1', 'delete');
 
         cy.intercept({
@@ -471,6 +475,8 @@ sizes.forEach((size) => {
         }).as('apiPreferencesActiveView');
 
         cy.getBySel('confirmDelete').click();
+        cy.closeDrawerIfExists();
+
         cy.wait('@apiDeleteCollection').then(({ response }) => {
           expect(response.body).to.deep.eq({
             navigateHome: true,
