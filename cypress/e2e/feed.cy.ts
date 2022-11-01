@@ -501,7 +501,7 @@ sizes.forEach((size) => {
         cy.getBySelVisible('thisFeedHasNoItems');
       });
 
-      it.only('with children', () => {
+      it('with children', () => {
         cy.addFeedByApi({
           title: 'Kent C. Dodds Blog',
           url: getFeedUrl('kentcdodds.xml'),
