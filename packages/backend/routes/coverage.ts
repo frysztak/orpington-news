@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import type { FastifyPluginAsync } from 'fastify';
 
 export const coverage: FastifyPluginAsync = async (

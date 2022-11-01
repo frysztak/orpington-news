@@ -15,6 +15,35 @@ runs:
   using: 'composite'
   steps:
     - uses: actions/checkout@v3
+      name: Checkout
+
+    - uses: actions/setup-node@v3
+      name: Setup Node.js
+      with:
+        node-version: '16.x'
+        cache: 'yarn'
+
+    - name: Install dependencies
+      uses: cypress-io/github-action@v4
+      with:
+        # just perform install
+        runTests: false
+        install-command: yarn --immutable
+
+    - name: Run linter
+      shell: bash
+      run: |
+        yarn lint
+
+    - name: Build shared package
+      shell: bash
+      run: |
+        yarn workspace @orpington-news/shared run build
+
+    - name: Run unit tests
+      shell: bash
+      run: |
+        yarn test
 
     - name: Build & start Docker container
       shell: bash
@@ -22,27 +51,33 @@ runs:
         DOCKER_BUILDKIT=1 docker-compose -f docker-compose.e2e.yml up --build --detach
         sleep 10  # wait for database to be ready
 
-    - uses: cypress-io/github-action@v4
+    - name: Run E2E tests
+      uses: cypress-io/github-action@v4
       with:
-        install-command: yarn --immutable
+        install: false
         browser: chrome
         record: true
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.cypress-key }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
 
-    - name: Fix coverage file
+    - name: Generate E2E Lcov report
       shell: bash
       run: |
         ./scripts/fix_nyc.sh
-
-    - name: Generate Lcov report
-      shell: bash
-      run: |
         rm -rf coverage
-        npx nyc report --reporter=lcov
+        npx nyc report --reporter=lcov --reporter=text
 
     - uses: codecov/codecov-action@v3
+      name: Upload E2E coverage
       with:
         token: ${{ inputs.codecov-token }}
+        flags: e2e
         directory: coverage
+
+    # - uses: codecov/codecov-action@v3
+    #   name: Upload Unit Test coverage
+    #   with:
+    #     token: ${{ inputs.codecov-token }}
+    #     flags: unit
+    #     files: ./packages/backend/jest-coverage/lcov.info

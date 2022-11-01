@@ -1,4 +1,7 @@
 /// <reference types="cypress" />
+
+import { getApiPath } from '../e2e/utils';
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -123,6 +126,19 @@ Cypress.Commands.add('clickGoBackIfExists', () => {
       });
     }
   });
+});
+
+Cypress.Commands.add('changeActiveCollection', (id: string) => {
+  cy.intercept({
+    method: 'GET',
+    url: getApiPath(`/collections/${id}/items?pageIndex=0`),
+  }).as('apiGetItems');
+
+  cy.visit('/');
+  cy.openDrawerIfExists();
+  cy.clickCollection(id);
+
+  cy.wait('@apiGetItems');
 });
 
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {

@@ -21,16 +21,16 @@ import { collectionKeys, preferencesKeys } from '@features/queryKeys';
 import type {
   CollectionItem,
   CollectionLayout,
-  FlatCollection,
+  Collection,
   ID,
   Preferences,
 } from '@orpington-news/shared';
 import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
 
-export const useCollectionsList = <TSelectedData = FlatCollection[]>(opts?: {
+export const useCollectionsList = <TSelectedData = Collection[]>(opts?: {
   enabled?: boolean;
-  select?: (data: FlatCollection[]) => TSelectedData;
+  select?: (data: Collection[]) => TSelectedData;
 }) => {
   const api = useApi();
   const { onError } = useHandleError();
@@ -47,7 +47,7 @@ export const useCollectionById = (collectionId?: ID | string | null) => {
   return useCollectionsList({
     enabled: collectionId !== undefined,
     select: useCallback(
-      (collections: FlatCollection[]) =>
+      (collections: Collection[]) =>
         collections.find(({ id }) => id === collectionId) ?? null,
       [collectionId]
     ),
@@ -189,26 +189,23 @@ export const useSetCollectionLayout = () => {
             }
         );
 
-        queryClient.setQueryData(
-          collectionKeys.tree,
-          (old?: FlatCollection[]) => {
-            if (!old) {
-              return old;
-            }
-
-            const idx = old.findIndex((c) => c.id === id);
-            if (idx === -1) {
-              return old;
-            }
-
-            const updatedCollection = {
-              ...old[idx]!,
-              layout,
-            };
-
-            return set(lensIndex(idx), updatedCollection, old);
+        queryClient.setQueryData(collectionKeys.tree, (old?: Collection[]) => {
+          if (!old) {
+            return old;
           }
-        );
+
+          const idx = old.findIndex((c) => c.id === id);
+          if (idx === -1) {
+            return old;
+          }
+
+          const updatedCollection = {
+            ...old[idx]!,
+            layout,
+          };
+
+          return set(lensIndex(idx), updatedCollection, old);
+        });
       },
       onSuccess: (_, { id }) => {
         queryClient.invalidateQueries(preferencesKeys.base);

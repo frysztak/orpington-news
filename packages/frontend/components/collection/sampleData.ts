@@ -5,7 +5,6 @@ import {
   CollectionItem,
   defaultIcon,
   defaultRefreshInterval,
-  FlatCollection,
 } from '@orpington-news/shared';
 
 export const generateSampleCollectionItem = (
@@ -38,10 +37,10 @@ export const generateSampleCollection = (name?: string): Collection => {
     icon: defaultIcon,
     unreadCount: faker.datatype.number(),
     refreshInterval: defaultRefreshInterval,
-  };
+  } as Collection;
 };
 
-export const sampleFlatCollections: FlatCollection[] = [
+export const sampleCollections: Collection[] = [
   {
     id: 1,
     title: 'Feed 01',

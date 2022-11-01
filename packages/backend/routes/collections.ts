@@ -38,13 +38,14 @@ import {
 import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
 import {
   Collection,
-  FlatCollection,
   CollectionLayout,
   defaultCollectionLayout,
   ID,
-  CollectionId,
   HomeCollectionId,
   numeric,
+  UpdateCollection,
+  AddCollection,
+  CollectionId,
 } from '@orpington-news/shared';
 import { MAX_INT, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
@@ -57,20 +58,9 @@ import {
 } from '@tasks/fetchRSS';
 import { importOPML } from '@services/opml';
 
-const PostCollection = Collection.pick({
-  title: true,
-  icon: true,
-  parentId: true,
-  description: true,
-  url: true,
-  refreshInterval: true,
+const PostCollection = AddCollection.omit({
+  layout: true,
 });
-
-const PutCollection = PostCollection.merge(
-  z.object({
-    id: ID,
-  })
-);
 
 const MoveCollection = z.object({
   collectionId: ID,
@@ -78,13 +68,12 @@ const MoveCollection = z.object({
   newOrder: z.number(),
 });
 
-const ItemDetailsParams = HomeCollectionId.merge(
-  z.object({
-    itemId: numeric(ID),
-  })
-);
+const ItemDetailsParams = z.object({
+  id: numeric(ID),
+  itemId: numeric(ID),
+});
 
-const mapDBCollection = (collection: DBCollection): FlatCollection => {
+const mapDBCollection = (collection: DBCollection): Collection => {
   const {
     date_updated,
     refresh_interval,
@@ -112,9 +101,7 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
   };
 };
 
-const calculateUnreadCount = (
-  collections: FlatCollection[]
-): FlatCollection[] => {
+const calculateUnreadCount = (collections: Collection[]): Collection[] => {
   const lut = new Map<ID, number>(
     collections.map(({ id, unreadCount }) => [id, unreadCount])
   );
@@ -159,7 +146,7 @@ export const collections: FastifyPluginAsync = async (
 ): Promise<void> => {
   fastify.addHook('preHandler', fastify.auth([fastify.verifySession]));
 
-  fastify.get<{ Reply: Array<FlatCollection> }>(
+  fastify.get<{ Reply: Array<Collection> }>(
     '/',
     {
       schema: {
@@ -176,7 +163,7 @@ export const collections: FastifyPluginAsync = async (
 
   fastify.post<{
     Body: z.infer<typeof PostCollection>;
-    Reply: Array<FlatCollection>;
+    Reply: Array<Collection>;
   }>(
     '/',
     {
@@ -218,7 +205,7 @@ export const collections: FastifyPluginAsync = async (
 
   fastify.post<{
     Body: z.infer<typeof MoveCollection>;
-    Reply: Array<FlatCollection>;
+    Reply: Array<Collection>;
   }>(
     '/move',
     {
@@ -240,11 +227,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Body: z.infer<typeof PutCollection> }>(
+  fastify.put<{ Body: UpdateCollection }>(
     '/',
     {
       schema: {
-        body: PutCollection,
+        body: UpdateCollection,
         tags: ['Collections'],
       },
     },
@@ -284,11 +271,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.delete<{ Params: z.infer<typeof HomeCollectionId> }>(
+  fastify.delete<{ Params: z.infer<typeof CollectionId> }>(
     '/:id',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -298,11 +285,6 @@ export const collections: FastifyPluginAsync = async (
         params: { id },
         session: { userId },
       } = request;
-
-      if (id === 'home') {
-        reply.status(500);
-        return { errorCode: 500, message: 'Cannot DELETE home collection' };
-      }
 
       const [idsToDelete, preferences] = await Promise.all([
         pool
@@ -441,10 +423,6 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const { params } = request;
       const { id, itemId } = params;
-      // TODO
-      if (id === 'home') {
-        return;
-      }
 
       try {
         const details = await pool.one(getItemDetails(id, itemId));
@@ -511,11 +489,6 @@ export const collections: FastifyPluginAsync = async (
         params: { id, itemId },
         body: { dateRead },
       } = request;
-
-      // TODO
-      if (id === 'home') {
-        return;
-      }
 
       await pool.any(setItemDateRead(id, itemId, dateRead));
       return true;

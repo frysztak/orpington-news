@@ -45,7 +45,12 @@ export const DeleteCollectionModal: React.FC<DeleteCollectionModalProps> = (
           </AlertDialogBody>
 
           <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={onClose} isLoading={isLoading}>
+            <Button
+              ref={cancelRef}
+              onClick={onClose}
+              isLoading={isLoading}
+              data-test="cancel"
+            >
               Cancel
             </Button>
 
@@ -54,6 +59,7 @@ export const DeleteCollectionModal: React.FC<DeleteCollectionModalProps> = (
               onClick={onDelete}
               ml={3}
               isLoading={isLoading}
+              data-test="confirmDelete"
             >
               Delete
             </Button>

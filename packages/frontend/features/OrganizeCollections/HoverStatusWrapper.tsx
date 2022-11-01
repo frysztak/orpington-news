@@ -6,7 +6,7 @@ import {
   TooltipProps,
   useBreakpointValue,
 } from '@chakra-ui/react';
-import { FlatCollection } from '@orpington-news/shared';
+import { Collection } from '@orpington-news/shared';
 import { HoverStatus } from './dndTypes';
 import { StatusLine } from './StatusLine';
 
@@ -20,7 +20,7 @@ import { StatusLine } from './StatusLine';
  */
 
 export interface HoverStatusWrapperProps {
-  collection: FlatCollection;
+  collection: Collection;
   hoverStatus?: HoverStatus;
   dndRef?: React.Ref<HTMLDivElement>;
   children?: React.ReactNode;

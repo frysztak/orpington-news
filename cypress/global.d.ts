@@ -37,6 +37,8 @@ declare namespace Cypress {
 
     clickGoBackIfExists(): Chainable<JQuery<HTMLElement>>;
 
+    changeActiveCollection(id: string): Chainable<JQuery<HTMLElement>>;
+
     /**
      * Signs user up by using API request
      */

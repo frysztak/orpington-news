@@ -70,8 +70,8 @@ export const useCollectionsContext = () => {
 
 const useCurrentlyUpdatedCollections = () => {
   const { data: parentsMap = new Map() } = useCollectionsList({
-    select: (flatCollections) => {
-      return buildParentsChildrenMap(flatCollections).parentsMap;
+    select: (Collections) => {
+      return buildParentsChildrenMap(Collections).parentsMap;
     },
   });
 

@@ -19,7 +19,7 @@ import { CollectionMenuAction } from '@components/sidebar/Collections';
 import {
   defaultCollectionLayout,
   emptyIfUndefined,
-  FlatCollection,
+  Collection,
 } from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
 import { ModalContext } from './ModalContext';
@@ -69,7 +69,7 @@ export const Sidebar: React.FC = () => {
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
   const { mutate: refreshCollection } = useRefreshCollection();
   const handleCollectionMenuItemClicked = useCallback(
-    (collection: FlatCollection, action: CollectionMenuAction) => {
+    (collection: Collection, action: CollectionMenuAction) => {
       switch (action) {
         case 'edit': {
           return onOpenAddCollectionModal(collection);
@@ -94,7 +94,7 @@ export const Sidebar: React.FC = () => {
   );
 
   const handleCollectionClickedAndCloseDrawer = useCallback(
-    (collection: FlatCollection) => {
+    (collection: Collection) => {
       closeDrawer();
       push('/', '/', { shallow: true }).then(() => {
         setActiveCollection({
@@ -134,7 +134,7 @@ const useExpandedCollections = () => {
   const { mutate: collapseCollection } = useCollapseCollection();
 
   const handleCollectionChevronClicked = useCallback(
-    ({ id }: FlatCollection) => {
+    ({ id }: Collection) => {
       const idx = expandedCollectionIds?.findIndex((id_) => id_ === id);
       if (idx === undefined) {
         return;
