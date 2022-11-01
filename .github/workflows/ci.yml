@@ -5,33 +5,74 @@ on:
   - workflow_dispatch
 
 jobs:
-  lint:
+  ci:
     runs-on: ubuntu-latest
-    name: Linter
+    name: CI
     steps:
       - uses: actions/checkout@v3
         name: Checkout
-      - uses: ./.github/actions/lint
-        name: Run ESLint
 
-  unit:
-    runs-on: ubuntu-latest
-    name: Unit tests
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout
-      - uses: ./.github/actions/unit
-        name: Run unit tests
-
-  e2e:
-    runs-on: ubuntu-latest
-    name: E2E tests
-    steps:
-      - uses: actions/checkout@v3
-        name: Checkout
-      - uses: ./.github/actions/e2e
-        name: Run E2E tests
+      - uses: actions/setup-node@v3
+        name: Setup Node.js
         with:
-          cypress-key: ${{ secrets.CYPRESS_RECORD_KEY }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          codecov-token: ${{ secrets.CODECOV_TOKEN }}
+          node-version: '16.x'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        uses: cypress-io/github-action@v4
+        with:
+          # just perform install
+          runTests: false
+          install-command: yarn --immutable
+
+      - name: Run linter
+        shell: bash
+        run: |
+          yarn lint
+
+      - name: Build shared package
+        shell: bash
+        run: |
+          yarn workspace @orpington-news/shared run build
+
+      - name: Run unit tests
+        shell: bash
+        run: |
+          yarn test
+
+      - name: Build & start Docker container
+        shell: bash
+        run: |
+          DOCKER_BUILDKIT=1 docker-compose -f docker-compose.e2e.yml up --build --detach
+          sleep 10  # wait for database to be ready
+
+      - name: Run e2e tests
+        uses: cypress-io/github-action@v4
+        with:
+          install: false
+          browser: chrome
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate E2E Lcov report
+        shell: bash
+        run: |
+          ./scripts/fix_nyc.sh
+          rm -rf coverage
+          npx nyc report --reporter=lcov
+
+      - uses: codecov/codecov-action@v3
+        name: Upload E2E coverage
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: e2e
+          directory: coverage
+
+      - uses: codecov/codecov-action@v3
+        name: Upload Unit Test coverage
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unit
+          files: ./packages/backend/jest-coverage/lcov.info,./packages/frontend/jest-coverage/lcov.info
