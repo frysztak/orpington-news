@@ -436,6 +436,8 @@ export const collections: FastifyPluginAsync = async (
           thumbnail_url,
           reading_time,
           collection_id,
+          collection_title,
+          collection_icon,
           ...rest
         } = details;
 
@@ -449,6 +451,11 @@ export const collections: FastifyPluginAsync = async (
           dateUpdated: timestampMsToSeconds(date_updated),
           thumbnailUrl: thumbnail_url,
           readingTime: reading_time,
+          collection: {
+            id: collection_id,
+            title: collection_title,
+            icon: collection_icon,
+          },
         };
       } catch (error) {
         if (error instanceof NotFoundError) {

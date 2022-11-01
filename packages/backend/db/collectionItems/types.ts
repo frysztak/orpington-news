@@ -27,8 +27,3 @@ export const DBCollectionItemWithoutText = DBCollectionItem.omit({
 export type DBCollectionItemWithoutText = z.infer<
   typeof DBCollectionItemWithoutText
 >;
-
-export type DBCollectionItemDetails = Omit<
-  DBCollectionItem,
-  'collection_title' | 'collection_icon'
->;

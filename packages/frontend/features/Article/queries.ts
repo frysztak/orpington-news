@@ -1,10 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getItemDetails, setDateRead, useApi, useHandleError } from '@api';
-import {
-  CollectionItem,
-  CollectionItemDetails,
-  ID,
-} from '@orpington-news/shared';
+import { CollectionItem, ID } from '@orpington-news/shared';
 import { collectionKeys } from '@features';
 import { useActiveCollection } from '@features/Preferences';
 import { mutatePageData } from '@utils';
@@ -32,7 +28,7 @@ export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
         // Optimistically update article
         await queryClient.cancelQueries(detailKey);
         const previousDetails = queryClient.getQueryData<
-          CollectionItemDetails | undefined
+          CollectionItem | undefined
         >(detailKey);
         if (previousDetails) {
           queryClient.setQueryData(detailKey, {
@@ -89,7 +85,7 @@ export const useArticleDetails = (
   collectionId?: ID,
   itemId?: ID,
   options?: {
-    onSuccess: (data: CollectionItemDetails) => void;
+    onSuccess: (data: CollectionItem) => void;
   }
 ) => {
   const api = useApi();

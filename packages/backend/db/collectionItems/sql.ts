@@ -1,11 +1,7 @@
 import { sql } from 'slonik';
 import { ID } from '@orpington-news/shared';
 import { getCollectionChildrenIds } from '@db/collections';
-import {
-  DBCollectionItemDetails,
-  DBCollectionItem,
-  DBCollectionItemWithoutText,
-} from './types';
+import { DBCollectionItem, DBCollectionItemWithoutText } from './types';
 
 type InsertDBCollectionItem = Omit<
   DBCollectionItem,
@@ -140,12 +136,15 @@ ORDER BY
 };
 
 export const getItemDetails = (collectionId: ID, itemId: ID) => {
-  return sql<DBCollectionItemDetails>`
+  return sql.type(DBCollectionItem)`
 SELECT
   articles.*
 FROM (
   SELECT
     collection_items.*,
+    collections.id as collection_id,
+    collections.title as collection_title,
+    collections.icon as collection_icon,
     LAG(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) previous_id,
     LEAD(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) next_id
   FROM collections

@@ -2,7 +2,6 @@ import {
   AddCollection,
   Collection,
   CollectionItem,
-  CollectionItemDetails,
   CollectionLayout,
   ID,
   UpdateCollection,
@@ -29,7 +28,7 @@ export const getItemDetails = (api: Wretch, collectionId: ID, itemId: ID) =>
   api
     .url(`/collections/${collectionId}/item/${itemId}`)
     .get()
-    .json<CollectionItemDetails>();
+    .json<CollectionItem>();
 
 export const setDateRead = (
   api: Wretch,
