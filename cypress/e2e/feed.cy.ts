@@ -500,6 +500,54 @@ sizes.forEach((size) => {
         cy.getBySelVisible('thereAreNoFeedsYet');
         cy.getBySelVisible('thisFeedHasNoItems');
       });
+
+      it.only('with children', () => {
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+        cy.addFeedByApi({
+          title: 'fettblog.eu',
+          url: getFeedUrl('fettblog.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+          parentId: 1,
+        });
+
+        cy.visit('/');
+
+        cy.openDrawerIfExists();
+        cy.clickSidebarAction('1', 'delete');
+
+        cy.intercept({
+          method: 'DELETE',
+          url: getApiPath('/collections/1'),
+        }).as('apiDeleteCollection');
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(`/collections/home/items?pageIndex=0`),
+        }).as('apiGetHomeItems');
+
+        cy.getBySel('confirmDelete').click();
+        cy.closeDrawerIfExists();
+
+        cy.wait('@apiDeleteCollection').then(({ response }) => {
+          expect(response.body).to.deep.eq({
+            navigateHome: false,
+            ids: [1, 2],
+          });
+          expect(response.statusCode).to.eq(200);
+        });
+
+        cy.wait('@apiGetHomeItems').then(({ response }) => {
+          expect(response.body).to.deep.eq([]);
+        });
+
+        cy.getBySelVisible('thereAreNoFeedsYet');
+        cy.getBySelVisible('thisFeedHasNoItems');
+      });
     });
   });
 });

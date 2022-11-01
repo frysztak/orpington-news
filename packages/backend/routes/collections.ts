@@ -45,6 +45,7 @@ import {
   numeric,
   UpdateCollection,
   AddCollection,
+  CollectionId,
 } from '@orpington-news/shared';
 import { MAX_INT, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
@@ -270,11 +271,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.delete<{ Params: z.infer<typeof HomeCollectionId> }>(
+  fastify.delete<{ Params: z.infer<typeof CollectionId> }>(
     '/:id',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -284,11 +285,6 @@ export const collections: FastifyPluginAsync = async (
         params: { id },
         session: { userId },
       } = request;
-
-      if (id === 'home') {
-        reply.status(500);
-        return { errorCode: 500, message: 'Cannot DELETE home collection' };
-      }
 
       const [idsToDelete, preferences] = await Promise.all([
         pool
