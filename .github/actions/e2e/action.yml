@@ -66,7 +66,7 @@ runs:
       run: |
         ./scripts/fix_nyc.sh
         rm -rf coverage
-        npx nyc report --reporter=lcov
+        npx nyc report --reporter=lcov --reporter=text
 
     - uses: codecov/codecov-action@v3
       name: Upload E2E coverage
