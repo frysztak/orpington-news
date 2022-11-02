@@ -67,6 +67,14 @@ export const HomeCollectionId = z.object({
 });
 export type HomeCollectionId = z.infer<typeof CollectionId>;
 
+export const CollectionShowFilter = z.enum(['all', 'unread', 'read']);
+export type CollectionShowFilter = z.infer<typeof CollectionShowFilter>;
+export const defaultCollectionShowFilter: CollectionShowFilter = 'all';
+
+export const CollectionGrouping = z.enum(['none', 'feed', 'date']);
+export type CollectionGrouping = z.infer<typeof CollectionGrouping>;
+export const defaultCollectionGrouping: CollectionGrouping = 'none';
+
 export const Collection = z.object({
   id: ID,
   title: z.string(),
@@ -79,6 +87,9 @@ export const Collection = z.object({
   dateUpdated: z.optional(z.number()),
   refreshInterval: z.optional(z.number()),
   layout: z.optional(CollectionLayout),
+  filter: z.optional(CollectionShowFilter),
+  grouping: z.optional(CollectionGrouping),
+  sortBy: z.optional(z.string()),
 
   parents: z.array(ID),
   children: z.array(ID),
@@ -137,3 +148,10 @@ export const CollectionItem = z.object({
   onReadingList: z.boolean(),
 });
 export type CollectionItem = z.infer<typeof CollectionItem>;
+
+export const CollectionPreferences = Collection.pick({
+  layout: true,
+  filter: true,
+  grouping: true,
+});
+export type CollectionPreferences = z.infer<typeof CollectionPreferences>;

@@ -14,16 +14,17 @@ import {
   getCollectionItems,
   markCollectionAsRead,
   refreshCollection,
-  setCollectionLayout,
+  setCollectionPreferences,
   Wretch,
 } from '@api';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
-import type {
+import {
   CollectionItem,
-  CollectionLayout,
   Collection,
   ID,
   Preferences,
+  CollectionShowFilter,
+  defaultCollectionShowFilter,
 } from '@orpington-news/shared';
 import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
@@ -55,9 +56,9 @@ export const useCollectionById = (collectionId?: ID | string | null) => {
 };
 
 export const collectionsItemsQueryFn =
-  (api: Wretch, collectionId: ID | string) =>
+  (api: Wretch, collectionId: ID | string, show: CollectionShowFilter) =>
   ({ pageParam = 0, signal }: QueryFunctionContext) => {
-    return getCollectionItems(api, signal, collectionId, pageParam).then(
+    return getCollectionItems(api, signal, collectionId, pageParam, show).then(
       (items) => ({
         items,
         pageParam,
@@ -65,13 +66,16 @@ export const collectionsItemsQueryFn =
     );
   };
 
-export const useCollectionItems = (collectionId?: ID | string) => {
+export const useCollectionItems = (
+  collectionId?: ID | string,
+  filter: CollectionShowFilter = defaultCollectionShowFilter
+) => {
   const api = useApi();
   const { onError } = useHandleError();
 
   const { data, ...rest } = useInfiniteQuery(
-    collectionKeys.list(collectionId!),
-    collectionsItemsQueryFn(api, collectionId!),
+    collectionKeys.list(collectionId!, filter),
+    collectionsItemsQueryFn(api, collectionId!, filter),
     {
       enabled: collectionId !== undefined,
       getNextPageParam: (lastPage) =>
@@ -156,24 +160,32 @@ export const useRefreshCollection = () => {
   );
 };
 
-export const useSetCollectionLayout = () => {
+type CollectionPreferences = Pick<Collection, 'layout' | 'filter' | 'grouping'>;
+
+export const useSetCollectionPreferences = () => {
   const api = useApi();
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({ id, layout }: { id: ID | 'home'; layout: CollectionLayout }) =>
-      setCollectionLayout(api, id, layout),
+    ({
+      id,
+      preferences,
+    }: {
+      id: ID | 'home';
+      preferences: CollectionPreferences;
+    }) => setCollectionPreferences(api, id, preferences),
     {
       onError,
-      onMutate: ({ id, layout }) => {
+      onMutate: ({ id, preferences }) => {
         if (id === 'home') {
           queryClient.setQueryData(
             preferencesKeys.base,
             (old?: Preferences) =>
               old && {
                 ...old,
-                homeCollectionLayout: layout,
+                homeCollectionLayout:
+                  preferences.layout ?? old.homeCollectionLayout,
               }
           );
 
@@ -185,7 +197,12 @@ export const useSetCollectionLayout = () => {
           (old?: Preferences) =>
             old && {
               ...old,
-              activeCollectionLayout: layout,
+              activeCollectionLayout:
+                preferences.layout ?? old.activeCollectionLayout,
+              activeCollectionFilter:
+                preferences.filter ?? old.activeCollectionFilter,
+              activeCollectionGrouping:
+                preferences.grouping ?? old.activeCollectionGrouping,
             }
         );
 
@@ -199,19 +216,26 @@ export const useSetCollectionLayout = () => {
             return old;
           }
 
+          const oldCollection = old[idx]!;
           const updatedCollection = {
-            ...old[idx]!,
-            layout,
+            ...oldCollection,
+            layout: preferences.layout ?? oldCollection.layout,
+            filter: preferences.filter ?? oldCollection.filter,
+            grouping: preferences.grouping ?? oldCollection.grouping,
           };
 
           return set(lensIndex(idx), updatedCollection, old);
         });
       },
-      onSuccess: (_, { id }) => {
+      onSuccess: (_, { id, preferences }) => {
         queryClient.invalidateQueries(preferencesKeys.base);
 
         if (id !== 'home') {
           queryClient.invalidateQueries(collectionKeys.tree);
+        }
+
+        if (preferences.filter) {
+          queryClient.invalidateQueries(collectionKeys.list(id));
         }
       },
     }

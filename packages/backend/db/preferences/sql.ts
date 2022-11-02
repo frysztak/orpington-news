@@ -1,11 +1,12 @@
 import { sql } from 'slonik';
 import { z } from 'zod';
 import {
-  CollectionLayout,
+  CollectionPreferences,
   ID,
   Preferences,
   ViewPreferences,
 } from '@orpington-news/shared';
+import { EMPTY } from '@utils';
 
 export const pruneExpandedCollections = (userId: ID) => {
   return sql`CALL preferences_prune_expanded_collections(${userId});`;
@@ -43,6 +44,9 @@ SELECT
   active_collection_id as "activeCollectionId",
   COALESCE(collection_title, 'Home') as "activeCollectionTitle",
   COALESCE(collection_layout, home_collection_layout) as "activeCollectionLayout",
+  COALESCE(collection_filter, home_collection_filter) as "activeCollectionFilter",
+  COALESCE(collection_grouping, home_collection_grouping) as "activeCollectionGrouping",
+  COALESCE(collection_sort_by, home_collection_sort_by) as "activeCollectionSortBy",
   COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds",
   default_collection_layout as "defaultCollectionLayout",
   home_collection_layout as "homeCollectionLayout",
@@ -52,7 +56,10 @@ FROM
 LEFT OUTER JOIN (SELECT
   id as collection_id,
   title as collection_title,
-  layout as collection_layout
+  layout as collection_layout,
+  "filter" as collection_filter,
+  "grouping" as collection_grouping,
+  "sort_by" as collection_sort_by
     FROM
       collections) collections ON collections.collection_id = preferences.active_collection_id
 WHERE
@@ -78,15 +85,29 @@ WHERE
 `;
 };
 
-export const setHomeCollectionLayout = (
-  layout: CollectionLayout,
-  userId: ID
-) => {
+interface SetHomeCollectionPreferencesArgs {
+  userId: ID;
+  preferences: CollectionPreferences;
+}
+export const setHomeCollectionPreferences = ({
+  userId,
+  preferences,
+}: SetHomeCollectionPreferencesArgs) => {
+  const layout = preferences.layout
+    ? sql`home_collection_layout = ${preferences.layout}`
+    : EMPTY;
+  const filter = preferences.filter
+    ? sql`home_collection_filter = ${preferences.filter}`
+    : EMPTY;
+  const grouping = preferences.grouping
+    ? sql`home_collection_grouping = ${preferences.grouping}`
+    : EMPTY;
+
   return sql`
 UPDATE
   preferences p
 SET
-  home_collection_layout = ${layout}
+  ${layout} ${filter} ${grouping}
 WHERE
   p.user_id = ${userId}
 `;

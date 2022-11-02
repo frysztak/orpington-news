@@ -6,6 +6,7 @@ import {
   IconButton,
   Menu,
   MenuButton,
+  MenuDivider,
   MenuItem,
   MenuItemOption,
   MenuList,
@@ -18,8 +19,12 @@ import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
-import { CollectionLayout } from '@orpington-news/shared';
-import { ActiveCollection, CollectionLayoutName } from '../types';
+import { CollectionLayout, CollectionShowFilter } from '@orpington-news/shared';
+import {
+  ActiveCollection,
+  CollectionLayoutName,
+  CollectionShowFilterName,
+} from '../types';
 
 export type MenuAction = 'refresh' | 'markAsRead';
 
@@ -31,6 +36,7 @@ export interface CollectionHeaderProps {
   onHamburgerClicked?: () => void;
   onChangeLayout?: (layout: CollectionLayout) => void;
   onMenuActionClicked?: (action: MenuAction) => void;
+  onShowFilterChanged?: (showFilter: CollectionShowFilter) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
@@ -41,6 +47,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     onHamburgerClicked,
     onChangeLayout,
     onMenuActionClicked,
+    onShowFilterChanged,
   } = props;
 
   const isLoading = collection === undefined;
@@ -128,6 +135,24 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                 >
                   Mark as read
                 </MenuItem>
+                <MenuDivider />
+
+                <MenuOptionGroup
+                  value={collection?.filter}
+                  title="Show"
+                  type="radio"
+                >
+                  {CollectionShowFilter.options.map((showFilter) => (
+                    <MenuItemOption
+                      key={showFilter}
+                      value={showFilter}
+                      onClick={() => onShowFilterChanged?.(showFilter)}
+                      data-test={`show-${showFilter}`}
+                    >
+                      {CollectionShowFilterName[showFilter]}
+                    </MenuItemOption>
+                  ))}
+                </MenuOptionGroup>
               </MenuList>
             </Menu>
           </Box>

@@ -2,7 +2,8 @@ import {
   AddCollection,
   Collection,
   CollectionItem,
-  CollectionLayout,
+  CollectionPreferences,
+  CollectionShowFilter,
   ID,
   UpdateCollection,
 } from '@orpington-news/shared';
@@ -15,12 +16,13 @@ export const getCollectionItems = (
   api: Wretch,
   signal: AbortSignal | undefined,
   collectionId: string | ID,
-  pageIndex?: number
+  pageIndex: number,
+  show: CollectionShowFilter
 ) =>
   api
     .options({ signal })
     .url(`/collections/${collectionId}/items`)
-    .query({ pageIndex })
+    .query({ pageIndex, show })
     .get()
     .json<CollectionItem[]>();
 
@@ -79,14 +81,14 @@ export interface MoveCollectionBody {
 export const moveCollection = (api: Wretch, body: MoveCollectionBody) =>
   api.url(`/collections/move`).post(body).json<Collection[]>();
 
-export const setCollectionLayout = (
+export const setCollectionPreferences = (
   api: Wretch,
   collectionId: ID | 'home',
-  layout: CollectionLayout
+  preferences: CollectionPreferences
 ) =>
   api
-    .url(`/collections/${collectionId}/layout`)
-    .put({ layout })
+    .url(`/collections/${collectionId}/preferences`)
+    .put(preferences)
     .json<boolean>();
 
 export const importOPML = (api: Wretch, file: File) =>

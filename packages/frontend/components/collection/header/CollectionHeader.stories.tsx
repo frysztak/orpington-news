@@ -14,6 +14,7 @@ const Template: Story<CollectionHeaderProps> = (props) => (
 
 export const Default = Template.bind({});
 Default.args = {
+  showFilter: 'all',
   collection: {
     id: 90,
     title: 'Fun Blog',
@@ -22,6 +23,7 @@ Default.args = {
   onHamburgerClicked: action('onHamburgerClicked'),
   onChangeLayout: action('onChangeLayout'),
   onMenuActionClicked: action('onMenuActionClicked'),
+  onShowFilterChanged: action('onShowFilterChanged'),
 };
 
 export const Mobile = Template.bind({});

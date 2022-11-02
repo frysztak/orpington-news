@@ -1,16 +1,15 @@
 import { sql, SqlSqlToken } from 'slonik';
-import { z } from 'zod';
 import { getUnixTime } from 'date-fns';
 import {
   AddCollection,
   Collection,
-  CollectionLayout,
+  CollectionPreferences,
   defaultIcon,
   defaultRefreshInterval,
   ID,
   UpdateCollection,
 } from '@orpington-news/shared';
-import { MAX_INT, normalizeUrl } from '@utils';
+import { EMPTY, MAX_INT, normalizeUrl } from '@utils';
 
 export const recalculateCollectionsOrder = () => {
   return sql`CALL collections_recalculate_order();`;
@@ -131,7 +130,12 @@ export const moveCollections = (
 
 export type DBCollection = Omit<
   Collection,
-  'children' | 'parentId' | 'dateUpdated' | 'unreadCount' | 'refreshInterval'
+  | 'children'
+  | 'parentId'
+  | 'dateUpdated'
+  | 'unreadCount'
+  | 'refreshInterval'
+  | 'sortBy'
 > & {
   parents: Array<ID>;
   children: Array<ID>;
@@ -144,6 +148,7 @@ export type DBCollection = Omit<
   unread_count: number | null;
   refresh_interval: number;
   is_last_child: boolean;
+  sort_by: string | null;
 };
 
 export const getCollectionOwner = (id: ID) => {
@@ -174,6 +179,9 @@ WITH RECURSIVE data AS (
     m.date_updated,
     m.refresh_interval,
     m.layout,
+    m.filter,
+    m.grouping,
+    m.sort_by,
     ARRAY[]::integer[] AS parents,
     0 AS level,
     ARRAY[m.order]::integer[] AS order_path,
@@ -196,6 +204,9 @@ WITH RECURSIVE data AS (
     c.date_updated,
     c.refresh_interval,
     c.layout,
+    c.filter,
+    c.grouping,
+    c.sort_by,
     d.parents || c.parent_id,
     d.level + 1,
     d.order_path || c.order,
@@ -245,6 +256,9 @@ SELECT
   d.date_updated,
   d.refresh_interval,
   d.layout,
+  d.filter,
+  d.grouping,
+  d.sort_by,
   d.level,
   d.order_path,
   d.parents,
@@ -389,15 +403,29 @@ WHERE
 `;
 };
 
-export const setCollectionLayout = (
-  collectionId: ID,
-  layout: CollectionLayout
-) => {
+interface SetCollectionPreferencesArgs {
+  collectionId: ID;
+  preferences: CollectionPreferences;
+}
+export const setCollectionPreferences = ({
+  collectionId,
+  preferences,
+}: SetCollectionPreferencesArgs) => {
+  const layout = preferences.layout
+    ? sql`layout = ${preferences.layout}`
+    : EMPTY;
+  const filter = preferences.filter
+    ? sql`"filter" = ${preferences.filter}`
+    : EMPTY;
+  const grouping = preferences.grouping
+    ? sql`"grouping" = ${preferences.grouping}`
+    : EMPTY;
+
   return sql`
 UPDATE
   collections
 SET
-  layout = ${layout}
+  ${layout} ${filter} ${grouping}
 WHERE
   id = ${collectionId}
 `;

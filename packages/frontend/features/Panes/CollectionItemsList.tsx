@@ -24,7 +24,7 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
     isLoading,
     hasNextPage,
     allItems,
-  } = useCollectionItems(activeCollection?.id);
+  } = useCollectionItems(activeCollection?.id, activeCollection?.filter);
 
   const { mutate: refreshCollection, isLoading: isRefreshing } =
     useRefreshCollection();
