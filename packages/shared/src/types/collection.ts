@@ -137,8 +137,3 @@ export const CollectionItem = z.object({
   onReadingList: z.boolean(),
 });
 export type CollectionItem = z.infer<typeof CollectionItem>;
-
-export type CollectionItemDetails = Omit<
-  CollectionItem,
-  'collection_id' | 'collection_title' | 'collection_icon'
->;

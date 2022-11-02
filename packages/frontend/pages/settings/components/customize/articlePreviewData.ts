@@ -1,6 +1,6 @@
-import type { CollectionItemDetails } from '@orpington-news/shared';
+import type { CollectionItem } from '@orpington-news/shared';
 
-export const articlePreviewData: CollectionItemDetails = {
+export const articlePreviewData: CollectionItem = {
   summary: '',
   title: 'Structures from Silence',
   id: 0,

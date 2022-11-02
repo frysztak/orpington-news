@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Collection item list: highlight active article
+- Article view: updated header
 
 ## [0.7.4] - 2022-10-20
 
