@@ -3,8 +3,8 @@ import { CollectionIcons, ID } from '@orpington-news/shared';
 
 export const DBCollectionItem = z.object({
   id: ID,
-  previous_id: ID,
-  next_id: ID,
+  previous_id: ID.nullable(),
+  next_id: ID.nullable(),
   url: z.string(),
   title: z.string(),
   full_text: z.string(),

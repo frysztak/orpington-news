@@ -421,8 +421,9 @@ export const collections: FastifyPluginAsync = async (
       preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
-      const { params } = request;
-      const { id, itemId } = params;
+      const {
+        params: { id, itemId },
+      } = request;
 
       try {
         const details = await pool.one(getItemDetails(id, itemId));
@@ -469,6 +470,9 @@ export const collections: FastifyPluginAsync = async (
           logger.error(
             'There is more than one row matching the select criteria.'
           );
+          reply.status(500).send({ errorCode: 500, message: 'Server error.' });
+        } else {
+          logger.error(error);
           reply.status(500).send({ errorCode: 500, message: 'Server error.' });
         }
       }
