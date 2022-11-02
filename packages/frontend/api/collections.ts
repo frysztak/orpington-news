@@ -3,7 +3,7 @@ import {
   Collection,
   CollectionItem,
   CollectionPreferences,
-  CollectionShowFilter,
+  CollectionFilter,
   ID,
   UpdateCollection,
 } from '@orpington-news/shared';
@@ -17,12 +17,12 @@ export const getCollectionItems = (
   signal: AbortSignal | undefined,
   collectionId: string | ID,
   pageIndex: number,
-  show: CollectionShowFilter
+  filter: CollectionFilter
 ) =>
   api
     .options({ signal })
     .url(`/collections/${collectionId}/items`)
-    .query({ pageIndex, show })
+    .query({ pageIndex, filter })
     .get()
     .json<CollectionItem[]>();
 

@@ -1,5 +1,5 @@
 import { sql } from 'slonik';
-import { CollectionShowFilter, ID } from '@orpington-news/shared';
+import { CollectionFilter, ID } from '@orpington-news/shared';
 import { getCollectionChildrenIds } from '@db/collections';
 import { TRUE } from '@utils';
 import { DBCollectionItem, DBCollectionItemWithoutText } from './types';
@@ -71,13 +71,13 @@ ON CONFLICT (collection_id,
 export interface GetCollectionItemsArgs {
   userId: ID;
   collectionId: ID | 'all';
-  show: CollectionShowFilter;
+  filter: CollectionFilter;
 }
 
 export const getCollectionItems = ({
   userId,
   collectionId,
-  show,
+  filter,
 }: GetCollectionItemsArgs) => {
   const userFilter = collectionId === 'all' ? sql`"user_id" = ${userId}` : TRUE;
 
@@ -89,9 +89,9 @@ collection_items.collection_id = ANY (${getCollectionChildrenIds(collectionId)})
 `;
 
   const showFilter =
-    show === 'all'
+    filter === 'all'
       ? TRUE
-      : show === 'unread'
+      : filter === 'unread'
       ? sql`collection_items.date_read IS NULL`
       : sql`collection_items.date_read IS NOT NULL`;
 

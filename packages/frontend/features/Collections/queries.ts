@@ -23,8 +23,8 @@ import {
   Collection,
   ID,
   Preferences,
-  CollectionShowFilter,
-  defaultCollectionShowFilter,
+  CollectionFilter,
+  defaultCollectionFilter,
 } from '@orpington-news/shared';
 import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
@@ -56,19 +56,23 @@ export const useCollectionById = (collectionId?: ID | string | null) => {
 };
 
 export const collectionsItemsQueryFn =
-  (api: Wretch, collectionId: ID | string, show: CollectionShowFilter) =>
+  (api: Wretch, collectionId: ID | string, filter: CollectionFilter) =>
   ({ pageParam = 0, signal }: QueryFunctionContext) => {
-    return getCollectionItems(api, signal, collectionId, pageParam, show).then(
-      (items) => ({
-        items,
-        pageParam,
-      })
-    );
+    return getCollectionItems(
+      api,
+      signal,
+      collectionId,
+      pageParam,
+      filter
+    ).then((items) => ({
+      items,
+      pageParam,
+    }));
   };
 
 export const useCollectionItems = (
   collectionId?: ID | string,
-  filter: CollectionShowFilter = defaultCollectionShowFilter
+  filter: CollectionFilter = defaultCollectionFilter
 ) => {
   const api = useApi();
   const { onError } = useHandleError();

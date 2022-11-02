@@ -19,11 +19,11 @@ import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
-import { CollectionLayout, CollectionShowFilter } from '@orpington-news/shared';
+import { CollectionLayout, CollectionFilter } from '@orpington-news/shared';
 import {
   ActiveCollection,
   CollectionLayoutName,
-  CollectionShowFilterName,
+  CollectionFilterName,
 } from '../types';
 
 export type MenuAction = 'refresh' | 'markAsRead';
@@ -36,7 +36,7 @@ export interface CollectionHeaderProps {
   onHamburgerClicked?: () => void;
   onChangeLayout?: (layout: CollectionLayout) => void;
   onMenuActionClicked?: (action: MenuAction) => void;
-  onShowFilterChanged?: (showFilter: CollectionShowFilter) => void;
+  onShowFilterChanged?: (showFilter: CollectionFilter) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
@@ -142,14 +142,14 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                   title="Show"
                   type="radio"
                 >
-                  {CollectionShowFilter.options.map((showFilter) => (
+                  {CollectionFilter.options.map((showFilter) => (
                     <MenuItemOption
                       key={showFilter}
                       value={showFilter}
                       onClick={() => onShowFilterChanged?.(showFilter)}
                       data-test={`show-${showFilter}`}
                     >
-                      {CollectionShowFilterName[showFilter]}
+                      {CollectionFilterName[showFilter]}
                     </MenuItemOption>
                   ))}
                 </MenuOptionGroup>

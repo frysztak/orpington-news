@@ -8,7 +8,7 @@ import {
   useSetCollectionPreferences,
 } from '@features/Collections';
 import { useActiveCollection } from '@features/Preferences';
-import { CollectionLayout, CollectionShowFilter } from '@orpington-news/shared';
+import { CollectionLayout, CollectionFilter } from '@orpington-news/shared';
 import { ModalContext } from './ModalContext';
 
 export const CollectionItemsHeader: React.FC = () => {
@@ -60,7 +60,7 @@ export const CollectionItemsHeader: React.FC = () => {
     [activeCollection?.id, setCollectionPreferences]
   );
   const handleCollectionFilterChanged = useCallback(
-    (filter: CollectionShowFilter) => {
+    (filter: CollectionFilter) => {
       if (activeCollection?.id === undefined) {
         console.error(
           `handleCollectionLayoutChanged() without active collection`

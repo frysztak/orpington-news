@@ -1,4 +1,4 @@
-import { CollectionShowFilter, ID } from '@orpington-news/shared';
+import { CollectionFilter, ID } from '@orpington-news/shared';
 
 export const collectionKeys = {
   base: ['collection'] as const,
@@ -6,8 +6,8 @@ export const collectionKeys = {
   home: ['collection', 'home'] as const,
   allForId: (collectionId: ID | string) =>
     [...collectionKeys.base, collectionId] as const,
-  list: (collectionId: ID | string, show?: CollectionShowFilter) =>
-    [...collectionKeys.base, collectionId, 'list', { show }] as const,
+  list: (collectionId: ID | string, filter?: CollectionFilter) =>
+    [...collectionKeys.base, collectionId, 'list', { filter }] as const,
   detail: (collectionId: ID, itemId: ID) =>
     [...collectionKeys.base, collectionId, 'detail', { itemId }] as const,
 };

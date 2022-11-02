@@ -45,8 +45,8 @@ import {
   UpdateCollection,
   AddCollection,
   CollectionId,
-  CollectionShowFilter,
-  defaultCollectionShowFilter,
+  CollectionFilter,
+  defaultCollectionFilter,
   defaultCollectionGrouping,
   CollectionGrouping,
 } from '@orpington-news/shared';
@@ -100,7 +100,7 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     refreshInterval: refresh_interval,
     unreadCount: unread_count ?? 0,
     layout: layout ?? defaultCollectionLayout,
-    filter: filter ?? defaultCollectionShowFilter,
+    filter: filter ?? defaultCollectionFilter,
     grouping: grouping ?? defaultCollectionGrouping,
     sortBy: sort_by ?? 'ee',
     parents,
@@ -373,7 +373,7 @@ export const collections: FastifyPluginAsync = async (
 
   const GetItemsParams = PaginationSchema.merge(
     z.object({
-      show: CollectionShowFilter.optional(),
+      filter: CollectionFilter.optional(),
     })
   );
   fastify.get<{
@@ -392,14 +392,14 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         params: { id },
-        query: { pageIndex, pageSize, show = 'all' },
+        query: { pageIndex, pageSize, filter = 'all' },
         session: { userId },
       } = request;
 
       const itemsQuery = getCollectionItems({
         userId,
         collectionId: id === 'home' ? 'all' : id,
-        show,
+        filter,
       });
       const items = (await pool.any(
         addPagination({ pageIndex, pageSize }, itemsQuery)
@@ -562,7 +562,7 @@ export const collections: FastifyPluginAsync = async (
 
   const PreferencesBody = z.object({
     layout: CollectionLayout.optional(),
-    filter: CollectionShowFilter.optional(),
+    filter: CollectionFilter.optional(),
     grouping: CollectionGrouping.optional(),
   });
 

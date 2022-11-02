@@ -2,7 +2,7 @@ import {
   CollectionGrouping,
   CollectionItem,
   CollectionLayout,
-  CollectionShowFilter,
+  CollectionFilter,
   ID,
 } from '@orpington-news/shared';
 
@@ -20,7 +20,7 @@ export interface ActiveCollection {
   id: ID | 'home';
   title: string;
   layout: CollectionLayout;
-  filter: CollectionShowFilter;
+  filter: CollectionFilter;
   grouping: CollectionGrouping;
 }
 
@@ -29,7 +29,7 @@ export const CollectionLayoutName: Record<CollectionLayout, string> = {
   card: 'Card',
 };
 
-export const CollectionShowFilterName: Record<CollectionShowFilter, string> = {
+export const CollectionFilterName: Record<CollectionFilter, string> = {
   all: 'All',
   read: 'Read',
   unread: 'Unread',

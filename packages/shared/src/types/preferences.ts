@@ -2,10 +2,10 @@ import { z } from 'zod';
 import {
   CollectionGrouping,
   CollectionLayout,
-  CollectionShowFilter,
+  CollectionFilter,
   defaultCollectionGrouping,
   defaultCollectionLayout,
-  defaultCollectionShowFilter,
+  defaultCollectionFilter,
 } from './collection';
 import { ID } from './id';
 
@@ -22,7 +22,7 @@ export const Preferences = z.object({
   activeCollectionId: ID.nullish(),
   activeCollectionTitle: z.string(),
   activeCollectionLayout: CollectionLayout,
-  activeCollectionFilter: CollectionShowFilter,
+  activeCollectionFilter: CollectionFilter,
   activeCollectionGrouping: CollectionGrouping,
 });
 
@@ -38,7 +38,7 @@ export const defaultPreferences: Preferences = {
   activeView: 'home',
   activeCollectionTitle: 'Home',
   activeCollectionLayout: defaultCollectionLayout,
-  activeCollectionFilter: defaultCollectionShowFilter,
+  activeCollectionFilter: defaultCollectionFilter,
   activeCollectionGrouping: defaultCollectionGrouping,
   defaultCollectionLayout,
   homeCollectionLayout: defaultCollectionLayout,
