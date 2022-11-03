@@ -27,6 +27,7 @@ export interface ActiveCollection {
 export const CollectionLayoutName: Record<CollectionLayout, string> = {
   magazine: 'Magazine',
   card: 'Card',
+  list: 'List',
 };
 
 export const CollectionFilterName: Record<CollectionFilter, string> = {

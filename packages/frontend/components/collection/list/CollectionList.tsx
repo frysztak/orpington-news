@@ -17,7 +17,7 @@ import {
   ID,
 } from '@orpington-news/shared';
 import { usePullToRefresh } from '@utils';
-import { CardItem, MagazineItem } from '../layouts';
+import { CardItem, ListItem, MagazineItem } from '../layouts';
 import { RefreshIndicator } from './RefreshIndicator';
 
 export interface CollectionListProps {
@@ -42,6 +42,8 @@ const getListItem = (layout: CollectionLayout) => {
       return MagazineItem;
     case 'card':
       return CardItem;
+    case 'list':
+      return ListItem;
   }
 };
 
@@ -122,8 +124,8 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         itemContent={(index, data) => (
           <Item
             item={data}
-            py={2}
-            pr={3}
+            py={layout === 'list' ? 0 : 2}
+            pr={layout === 'list' ? 0 : 3}
             isActive={data.id === activeArticleId}
             data-test={`item-id-${data.id}`}
           />
