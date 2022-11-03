@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import { CollectionLayout, defaultCollectionLayout } from './collection';
+import {
+  CollectionGrouping,
+  CollectionLayout,
+  CollectionFilter,
+  defaultCollectionGrouping,
+  defaultCollectionLayout,
+  defaultCollectionFilter,
+} from './collection';
 import { ID } from './id';
 
 export const AvatarStyle = z.enum(['fallback', 'initials']);
@@ -15,6 +22,8 @@ export const Preferences = z.object({
   activeCollectionId: ID.nullish(),
   activeCollectionTitle: z.string(),
   activeCollectionLayout: CollectionLayout,
+  activeCollectionFilter: CollectionFilter,
+  activeCollectionGrouping: CollectionGrouping,
 });
 
 export type Preferences = z.infer<typeof Preferences>;
@@ -29,6 +38,8 @@ export const defaultPreferences: Preferences = {
   activeView: 'home',
   activeCollectionTitle: 'Home',
   activeCollectionLayout: defaultCollectionLayout,
+  activeCollectionFilter: defaultCollectionFilter,
+  activeCollectionGrouping: defaultCollectionGrouping,
   defaultCollectionLayout,
   homeCollectionLayout: defaultCollectionLayout,
   expandedCollectionIds: [],

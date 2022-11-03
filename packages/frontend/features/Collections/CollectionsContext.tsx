@@ -32,7 +32,7 @@ export const CollectionsContextProvider: ReactFCC = ({ children }) => {
         }
         case 'updatedFeeds': {
           for (const feedId of msg.data.feedIds) {
-            queryClient.invalidateQueries(collectionKeys.list(feedId));
+            queryClient.invalidateQueries(collectionKeys.lists(feedId));
           }
           queryClient.invalidateQueries(collectionKeys.tree);
           return currentlyUpdatedCollections.remove(msg.data.feedIds);

@@ -66,9 +66,21 @@ declare namespace Cypress {
       layout?: string;
     }): Chainable<Response<void>>;
 
-    //       login(email: string, password: string): Chainable<void>
-    //       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-    //       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-    //       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
+    /**
+     * Change date read by API
+     */
+    putDateReadByApi(data: {
+      collectionId: number;
+      articleId: number;
+      dateRead: number | null;
+    }): Chainable<Response<void>>;
+
+    /**
+     * Change collection preferences by API
+     */
+    putCollectionPreferencesByApi(data: {
+      collectionId: number;
+      preferences: object;
+    }): Chainable<Response<void>>;
   }
 }

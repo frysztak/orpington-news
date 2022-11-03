@@ -101,6 +101,8 @@ export const Sidebar: React.FC = () => {
           id: collection.id,
           title: collection.title,
           layout: collection.layout ?? defaultCollectionLayout,
+          filter: collection.filter!,
+          grouping: collection.grouping!,
         });
       });
     },

@@ -1,4 +1,10 @@
-import { CollectionItem, CollectionLayout, ID } from '@orpington-news/shared';
+import {
+  CollectionGrouping,
+  CollectionItem,
+  CollectionLayout,
+  CollectionFilter,
+  ID,
+} from '@orpington-news/shared';
 
 export interface CollectionItemProps {
   item: CollectionItem;
@@ -14,9 +20,17 @@ export interface ActiveCollection {
   id: ID | 'home';
   title: string;
   layout: CollectionLayout;
+  filter: CollectionFilter;
+  grouping: CollectionGrouping;
 }
 
 export const CollectionLayoutName: Record<CollectionLayout, string> = {
   magazine: 'Magazine',
   card: 'Card',
+};
+
+export const CollectionFilterName: Record<CollectionFilter, string> = {
+  all: 'All',
+  read: 'Read',
+  unread: 'Unread',
 };

@@ -18,12 +18,11 @@ import {
   markCollectionAsRead,
   moveCollections,
   recalculateCollectionsOrder,
-  setCollectionLayout,
+  setCollectionPreferences,
   updateCollection,
 } from '@db/collections';
 import {
   DBCollectionItemWithoutText,
-  getAllCollectionItems,
   getCollectionItems,
   getItemDetails,
   setItemDateRead,
@@ -33,9 +32,9 @@ import {
   modifyExpandedCollections,
   pruneExpandedCollections,
   setActiveView,
-  setHomeCollectionLayout,
+  setHomeCollectionPreferences,
 } from '@db/preferences';
-import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
+import { addPagination, PaginationSchema } from '@db/common';
 import {
   Collection,
   CollectionLayout,
@@ -46,6 +45,10 @@ import {
   UpdateCollection,
   AddCollection,
   CollectionId,
+  CollectionFilter,
+  defaultCollectionFilter,
+  defaultCollectionGrouping,
+  CollectionGrouping,
 } from '@orpington-news/shared';
 import { MAX_INT, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
@@ -57,6 +60,7 @@ import {
   extractFeedUrl,
 } from '@tasks/fetchRSS';
 import { importOPML } from '@services/opml';
+import { none } from 'rambda';
 
 const PostCollection = AddCollection.omit({
   layout: true,
@@ -84,6 +88,9 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     parent_id,
     parent_order,
     is_last_child,
+    filter,
+    grouping,
+    sort_by,
     ...rest
   } = collection;
 
@@ -93,6 +100,9 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     refreshInterval: refresh_interval,
     unreadCount: unread_count ?? 0,
     layout: layout ?? defaultCollectionLayout,
+    filter: filter ?? defaultCollectionFilter,
+    grouping: grouping ?? defaultCollectionGrouping,
+    sortBy: sort_by ?? 'ee',
     parents,
     parentId: parent_id ?? undefined,
     parentOrder: parent_order ?? undefined,
@@ -361,15 +371,20 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
+  const GetItemsParams = PaginationSchema.merge(
+    z.object({
+      filter: CollectionFilter.optional(),
+    })
+  );
   fastify.get<{
     Params: z.infer<typeof HomeCollectionId>;
-    Querystring: PaginationParams;
+    Querystring: z.infer<typeof GetItemsParams>;
   }>(
     '/:id/items',
     {
       schema: {
         params: HomeCollectionId,
-        querystring: PaginationSchema,
+        querystring: GetItemsParams,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -377,14 +392,17 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         params: { id },
-        query: pagination,
+        query: { pageIndex, pageSize, filter = 'all' },
         session: { userId },
       } = request;
-      console.log(id);
-      const itemsQuery =
-        id === 'home' ? getAllCollectionItems(userId) : getCollectionItems(id);
+
+      const itemsQuery = getCollectionItems({
+        userId,
+        collectionId: id === 'home' ? 'all' : id,
+        filter,
+      });
       const items = (await pool.any(
-        addPagination(pagination, itemsQuery)
+        addPagination({ pageIndex, pageSize }, itemsQuery)
       )) as readonly DBCollectionItemWithoutText[];
 
       return items.map((dbItem) => ({
@@ -542,34 +560,42 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  const LayoutBody = z.object({
-    layout: CollectionLayout,
+  const PreferencesBody = z.object({
+    layout: CollectionLayout.optional(),
+    filter: CollectionFilter.optional(),
+    grouping: CollectionGrouping.optional(),
   });
 
   fastify.put<{
     Params: z.infer<typeof HomeCollectionId>;
-    Body: z.infer<typeof LayoutBody>;
+    Body: z.infer<typeof PreferencesBody>;
   }>(
-    '/:id/layout',
+    '/:id/preferences',
     {
       schema: {
         params: HomeCollectionId,
-        body: LayoutBody,
+        body: PreferencesBody,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
       const {
-        body: { layout },
+        body: preferences,
         params: { id },
         session: { userId },
       } = request;
 
+      if (none(Boolean, Object.values(preferences))) {
+        return true;
+      }
+
       if (typeof id === 'number') {
-        await pool.query(setCollectionLayout(id, layout));
+        await pool.query(
+          setCollectionPreferences({ collectionId: id, preferences })
+        );
       } else if (id === 'home') {
-        await pool.query(setHomeCollectionLayout(layout, userId));
+        await pool.query(setHomeCollectionPreferences({ userId, preferences }));
       }
 
       return true;

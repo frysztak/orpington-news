@@ -13,6 +13,8 @@ export const useActiveCollection = () => {
         homeCollectionLayout: prefs.homeCollectionLayout,
         activeCollectionTitle: prefs.activeCollectionTitle,
         activeCollectionLayout: prefs.activeCollectionLayout,
+        activeCollectionFilter: prefs.activeCollectionFilter,
+        activeCollectionGrouping: prefs.activeCollectionGrouping,
       };
     },
   });
@@ -26,5 +28,7 @@ export const useActiveCollection = () => {
     id: data.activeCollectionId,
     title: data.activeCollectionTitle,
     layout: data.activeCollectionLayout,
+    filter: data.activeCollectionFilter,
+    grouping: data.activeCollectionGrouping,
   } as const;
 };

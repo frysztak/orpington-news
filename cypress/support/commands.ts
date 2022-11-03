@@ -131,7 +131,7 @@ Cypress.Commands.add('clickGoBackIfExists', () => {
 Cypress.Commands.add('changeActiveCollection', (id: string) => {
   cy.intercept({
     method: 'GET',
-    url: getApiPath(`/collections/${id}/items?pageIndex=0`),
+    url: getApiPath(`/collections/${id}/items?pageIndex=0&filter=all`),
   }).as('apiGetItems');
 
   cy.visit('/');
@@ -159,3 +159,27 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 Cypress.Commands.add('addFeedByApi', (data) => {
   return cy.request('POST', `${Cypress.env('api_url')}/collections`, data);
 });
+
+Cypress.Commands.add(
+  'putDateReadByApi',
+  ({ collectionId, articleId, dateRead }) => {
+    return cy.request(
+      'PUT',
+      `${Cypress.env(
+        'api_url'
+      )}/collections/${collectionId}/item/${articleId}/dateRead`,
+      { dateRead }
+    );
+  }
+);
+
+Cypress.Commands.add(
+  'putCollectionPreferencesByApi',
+  ({ collectionId, preferences }) => {
+    return cy.request(
+      'PUT',
+      `${Cypress.env('api_url')}/collections/${collectionId}/preferences`,
+      preferences
+    );
+  }
+);

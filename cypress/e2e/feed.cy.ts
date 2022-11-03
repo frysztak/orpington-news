@@ -70,6 +70,8 @@ sizes.forEach((size) => {
           activeCollectionId: 1,
           activeCollectionLayout: 'card',
           activeCollectionTitle: 'Kent C. Dodds Blog',
+          activeCollectionFilter: 'all',
+          activeCollectionGrouping: 'none',
         });
         expect(response.statusCode).to.eq(200);
       });
@@ -125,7 +127,7 @@ sizes.forEach((size) => {
       });
       cy.intercept({
         method: 'GET',
-        url: getApiPath('/collections/1/items?pageIndex=0'),
+        url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
       }).as('apiGetItems');
       cy.intercept({
         method: 'GET',
@@ -201,7 +203,7 @@ sizes.forEach((size) => {
       it('from collection header', () => {
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/1/items?pageIndex=0'),
+          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
         }).as('apiGetItems');
 
         cy.intercept({
@@ -258,7 +260,7 @@ sizes.forEach((size) => {
 
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/home/items?pageIndex=0'),
+          url: getApiPath('/collections/home/items?pageIndex=0&filter=all'),
         }).as('apiGetHomeItems');
 
         cy.addFeedByApi({
@@ -304,7 +306,7 @@ sizes.forEach((size) => {
         }).as('apiMarkAsRead');
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/home/items?pageIndex=0'),
+          url: getApiPath('/collections/home/items?pageIndex=0&filter=all'),
         }).as('apiGetHomeItems');
 
         cy.addFeedByApi({
@@ -347,8 +349,8 @@ sizes.forEach((size) => {
       it('home collection', () => {
         cy.intercept({
           method: 'PUT',
-          url: getApiPath('/collections/home/layout'),
-        }).as('apiPutLayout');
+          url: getApiPath('/collections/home/preferences'),
+        }).as('apiPutPreferences');
 
         cy.addFeedByApi({
           title: 'Kent C. Dodds Blog',
@@ -363,7 +365,7 @@ sizes.forEach((size) => {
 
         cy.clickCollectionHeaderLayout('magazine');
 
-        cy.wait('@apiPutLayout');
+        cy.wait('@apiPutPreferences');
 
         cy.get(`[data-test-layout=magazine]`).should('exist').and('be.visible');
         cy.get(`[data-test-layout=card]`).should('not.exist');
@@ -372,13 +374,13 @@ sizes.forEach((size) => {
       it('other collection', () => {
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/1/items?pageIndex=0'),
+          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
         }).as('apiGetItems');
 
         cy.intercept({
           method: 'PUT',
-          url: getApiPath('/collections/1/layout'),
-        }).as('apiPutLayout');
+          url: getApiPath('/collections/1/preferences'),
+        }).as('apiPutPreferences');
 
         cy.addFeedByApi({
           title: 'Kent C. Dodds Blog',
@@ -398,7 +400,7 @@ sizes.forEach((size) => {
 
         cy.clickCollectionHeaderLayout('magazine');
 
-        cy.wait('@apiPutLayout');
+        cy.wait('@apiPutPreferences');
 
         cy.get(`[data-test-layout=magazine]`).should('exist').and('be.visible');
         cy.get(`[data-test-layout=card]`).should('not.exist');
@@ -425,7 +427,7 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0`),
+          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();
@@ -467,7 +469,7 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0`),
+          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
         cy.intercept({
           method: 'PUT',
@@ -527,7 +529,7 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0`),
+          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();
@@ -547,6 +549,65 @@ sizes.forEach((size) => {
 
         cy.getBySelVisible('thereAreNoFeedsYet');
         cy.getBySelVisible('thisFeedHasNoItems');
+      });
+    });
+
+    describe('filters', () => {
+      it('remembers filter per collection', () => {
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+        cy.putCollectionPreferencesByApi({
+          collectionId: 1,
+          preferences: { filter: 'unread' },
+        });
+        cy.putDateReadByApi({
+          collectionId: 1,
+          articleId: 1,
+          dateRead: 1667491521,
+        });
+        cy.putDateReadByApi({
+          collectionId: 1,
+          articleId: 2,
+          dateRead: 1667491521,
+        });
+
+        cy.addFeedByApi({
+          title: 'fettblog.eu',
+          url: getFeedUrl('fettblog.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+        cy.putCollectionPreferencesByApi({
+          collectionId: 2,
+          preferences: { filter: 'read' },
+        });
+
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(`/collections/1/items?pageIndex=0&filter=unread`),
+        }).as('apiGetItems1');
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(`/collections/2/items?pageIndex=0&filter=read`),
+        }).as('apiGetItems2');
+
+        cy.visit('/');
+
+        cy.openDrawerIfExists();
+        cy.clickCollection('1');
+        cy.wait('@apiGetItems1').then(({ response }) => {
+          expect(response.body).to.have.length(1);
+        });
+
+        cy.openDrawerIfExists();
+        cy.clickCollection('2');
+        cy.wait('@apiGetItems2').then(({ response }) => {
+          expect(response.body).to.have.length(0);
+        });
       });
     });
   });

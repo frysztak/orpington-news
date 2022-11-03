@@ -39,13 +39,15 @@ export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
 
         // Optimistically update active list
         const activeListKey =
-          activeCollection && collectionKeys.list(activeCollection.id);
+          activeCollection && collectionKeys.lists(activeCollection.id);
         const previousList =
-          activeListKey && queryClient.getQueryData(activeListKey);
+          activeListKey && queryClient.getQueriesData(activeListKey);
 
         if (activeCollection) {
-          queryClient.setQueryData(
-            collectionKeys.list(activeCollection.id),
+          queryClient.setQueriesData(
+            {
+              queryKey: collectionKeys.lists(activeCollection.id),
+            },
             mutatePageData<CollectionItem>((item) =>
               item.id === itemId
                 ? {
@@ -69,12 +71,6 @@ export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
         }
       },
       onSettled: () => {
-        queryClient.invalidateQueries(collectionKeys.allForId(collectionId!));
-        if (activeCollection) {
-          queryClient.invalidateQueries(
-            collectionKeys.allForId(activeCollection.id)
-          );
-        }
         queryClient.invalidateQueries(collectionKeys.tree);
       },
     }

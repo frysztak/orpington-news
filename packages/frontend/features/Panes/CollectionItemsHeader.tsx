@@ -5,10 +5,10 @@ import {
   useCollectionsContext,
   useMarkCollectionAsRead,
   useRefreshCollection,
-  useSetCollectionLayout,
+  useSetCollectionPreferences,
 } from '@features/Collections';
 import { useActiveCollection } from '@features/Preferences';
-import { CollectionLayout } from '@orpington-news/shared';
+import { CollectionLayout, CollectionFilter } from '@orpington-news/shared';
 import { ModalContext } from './ModalContext';
 
 export const CollectionItemsHeader: React.FC = () => {
@@ -42,7 +42,7 @@ export const CollectionItemsHeader: React.FC = () => {
     }
   }, [activeCollection, refreshCollection]);
 
-  const { mutate: setCollectionLayout } = useSetCollectionLayout();
+  const { mutate: setCollectionPreferences } = useSetCollectionPreferences();
   const handleCollectionLayoutChanged = useCallback(
     (layout: CollectionLayout) => {
       if (activeCollection?.id === undefined) {
@@ -52,12 +52,28 @@ export const CollectionItemsHeader: React.FC = () => {
         return;
       }
 
-      setCollectionLayout({
+      setCollectionPreferences({
         id: activeCollection.id,
-        layout,
+        preferences: { layout },
       });
     },
-    [activeCollection?.id, setCollectionLayout]
+    [activeCollection?.id, setCollectionPreferences]
+  );
+  const handleCollectionFilterChanged = useCallback(
+    (filter: CollectionFilter) => {
+      if (activeCollection?.id === undefined) {
+        console.error(
+          `handleCollectionLayoutChanged() without active collection`
+        );
+        return;
+      }
+
+      setCollectionPreferences({
+        id: activeCollection.id,
+        preferences: { filter },
+      });
+    },
+    [activeCollection?.id, setCollectionPreferences]
   );
 
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
@@ -95,6 +111,7 @@ export const CollectionItemsHeader: React.FC = () => {
       menuButtonRef={drawerButtonRef}
       onHamburgerClicked={toggleDrawer}
       onChangeLayout={handleCollectionLayoutChanged}
+      onShowFilterChanged={handleCollectionFilterChanged}
       onMenuActionClicked={handleMenuActionClicked}
     />
   );
