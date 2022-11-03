@@ -10,6 +10,8 @@ import {
 } from '@api';
 import { preferencesKeys } from '@features/queryKeys';
 import type {
+  CollectionFilter,
+  CollectionGrouping,
   CollectionLayout,
   ID,
   Preferences,
@@ -117,6 +119,8 @@ export const useSetActiveView = () => {
       activeView: ViewPreferences & {
         activeCollectionTitle: string;
         activeCollectionLayout?: CollectionLayout;
+        activeCollectionFilter?: CollectionFilter;
+        activeCollectionGrouping?: CollectionGrouping;
       }
     ) => setActiveView(api, activeView),
     {

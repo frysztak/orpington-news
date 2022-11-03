@@ -1,4 +1,9 @@
-import { CollectionLayout, ID } from '@orpington-news/shared';
+import {
+  CollectionFilter,
+  CollectionGrouping,
+  CollectionLayout,
+  ID,
+} from '@orpington-news/shared';
 import { useCallback } from 'react';
 import { useSetActiveView } from './queries';
 
@@ -10,6 +15,8 @@ type SetActiveCollectionData =
       id: ID;
       title: string;
       layout: CollectionLayout;
+      filter: CollectionFilter;
+      grouping: CollectionGrouping;
     };
 
 export const useSetActiveCollection = () => {
@@ -27,6 +34,8 @@ export const useSetActiveCollection = () => {
               activeCollectionId: data.id,
               activeCollectionTitle: data.title,
               activeCollectionLayout: data.layout,
+              activeCollectionFilter: data.filter,
+              activeCollectionGrouping: data.grouping,
             }
       );
     },

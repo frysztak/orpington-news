@@ -549,5 +549,64 @@ sizes.forEach((size) => {
         cy.getBySelVisible('thisFeedHasNoItems');
       });
     });
+
+    describe.only('filters', () => {
+      it('remembers filter per collection', () => {
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+        cy.putCollectionPreferencesByApi({
+          collectionId: 1,
+          preferences: { filter: 'unread' },
+        });
+        cy.putDateReadByApi({
+          collectionId: 1,
+          articleId: 1,
+          dateRead: 1667491521,
+        });
+        cy.putDateReadByApi({
+          collectionId: 1,
+          articleId: 2,
+          dateRead: 1667491521,
+        });
+
+        cy.addFeedByApi({
+          title: 'fettblog.eu',
+          url: getFeedUrl('fettblog.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+        cy.putCollectionPreferencesByApi({
+          collectionId: 2,
+          preferences: { filter: 'read' },
+        });
+
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(`/collections/1/items?pageIndex=0&filter=unread`),
+        }).as('apiGetItems1');
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(`/collections/2/items?pageIndex=0&filter=read`),
+        }).as('apiGetItems2');
+
+        cy.visit('/');
+
+        cy.openDrawerIfExists();
+        cy.clickCollection('1');
+        cy.wait('@apiGetItems1').then(({ response }) => {
+          expect(response.body).to.have.length(1);
+        });
+
+        cy.openDrawerIfExists();
+        cy.clickCollection('2');
+        cy.wait('@apiGetItems2').then(({ response }) => {
+          expect(response.body).to.have.length(0);
+        });
+      });
+    });
   });
 });
