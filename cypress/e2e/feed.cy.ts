@@ -70,6 +70,8 @@ sizes.forEach((size) => {
           activeCollectionId: 1,
           activeCollectionLayout: 'card',
           activeCollectionTitle: 'Kent C. Dodds Blog',
+          activeCollectionFilter: 'all',
+          activeCollectionGrouping: 'none',
         });
         expect(response.statusCode).to.eq(200);
       });
