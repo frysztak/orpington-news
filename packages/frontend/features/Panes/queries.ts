@@ -114,8 +114,8 @@ export const useDeleteCollection = ({
     onError,
     onSuccess: ({ ids, navigateHome }) => {
       onSuccess?.(ids);
-      queryClient.invalidateQueries(collectionKeys.tree);
-      queryClient.invalidateQueries(collectionKeys.list('home'));
+      queryClient.invalidateQueries({ queryKey: collectionKeys.tree });
+      queryClient.invalidateQueries(collectionKeys.lists('home'));
 
       if (navigateHome) {
         router.push('/', '/', { shallow: true }).then(() => {

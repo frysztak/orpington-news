@@ -239,7 +239,7 @@ export const useSetCollectionPreferences = () => {
         }
 
         if (preferences.filter) {
-          queryClient.invalidateQueries(collectionKeys.list(id));
+          queryClient.invalidateQueries(collectionKeys.lists(id));
         }
       },
     }

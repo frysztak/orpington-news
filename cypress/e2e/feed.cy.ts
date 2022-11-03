@@ -125,7 +125,7 @@ sizes.forEach((size) => {
       });
       cy.intercept({
         method: 'GET',
-        url: getApiPath('/collections/1/items?pageIndex=0'),
+        url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
       }).as('apiGetItems');
       cy.intercept({
         method: 'GET',
@@ -201,7 +201,7 @@ sizes.forEach((size) => {
       it('from collection header', () => {
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/1/items?pageIndex=0'),
+          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
         }).as('apiGetItems');
 
         cy.intercept({
@@ -258,7 +258,7 @@ sizes.forEach((size) => {
 
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/home/items?pageIndex=0'),
+          url: getApiPath('/collections/home/items?pageIndex=0&filter=all'),
         }).as('apiGetHomeItems');
 
         cy.addFeedByApi({
@@ -304,7 +304,7 @@ sizes.forEach((size) => {
         }).as('apiMarkAsRead');
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/home/items?pageIndex=0'),
+          url: getApiPath('/collections/home/items?pageIndex=0&filter=all'),
         }).as('apiGetHomeItems');
 
         cy.addFeedByApi({
@@ -347,8 +347,8 @@ sizes.forEach((size) => {
       it('home collection', () => {
         cy.intercept({
           method: 'PUT',
-          url: getApiPath('/collections/home/layout'),
-        }).as('apiPutLayout');
+          url: getApiPath('/collections/home/preferences'),
+        }).as('apiPutPreferences');
 
         cy.addFeedByApi({
           title: 'Kent C. Dodds Blog',
@@ -363,7 +363,7 @@ sizes.forEach((size) => {
 
         cy.clickCollectionHeaderLayout('magazine');
 
-        cy.wait('@apiPutLayout');
+        cy.wait('@apiPutPreferences');
 
         cy.get(`[data-test-layout=magazine]`).should('exist').and('be.visible');
         cy.get(`[data-test-layout=card]`).should('not.exist');
@@ -372,13 +372,13 @@ sizes.forEach((size) => {
       it('other collection', () => {
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/1/items?pageIndex=0'),
+          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
         }).as('apiGetItems');
 
         cy.intercept({
           method: 'PUT',
-          url: getApiPath('/collections/1/layout'),
-        }).as('apiPutLayout');
+          url: getApiPath('/collections/1/preferences'),
+        }).as('apiPutPreferences');
 
         cy.addFeedByApi({
           title: 'Kent C. Dodds Blog',
@@ -398,7 +398,7 @@ sizes.forEach((size) => {
 
         cy.clickCollectionHeaderLayout('magazine');
 
-        cy.wait('@apiPutLayout');
+        cy.wait('@apiPutPreferences');
 
         cy.get(`[data-test-layout=magazine]`).should('exist').and('be.visible');
         cy.get(`[data-test-layout=card]`).should('not.exist');
@@ -425,7 +425,7 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0`),
+          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();
@@ -467,7 +467,7 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0`),
+          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
         cy.intercept({
           method: 'PUT',
@@ -527,7 +527,7 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0`),
+          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();

@@ -6,8 +6,10 @@ export const collectionKeys = {
   home: ['collection', 'home'] as const,
   allForId: (collectionId: ID | string) =>
     [...collectionKeys.base, collectionId] as const,
+  lists: (collectionId: ID | string) =>
+    [...collectionKeys.base, collectionId, 'list'] as const,
   list: (collectionId: ID | string, filter?: CollectionFilter) =>
-    [...collectionKeys.base, collectionId, 'list', { filter }] as const,
+    [...collectionKeys.lists(collectionId), { filter }] as const,
   detail: (collectionId: ID, itemId: ID) =>
     [...collectionKeys.base, collectionId, 'detail', { itemId }] as const,
 };
