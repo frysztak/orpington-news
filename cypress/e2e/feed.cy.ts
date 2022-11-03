@@ -550,7 +550,7 @@ sizes.forEach((size) => {
       });
     });
 
-    describe.only('filters', () => {
+    describe('filters', () => {
       it('remembers filter per collection', () => {
         cy.addFeedByApi({
           title: 'Kent C. Dodds Blog',
