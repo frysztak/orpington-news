@@ -13,13 +13,14 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { format, fromUnixTime } from 'date-fns';
+import { fromUnixTime } from 'date-fns';
 import { clamp } from 'rambda';
 import {
   CalendarDaysIcon,
   ClockIcon,
   NewspaperIcon,
 } from '@heroicons/react/24/outline';
+import { formatRelative } from '@utils';
 import { CollectionItemProps } from '../../types';
 
 export type ListItemProps = CollectionItemProps &
@@ -51,9 +52,9 @@ export const ListItem = forwardRef((props: ListItemProps, ref) => {
   );
 
   const publishedEl = (
-    <HStack title="Published on" spacing={0} color={textColor}>
+    <HStack title="Published on" spacing={0} flexShrink={0} color={textColor}>
       <Icon as={CalendarDaysIcon} mr={1} />
-      <span>{format(fromUnixTime(datePublished), 'dd/MM/yyyy')}</span>
+      <span>{formatRelative(fromUnixTime(datePublished))}</span>
     </HStack>
   );
 
@@ -90,7 +91,14 @@ export const ListItem = forwardRef((props: ListItemProps, ref) => {
             px={2}
             display={{ base: 'none', lg: 'flex' }}
           >
-            <HStack flexShrink={0} flexBasis={24} spacing={0} color={textColor}>
+            <HStack
+              flexShrink={0}
+              flexGrow={0}
+              w="20%"
+              wordBreak="break-all"
+              spacing={0}
+              color={textColor}
+            >
               <Icon as={NewspaperIcon} mr={1} />
               <Text noOfLines={1}>{collection.title}</Text>
             </HStack>
@@ -111,7 +119,9 @@ export const ListItem = forwardRef((props: ListItemProps, ref) => {
             <HStack w="full" justify="space-between">
               <HStack spacing={0} color={textColor}>
                 <Icon as={NewspaperIcon} mr={1} />
-                <Text noOfLines={1}>{collection.title}</Text>
+                <Text noOfLines={1} wordBreak="break-all">
+                  {collection.title}
+                </Text>
               </HStack>
               <HStack>
                 {publishedEl}
