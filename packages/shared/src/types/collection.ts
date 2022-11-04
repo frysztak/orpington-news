@@ -53,7 +53,7 @@ export type CollectionIconType = z.infer<typeof CollectionIcons>;
 export const defaultIcon: CollectionIconType = 'Code';
 export const defaultRefreshInterval: number = 360; // 6h
 
-export const CollectionLayout = z.enum(['card', 'magazine']);
+export const CollectionLayout = z.enum(['card', 'magazine', 'list']);
 export type CollectionLayout = z.infer<typeof CollectionLayout>;
 export const defaultCollectionLayout: CollectionLayout = 'card';
 

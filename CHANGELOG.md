@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Collection filters (read, unread)
 - Collection item list: highlight active article
+- Collection item list: list layout
 - Article view: updated header
 
 ## [0.7.4] - 2022-10-20

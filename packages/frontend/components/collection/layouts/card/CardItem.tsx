@@ -10,9 +10,18 @@ import {
   Box,
   useColorModeValue,
   VStack,
+  Icon,
+  chakra,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { format, fromUnixTime } from 'date-fns';
+import { fromUnixTime } from 'date-fns';
+import {
+  CalendarDaysIcon,
+  ClockIcon,
+  NewspaperIcon,
+} from '@heroicons/react/24/solid';
+import { formatRelative } from '@utils';
+import { clamp } from 'rambda';
 import { CollectionItemProps } from '../../types';
 
 export type CardItemProps = CollectionItemProps &
@@ -32,14 +41,14 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
     datePublished,
     onReadingList,
   } = item;
-  const readingTimeRounded = Math.ceil(readingTime);
+  const readingTimeRounded = clamp(1, 99, Math.ceil(readingTime));
 
   const inactiveBorder = useColorModeValue('purple.50', 'gray.700');
   const activeBorder = useColorModeValue('purple.300', 'gray.500');
   const borderColor = isActive ? activeBorder : inactiveBorder;
 
   return (
-    <LinkBox as="article" ref={ref} {...rest}>
+    <LinkBox as="article" ref={ref} py={2} pr={3} {...rest}>
       <VStack
         w="full"
         justifyContent="space-between"
@@ -88,11 +97,24 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
           <Text noOfLines={[2, 3]} overflowWrap="anywhere">
             {summary}
           </Text>
-          <Text color={useColorModeValue('gray.600', 'gray.400')}>
-            by {collection.title} •{' '}
-            {format(fromUnixTime(datePublished), 'dd/MM/yyyy')}
-            {readingTimeRounded > 0 && ` • about ${readingTimeRounded} min`}
-          </Text>
+          <HStack color={useColorModeValue('gray.600', 'gray.400')}>
+            <HStack spacing={0}>
+              <Icon as={NewspaperIcon} mr={1} />
+              <Text noOfLines={1} wordBreak="break-all">
+                {collection.title}
+              </Text>
+            </HStack>
+
+            <HStack title="Published on" spacing={0} flexShrink={0}>
+              <Icon as={CalendarDaysIcon} mr={1} />
+              <span>{formatRelative(fromUnixTime(datePublished))}</span>
+            </HStack>
+
+            <HStack title="Estimated reading time" spacing={0}>
+              <Icon as={ClockIcon} mr={1} />
+              <chakra.span w="4ch">{`${readingTimeRounded}m`}</chakra.span>
+            </HStack>
+          </HStack>
         </Box>
       </VStack>
     </LinkBox>

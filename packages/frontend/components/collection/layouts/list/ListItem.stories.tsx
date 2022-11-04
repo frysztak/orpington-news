@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { CardItem, CardItemProps } from './CardItem';
+import { ListItem, ListItemProps } from './ListItem';
 import {
   generateSampleCollection,
   generateSampleCollectionItem,
@@ -9,14 +9,20 @@ import {
 import { CollectionItem } from '@orpington-news/shared';
 
 export default {
-  title: 'Components/Collection/Layouts/Card',
-  component: CardItem,
+  title: 'Components/Collection/Layouts/List',
+  component: ListItem,
 } as Meta;
 
-const Template: Story<CardItemProps> = (props) => <CardItem {...props} />;
+const Template: Story<ListItemProps> = (props) => <ListItem {...props} />;
 
 const collection = generateSampleCollection('Fun Blog');
 const sampleItem: CollectionItem = generateSampleCollectionItem(collection);
+
+const longCollection = generateSampleCollection(
+  'An Incredibly Fun Blog Indeed'
+);
+const longSampleItem: CollectionItem =
+  generateSampleCollectionItem(longCollection);
 
 export const Default = Template.bind({});
 Default.args = {
@@ -40,4 +46,20 @@ Active.args = {
     ...sampleItem,
   },
   isActive: true,
+};
+
+export const Long = Template.bind({});
+Long.args = {
+  ...Default.args,
+  item: longSampleItem,
+};
+
+export const Mobile = Template.bind({});
+Mobile.args = {
+  ...Long.args,
+};
+Mobile.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
 };
