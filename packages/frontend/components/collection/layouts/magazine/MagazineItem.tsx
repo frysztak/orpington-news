@@ -10,9 +10,17 @@ import {
   forwardRef,
   BoxProps,
   useColorModeValue,
+  Icon,
+  chakra,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { format, fromUnixTime } from 'date-fns';
+import { fromUnixTime } from 'date-fns';
+import {
+  CalendarDaysIcon,
+  ClockIcon,
+  NewspaperIcon,
+} from '@heroicons/react/24/solid';
+import { formatRelative } from '@utils';
 import { CollectionItemProps } from '../../types';
 
 export type MagazineItemProps = CollectionItemProps & BoxProps;
@@ -77,11 +85,26 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
           <Text noOfLines={[2, 3]} overflowWrap="anywhere">
             {summary}
           </Text>
-          <Text color="gray.500">
-            by {collection.title} •{' '}
-            {format(fromUnixTime(datePublished), 'dd/MM/yyyy')}
-            {readingTimeRounded > 0 && ` • about ${readingTimeRounded} min`}
-          </Text>
+          <HStack color="gray.500">
+            <HStack spacing={0}>
+              <Icon as={NewspaperIcon} mr={1} />
+              <Text noOfLines={1} wordBreak="break-all">
+                {collection.title}
+              </Text>
+            </HStack>
+
+            <HStack title="Published on" spacing={0} flexShrink={0}>
+              <Icon as={CalendarDaysIcon} mr={1} />
+              <span>{formatRelative(fromUnixTime(datePublished))}</span>
+            </HStack>
+
+            <HStack title="Estimated reading time" spacing={0}>
+              <Icon as={ClockIcon} mr={1} />
+              <chakra.span w="4ch">
+                {readingTimeRounded > 0 && `${readingTimeRounded}m`}
+              </chakra.span>
+            </HStack>
+          </HStack>
         </VStack>
       </HStack>
     </LinkBox>
