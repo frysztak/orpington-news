@@ -21,6 +21,7 @@ import {
   NewspaperIcon,
 } from '@heroicons/react/24/solid';
 import { formatRelative } from '@utils';
+import { clamp } from 'rambda';
 import { CollectionItemProps } from '../../types';
 
 export type MagazineItemProps = CollectionItemProps & BoxProps;
@@ -37,7 +38,7 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
     dateRead,
     datePublished,
   } = item;
-  const readingTimeRounded = Math.ceil(readingTime);
+  const readingTimeRounded = clamp(1, 99, Math.ceil(readingTime));
 
   const activeBorder = useColorModeValue('purple.300', 'gray.500');
 
@@ -100,9 +101,7 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
 
             <HStack title="Estimated reading time" spacing={0}>
               <Icon as={ClockIcon} mr={1} />
-              <chakra.span w="4ch">
-                {readingTimeRounded > 0 && `${readingTimeRounded}m`}
-              </chakra.span>
+              <chakra.span w="4ch">{`${readingTimeRounded}m`}</chakra.span>
             </HStack>
           </HStack>
         </VStack>

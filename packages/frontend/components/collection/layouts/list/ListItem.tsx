@@ -61,9 +61,7 @@ export const ListItem = forwardRef((props: ListItemProps, ref) => {
   const readingTimeEl = (
     <HStack title="Estimated reading time" spacing={0} color={textColor}>
       <Icon as={ClockIcon} mr={1} />
-      <chakra.span w="4ch">
-        {readingTimeRounded > 0 && `${readingTimeRounded}m`}
-      </chakra.span>
+      <chakra.span w="4ch">{`${readingTimeRounded}m`}</chakra.span>
     </HStack>
   );
 
