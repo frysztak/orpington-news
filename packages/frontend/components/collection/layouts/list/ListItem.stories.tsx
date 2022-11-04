@@ -1,7 +1,6 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { faker } from '@faker-js/faker';
 import { ListItem, ListItemProps } from './ListItem';
 import {
   generateSampleCollection,
@@ -33,14 +32,6 @@ Default.args = {
   onReadingListButtonClicked: action('onReadingListButtonClicked'),
 };
 
-export const WithImage = Template.bind({});
-WithImage.args = {
-  item: {
-    ...sampleItem,
-    thumbnailUrl: faker.image.cats(),
-  },
-};
-
 export const Read = Template.bind({});
 Read.args = {
   item: {
@@ -59,5 +50,16 @@ Active.args = {
 
 export const Long = Template.bind({});
 Long.args = {
+  ...Default.args,
   item: longSampleItem,
+};
+
+export const Mobile = Template.bind({});
+Mobile.args = {
+  ...Long.args,
+};
+Mobile.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
 };
