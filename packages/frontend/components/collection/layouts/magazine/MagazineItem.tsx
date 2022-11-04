@@ -43,7 +43,7 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
   const activeBorder = useColorModeValue('purple.300', 'gray.500');
 
   return (
-    <LinkBox as="article" ref={ref} {...rest}>
+    <LinkBox as="article" ref={ref} py={2} pr={3} {...rest}>
       <HStack
         spacing={4}
         p={2}

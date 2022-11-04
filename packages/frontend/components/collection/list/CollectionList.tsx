@@ -124,8 +124,6 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         itemContent={(index, data) => (
           <Item
             item={data}
-            py={layout === 'list' ? 0 : 2}
-            pr={layout === 'list' ? 0 : 3}
             isActive={data.id === activeArticleId}
             data-test={`item-id-${data.id}`}
           />

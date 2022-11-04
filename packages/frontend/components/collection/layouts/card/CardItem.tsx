@@ -48,7 +48,7 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
   const borderColor = isActive ? activeBorder : inactiveBorder;
 
   return (
-    <LinkBox as="article" ref={ref} {...rest}>
+    <LinkBox as="article" ref={ref} py={2} pr={3} {...rest}>
       <VStack
         w="full"
         justifyContent="space-between"
