@@ -371,39 +371,50 @@ sizes.forEach((size) => {
         cy.get(`[data-test-layout=card]`).should('not.exist');
       });
 
-      it('other collection', () => {
-        cy.intercept({
-          method: 'GET',
-          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
-        }).as('apiGetItems');
+      describe('other collection', () => {
+        ['magazine', 'list'].forEach((layout) => {
+          it(`to ${layout}`, () => {
+            cy.intercept({
+              method: 'GET',
+              url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
+            }).as('apiGetItems');
 
-        cy.intercept({
-          method: 'PUT',
-          url: getApiPath('/collections/1/preferences'),
-        }).as('apiPutPreferences');
+            cy.intercept({
+              method: 'PUT',
+              url: getApiPath('/collections/1/preferences'),
+            }).as('apiPutPreferences');
+            cy.intercept({
+              method: 'PUT',
+              url: getApiPath('/preferences/activeView'),
+            }).as('apiPreferencesActiveView');
 
-        cy.addFeedByApi({
-          title: 'Kent C. Dodds Blog',
-          url: getFeedUrl('kentcdodds.xml'),
-          icon: 'Code',
-          refreshInterval: 120,
+            cy.addFeedByApi({
+              title: 'Kent C. Dodds Blog',
+              url: getFeedUrl('kentcdodds.xml'),
+              icon: 'Code',
+              refreshInterval: 120,
+            });
+
+            cy.visit('/');
+
+            // make collection active
+            cy.openDrawerIfExists();
+            cy.clickCollection('1');
+            cy.wait('@apiPreferencesActiveView');
+            cy.wait('@apiGetItems');
+
+            cy.get(`[data-test-layout=card]`).should('exist').and('be.visible');
+
+            cy.clickCollectionHeaderLayout(layout);
+
+            cy.wait('@apiPutPreferences');
+
+            cy.get(`[data-test-layout=${layout}]`)
+              .should('exist')
+              .and('be.visible');
+            cy.get(`[data-test-layout=card]`).should('not.exist');
+          });
         });
-
-        cy.visit('/');
-
-        // make collection active
-        cy.openDrawerIfExists();
-        cy.clickCollection('1');
-        cy.wait('@apiGetItems');
-
-        cy.get(`[data-test-layout=card]`).should('exist').and('be.visible');
-
-        cy.clickCollectionHeaderLayout('magazine');
-
-        cy.wait('@apiPutPreferences');
-
-        cy.get(`[data-test-layout=magazine]`).should('exist').and('be.visible');
-        cy.get(`[data-test-layout=card]`).should('not.exist');
       });
     });
 
