@@ -75,6 +75,8 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     onRefresh,
   });
 
+  const Skeleton = layout === 'list' ? SkeletonList : SkeletonBox;
+
   if (isLoading) {
     return (
       <VStack
@@ -86,7 +88,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         px={3}
       >
         {genN(10).map((x) => (
-          <SkeletonBox key={x} />
+          <Skeleton key={x} />
         ))}
       </VStack>
     );
@@ -129,7 +131,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
           />
         )}
         components={{
-          Footer: canFetchMoreItems ? SkeletonBox : undefined,
+          Footer: canFetchMoreItems ? Skeleton : undefined,
         }}
       />
     </Box>
@@ -138,9 +140,19 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
 
 const SkeletonBox: React.FC = (props) => {
   return (
-    <Box pb={4}>
+    <Box pb={4} pr={4}>
       <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
       <SkeletonText mt="4" noOfLines={2} spacing="4" />
+    </Box>
+  );
+};
+
+const SkeletonList: React.FC = (props) => {
+  return (
+    <Box pb={4} pl={1} pr={6}>
+      <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
+      <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
+      <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
     </Box>
   );
 };
