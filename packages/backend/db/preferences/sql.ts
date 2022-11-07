@@ -1,11 +1,6 @@
 import { sql } from 'slonik';
 import { z } from 'zod';
-import {
-  CollectionPreferences,
-  ID,
-  Preferences,
-  ViewPreferences,
-} from '@orpington-news/shared';
+import { CollectionPreferences, ID, Preferences } from '@orpington-news/shared';
 import { EMPTY } from '@utils';
 
 export const pruneExpandedCollections = (userId: ID) => {
@@ -133,12 +128,12 @@ WHERE
 `;
 };
 
-export const setActiveView = (view: ViewPreferences, userId: ID) => {
+export const setActiveCollection = (collectionId: ID, userId: ID) => {
   return sql`
 UPDATE
   preferences p
 SET
-  active_collection_id = ${view.activeCollectionId}
+  active_collection_id = ${collectionId}
 WHERE
   p.user_id = ${userId}
 `;

@@ -1,5 +1,9 @@
 import type { Wretch } from '@api';
-import type { ID, Preferences, ViewPreferences } from '@orpington-news/shared';
+import type {
+  ID,
+  Preferences,
+  SetActiveCollectionData,
+} from '@orpington-news/shared';
 
 export const getPreferences = (api: Wretch, signal: AbortSignal | undefined) =>
   api.options({ signal }).url(`/preferences`).get().json<Preferences>();
@@ -16,5 +20,11 @@ export const expandCollection = (api: Wretch, collectionId: ID) =>
 export const collapseCollection = (api: Wretch, collectionId: ID) =>
   api.url(`/preferences/collapse/${collectionId}`).put().json<Preferences>();
 
-export const setActiveView = (api: Wretch, activeView: ViewPreferences) =>
-  api.url(`/preferences/activeView`).put(activeView).json<Preferences>();
+export const setActiveView = (
+  api: Wretch,
+  activeCollectionData: SetActiveCollectionData
+) =>
+  api
+    .url(`/preferences/activeView`)
+    .put(activeCollectionData)
+    .json<Preferences>();

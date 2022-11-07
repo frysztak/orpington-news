@@ -5,12 +5,7 @@ export const useActiveCollection = () => {
   const { data } = useGetPreferences({
     select: (prefs: Preferences) => {
       return {
-        activeCollectionId: prefs
-          ? prefs.activeView === 'home'
-            ? 'home'
-            : prefs.activeCollectionId!
-          : ('home' as const),
-        homeCollectionLayout: prefs.homeCollectionLayout,
+        activeCollectionId: prefs.activeCollectionId!,
         activeCollectionTitle: prefs.activeCollectionTitle,
         activeCollectionLayout: prefs.activeCollectionLayout,
         activeCollectionFilter: prefs.activeCollectionFilter,

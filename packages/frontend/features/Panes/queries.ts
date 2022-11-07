@@ -108,7 +108,7 @@ export const useDeleteCollection = ({
   const { onError } = useHandleError();
 
   const queryClient = useQueryClient();
-  const { setActiveCollection } = useSetActiveCollection();
+  const { setHomeCollection } = useSetActiveCollection();
 
   return useMutation(({ id }: { id: ID }) => deleteCollection(api, id), {
     onError,
@@ -119,7 +119,7 @@ export const useDeleteCollection = ({
 
       if (navigateHome) {
         router.push('/', '/', { shallow: true }).then(() => {
-          setActiveCollection({ id: 'home' });
+          setHomeCollection();
           queryClient.invalidateQueries(preferencesKeys.base);
         });
       }

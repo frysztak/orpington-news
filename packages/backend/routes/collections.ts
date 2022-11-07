@@ -31,7 +31,7 @@ import {
   getPreferences,
   modifyExpandedCollections,
   pruneExpandedCollections,
-  setActiveView,
+  setActiveCollection,
   setHomeCollectionPreferences,
 } from '@db/preferences';
 import { addPagination, PaginationSchema } from '@db/common';
@@ -61,6 +61,7 @@ import {
 } from '@tasks/fetchRSS';
 import { importOPML } from '@services/opml';
 import { none } from 'rambda';
+import { getUser } from '@db/users';
 
 const PostCollection = AddCollection.omit({
   layout: true,
@@ -306,22 +307,14 @@ export const collections: FastifyPluginAsync = async (
         pool.one(getPreferences(userId)),
       ]);
 
-      const deletingCurrentlyActiveCollection =
-        // @ts-ignore
-        preferences.activeView === 'collection' &&
-        idsToDelete.includes(preferences.activeCollectionId!);
+      const deletingCurrentlyActiveCollection = idsToDelete.includes(
+        preferences.activeCollectionId
+      );
 
       const deletedIds = await pool.transaction(async (conn) => {
         if (deletingCurrentlyActiveCollection) {
-          await conn.query(
-            setActiveView(
-              {
-                // @ts-ignore
-                activeView: 'home',
-              },
-              userId
-            )
-          );
+          const { homeId } = await conn.one(getUser(userId));
+          await conn.query(setActiveCollection(homeId, userId));
         }
 
         const deletedIds = await conn.any(deleteCollections(idsToDelete));

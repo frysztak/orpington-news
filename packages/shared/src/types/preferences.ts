@@ -26,10 +26,14 @@ export const Preferences = z.object({
 
 export type Preferences = z.infer<typeof Preferences>;
 
-export const ViewPreferences = Preferences.pick({
+export const SetActiveCollectionData = Preferences.pick({
   activeCollectionId: true,
+  activeCollectionTitle: true,
+  activeCollectionLayout: true,
+  activeCollectionFilter: true,
+  activeCollectionGrouping: true,
 });
-export type ViewPreferences = z.infer<typeof ViewPreferences>;
+export type SetActiveCollectionData = z.infer<typeof SetActiveCollectionData>;
 
 export const defaultPreferences: Preferences = {
   activeCollectionTitle: 'Home',

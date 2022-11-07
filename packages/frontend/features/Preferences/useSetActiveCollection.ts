@@ -1,46 +1,31 @@
-import {
-  CollectionFilter,
-  CollectionGrouping,
-  CollectionLayout,
-  ID,
-} from '@orpington-news/shared';
 import { useCallback } from 'react';
-import { useSetActiveView } from './queries';
-
-type SetActiveCollectionData =
-  | {
-      id: 'home';
-    }
-  | {
-      id: ID;
-      title: string;
-      layout: CollectionLayout;
-      filter: CollectionFilter;
-      grouping: CollectionGrouping;
-    };
+import { useGetUser } from '@features/Auth';
+import { usePutActiveCollection } from './queries';
+import { useCollectionById } from '@features/Collections';
 
 export const useSetActiveCollection = () => {
-  const { mutate: setActiveView } = useSetActiveView();
-  const setActiveCollection = useCallback(
-    (data: SetActiveCollectionData) => {
-      setActiveView(
-        data.id === 'home'
-          ? {
-              activeView: 'home',
-              activeCollectionTitle: 'Home',
-            }
-          : {
-              activeView: 'collection',
-              activeCollectionId: data.id,
-              activeCollectionTitle: data.title,
-              activeCollectionLayout: data.layout,
-              activeCollectionFilter: data.filter,
-              activeCollectionGrouping: data.grouping,
-            }
-      );
-    },
-    [setActiveView]
-  );
+  const { mutate } = usePutActiveCollection();
+  const { data: userData } = useGetUser();
+  const { data: homeCollection } = useCollectionById(userData?.homeId);
 
-  return { setActiveCollection };
+  const setHomeCollection = useCallback(() => {
+    if (userData?.homeId === undefined) {
+      console.error(`setHomeCollection without homeId!`);
+      return;
+    }
+    if (!homeCollection) {
+      console.error(`setHomeCollection without homeCollection!`);
+      return;
+    }
+
+    mutate({
+      activeCollectionId: userData.homeId,
+      activeCollectionTitle: homeCollection.title,
+      activeCollectionLayout: homeCollection.layout!,
+      activeCollectionFilter: homeCollection.filter!,
+      activeCollectionGrouping: homeCollection.grouping!,
+    });
+  }, [homeCollection, mutate, userData?.homeId]);
+
+  return { setActiveCollection: mutate, setHomeCollection };
 };

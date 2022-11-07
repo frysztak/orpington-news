@@ -172,30 +172,11 @@ export const useSetCollectionPreferences = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({
-      id,
-      preferences,
-    }: {
-      id: ID | 'home';
-      preferences: CollectionPreferences;
-    }) => setCollectionPreferences(api, id, preferences),
+    ({ id, preferences }: { id: ID; preferences: CollectionPreferences }) =>
+      setCollectionPreferences(api, id, preferences),
     {
       onError,
       onMutate: ({ id, preferences }) => {
-        if (id === 'home') {
-          queryClient.setQueryData(
-            preferencesKeys.base,
-            (old?: Preferences) =>
-              old && {
-                ...old,
-                homeCollectionLayout:
-                  preferences.layout ?? old.homeCollectionLayout,
-              }
-          );
-
-          return;
-        }
-
         queryClient.setQueryData(
           preferencesKeys.base,
           (old?: Preferences) =>
@@ -233,10 +214,7 @@ export const useSetCollectionPreferences = () => {
       },
       onSuccess: (_, { id, preferences }) => {
         queryClient.invalidateQueries(preferencesKeys.base);
-
-        if (id !== 'home') {
-          queryClient.invalidateQueries(collectionKeys.tree);
-        }
+        queryClient.invalidateQueries(collectionKeys.tree);
 
         if (preferences.filter) {
           queryClient.invalidateQueries(collectionKeys.lists(id));

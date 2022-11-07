@@ -6,12 +6,12 @@ import {
   modifyExpandedCollections,
   pruneExpandedCollections,
   savePreferences,
-  setActiveView,
+  setActiveCollection,
 } from '@db/preferences';
 import {
   CollectionId,
   Preferences,
-  ViewPreferences,
+  SetActiveCollectionData,
 } from '@orpington-news/shared';
 
 export const preferences: FastifyPluginAsync = async (
@@ -95,19 +95,21 @@ export const preferences: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Reply: Preferences; Body: ViewPreferences }>(
+  fastify.put<{ Reply: Preferences; Body: SetActiveCollectionData }>(
     '/activeView',
     {
       schema: {
-        body: ViewPreferences,
+        body: SetActiveCollectionData,
         tags: ['Preferences'],
       },
     },
     async (request, reply) => {
       const {
         session: { userId },
+        body: { activeCollectionId },
       } = request;
-      await pool.query(setActiveView(request.body, userId));
+
+      await pool.query(setActiveCollection(activeCollectionId, userId));
       return await pool.one(getPreferences(userId));
     }
   );

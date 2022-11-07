@@ -55,7 +55,7 @@ WHERE
 };
 
 export const getUser = (id: ID) => {
-  return sql<Omit<User, 'avatarUrl'> & { hasAvatar: boolean }>`
+  return sql<Omit<User, 'avatarUrl'> & { hasAvatar: boolean; homeId: ID }>`
 SELECT
   name as username,
   display_name as "displayName",
@@ -64,7 +64,8 @@ SELECT
       FALSE
     ELSE
       TRUE
-    END) as "hasAvatar"
+    END) as "hasAvatar",
+  home_id as "homeId"
 FROM
   "users"
 WHERE
