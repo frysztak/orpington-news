@@ -149,6 +149,7 @@ export type DBCollection = Omit<
   refresh_interval: number;
   is_last_child: boolean;
   sort_by: string | null;
+  is_home: boolean;
 };
 
 export const getCollectionOwner = (id: ID) => {
@@ -182,6 +183,7 @@ WITH RECURSIVE data AS (
     m.filter,
     m.grouping,
     m.sort_by,
+    m.is_home,
     ARRAY[]::integer[] AS parents,
     0 AS level,
     ARRAY[m.order]::integer[] AS order_path,
@@ -190,7 +192,7 @@ WITH RECURSIVE data AS (
   FROM
     collections m
   WHERE
-    m.parent_id IS NULL
+    m.is_home IS TRUE
     AND "user_id" = ${userId}
   UNION ALL
   SELECT
@@ -207,6 +209,7 @@ WITH RECURSIVE data AS (
     c.filter,
     c.grouping,
     c.sort_by,
+    c.is_home,
     d.parents || c.parent_id,
     d.level + 1,
     d.order_path || c.order,
@@ -259,6 +262,7 @@ SELECT
   d.filter,
   d.grouping,
   d.sort_by,
+  d.is_home,
   d.level,
   d.order_path,
   d.parents,

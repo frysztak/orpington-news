@@ -72,7 +72,8 @@ const ItemContent: React.FC<ItemContentProps> = ({
       title={title}
       isActive={activeCollectionId === id}
       icon={icon}
-      level={level}
+      // subtract one because we're not showing home collection
+      level={level - 1}
       counter={unreadCount}
       isLoading={collectionsCurrentlyUpdated?.has(id) ?? false}
       chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}

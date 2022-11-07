@@ -53,6 +53,8 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
             password: passwordHashed,
             displayName,
             avatar,
+            // TODO
+            homeId: 0,
           })
         );
         await conn.query(insertPreferences(defaultPreferences, id));

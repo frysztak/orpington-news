@@ -27,7 +27,9 @@ RETURNING
 `;
 };
 
-export const setUser = (user: Omit<User, 'username'> & { id: ID }) => {
+export const setUser = (
+  user: Omit<User, 'username' | 'homeId'> & { id: ID }
+) => {
   const { id, displayName, avatarUrl } = user;
 
   if (avatarUrl !== undefined && !avatarUrl.startsWith('data:image')) {

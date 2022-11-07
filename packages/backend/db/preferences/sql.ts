@@ -15,22 +15,18 @@ export const pruneExpandedCollections = (userId: ID) => {
 export const insertPreferences = (p: Preferences, userId: ID) => {
   const values = [
     userId,
-    p.activeView,
     null,
     sql.array(p.expandedCollectionIds, 'int4'),
     p.defaultCollectionLayout,
-    p.homeCollectionLayout,
     p.avatarStyle,
   ];
 
   return sql`
 INSERT INTO preferences (
   "user_id",
-  "active_view",
   "active_collection_id",
   "expanded_collection_ids",
   "default_collection_layout",
-  "home_collection_layout",
   "avatar_style")
 VALUES (
   ${sql.join(values, sql`, `)})
@@ -40,16 +36,14 @@ VALUES (
 export const getPreferences = (userId: ID) => {
   return sql.type(Preferences)`
 SELECT
-  active_view as "activeView",
   active_collection_id as "activeCollectionId",
-  COALESCE(collection_title, 'Home') as "activeCollectionTitle",
-  COALESCE(collection_layout, home_collection_layout) as "activeCollectionLayout",
-  COALESCE(collection_filter, home_collection_filter) as "activeCollectionFilter",
-  COALESCE(collection_grouping, home_collection_grouping) as "activeCollectionGrouping",
-  COALESCE(collection_sort_by, home_collection_sort_by) as "activeCollectionSortBy",
+  collection_title as "activeCollectionTitle",
+  collection_layout as "activeCollectionLayout",
+  collection_filter as "activeCollectionFilter",
+  collection_grouping as "activeCollectionGrouping",
+  collection_sort_by as "activeCollectionSortBy",
   COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds",
   default_collection_layout as "defaultCollectionLayout",
-  home_collection_layout as "homeCollectionLayout",
   avatar_style as "avatarStyle"
 FROM
   preferences
@@ -140,27 +134,12 @@ WHERE
 };
 
 export const setActiveView = (view: ViewPreferences, userId: ID) => {
-  switch (view.activeView) {
-    case 'home':
-      return sql`
+  return sql`
 UPDATE
   preferences p
 SET
-  active_view = ${view.activeView},
-  active_collection_id = NULL
+  active_collection_id = ${view.activeCollectionId}
 WHERE
   p.user_id = ${userId}
 `;
-    case 'collection':
-      /* when activeView is 'collection', activeCollectionId is guaranteed to be set */
-      return sql`
-UPDATE
-  preferences p
-SET
-  active_view = ${view.activeView},
-  active_collection_id = ${view.activeCollectionId!}
-WHERE
-  p.user_id = ${userId}
-`;
-  }
 };

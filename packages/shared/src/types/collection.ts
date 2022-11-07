@@ -91,6 +91,7 @@ export const Collection = z.object({
   grouping: z.optional(CollectionGrouping),
   sortBy: z.optional(z.string()),
 
+  isHome: z.boolean(),
   parents: z.array(ID),
   children: z.array(ID),
   order: z.number(),

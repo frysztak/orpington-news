@@ -91,6 +91,7 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     filter,
     grouping,
     sort_by,
+    is_home,
     ...rest
   } = collection;
 
@@ -103,6 +104,7 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     filter: filter ?? defaultCollectionFilter,
     grouping: grouping ?? defaultCollectionGrouping,
     sortBy: sort_by ?? 'ee',
+    isHome: is_home,
     parents,
     parentId: parent_id ?? undefined,
     parentOrder: parent_order ?? undefined,
@@ -305,6 +307,7 @@ export const collections: FastifyPluginAsync = async (
       ]);
 
       const deletingCurrentlyActiveCollection =
+        // @ts-ignore
         preferences.activeView === 'collection' &&
         idsToDelete.includes(preferences.activeCollectionId!);
 
@@ -313,6 +316,7 @@ export const collections: FastifyPluginAsync = async (
           await conn.query(
             setActiveView(
               {
+                // @ts-ignore
                 activeView: 'home',
               },
               userId
