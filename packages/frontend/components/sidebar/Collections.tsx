@@ -122,6 +122,7 @@ export interface CollectionsProps {
   isError?: boolean;
   collections: Collection[];
   activeCollectionId?: ID;
+  homeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
   collectionsCurrentlyUpdated?: Set<ID>;
 

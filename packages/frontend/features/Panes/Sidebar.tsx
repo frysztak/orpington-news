@@ -14,6 +14,7 @@ import {
   useGetPreferences,
   useSetActiveCollection,
 } from '@features/Preferences';
+import { useGetUserHomeId } from '@features/Auth';
 import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 import {
@@ -37,6 +38,7 @@ export const Sidebar: React.FC = () => {
   } = useCollectionsList();
   const { isLoading: preferencesLoading } = useGetPreferences();
   const activeCollection = useActiveCollection();
+  const homeCollectionId = useGetUserHomeId();
   const { setActiveCollection, setHomeCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
@@ -121,6 +123,7 @@ export const Sidebar: React.FC = () => {
       onMenuItemClicked={handleMenuItemClicked}
       onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
       activeCollectionId={activeCollection?.id}
+      homeCollectionId={homeCollectionId}
       expandedCollectionIDs={expandedCollectionIds}
       collectionsCurrentlyUpdated={currentlyUpdatedCollections.set}
       footer={<SidebarFooter />}

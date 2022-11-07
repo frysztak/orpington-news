@@ -1,9 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   changePassword,
   ChangePasswordData,
@@ -17,8 +12,9 @@ import {
   useHandleError,
 } from '@api';
 import { userKeys } from '@features/queryKeys';
-import type { User } from '@orpington-news/shared';
+import type { ID, User } from '@orpington-news/shared';
 import { LoginFormData, SignupFormData } from './types';
+import { useCallback } from 'react';
 
 export const useSignup = () => {
   const { onError } = useHandleError();
@@ -56,13 +52,20 @@ export const useChangePassword = () => {
   });
 };
 
-type UseGetUserArgs = Pick<UseQueryOptions<User>, 'onSuccess' | 'onError'>;
+type UseGetUserArgs<TSelectedData> = {
+  select?: (user: User) => TSelectedData;
+  onSuccess?: (data: TSelectedData) => void;
+  onError?: (err: any) => void;
+};
 
-export const useGetUser = (args?: UseGetUserArgs) => {
+export const useGetUser = <TSelectedData = User>(
+  args?: UseGetUserArgs<TSelectedData>
+) => {
   const { onError } = useHandleError();
   const api = useApi();
 
   return useQuery(userKeys.info, () => getUser(api), {
+    select: args?.select,
     onError: args?.onError ?? onError,
     onSuccess: args?.onSuccess,
     refetchOnMount: false,
@@ -80,4 +83,11 @@ export const useSetUser = () => {
       queryClient.setQueryData(userKeys.info, data);
     },
   });
+};
+
+export const useGetUserHomeId = (): ID | undefined => {
+  const { data: homeId } = useGetUser({
+    select: useCallback((user: User) => user.homeId, []),
+  });
+  return homeId;
 };

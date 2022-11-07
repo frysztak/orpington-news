@@ -63,13 +63,13 @@ export const deleteCollection = (api: Wretch, collectionId: ID) =>
     .delete()
     .json<{ ids: ID[]; navigateHome: boolean }>();
 
-export const markCollectionAsRead = (api: Wretch, collectionId: ID | 'home') =>
+export const markCollectionAsRead = (api: Wretch, collectionId: ID) =>
   api
     .url(`/collections/${collectionId}/markAsRead`)
     .post()
     .json<{ ids: ID[]; timestamp: number; collections: Collection[] }>();
 
-export const refreshCollection = (api: Wretch, collectionId: ID | 'home') =>
+export const refreshCollection = (api: Wretch, collectionId: ID) =>
   api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();
 
 export interface MoveCollectionBody {
@@ -83,7 +83,7 @@ export const moveCollection = (api: Wretch, body: MoveCollectionBody) =>
 
 export const setCollectionPreferences = (
   api: Wretch,
-  collectionId: ID | 'home',
+  collectionId: ID,
   preferences: CollectionPreferences
 ) =>
   api

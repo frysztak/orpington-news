@@ -1,15 +1,15 @@
 import { useCallback } from 'react';
-import { useGetUser } from '@features/Auth';
+import { useGetUserHomeId } from '@features/Auth';
 import { usePutActiveCollection } from './queries';
 import { useCollectionById } from '@features/Collections';
 
 export const useSetActiveCollection = () => {
   const { mutate } = usePutActiveCollection();
-  const { data: userData } = useGetUser();
-  const { data: homeCollection } = useCollectionById(userData?.homeId);
+  const homeId = useGetUserHomeId();
+  const { data: homeCollection } = useCollectionById(homeId);
 
   const setHomeCollection = useCallback(() => {
-    if (userData?.homeId === undefined) {
+    if (homeId === undefined) {
       console.error(`setHomeCollection without homeId!`);
       return;
     }
@@ -19,13 +19,13 @@ export const useSetActiveCollection = () => {
     }
 
     mutate({
-      activeCollectionId: userData.homeId,
+      activeCollectionId: homeId,
       activeCollectionTitle: homeCollection.title,
       activeCollectionLayout: homeCollection.layout!,
       activeCollectionFilter: homeCollection.filter!,
       activeCollectionGrouping: homeCollection.grouping!,
     });
-  }, [homeCollection, mutate, userData?.homeId]);
+  }, [homeCollection, homeId, mutate]);
 
   return { setActiveCollection: mutate, setHomeCollection };
 };

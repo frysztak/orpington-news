@@ -62,11 +62,6 @@ export const CollectionId = z.object({
 });
 export type CollectionId = z.infer<typeof CollectionId>;
 
-export const HomeCollectionId = z.object({
-  id: z.literal('home').or(numeric(ID)),
-});
-export type HomeCollectionId = z.infer<typeof CollectionId>;
-
 export const CollectionFilter = z.enum(['all', 'unread', 'read']);
 export type CollectionFilter = z.infer<typeof CollectionFilter>;
 export const defaultCollectionFilter: CollectionFilter = 'all';
