@@ -156,3 +156,12 @@ export const CollectionPreferences = Collection.pick({
   grouping: true,
 });
 export type CollectionPreferences = z.infer<typeof CollectionPreferences>;
+
+export const ActiveCollection = Collection.pick({
+  id: true,
+  title: true,
+  layout: true,
+  filter: true,
+  grouping: true,
+});
+export type ActiveCollection = z.infer<typeof ActiveCollection>;

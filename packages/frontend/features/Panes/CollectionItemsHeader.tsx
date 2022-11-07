@@ -23,18 +23,14 @@ export const CollectionItemsHeader: React.FC = () => {
   const { currentlyUpdatedCollections, beingMarkedAsRead } =
     useCollectionsContext();
 
-  const isRefreshing =
-    activeCollection && typeof activeCollection.id === 'number'
-      ? currentlyUpdatedCollections.set.has(activeCollection.id)
-      : false;
+  const isRefreshing = activeCollection
+    ? currentlyUpdatedCollections.set.has(activeCollection.id)
+    : false;
 
   const { mutate: refreshCollection } = useRefreshCollection();
   const handleRefreshClick = useCallback(() => {
     if (activeCollection) {
       const collectionId = activeCollection.id;
-      if (typeof collectionId === 'string' && collectionId !== 'home') {
-        return;
-      }
 
       refreshCollection({ id: collectionId });
     } else {
@@ -100,9 +96,9 @@ export const CollectionItemsHeader: React.FC = () => {
     [handleMarkAsRead, handleRefreshClick]
   );
 
-  const showBgLoadingIndicator = beingMarkedAsRead.set.has(
-    activeCollection?.id as any
-  );
+  const showBgLoadingIndicator = activeCollection
+    ? beingMarkedAsRead.set.has(activeCollection.id)
+    : false;
 
   return (
     <CollectionHeader
