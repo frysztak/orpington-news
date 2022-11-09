@@ -7,7 +7,7 @@
   "typings": "dist/index.d.ts",
   "license": "ISC",
   "scripts": {
-    "dev": "cp ../../.env.local .env && rimraf dist && NODE_ENV=development webpack --watch",
+    "dev": "cp ../../.env.local .env && rimraf dist && NODE_ENV=development ROARR_LOG=true webpack --watch",
     "dev:e2e": "cp ../../.env.e2e.local .env && rimraf dist && NODE_ENV=development webpack --watch",
     "build": "rimraf dist && webpack",
     "start": "node dist/server.mjs",
@@ -82,6 +82,7 @@
     "rimraf": "^3.0.2",
     "rss-parser": "^3.12.0",
     "slonik": "31.4.2",
+    "slonik-interceptor-query-logging": "^1.4.7",
     "striptags": "^3.2.0",
     "toad-scheduler": "^2.0.0",
     "truncate-html": "^1.0.4",
