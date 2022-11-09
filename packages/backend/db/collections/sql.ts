@@ -4,6 +4,7 @@ import {
   AddCollection,
   Collection,
   CollectionPreferences,
+  defaultCollectionLayout,
   defaultIcon,
   defaultRefreshInterval,
   ID,
@@ -24,6 +25,8 @@ export const addCollection = (collection: AddCollection, userId: ID) => {
     dateUpdated,
     refreshInterval,
     layout,
+    order,
+    isHome,
   } = collection;
 
   const url = collection.url && normalizeUrl(collection.url);
@@ -32,13 +35,14 @@ export const addCollection = (collection: AddCollection, userId: ID) => {
     userId,
     title,
     icon ?? defaultIcon,
-    MAX_INT, // put new collection at the end
+    order ?? MAX_INT, // put new collection at the end
     parentId ?? null,
     description ?? null,
     url ?? null,
     dateUpdated ? getUnixTime(dateUpdated) : null,
     refreshInterval ?? defaultRefreshInterval,
-    layout ?? null,
+    layout ?? defaultCollectionLayout,
+    isHome ?? false,
   ];
   return sql<{ id: ID }>`
 INSERT INTO collections (
@@ -51,7 +55,8 @@ INSERT INTO collections (
   "url",
   "date_updated",
   "refresh_interval",
-  "layout")
+  "layout",
+  "is_home")
 VALUES (
   ${sql.join(values, sql`, `)})
 RETURNING

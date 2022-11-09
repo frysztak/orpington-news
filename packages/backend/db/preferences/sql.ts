@@ -7,10 +7,14 @@ export const pruneExpandedCollections = (userId: ID) => {
   return sql`CALL preferences_prune_expanded_collections(${userId});`;
 };
 
-export const insertPreferences = (p: Preferences, userId: ID) => {
+export const insertPreferences = (
+  p: Preferences,
+  userId: ID,
+  activeCollectionId?: ID
+) => {
   const values = [
     userId,
-    null,
+    activeCollectionId ?? null,
     sql.array(p.expandedCollectionIds, 'int4'),
     p.defaultCollectionLayout,
     p.avatarStyle,

@@ -106,6 +106,11 @@ export const AddCollection = Collection.pick({
   refreshInterval: true,
   dateUpdated: true,
   layout: true,
+  order: true,
+  isHome: true,
+}).partial({
+  order: true,
+  isHome: true,
 });
 export type AddCollection = z.infer<typeof AddCollection>;
 

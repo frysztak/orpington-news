@@ -1,6 +1,6 @@
 import { sql } from 'slonik';
 import { dataUriToBuffer } from 'data-uri-to-buffer';
-import type { ID, User } from '@orpington-news/shared';
+import { ID, User } from '@orpington-news/shared';
 
 const mapAvatar = (avatar?: string) => {
   return avatar ? sql.binary(dataUriToBuffer(avatar)) : null;
@@ -9,21 +9,34 @@ const mapAvatar = (avatar?: string) => {
 export const insertUser = (
   user: Omit<User, 'hasAvatar'> & { password: string; avatar?: string }
 ) => {
-  const { username, password, displayName, avatar } = user;
+  const { username, password, displayName, avatar, homeId } = user;
 
   return sql<{ id: ID }>`
 INSERT INTO "users" (
   name,
   password,
   display_name,
-  avatar)
+  avatar,
+  home_id)
 VALUES (
   ${username},
   ${password},
   ${displayName},
-  ${mapAvatar(avatar)})
+  ${mapAvatar(avatar)},
+  ${homeId})
 RETURNING
   id
+`;
+};
+
+export const updateHomeCollection = (userId: ID, collectionId: ID) => {
+  return sql`
+UPDATE
+  users
+SET
+  home_id = ${collectionId}
+WHERE
+  users.id = ${userId}
 `;
 };
 

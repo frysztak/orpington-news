@@ -2,7 +2,7 @@ import { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import argon2 from 'argon2';
 import { fileTypeFromBuffer } from 'file-type';
-import { defaultPreferences, ID } from '@orpington-news/shared';
+import { defaultIcon, defaultPreferences, ID } from '@orpington-news/shared';
 import { pool } from '@db';
 import {
   getUser,
@@ -12,8 +12,10 @@ import {
   insertUser,
   setUser,
   setUserPassword,
+  updateHomeCollection,
 } from '@db/users';
 import { insertPreferences } from '@db/preferences';
+import { addCollection } from '@db/collections';
 
 export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
   const PostRegister = z.object({
@@ -47,18 +49,32 @@ export const auth: FastifyPluginAsync = async (fastify): Promise<void> => {
         type: argon2.argon2id,
       });
       await pool.transaction(async (conn) => {
-        const { id } = await conn.one(
+        const { id: userId } = await conn.one(
           insertUser({
             username,
             password: passwordHashed,
             displayName,
             avatar,
-            // TODO
-            homeId: 0,
+            homeId: 2137,
           })
         );
-        await conn.query(insertPreferences(defaultPreferences, id));
+        const { id: collectionId } = await conn.one(
+          addCollection(
+            {
+              title: 'Home',
+              icon: defaultIcon,
+              order: 0,
+              isHome: true,
+            },
+            userId
+          )
+        );
+        await conn.query(
+          insertPreferences(defaultPreferences, userId, collectionId)
+        );
+        await conn.query(updateHomeCollection(userId, collectionId));
       });
+
       return true;
     }
   );

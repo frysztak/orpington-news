@@ -184,13 +184,18 @@ export const collections: FastifyPluginAsync = async (
         body,
         session: { userId },
       } = request;
-      const preferences = await pool.one(getPreferences(userId));
+      const { defaultCollectionLayout } = await pool.one(
+        getPreferences(userId)
+      );
+      const { homeId } = await pool.one(getUser(userId));
+
       await pool.transaction(async (conn) => {
         await conn.any(
           addCollection(
             {
               ...body,
-              layout: preferences.defaultCollectionLayout,
+              parentId: body.parentId ?? homeId,
+              layout: defaultCollectionLayout,
             },
             userId
           )
