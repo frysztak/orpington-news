@@ -5,7 +5,6 @@ export const filterVisibleCollections = (
   expandedCollectionIDs?: number[]
 ): Collection[] => {
   const set = new Set(expandedCollectionIDs);
-  console.log({ set });
   return collections.filter(({ isHome, parents: allParents }) => {
     // hide "Home" collection - it appears in a different place in the UI
     if (isHome) {

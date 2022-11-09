@@ -169,7 +169,8 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
             Failed to fetch feeds.
           </Text>
         </>
-      ) : collections.length === 0 ? (
+      ) : // don't count Home collection
+      collections.length <= 1 ? (
         <>
           <Icon
             as={InformationCircleIcon}
