@@ -33,12 +33,19 @@ updated_collections AS (
     collections."user_id" = inserted_home_collections.user_id 
     AND parent_id IS NULL 
     AND is_home = FALSE
+),
+updated_users AS (
+  UPDATE "users"
+  SET home_id = inserted_home_collections.id
+  FROM inserted_home_collections
+  WHERE
+    "users".id = inserted_home_collections.user_id
 )
-UPDATE "users"
-SET home_id = inserted_home_collections.id
+UPDATE preferences
+SET active_collection_id = inserted_home_collections.id
 FROM inserted_home_collections
 WHERE 
-  "users".id = inserted_home_collections.user_id;
+  preferences.user_id = inserted_home_collections.user_id;
 
 ALTER TABLE "users" 
 ALTER COLUMN "home_id" SET NOT NULL;
