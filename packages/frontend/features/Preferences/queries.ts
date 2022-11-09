@@ -10,12 +10,9 @@ import {
 } from '@api';
 import { preferencesKeys } from '@features/queryKeys';
 import type {
-  CollectionFilter,
-  CollectionGrouping,
-  CollectionLayout,
   ID,
   Preferences,
-  ViewPreferences,
+  SetActiveCollectionData,
 } from '@orpington-news/shared';
 
 export const useGetPreferences = <TSelectedData = Preferences>(opts?: {
@@ -109,20 +106,14 @@ export const useCollapseCollection = () => {
   });
 };
 
-export const useSetActiveView = () => {
+export const usePutActiveCollection = () => {
   const api = useApi();
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
 
   return useMutation(
-    (
-      activeView: ViewPreferences & {
-        activeCollectionTitle: string;
-        activeCollectionLayout?: CollectionLayout;
-        activeCollectionFilter?: CollectionFilter;
-        activeCollectionGrouping?: CollectionGrouping;
-      }
-    ) => setActiveView(api, activeView),
+    (activeCollection: SetActiveCollectionData) =>
+      setActiveView(api, activeCollection),
     {
       onMutate: async (activeView) => {
         const key = preferencesKeys.base;

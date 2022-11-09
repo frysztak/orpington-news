@@ -11,6 +11,7 @@ import {
 import type { AddCollectionFormData } from '@components/collection/add';
 import { useSetActiveCollection } from '@features/Preferences';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
+import { useGetUserHomeId } from '@features/Auth';
 import { defaultRefreshInterval, Collection, ID } from '@orpington-news/shared';
 
 export const useVerifyFeedURL = () => {
@@ -108,18 +109,21 @@ export const useDeleteCollection = ({
   const { onError } = useHandleError();
 
   const queryClient = useQueryClient();
-  const { setActiveCollection } = useSetActiveCollection();
+  const { setHomeCollection } = useSetActiveCollection();
+  const homeId = useGetUserHomeId();
 
   return useMutation(({ id }: { id: ID }) => deleteCollection(api, id), {
     onError,
     onSuccess: ({ ids, navigateHome }) => {
       onSuccess?.(ids);
       queryClient.invalidateQueries({ queryKey: collectionKeys.tree });
-      queryClient.invalidateQueries(collectionKeys.lists('home'));
+      if (homeId !== undefined) {
+        queryClient.invalidateQueries(collectionKeys.lists(homeId));
+      }
 
       if (navigateHome) {
         router.push('/', '/', { shallow: true }).then(() => {
-          setActiveCollection({ id: 'home' });
+          setHomeCollection();
           queryClient.invalidateQueries(preferencesKeys.base);
         });
       }

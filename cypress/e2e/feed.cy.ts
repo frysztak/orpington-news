@@ -38,7 +38,7 @@ sizes.forEach((size) => {
       cy.wait('@apiCollections').its('response.statusCode').should('eq', 200);
       cy.getBySel('addCollectionModal').should('not.exist');
 
-      cy.getBySel('collection-id-1')
+      cy.getBySel('collection-id-2')
         .within(() => {
           cy.getBySel('title').should('have.text', 'Kent C. Dodds Blog');
           cy.getBySel('chevron').should('not.exist');
@@ -63,11 +63,10 @@ sizes.forEach((size) => {
 
       cy.visit('/');
       cy.openDrawerIfExists();
-      cy.getBySel('collection-id-1').click();
+      cy.getBySel('collection-id-2').click();
       cy.wait('@apiPreferencesActiveView').then(({ request, response }) => {
         expect(request.body).to.deep.eq({
-          activeView: 'collection',
-          activeCollectionId: 1,
+          activeCollectionId: 2,
           activeCollectionLayout: 'card',
           activeCollectionTitle: 'Kent C. Dodds Blog',
           activeCollectionFilter: 'all',
@@ -87,7 +86,7 @@ sizes.forEach((size) => {
 
       cy.visit('/');
       cy.openDrawerIfExists();
-      cy.getBySel('collection-id-1').click();
+      cy.getBySel('collection-id-2').click();
       cy.url().should('equal', `${baseUrl}/`);
       cy.getBySel('collectionItemList')
         .within(() => {
@@ -127,19 +126,19 @@ sizes.forEach((size) => {
       });
       cy.intercept({
         method: 'GET',
-        url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
+        url: getApiPath('/collections/2/items?pageIndex=0&filter=all'),
       }).as('apiGetItems');
       cy.intercept({
         method: 'GET',
-        url: getApiPath('/collections/1/item/1'),
+        url: getApiPath('/collections/2/item/1'),
       }).as('apiGetArticle');
 
       cy.visit('/');
       cy.openDrawerIfExists();
-      cy.getBySel('collection-id-1').click();
+      cy.getBySel('collection-id-2').click();
       cy.wait('@apiGetItems');
       cy.getBySel('item-id-1').click();
-      cy.url().should('equal', `${baseUrl}/collection/1/article/1`);
+      cy.url().should('equal', `${baseUrl}/collection/2/article/1`);
       cy.wait('@apiGetArticle');
 
       cy.getBySelVisible('articleHeader').should(
@@ -153,7 +152,7 @@ sizes.forEach((size) => {
       }
       cy.getBySel('collectionItemList').should('exist').and('be.visible');
       cy.openDrawerIfExists();
-      cy.getBySel('collection-id-1').within(() => {
+      cy.getBySel('collection-id-2').within(() => {
         cy.getBySel('badge').should('exist').and('have.text', '2');
       });
     });
@@ -162,7 +161,7 @@ sizes.forEach((size) => {
       it('from sidebar', () => {
         cy.intercept({
           method: 'POST',
-          url: getApiPath('/collections/1/markAsRead'),
+          url: getApiPath('/collections/2/markAsRead'),
         }).as('apiMarkAsRead');
 
         cy.addFeedByApi({
@@ -181,17 +180,17 @@ sizes.forEach((size) => {
 
         cy.openDrawerIfExists();
         // make collection active
-        cy.clickCollection('1');
+        cy.clickCollection('2');
         cy.openDrawerIfExists();
         // mark as read
-        cy.clickSidebarAction('1', 'markAsRead');
+        cy.clickSidebarAction('2', 'markAsRead');
         cy.closeDrawerIfExists();
         cy.wait('@apiMarkAsRead').then(({ request, response }) => {
           expect(response.statusCode).to.eq(200);
         });
 
         cy.openDrawerIfExists();
-        cy.getBySel('collection-id-1').within(() => {
+        cy.getBySel('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
 
@@ -203,12 +202,12 @@ sizes.forEach((size) => {
       it('from collection header', () => {
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
+          url: getApiPath('/collections/2/items?pageIndex=0&filter=all'),
         }).as('apiGetItems');
 
         cy.intercept({
           method: 'POST',
-          url: getApiPath('/collections/1/markAsRead'),
+          url: getApiPath('/collections/2/markAsRead'),
         }).as('apiMarkAsRead');
 
         cy.intercept({
@@ -232,7 +231,7 @@ sizes.forEach((size) => {
 
         // make collection active
         cy.openDrawerIfExists();
-        cy.clickCollection('1');
+        cy.clickCollection('2');
         cy.wait('@apiPreferencesActiveView');
         cy.wait('@apiGetItems');
         // mark as read
@@ -243,7 +242,7 @@ sizes.forEach((size) => {
         });
 
         cy.openDrawerIfExists();
-        cy.getBySel('collection-id-1').within(() => {
+        cy.getBySel('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
 
@@ -255,12 +254,12 @@ sizes.forEach((size) => {
       it('from sidebar, while on home page', () => {
         cy.intercept({
           method: 'POST',
-          url: getApiPath('/collections/1/markAsRead'),
+          url: getApiPath('/collections/2/markAsRead'),
         }).as('apiMarkAsRead');
 
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/home/items?pageIndex=0&filter=all'),
+          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
         }).as('apiGetHomeItems');
 
         cy.addFeedByApi({
@@ -279,7 +278,7 @@ sizes.forEach((size) => {
 
         cy.openDrawerIfExists();
         // mark as read
-        cy.clickSidebarAction('1', 'markAsRead');
+        cy.clickSidebarAction('2', 'markAsRead');
         cy.closeDrawerIfExists();
         cy.wait('@apiMarkAsRead').then(({ request, response }) => {
           expect(response.statusCode).to.eq(200);
@@ -290,7 +289,7 @@ sizes.forEach((size) => {
         });
 
         cy.openDrawerIfExists();
-        cy.getBySel('collection-id-1').within(() => {
+        cy.getBySel('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
 
@@ -302,11 +301,11 @@ sizes.forEach((size) => {
       it('from collection header, while on home page', () => {
         cy.intercept({
           method: 'POST',
-          url: getApiPath('/collections/home/markAsRead'),
+          url: getApiPath('/collections/1/markAsRead'),
         }).as('apiMarkAsRead');
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/home/items?pageIndex=0&filter=all'),
+          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
         }).as('apiGetHomeItems');
 
         cy.addFeedByApi({
@@ -335,7 +334,7 @@ sizes.forEach((size) => {
         });
 
         cy.openDrawerIfExists();
-        cy.getBySel('collection-id-1').within(() => {
+        cy.getBySel('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
 
@@ -349,7 +348,7 @@ sizes.forEach((size) => {
       it('home collection', () => {
         cy.intercept({
           method: 'PUT',
-          url: getApiPath('/collections/home/preferences'),
+          url: getApiPath('/collections/1/preferences'),
         }).as('apiPutPreferences');
 
         cy.addFeedByApi({
@@ -376,12 +375,12 @@ sizes.forEach((size) => {
           it(`to ${layout}`, () => {
             cy.intercept({
               method: 'GET',
-              url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
+              url: getApiPath('/collections/2/items?pageIndex=0&filter=all'),
             }).as('apiGetItems');
 
             cy.intercept({
               method: 'PUT',
-              url: getApiPath('/collections/1/preferences'),
+              url: getApiPath('/collections/2/preferences'),
             }).as('apiPutPreferences');
             cy.intercept({
               method: 'PUT',
@@ -399,7 +398,7 @@ sizes.forEach((size) => {
 
             // make collection active
             cy.openDrawerIfExists();
-            cy.clickCollection('1');
+            cy.clickCollection('2');
             cy.wait('@apiPreferencesActiveView');
             cy.wait('@apiGetItems');
 
@@ -430,15 +429,15 @@ sizes.forEach((size) => {
         cy.visit('/');
 
         cy.openDrawerIfExists();
-        cy.clickSidebarAction('1', 'delete');
+        cy.clickSidebarAction('2', 'delete');
 
         cy.intercept({
           method: 'DELETE',
-          url: getApiPath('/collections/1'),
+          url: getApiPath('/collections/2'),
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
+          url: getApiPath(`/collections/1/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();
@@ -447,7 +446,7 @@ sizes.forEach((size) => {
         cy.wait('@apiDeleteCollection').then(({ response }) => {
           expect(response.body).to.deep.eq({
             navigateHome: false,
-            ids: [1],
+            ids: [2],
           });
           expect(response.statusCode).to.eq(200);
         });
@@ -469,18 +468,18 @@ sizes.forEach((size) => {
         });
 
         cy.visit('/');
-        cy.changeActiveCollection('1');
+        cy.changeActiveCollection('2');
 
         cy.openDrawerIfExists();
-        cy.clickSidebarAction('1', 'delete');
+        cy.clickSidebarAction('2', 'delete');
 
         cy.intercept({
           method: 'DELETE',
-          url: getApiPath('/collections/1'),
+          url: getApiPath('/collections/2'),
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
+          url: getApiPath(`/collections/1/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
         cy.intercept({
           method: 'PUT',
@@ -493,15 +492,18 @@ sizes.forEach((size) => {
         cy.wait('@apiDeleteCollection').then(({ response }) => {
           expect(response.body).to.deep.eq({
             navigateHome: true,
-            ids: [1],
+            ids: [2],
           });
           expect(response.statusCode).to.eq(200);
         });
 
         cy.wait('@apiPreferencesActiveView').then(({ request, response }) => {
           expect(request.body).to.deep.eq({
-            activeView: 'home',
+            activeCollectionId: 1,
             activeCollectionTitle: 'Home',
+            activeCollectionFilter: 'all',
+            activeCollectionGrouping: 'none',
+            activeCollectionLayout: 'card',
           });
           expect(response.statusCode).to.eq(200);
         });
@@ -526,21 +528,21 @@ sizes.forEach((size) => {
           url: getFeedUrl('fettblog.xml'),
           icon: 'Code',
           refreshInterval: 120,
-          parentId: 1,
+          parentId: 2,
         });
 
         cy.visit('/');
 
         cy.openDrawerIfExists();
-        cy.clickSidebarAction('1', 'delete');
+        cy.clickSidebarAction('2', 'delete');
 
         cy.intercept({
           method: 'DELETE',
-          url: getApiPath('/collections/1'),
+          url: getApiPath('/collections/2'),
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/home/items?pageIndex=0&filter=all`),
+          url: getApiPath(`/collections/1/items?pageIndex=0&filter=all`),
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();
@@ -549,7 +551,7 @@ sizes.forEach((size) => {
         cy.wait('@apiDeleteCollection').then(({ response }) => {
           expect(response.body).to.deep.eq({
             navigateHome: false,
-            ids: [1, 2],
+            ids: [2, 3],
           });
           expect(response.statusCode).to.eq(200);
         });
@@ -572,16 +574,16 @@ sizes.forEach((size) => {
           refreshInterval: 120,
         });
         cy.putCollectionPreferencesByApi({
-          collectionId: 1,
+          collectionId: 2,
           preferences: { filter: 'unread' },
         });
         cy.putDateReadByApi({
-          collectionId: 1,
+          collectionId: 2,
           articleId: 1,
           dateRead: 1667491521,
         });
         cy.putDateReadByApi({
-          collectionId: 1,
+          collectionId: 2,
           articleId: 2,
           dateRead: 1667491521,
         });
@@ -593,30 +595,30 @@ sizes.forEach((size) => {
           refreshInterval: 120,
         });
         cy.putCollectionPreferencesByApi({
-          collectionId: 2,
+          collectionId: 3,
           preferences: { filter: 'read' },
         });
 
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/1/items?pageIndex=0&filter=unread`),
-        }).as('apiGetItems1');
+          url: getApiPath(`/collections/2/items?pageIndex=0&filter=unread`),
+        }).as('apiGetItems2');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/2/items?pageIndex=0&filter=read`),
-        }).as('apiGetItems2');
+          url: getApiPath(`/collections/3/items?pageIndex=0&filter=read`),
+        }).as('apiGetItems3');
 
         cy.visit('/');
 
         cy.openDrawerIfExists();
-        cy.clickCollection('1');
-        cy.wait('@apiGetItems1').then(({ response }) => {
+        cy.clickCollection('2');
+        cy.wait('@apiGetItems2').then(({ response }) => {
           expect(response.body).to.have.length(1);
         });
 
         cy.openDrawerIfExists();
-        cy.clickCollection('2');
-        cy.wait('@apiGetItems2').then(({ response }) => {
+        cy.clickCollection('3');
+        cy.wait('@apiGetItems3').then(({ response }) => {
           expect(response.body).to.have.length(0);
         });
       });

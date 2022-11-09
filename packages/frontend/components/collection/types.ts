@@ -1,9 +1,7 @@
 import {
-  CollectionGrouping,
   CollectionItem,
   CollectionLayout,
   CollectionFilter,
-  ID,
 } from '@orpington-news/shared';
 
 export interface CollectionItemProps {
@@ -14,14 +12,6 @@ export interface CollectionItemProps {
 export interface CollectionLayoutProps {
   title: string;
   collectionItems: CollectionItem[];
-}
-
-export interface ActiveCollection {
-  id: ID | 'home';
-  title: string;
-  layout: CollectionLayout;
-  filter: CollectionFilter;
-  grouping: CollectionGrouping;
 }
 
 export const CollectionLayoutName: Record<CollectionLayout, string> = {

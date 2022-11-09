@@ -14,6 +14,7 @@ import {
   useGetPreferences,
   useSetActiveCollection,
 } from '@features/Preferences';
+import { useGetUserHomeId } from '@features/Auth';
 import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 import {
@@ -37,7 +38,8 @@ export const Sidebar: React.FC = () => {
   } = useCollectionsList();
   const { isLoading: preferencesLoading } = useGetPreferences();
   const activeCollection = useActiveCollection();
-  const { setActiveCollection } = useSetActiveCollection();
+  const homeCollectionId = useGetUserHomeId();
+  const { setActiveCollection, setHomeCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
 
@@ -56,14 +58,14 @@ export const Sidebar: React.FC = () => {
       switch (item) {
         case 'home': {
           closeDrawer();
-          return setActiveCollection({ id: 'home' });
+          return setHomeCollection();
         }
         case 'addFeed': {
           return onOpenAddCollectionModal();
         }
       }
     },
-    [closeDrawer, onOpenAddCollectionModal, setActiveCollection]
+    [closeDrawer, onOpenAddCollectionModal, setHomeCollection]
   );
 
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
@@ -98,11 +100,11 @@ export const Sidebar: React.FC = () => {
       closeDrawer();
       push('/', '/', { shallow: true }).then(() => {
         setActiveCollection({
-          id: collection.id,
-          title: collection.title,
-          layout: collection.layout ?? defaultCollectionLayout,
-          filter: collection.filter!,
-          grouping: collection.grouping!,
+          activeCollectionId: collection.id,
+          activeCollectionTitle: collection.title,
+          activeCollectionLayout: collection.layout ?? defaultCollectionLayout,
+          activeCollectionFilter: collection.filter!,
+          activeCollectionGrouping: collection.grouping!,
         });
       });
     },
@@ -121,6 +123,7 @@ export const Sidebar: React.FC = () => {
       onMenuItemClicked={handleMenuItemClicked}
       onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
       activeCollectionId={activeCollection?.id}
+      homeCollectionId={homeCollectionId}
       expandedCollectionIDs={expandedCollectionIds}
       collectionsCurrentlyUpdated={currentlyUpdatedCollections.set}
       footer={<SidebarFooter />}

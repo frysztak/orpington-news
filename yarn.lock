@@ -5142,6 +5142,7 @@ __metadata:
     rimraf: ^3.0.2
     rss-parser: ^3.12.0
     slonik: 31.4.2
+    slonik-interceptor-query-logging: ^1.4.7
     striptags: ^3.2.0
     tinypool: ^0.3.0
     toad-scheduler: ^2.0.0
@@ -11442,6 +11443,13 @@ __metadata:
     p-filter: ^2.1.0
     p-map: ^3.0.0
   checksum: e121f13f2b6af4a7c00de17984086a45b67eaaeeb0286a5cf67f2fdaf18d8ce6c2a9fe4ccfa37953e6982f55772f384f040f45f1961530655838c2b7486788a7
+  languageName: node
+  linkType: hard
+
+"crack-json@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "crack-json@npm:1.3.0"
+  checksum: aae75a94eb29cba8d1acb80a7c321958872c8e1a32762ab3717f4731992f9f0167d938d008ead03f59b299be616ca46cc1168c3eeec97ad0a2704fb0a2514862
   languageName: node
   linkType: hard
 
@@ -20838,6 +20846,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"parse-ms@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "parse-ms@npm:2.1.0"
+  checksum: d5c66c76cca8df5bd0574e2d11b9c3752893b59b466e74308d4a2f09760dc5436a1633f549cad300fc8c3c19154d14959a3b8333d3b2f7bd75898fe18149d564
+  languageName: node
+  linkType: hard
+
 "parse-path@npm:^7.0.0":
   version: 7.0.0
   resolution: "parse-path@npm:7.0.0"
@@ -21783,6 +21798,15 @@ __metadata:
   version: 1.0.3
   resolution: "pretty-hrtime@npm:1.0.3"
   checksum: bae0e6832fe13c3de43d1a3d43df52bf6090499d74dc65a17f5552cb1a94f1f8019a23284ddf988c3c408a09678d743901e1d8f5b7a71bec31eeeac445bef371
+  languageName: node
+  linkType: hard
+
+"pretty-ms@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "pretty-ms@npm:7.0.1"
+  dependencies:
+    parse-ms: ^2.1.0
+  checksum: d76c4920283b48be91f1d3797a2ce4bd51187d58d2a609ae993c028f73c92d16439449d857af57ccad91ae3a38b30c87307f5589749a056102ebb494c686957e
   languageName: node
   linkType: hard
 
@@ -24106,6 +24130,19 @@ __metadata:
     ansi-styles: ^6.0.0
     is-fullwidth-code-point: ^4.0.0
   checksum: 7e600a2a55e333a21ef5214b987c8358fe28bfb03c2867ff2cbf919d62143d1812ac27b4297a077fdaf27a03da3678e49551c93e35f9498a3d90221908a1180e
+  languageName: node
+  linkType: hard
+
+"slonik-interceptor-query-logging@npm:^1.4.7":
+  version: 1.4.7
+  resolution: "slonik-interceptor-query-logging@npm:1.4.7"
+  dependencies:
+    crack-json: ^1.3.0
+    pretty-ms: ^7.0.1
+    serialize-error: ^8.0.0
+  peerDependencies:
+    slonik: ">=27.0.0"
+  checksum: 37e2b236d90ba40795bbc416ffdd67f90aeff2647ed9b809c13779591aa5e87aa92fb91ebce9d2b5eae8ee758c3ceb45382f0aeb98b5c3a03faeefb26445b45b
   languageName: node
   linkType: hard
 

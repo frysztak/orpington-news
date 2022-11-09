@@ -7,13 +7,11 @@ import {
   addCollection,
   DBCollection,
   deleteCollections,
-  getAllCollectionIds,
   getCollectionById,
   getCollectionChildrenIds,
   getCollectionOwner,
   getCollections,
   getCollectionsFromRootId,
-  getCollectionsWithUrl,
   hasCollectionWithUrl,
   markCollectionAsRead,
   moveCollections,
@@ -31,8 +29,7 @@ import {
   getPreferences,
   modifyExpandedCollections,
   pruneExpandedCollections,
-  setActiveView,
-  setHomeCollectionPreferences,
+  setActiveCollection,
 } from '@db/preferences';
 import { addPagination, PaginationSchema } from '@db/common';
 import {
@@ -40,7 +37,6 @@ import {
   CollectionLayout,
   defaultCollectionLayout,
   ID,
-  HomeCollectionId,
   numeric,
   UpdateCollection,
   AddCollection,
@@ -61,6 +57,7 @@ import {
 } from '@tasks/fetchRSS';
 import { importOPML } from '@services/opml';
 import { none } from 'rambda';
+import { getUser } from '@db/users';
 
 const PostCollection = AddCollection.omit({
   layout: true,
@@ -91,6 +88,7 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     filter,
     grouping,
     sort_by,
+    is_home,
     ...rest
   } = collection;
 
@@ -103,6 +101,7 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     filter: filter ?? defaultCollectionFilter,
     grouping: grouping ?? defaultCollectionGrouping,
     sortBy: sort_by ?? 'ee',
+    isHome: is_home,
     parents,
     parentId: parent_id ?? undefined,
     parentOrder: parent_order ?? undefined,
@@ -134,7 +133,7 @@ const queryCollections = async (userId: ID) => {
 };
 
 const verifyCollectionOwner = async (
-  request: FastifyRequest<{ Params: z.infer<typeof HomeCollectionId> }>,
+  request: FastifyRequest<{ Params: z.infer<typeof CollectionId> }>,
   reply: FastifyReply
 ) => {
   const {
@@ -142,11 +141,9 @@ const verifyCollectionOwner = async (
     session: { userId },
   } = request;
 
-  if (typeof id === 'number') {
-    const owner = await pool.maybeOne(getCollectionOwner(id));
-    if (owner !== null && owner.userId !== userId) {
-      reply.status(403).send({ errorCode: 403, message: 'Access forbidden.' });
-    }
+  const owner = await pool.maybeOne(getCollectionOwner(id));
+  if (owner !== null && owner.userId !== userId) {
+    reply.status(403).send({ errorCode: 403, message: 'Access forbidden.' });
   }
 };
 
@@ -187,13 +184,18 @@ export const collections: FastifyPluginAsync = async (
         body,
         session: { userId },
       } = request;
-      const preferences = await pool.one(getPreferences(userId));
+      const { defaultCollectionLayout } = await pool.one(
+        getPreferences(userId)
+      );
+      const { homeId } = await pool.one(getUser(userId));
+
       await pool.transaction(async (conn) => {
         await conn.any(
           addCollection(
             {
               ...body,
-              layout: preferences.defaultCollectionLayout,
+              parentId: body.parentId ?? homeId,
+              layout: defaultCollectionLayout,
             },
             userId
           )
@@ -304,20 +306,14 @@ export const collections: FastifyPluginAsync = async (
         pool.one(getPreferences(userId)),
       ]);
 
-      const deletingCurrentlyActiveCollection =
-        preferences.activeView === 'collection' &&
-        idsToDelete.includes(preferences.activeCollectionId!);
+      const deletingCurrentlyActiveCollection = idsToDelete.includes(
+        preferences.activeCollectionId
+      );
 
       const deletedIds = await pool.transaction(async (conn) => {
         if (deletingCurrentlyActiveCollection) {
-          await conn.query(
-            setActiveView(
-              {
-                activeView: 'home',
-              },
-              userId
-            )
-          );
+          const { homeId } = await conn.one(getUser(userId));
+          await conn.query(setActiveCollection(homeId, userId));
         }
 
         const deletedIds = await conn.any(deleteCollections(idsToDelete));
@@ -334,11 +330,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Params: z.infer<typeof HomeCollectionId> }>(
+  fastify.post<{ Params: z.infer<typeof CollectionId> }>(
     '/:id/markAsRead',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -352,18 +348,9 @@ export const collections: FastifyPluginAsync = async (
       const timestamp = getUnixTime(new Date());
 
       await pool.any(
-        markCollectionAsRead(
-          id === 'home'
-            ? getAllCollectionIds(userId)
-            : getCollectionChildrenIds(id),
-          timestamp
-        )
+        markCollectionAsRead(getCollectionChildrenIds(id), timestamp)
       );
-      const children = await pool.any(
-        id === 'home'
-          ? getAllCollectionIds(userId)
-          : getCollectionChildrenIds(id)
-      );
+      const children = await pool.any(getCollectionChildrenIds(id));
 
       const ids = children.map(({ id }) => id);
       const collections = await queryCollections(userId);
@@ -377,13 +364,13 @@ export const collections: FastifyPluginAsync = async (
     })
   );
   fastify.get<{
-    Params: z.infer<typeof HomeCollectionId>;
+    Params: z.infer<typeof CollectionId>;
     Querystring: z.infer<typeof GetItemsParams>;
   }>(
     '/:id/items',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         querystring: GetItemsParams,
         tags: ['Collections'],
       },
@@ -398,7 +385,7 @@ export const collections: FastifyPluginAsync = async (
 
       const itemsQuery = getCollectionItems({
         userId,
-        collectionId: id === 'home' ? 'all' : id,
+        collectionId: id,
         filter,
       });
       const items = (await pool.any(
@@ -524,11 +511,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Params: z.infer<typeof HomeCollectionId> }>(
+  fastify.post<{ Params: z.infer<typeof CollectionId> }>(
     '/:id/refresh',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -538,19 +525,12 @@ export const collections: FastifyPluginAsync = async (
         params: { id },
       } = request;
 
-      const collections = await pool.any(
-        id === 'home' ? getCollectionsWithUrl() : getCollectionsFromRootId(id)
-      );
+      const collections = await pool.any(getCollectionsFromRootId(id));
       const result = await updateCollections(collections);
 
       if (result) {
-        if (id === 'home') {
-          const children = await pool.any(getCollectionsWithUrl());
-          return { ids: children.map(({ id }) => id) };
-        } else {
-          const children = await pool.any(getCollectionChildrenIds(id));
-          return { ids: children.map(({ id }) => id) };
-        }
+        const children = await pool.any(getCollectionChildrenIds(id));
+        return { ids: children.map(({ id }) => id) };
       } else {
         const noun = collections.length > 1 ? 'Feeds' : 'Feed';
         reply
@@ -567,13 +547,13 @@ export const collections: FastifyPluginAsync = async (
   });
 
   fastify.put<{
-    Params: z.infer<typeof HomeCollectionId>;
+    Params: z.infer<typeof CollectionId>;
     Body: z.infer<typeof PreferencesBody>;
   }>(
     '/:id/preferences',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         body: PreferencesBody,
         tags: ['Collections'],
       },
@@ -583,20 +563,15 @@ export const collections: FastifyPluginAsync = async (
       const {
         body: preferences,
         params: { id },
-        session: { userId },
       } = request;
 
       if (none(Boolean, Object.values(preferences))) {
         return true;
       }
 
-      if (typeof id === 'number') {
-        await pool.query(
-          setCollectionPreferences({ collectionId: id, preferences })
-        );
-      } else if (id === 'home') {
-        await pool.query(setHomeCollectionPreferences({ userId, preferences }));
-      }
+      await pool.query(
+        setCollectionPreferences({ collectionId: id, preferences })
+      );
 
       return true;
     }

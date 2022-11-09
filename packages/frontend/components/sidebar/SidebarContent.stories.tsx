@@ -25,6 +25,7 @@ Default.args = {
       user={{
         username: 'demo',
         displayName: 'Demo 1',
+        homeId: 999,
       }}
       preferences={{
         ...defaultPreferences,
@@ -37,7 +38,7 @@ Default.args = {
 export const WithActiveHome = Template.bind({});
 WithActiveHome.args = {
   ...Default.args,
-  activeCollectionId: 'home',
+  activeCollectionId: 999,
 };
 
 export const WithFeedList = Template.bind({});

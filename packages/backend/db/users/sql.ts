@@ -1,6 +1,6 @@
 import { sql } from 'slonik';
 import { dataUriToBuffer } from 'data-uri-to-buffer';
-import type { ID, User } from '@orpington-news/shared';
+import { ID, User } from '@orpington-news/shared';
 
 const mapAvatar = (avatar?: string) => {
   return avatar ? sql.binary(dataUriToBuffer(avatar)) : null;
@@ -9,25 +9,40 @@ const mapAvatar = (avatar?: string) => {
 export const insertUser = (
   user: Omit<User, 'hasAvatar'> & { password: string; avatar?: string }
 ) => {
-  const { username, password, displayName, avatar } = user;
+  const { username, password, displayName, avatar, homeId } = user;
 
   return sql<{ id: ID }>`
 INSERT INTO "users" (
   name,
   password,
   display_name,
-  avatar)
+  avatar,
+  home_id)
 VALUES (
   ${username},
   ${password},
   ${displayName},
-  ${mapAvatar(avatar)})
+  ${mapAvatar(avatar)},
+  ${homeId})
 RETURNING
   id
 `;
 };
 
-export const setUser = (user: Omit<User, 'username'> & { id: ID }) => {
+export const updateHomeCollection = (userId: ID, collectionId: ID) => {
+  return sql`
+UPDATE
+  users
+SET
+  home_id = ${collectionId}
+WHERE
+  users.id = ${userId}
+`;
+};
+
+export const setUser = (
+  user: Omit<User, 'username' | 'homeId'> & { id: ID }
+) => {
   const { id, displayName, avatarUrl } = user;
 
   if (avatarUrl !== undefined && !avatarUrl.startsWith('data:image')) {
@@ -53,7 +68,7 @@ WHERE
 };
 
 export const getUser = (id: ID) => {
-  return sql<Omit<User, 'avatarUrl'> & { hasAvatar: boolean }>`
+  return sql<Omit<User, 'avatarUrl'> & { hasAvatar: boolean; homeId: ID }>`
 SELECT
   name as username,
   display_name as "displayName",
@@ -62,7 +77,8 @@ SELECT
       FALSE
     ELSE
       TRUE
-    END) as "hasAvatar"
+    END) as "hasAvatar",
+  home_id as "homeId"
 FROM
   "users"
 WHERE

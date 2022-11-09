@@ -18,6 +18,7 @@ import {
   Wretch,
 } from '@api';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
+import { useGetUserHomeId } from '@features/Auth';
 import {
   CollectionItem,
   Collection,
@@ -44,7 +45,7 @@ export const useCollectionsList = <TSelectedData = Collection[]>(opts?: {
   });
 };
 
-export const useCollectionById = (collectionId?: ID | string | null) => {
+export const useCollectionById = (collectionId?: ID | null) => {
   return useCollectionsList({
     enabled: collectionId !== undefined,
     select: useCallback(
@@ -56,7 +57,7 @@ export const useCollectionById = (collectionId?: ID | string | null) => {
 };
 
 export const collectionsItemsQueryFn =
-  (api: Wretch, collectionId: ID | string, filter: CollectionFilter) =>
+  (api: Wretch, collectionId: ID, filter: CollectionFilter) =>
   ({ pageParam = 0, signal }: QueryFunctionContext) => {
     return getCollectionItems(
       api,
@@ -71,7 +72,7 @@ export const collectionsItemsQueryFn =
   };
 
 export const useCollectionItems = (
-  collectionId?: ID | string,
+  collectionId?: ID,
   filter: CollectionFilter = defaultCollectionFilter
 ) => {
   const api = useApi();
@@ -100,49 +101,45 @@ export const useMarkCollectionAsRead = () => {
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
   const { beingMarkedAsRead } = useCollectionsContext();
+  const homeId = useGetUserHomeId();
 
-  return useMutation(
-    ({ id }: { id: ID | 'home' }) => markCollectionAsRead(api, id),
-    {
-      onMutate: ({ id }) => {
-        if (typeof id === 'number') {
-          beingMarkedAsRead.add([id]);
-        }
-      },
-      onError,
-      onSuccess: ({ ids, collections, timestamp }) => {
-        queryClient.setQueryData(collectionKeys.tree, collections);
+  return useMutation(({ id }: { id: ID }) => markCollectionAsRead(api, id), {
+    onMutate: ({ id }) => {
+      beingMarkedAsRead.add([id]);
+    },
+    onError,
+    onSuccess: ({ ids, collections, timestamp }) => {
+      queryClient.setQueryData(collectionKeys.tree, collections);
 
-        for (const id of ids) {
-          queryClient.setQueryData(
-            collectionKeys.list(id),
-            mutatePageData<CollectionItem>((item) => ({
-              ...item,
-              dateRead: timestamp,
-            }))
-          );
-
-          queryClient.invalidateQueries(collectionKeys.allForId(id));
-        }
-
+      for (const id of ids) {
         queryClient.setQueryData(
-          collectionKeys.list('home'),
+          collectionKeys.list(id),
+          mutatePageData<CollectionItem>((item) => ({
+            ...item,
+            dateRead: timestamp,
+          }))
+        );
+
+        queryClient.invalidateQueries(collectionKeys.allForId(id));
+      }
+
+      if (homeId !== undefined) {
+        queryClient.setQueryData(
+          collectionKeys.list(homeId),
           mutatePageData<CollectionItem>((item) =>
             ids.includes(item.collection.id)
               ? { ...item, dateRead: timestamp }
               : item
           )
         );
-        queryClient.invalidateQueries(collectionKeys.allForId('home'));
-        queryClient.invalidateQueries(collectionKeys.tree);
-      },
-      onSettled: (_, __, { id }) => {
-        if (typeof id === 'number') {
-          beingMarkedAsRead.remove([id]);
-        }
-      },
-    }
-  );
+        queryClient.invalidateQueries(collectionKeys.allForId(homeId));
+      }
+      queryClient.invalidateQueries(collectionKeys.tree);
+    },
+    onSettled: (_, __, { id }) => {
+      beingMarkedAsRead.remove([id]);
+    },
+  });
 };
 
 export const useRefreshCollection = () => {
@@ -150,18 +147,15 @@ export const useRefreshCollection = () => {
   const { onError } = useHandleError();
   const queryClient = useQueryClient();
 
-  return useMutation(
-    ({ id }: { id: ID | 'home' }) => refreshCollection(api, id),
-    {
-      onError,
-      onSuccess: ({ ids }) => {
-        for (const id of ids) {
-          queryClient.invalidateQueries(collectionKeys.allForId(id));
-        }
-        queryClient.invalidateQueries(collectionKeys.tree);
-      },
-    }
-  );
+  return useMutation(({ id }: { id: ID }) => refreshCollection(api, id), {
+    onError,
+    onSuccess: ({ ids }) => {
+      for (const id of ids) {
+        queryClient.invalidateQueries(collectionKeys.allForId(id));
+      }
+      queryClient.invalidateQueries(collectionKeys.tree);
+    },
+  });
 };
 
 type CollectionPreferences = Pick<Collection, 'layout' | 'filter' | 'grouping'>;
@@ -172,30 +166,11 @@ export const useSetCollectionPreferences = () => {
   const queryClient = useQueryClient();
 
   return useMutation(
-    ({
-      id,
-      preferences,
-    }: {
-      id: ID | 'home';
-      preferences: CollectionPreferences;
-    }) => setCollectionPreferences(api, id, preferences),
+    ({ id, preferences }: { id: ID; preferences: CollectionPreferences }) =>
+      setCollectionPreferences(api, id, preferences),
     {
       onError,
       onMutate: ({ id, preferences }) => {
-        if (id === 'home') {
-          queryClient.setQueryData(
-            preferencesKeys.base,
-            (old?: Preferences) =>
-              old && {
-                ...old,
-                homeCollectionLayout:
-                  preferences.layout ?? old.homeCollectionLayout,
-              }
-          );
-
-          return;
-        }
-
         queryClient.setQueryData(
           preferencesKeys.base,
           (old?: Preferences) =>
@@ -233,10 +208,7 @@ export const useSetCollectionPreferences = () => {
       },
       onSuccess: (_, { id, preferences }) => {
         queryClient.invalidateQueries(preferencesKeys.base);
-
-        if (id !== 'home') {
-          queryClient.invalidateQueries(collectionKeys.tree);
-        }
+        queryClient.invalidateQueries(collectionKeys.tree);
 
         if (preferences.filter) {
           queryClient.invalidateQueries(collectionKeys.lists(id));

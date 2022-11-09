@@ -31,9 +31,6 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
   const handleRefreshClick = useCallback(() => {
     if (activeCollection) {
       const collectionId = activeCollection.id;
-      if (typeof collectionId === 'string' && collectionId !== 'home') {
-        return;
-      }
 
       refreshCollection({ id: collectionId });
     } else {

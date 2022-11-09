@@ -16,10 +16,8 @@ export const defaultAvatarStyle: AvatarStyle = 'fallback';
 export const Preferences = z.object({
   expandedCollectionIds: z.array(ID),
   defaultCollectionLayout: CollectionLayout,
-  homeCollectionLayout: CollectionLayout,
   avatarStyle: AvatarStyle,
-  activeView: z.union([z.literal('home'), z.literal('collection')]),
-  activeCollectionId: ID.nullish(),
+  activeCollectionId: ID,
   activeCollectionTitle: z.string(),
   activeCollectionLayout: CollectionLayout,
   activeCollectionFilter: CollectionFilter,
@@ -28,20 +26,22 @@ export const Preferences = z.object({
 
 export type Preferences = z.infer<typeof Preferences>;
 
-export const ViewPreferences = Preferences.pick({
-  activeView: true,
+export const SetActiveCollectionData = Preferences.pick({
   activeCollectionId: true,
+  activeCollectionTitle: true,
+  activeCollectionLayout: true,
+  activeCollectionFilter: true,
+  activeCollectionGrouping: true,
 });
-export type ViewPreferences = z.infer<typeof ViewPreferences>;
+export type SetActiveCollectionData = z.infer<typeof SetActiveCollectionData>;
 
 export const defaultPreferences: Preferences = {
-  activeView: 'home',
   activeCollectionTitle: 'Home',
   activeCollectionLayout: defaultCollectionLayout,
   activeCollectionFilter: defaultCollectionFilter,
   activeCollectionGrouping: defaultCollectionGrouping,
+  activeCollectionId: 0,
   defaultCollectionLayout,
-  homeCollectionLayout: defaultCollectionLayout,
   expandedCollectionIds: [],
   avatarStyle: defaultAvatarStyle,
 };

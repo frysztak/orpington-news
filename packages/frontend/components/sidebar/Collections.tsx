@@ -72,7 +72,8 @@ const ItemContent: React.FC<ItemContentProps> = ({
       title={title}
       isActive={activeCollectionId === id}
       icon={icon}
-      level={level}
+      // subtract one because we're not showing home collection
+      level={level - 1}
       counter={unreadCount}
       isLoading={collectionsCurrentlyUpdated?.has(id) ?? false}
       chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
@@ -121,6 +122,7 @@ export interface CollectionsProps {
   isError?: boolean;
   collections: Collection[];
   activeCollectionId?: ID;
+  homeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
   collectionsCurrentlyUpdated?: Set<ID>;
 
@@ -167,7 +169,8 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
             Failed to fetch feeds.
           </Text>
         </>
-      ) : collections.length === 0 ? (
+      ) : // don't count Home collection
+      collections.length <= 1 ? (
         <>
           <Icon
             as={InformationCircleIcon}

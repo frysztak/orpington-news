@@ -62,11 +62,6 @@ export const CollectionId = z.object({
 });
 export type CollectionId = z.infer<typeof CollectionId>;
 
-export const HomeCollectionId = z.object({
-  id: z.literal('home').or(numeric(ID)),
-});
-export type HomeCollectionId = z.infer<typeof CollectionId>;
-
 export const CollectionFilter = z.enum(['all', 'unread', 'read']);
 export type CollectionFilter = z.infer<typeof CollectionFilter>;
 export const defaultCollectionFilter: CollectionFilter = 'all';
@@ -91,6 +86,7 @@ export const Collection = z.object({
   grouping: z.optional(CollectionGrouping),
   sortBy: z.optional(z.string()),
 
+  isHome: z.boolean(),
   parents: z.array(ID),
   children: z.array(ID),
   order: z.number(),
@@ -110,6 +106,11 @@ export const AddCollection = Collection.pick({
   refreshInterval: true,
   dateUpdated: true,
   layout: true,
+  order: true,
+  isHome: true,
+}).partial({
+  order: true,
+  isHome: true,
 });
 export type AddCollection = z.infer<typeof AddCollection>;
 
@@ -155,3 +156,12 @@ export const CollectionPreferences = Collection.pick({
   grouping: true,
 });
 export type CollectionPreferences = z.infer<typeof CollectionPreferences>;
+
+export const ActiveCollection = Collection.pick({
+  id: true,
+  title: true,
+  layout: true,
+  filter: true,
+  grouping: true,
+});
+export type ActiveCollection = z.infer<typeof ActiveCollection>;

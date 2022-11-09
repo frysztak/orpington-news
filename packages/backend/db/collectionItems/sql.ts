@@ -70,7 +70,7 @@ ON CONFLICT (collection_id,
 
 export interface GetCollectionItemsArgs {
   userId: ID;
-  collectionId: ID | 'all';
+  collectionId: ID;
   filter: CollectionFilter;
 }
 
@@ -79,15 +79,6 @@ export const getCollectionItems = ({
   collectionId,
   filter,
 }: GetCollectionItemsArgs) => {
-  const userFilter = collectionId === 'all' ? sql`"user_id" = ${userId}` : TRUE;
-
-  const collectionFilter =
-    collectionId === 'all'
-      ? TRUE
-      : sql`
-collection_items.collection_id = ANY (${getCollectionChildrenIds(collectionId)})
-`;
-
   const showFilter =
     filter === 'all'
       ? TRUE
@@ -119,9 +110,11 @@ FROM
       title as collection_title,
       icon as collection_icon
     FROM
-      collections WHERE ${userFilter}) collections ON collections.collection_id = collection_items.collection_id
+      collections WHERE "user_id" = ${userId}) collections ON collections.collection_id = collection_items.collection_id
 WHERE
-  ${collectionFilter}
+  collection_items.collection_id = ANY (${getCollectionChildrenIds(
+    collectionId
+  )})
   AND
   ${showFilter}
 ORDER BY

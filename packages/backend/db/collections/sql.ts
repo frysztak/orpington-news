@@ -4,6 +4,7 @@ import {
   AddCollection,
   Collection,
   CollectionPreferences,
+  defaultCollectionLayout,
   defaultIcon,
   defaultRefreshInterval,
   ID,
@@ -24,6 +25,8 @@ export const addCollection = (collection: AddCollection, userId: ID) => {
     dateUpdated,
     refreshInterval,
     layout,
+    order,
+    isHome,
   } = collection;
 
   const url = collection.url && normalizeUrl(collection.url);
@@ -32,13 +35,14 @@ export const addCollection = (collection: AddCollection, userId: ID) => {
     userId,
     title,
     icon ?? defaultIcon,
-    MAX_INT, // put new collection at the end
+    order ?? MAX_INT, // put new collection at the end
     parentId ?? null,
     description ?? null,
     url ?? null,
     dateUpdated ? getUnixTime(dateUpdated) : null,
     refreshInterval ?? defaultRefreshInterval,
-    layout ?? null,
+    layout ?? defaultCollectionLayout,
+    isHome ?? false,
   ];
   return sql<{ id: ID }>`
 INSERT INTO collections (
@@ -51,7 +55,8 @@ INSERT INTO collections (
   "url",
   "date_updated",
   "refresh_interval",
-  "layout")
+  "layout",
+  "is_home")
 VALUES (
   ${sql.join(values, sql`, `)})
 RETURNING
@@ -149,6 +154,7 @@ export type DBCollection = Omit<
   refresh_interval: number;
   is_last_child: boolean;
   sort_by: string | null;
+  is_home: boolean;
 };
 
 export const getCollectionOwner = (id: ID) => {
@@ -182,6 +188,7 @@ WITH RECURSIVE data AS (
     m.filter,
     m.grouping,
     m.sort_by,
+    m.is_home,
     ARRAY[]::integer[] AS parents,
     0 AS level,
     ARRAY[m.order]::integer[] AS order_path,
@@ -190,7 +197,7 @@ WITH RECURSIVE data AS (
   FROM
     collections m
   WHERE
-    m.parent_id IS NULL
+    m.is_home IS TRUE
     AND "user_id" = ${userId}
   UNION ALL
   SELECT
@@ -207,6 +214,7 @@ WITH RECURSIVE data AS (
     c.filter,
     c.grouping,
     c.sort_by,
+    c.is_home,
     d.parents || c.parent_id,
     d.level + 1,
     d.order_path || c.order,
@@ -259,6 +267,7 @@ SELECT
   d.filter,
   d.grouping,
   d.sort_by,
+  d.is_home,
   d.level,
   d.order_path,
   d.parents,
