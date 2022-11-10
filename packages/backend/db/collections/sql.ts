@@ -155,6 +155,7 @@ export type DBCollection = Omit<
   is_last_child: boolean;
   sort_by: string | null;
   is_home: boolean;
+  etag: string | null;
 };
 
 export const getCollectionOwner = (id: ID) => {
@@ -435,6 +436,17 @@ UPDATE
   collections
 SET
   ${layout} ${filter} ${grouping}
+WHERE
+  id = ${collectionId}
+`;
+};
+
+export const updateCollectionETag = (collectionId: ID, etag: string) => {
+  return sql`
+UPDATE
+  collections
+SET
+  etag = ${etag}
 WHERE
   id = ${collectionId}
 `;
