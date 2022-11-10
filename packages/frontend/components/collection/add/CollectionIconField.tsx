@@ -92,6 +92,7 @@ export const CollectionIconField: React.FC<CollectionIconFieldProps> = (
               variant="bare"
               isDisabled={isDisabled}
               onClick={onToggle}
+              data-test="collectionIconButton"
             />
           </ErrorTooltip>
         </PopoverTrigger>

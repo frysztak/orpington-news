@@ -1,7 +1,6 @@
 import { sql } from 'slonik';
 import { z } from 'zod';
-import { CollectionPreferences, ID, Preferences } from '@orpington-news/shared';
-import { EMPTY } from '@utils';
+import { ID, Preferences } from '@orpington-news/shared';
 
 export const pruneExpandedCollections = (userId: ID) => {
   return sql`CALL preferences_prune_expanded_collections(${userId});`;
@@ -73,34 +72,6 @@ UPDATE
 SET
   default_collection_layout = ${p.defaultCollectionLayout},
   avatar_style = ${p.avatarStyle}
-WHERE
-  p.user_id = ${userId}
-`;
-};
-
-interface SetHomeCollectionPreferencesArgs {
-  userId: ID;
-  preferences: CollectionPreferences;
-}
-export const setHomeCollectionPreferences = ({
-  userId,
-  preferences,
-}: SetHomeCollectionPreferencesArgs) => {
-  const layout = preferences.layout
-    ? sql`home_collection_layout = ${preferences.layout}`
-    : EMPTY;
-  const filter = preferences.filter
-    ? sql`home_collection_filter = ${preferences.filter}`
-    : EMPTY;
-  const grouping = preferences.grouping
-    ? sql`home_collection_grouping = ${preferences.grouping}`
-    : EMPTY;
-
-  return sql`
-UPDATE
-  preferences p
-SET
-  ${layout} ${filter} ${grouping}
 WHERE
   p.user_id = ${userId}
 `;

@@ -89,11 +89,13 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     grouping,
     sort_by,
     is_home,
+    description,
     ...rest
   } = collection;
 
   return {
     ...rest,
+    description: description ?? undefined,
     dateUpdated: date_updated,
     refreshInterval: refresh_interval,
     unreadCount: unread_count ?? 0,

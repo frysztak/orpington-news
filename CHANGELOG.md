@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored how Home collection works internally
 - Changed collection page size to 30
 
+### Fixed
+
+- Fixed missing loading state in Edit Collection modal
+
 ## [0.7.4] - 2022-10-20
 
 ### Fixed

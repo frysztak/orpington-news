@@ -75,26 +75,6 @@ WHERE
 `;
 };
 
-export const getAllCollectionIds = (userId: ID) => {
-  return sql<{ id: ID }>`
-SELECT
-  id
-from
-  collections
-WHERE
-  "user_id" = ${userId}
-`;
-};
-
-export const deleteCollection = (collectionId: ID) => {
-  return sql<{ id: ID }>`
-DELETE FROM collections
-WHERE id = ANY (${getCollectionChildrenIds(collectionId)})
-RETURNING
-  id
-`;
-};
-
 export const deleteCollections = (collectionIds: Array<ID>) => {
   return sql<{ id: ID }>`
 DELETE FROM collections
