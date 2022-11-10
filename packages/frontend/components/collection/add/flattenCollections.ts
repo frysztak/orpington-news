@@ -14,13 +14,15 @@ const generateSpacer = (depth: number): string => {
 };
 
 export const flattenCollections = (collections: Collection[]): Option[] => {
-  return collections.map((collection) => {
-    const spacer = generateSpacer(collection.level);
-    const option: Option = {
-      label: `${spacer} ${collection.title}`,
-      value: `${collection.id}`,
-    };
+  return collections
+    .filter(({ isHome }) => !isHome)
+    .map((collection) => {
+      const spacer = generateSpacer(collection.level - 1);
+      const option: Option = {
+        label: `${spacer} ${collection.title}`,
+        value: `${collection.id}`,
+      };
 
-    return option;
-  });
+      return option;
+    });
 };
