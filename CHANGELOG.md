@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Refactored how Home collection works internally
+- Changed collection page size to 30
 
 ## [0.7.4] - 2022-10-20
 
