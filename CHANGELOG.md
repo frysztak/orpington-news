@@ -13,10 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Collection item list: highlight active article
 - Collection item list: list layout
 - Article view: updated header
+- Add support for ETags, which significantly reduces collection refresh time
 
 ### Changed
 
 - Refactored how Home collection works internally
+- Changed collection page size to 30
 
 ## [0.7.4] - 2022-10-20
 
