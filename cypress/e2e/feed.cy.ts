@@ -14,38 +14,77 @@ sizes.forEach((size) => {
       );
     });
 
-    it('can add new feed', () => {
-      cy.intercept({
-        method: 'POST',
-        url: getApiPath('/collections'),
-      }).as('apiCollections');
-      cy.intercept({
-        method: 'POST',
-        url: getApiPath('/collections/verifyUrl'),
-      }).as('apiCollectionsVerify');
+    describe('add collection modal', () => {
+      it('can add new feed', () => {
+        cy.intercept({
+          method: 'POST',
+          url: getApiPath('/collections'),
+        }).as('apiCollections');
+        cy.intercept({
+          method: 'POST',
+          url: getApiPath('/collections/verifyUrl'),
+        }).as('apiCollectionsVerify');
 
-      cy.visit('/');
-      cy.openDrawerIfExists();
-      cy.getBySel('addFeed').filter(':visible').click();
-      cy.getBySel('addCollectionModal').should('be.visible');
-      cy.getBySel('feedUrl').type(getFeedUrl('kentcdodds.xml')).blur();
-      cy.getBySel('verifyUrl').click();
-      cy.wait('@apiCollectionsVerify')
-        .its('response.statusCode')
-        .should('eq', 200);
+        cy.visit('/');
+        cy.openDrawerIfExists();
+        cy.getBySel('addFeed').filter(':visible').click();
+        cy.getBySel('addCollectionModal').should('be.visible');
+        cy.getBySel('feedUrl').type(getFeedUrl('kentcdodds.xml')).blur();
+        cy.getBySel('verifyUrl').click();
+        cy.wait('@apiCollectionsVerify')
+          .its('response.statusCode')
+          .should('eq', 200);
 
-      cy.getBySel('addFeedButton').click();
-      cy.wait('@apiCollections').its('response.statusCode').should('eq', 200);
-      cy.getBySel('addCollectionModal').should('not.exist');
+        cy.getBySel('collectionIconButton').click();
+        cy.getBySel('collectionIcon-React').click();
+        cy.getBySel('addFeedButton').click();
+        cy.wait('@apiCollections').its('response.statusCode').should('eq', 200);
+        cy.getBySel('addCollectionModal').should('not.exist');
 
-      cy.getBySel('collection-id-2')
-        .within(() => {
-          cy.getBySel('title').should('have.text', 'Kent C. Dodds Blog');
-          cy.getBySel('chevron').should('not.exist');
-          cy.getBySel('badge').should('exist').and('have.text', '3');
-        })
-        .should('exist')
-        .and('be.visible');
+        cy.getBySel('collection-id-2')
+          .within(() => {
+            cy.getBySel('title').should('have.text', 'Kent C. Dodds Blog');
+            cy.getBySel('chevron').should('not.exist');
+            cy.getBySel('badge').should('exist').and('have.text', '3');
+          })
+          .should('exist')
+          .and('be.visible');
+      });
+
+      it('can edit existing collection', () => {
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+        cy.intercept({
+          method: 'PUT',
+          url: getApiPath('/collections'),
+        }).as('apiPutCollection');
+
+        cy.visit('/');
+        cy.openDrawerIfExists();
+        cy.clickSidebarAction('2', 'edit');
+
+        cy.getBySel('addCollectionModal').should('be.visible');
+        cy.getBySel('feedName').clear().type('Kent').blur();
+
+        cy.getBySel('addFeedButton').click();
+        cy.wait('@apiPutCollection')
+          .its('response.statusCode')
+          .should('eq', 200);
+        cy.getBySel('addCollectionModal').should('not.exist');
+
+        cy.getBySel('collection-id-2')
+          .within(() => {
+            cy.getBySel('title').should('have.text', 'Kent');
+            cy.getBySel('chevron').should('not.exist');
+            cy.getBySel('badge').should('exist').and('have.text', '3');
+          })
+          .should('exist')
+          .and('be.visible');
+      });
     });
 
     it('clicking on feed sets active view', () => {
