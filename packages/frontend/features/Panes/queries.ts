@@ -30,6 +30,7 @@ export const useSaveCollection = ({
 }) => {
   const api = useApi();
   const { onError } = useHandleError();
+  const homeId = useGetUserHomeId();
 
   const queryClient = useQueryClient();
 
@@ -40,7 +41,7 @@ export const useSaveCollection = ({
         url: data.url?.length === 0 ? undefined : data.url,
         description: data.description,
         icon: data.icon,
-        parentId: data.parentId,
+        parentId: data.parentId ?? homeId,
         refreshInterval: data.refreshInterval ?? defaultRefreshInterval,
       }),
     {
@@ -68,6 +69,7 @@ export const useEditCollection = ({
 }) => {
   const api = useApi();
   const { onError } = useHandleError();
+  const homeId = useGetUserHomeId();
 
   const queryClient = useQueryClient();
 
@@ -79,7 +81,7 @@ export const useEditCollection = ({
         url: data.url?.length === 0 ? undefined : data.url,
         description: data.description,
         icon: data.icon,
-        parentId: data.parentId,
+        parentId: data.parentId ?? homeId,
         refreshInterval: data.refreshInterval ?? defaultRefreshInterval,
       }),
     {

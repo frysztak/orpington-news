@@ -85,6 +85,66 @@ sizes.forEach((size) => {
           .should('exist')
           .and('be.visible');
       });
+
+      it('cannot set collection as its own parent', () => {
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+        cy.intercept({
+          method: 'PUT',
+          url: getApiPath('/collections'),
+        }).as('apiPutCollection');
+
+        cy.visit('/');
+        cy.openDrawerIfExists();
+        cy.clickSidebarAction('2', 'edit');
+
+        cy.getBySel('addCollectionModal').should('be.visible');
+        cy.get('.select-field__control').click();
+        cy.get('.select-field__option').eq(1).click();
+
+        cy.getBySel('addFeedButton').click();
+        cy.wait('@apiPutCollection')
+          .its('response.statusCode')
+          .should('eq', 500);
+      });
+
+      it('can change parent collection', () => {
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+        cy.addFeedByApi({
+          title: 'fettblog.eu',
+          url: getFeedUrl('fettblog.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+          parentId: 2,
+        });
+
+        cy.intercept({
+          method: 'PUT',
+          url: getApiPath('/collections'),
+        }).as('apiPutCollection');
+
+        cy.visit('/');
+        cy.openDrawerIfExists();
+        cy.clickSidebarAction('3', 'edit');
+
+        cy.getBySel('addCollectionModal').should('be.visible');
+        cy.get('.select-field__control').click();
+        cy.get('.select-field__option').eq(0).click();
+
+        cy.getBySel('addFeedButton').click();
+        cy.wait('@apiPutCollection')
+          .its('response.statusCode')
+          .should('eq', 200);
+      });
     });
 
     it('clicking on feed sets active view', () => {
