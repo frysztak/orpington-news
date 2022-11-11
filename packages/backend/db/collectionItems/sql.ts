@@ -1,11 +1,8 @@
 import { sql } from 'slonik';
-import { ID } from '@orpington-news/shared';
+import { CollectionFilter, ID } from '@orpington-news/shared';
 import { getCollectionChildrenIds } from '@db/collections';
-import {
-  DBCollectionItemDetails,
-  DBCollectionItem,
-  DBCollectionItemWithoutText,
-} from './types';
+import { TRUE } from '@utils';
+import { DBCollectionItem, DBCollectionItemWithoutText } from './types';
 
 type InsertDBCollectionItem = Omit<
   DBCollectionItem,
@@ -71,7 +68,24 @@ ON CONFLICT (collection_id,
 `;
 };
 
-export const getCollectionItems = (collectionId: ID) => {
+export interface GetCollectionItemsArgs {
+  userId: ID;
+  collectionId: ID;
+  filter: CollectionFilter;
+}
+
+export const getCollectionItems = ({
+  userId,
+  collectionId,
+  filter,
+}: GetCollectionItemsArgs) => {
+  const showFilter =
+    filter === 'all'
+      ? TRUE
+      : filter === 'unread'
+      ? sql`collection_items.date_read IS NULL`
+      : sql`collection_items.date_read IS NOT NULL`;
+
   return sql.type(DBCollectionItemWithoutText)`
 SELECT
   collection_items.id,
@@ -96,56 +110,28 @@ FROM
       title as collection_title,
       icon as collection_icon
     FROM
-      collections) collections ON collections.collection_id = collection_items.collection_id
+      collections WHERE "user_id" = ${userId}) collections ON collections.collection_id = collection_items.collection_id
 WHERE
   collection_items.collection_id = ANY (${getCollectionChildrenIds(
     collectionId
   )})
-ORDER BY
-  date_published DESC
-`;
-};
-
-export const getAllCollectionItems = (userId: ID) => {
-  return sql.type(DBCollectionItemWithoutText)`
-SELECT
-  collection_items.id,
-  collection_items.title,
-  collection_items.url,
-  collection_items.summary,
-  collection_items.thumbnail_url,
-  collection_items.date_published,
-  collection_items.date_updated,
-  collection_items.date_read,
-  collection_items.categories,
-  collection_items.comments,
-  collection_items.reading_time,
-  collections.collection_id,
-  collections.collection_title,
-  collections.collection_icon
-FROM
-  collection_items
-  INNER JOIN (
-    SELECT
-      id as collection_id,
-      title as collection_title,
-      icon as collection_icon
-    FROM
-      collections
-    WHERE
-      "user_id" = ${userId}) collections ON collections.collection_id = collection_items.collection_id
+  AND
+  ${showFilter}
 ORDER BY
   date_published DESC
 `;
 };
 
 export const getItemDetails = (collectionId: ID, itemId: ID) => {
-  return sql<DBCollectionItemDetails>`
+  return sql.type(DBCollectionItem)`
 SELECT
   articles.*
 FROM (
   SELECT
     collection_items.*,
+    collections.id as collection_id,
+    collections.title as collection_title,
+    collections.icon as collection_icon,
     LAG(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) previous_id,
     LEAD(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) next_id
   FROM collections

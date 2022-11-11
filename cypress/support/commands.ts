@@ -1,4 +1,7 @@
 /// <reference types="cypress" />
+
+import { getApiPath } from '../e2e/utils';
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -28,6 +31,10 @@
 
 Cypress.Commands.add('getBySel', (selector, ...args) => {
   return cy.get(`[data-test=${selector}]`, ...args);
+});
+
+Cypress.Commands.add('getBySelVisible', (selector, ...args) => {
+  return cy.get(`[data-test=${selector}]:visible`, ...args);
 });
 
 Cypress.Commands.add('getBySelLike', (selector, ...args) => {
@@ -60,6 +67,12 @@ Cypress.Commands.add('closeDrawerIfExists', () => {
         cy.getBySel('drawer').should('not.exist');
       });
     }
+  });
+});
+
+Cypress.Commands.add('waitForDrawerToClose', () => {
+  return cy.getBySel('panesMobile').then(($body) => {
+    cy.getBySel('drawer').should('not.exist');
   });
 });
 
@@ -104,6 +117,30 @@ Cypress.Commands.add('clickCollectionHeaderLayout', (layout: string) => {
   });
 });
 
+Cypress.Commands.add('clickGoBackIfExists', () => {
+  const selector = '[data-test=goBack]:visible';
+  return cy.getBySel('panesMobile').then(($body) => {
+    if ($body.find(selector).length > 0) {
+      cy.get(selector).then(($button) => {
+        $button.trigger('click');
+      });
+    }
+  });
+});
+
+Cypress.Commands.add('changeActiveCollection', (id: string) => {
+  cy.intercept({
+    method: 'GET',
+    url: getApiPath(`/collections/${id}/items?pageIndex=0&filter=all`),
+  }).as('apiGetItems');
+
+  cy.visit('/');
+  cy.openDrawerIfExists();
+  cy.clickCollection(id);
+
+  cy.wait('@apiGetItems');
+});
+
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {
   return cy.request('POST', `${Cypress.env('api_url')}/auth/register`, {
     username,
@@ -122,3 +159,27 @@ Cypress.Commands.add('loginByApi', (username, password) => {
 Cypress.Commands.add('addFeedByApi', (data) => {
   return cy.request('POST', `${Cypress.env('api_url')}/collections`, data);
 });
+
+Cypress.Commands.add(
+  'putDateReadByApi',
+  ({ collectionId, articleId, dateRead }) => {
+    return cy.request(
+      'PUT',
+      `${Cypress.env(
+        'api_url'
+      )}/collections/${collectionId}/item/${articleId}/dateRead`,
+      { dateRead }
+    );
+  }
+);
+
+Cypress.Commands.add(
+  'putCollectionPreferencesByApi',
+  ({ collectionId, preferences }) => {
+    return cy.request(
+      'PUT',
+      `${Cypress.env('api_url')}/collections/${collectionId}/preferences`,
+      preferences
+    );
+  }
+);

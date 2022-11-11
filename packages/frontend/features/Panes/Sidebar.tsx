@@ -14,12 +14,13 @@ import {
   useGetPreferences,
   useSetActiveCollection,
 } from '@features/Preferences';
+import { useGetUserHomeId } from '@features/Auth';
 import { MenuItem, SidebarContent } from '@components/sidebar';
 import { CollectionMenuAction } from '@components/sidebar/Collections';
 import {
   defaultCollectionLayout,
   emptyIfUndefined,
-  FlatCollection,
+  Collection,
 } from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
 import { ModalContext } from './ModalContext';
@@ -37,7 +38,8 @@ export const Sidebar: React.FC = () => {
   } = useCollectionsList();
   const { isLoading: preferencesLoading } = useGetPreferences();
   const activeCollection = useActiveCollection();
-  const { setActiveCollection } = useSetActiveCollection();
+  const homeCollectionId = useGetUserHomeId();
+  const { setActiveCollection, setHomeCollection } = useSetActiveCollection();
   const { expandedCollectionIds, handleCollectionChevronClicked } =
     useExpandedCollections();
 
@@ -56,20 +58,20 @@ export const Sidebar: React.FC = () => {
       switch (item) {
         case 'home': {
           closeDrawer();
-          return setActiveCollection({ id: 'home' });
+          return setHomeCollection();
         }
         case 'addFeed': {
           return onOpenAddCollectionModal();
         }
       }
     },
-    [closeDrawer, onOpenAddCollectionModal, setActiveCollection]
+    [closeDrawer, onOpenAddCollectionModal, setHomeCollection]
   );
 
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
   const { mutate: refreshCollection } = useRefreshCollection();
   const handleCollectionMenuItemClicked = useCallback(
-    (collection: FlatCollection, action: CollectionMenuAction) => {
+    (collection: Collection, action: CollectionMenuAction) => {
       switch (action) {
         case 'edit': {
           return onOpenAddCollectionModal(collection);
@@ -94,13 +96,15 @@ export const Sidebar: React.FC = () => {
   );
 
   const handleCollectionClickedAndCloseDrawer = useCallback(
-    (collection: FlatCollection) => {
+    (collection: Collection) => {
       closeDrawer();
       push('/', '/', { shallow: true }).then(() => {
         setActiveCollection({
-          id: collection.id,
-          title: collection.title,
-          layout: collection.layout ?? defaultCollectionLayout,
+          activeCollectionId: collection.id,
+          activeCollectionTitle: collection.title,
+          activeCollectionLayout: collection.layout ?? defaultCollectionLayout,
+          activeCollectionFilter: collection.filter!,
+          activeCollectionGrouping: collection.grouping!,
         });
       });
     },
@@ -119,6 +123,7 @@ export const Sidebar: React.FC = () => {
       onMenuItemClicked={handleMenuItemClicked}
       onCollectionMenuActionClicked={handleCollectionMenuItemClicked}
       activeCollectionId={activeCollection?.id}
+      homeCollectionId={homeCollectionId}
       expandedCollectionIDs={expandedCollectionIds}
       collectionsCurrentlyUpdated={currentlyUpdatedCollections.set}
       footer={<SidebarFooter />}
@@ -134,7 +139,7 @@ const useExpandedCollections = () => {
   const { mutate: collapseCollection } = useCollapseCollection();
 
   const handleCollectionChevronClicked = useCallback(
-    ({ id }: FlatCollection) => {
+    ({ id }: Collection) => {
       const idx = expandedCollectionIds?.findIndex((id_) => id_ === id);
       if (idx === undefined) {
         return;

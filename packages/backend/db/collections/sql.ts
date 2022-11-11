@@ -1,22 +1,22 @@
 import { sql, SqlSqlToken } from 'slonik';
 import { getUnixTime } from 'date-fns';
 import {
+  AddCollection,
   Collection,
-  CollectionLayout,
+  CollectionPreferences,
+  defaultCollectionLayout,
   defaultIcon,
   defaultRefreshInterval,
   ID,
+  UpdateCollection,
 } from '@orpington-news/shared';
-import { MAX_INT, normalizeUrl } from '@utils';
+import { EMPTY, MAX_INT, normalizeUrl } from '@utils';
 
 export const recalculateCollectionsOrder = () => {
   return sql`CALL collections_recalculate_order();`;
 };
 
-export const addCollection = (
-  collection: Omit<Collection, 'id' | 'unreadCount' | 'children'>,
-  userId: ID
-) => {
+export const addCollection = (collection: AddCollection, userId: ID) => {
   const {
     title,
     icon,
@@ -25,6 +25,8 @@ export const addCollection = (
     dateUpdated,
     refreshInterval,
     layout,
+    order,
+    isHome,
   } = collection;
 
   const url = collection.url && normalizeUrl(collection.url);
@@ -33,13 +35,14 @@ export const addCollection = (
     userId,
     title,
     icon ?? defaultIcon,
-    MAX_INT, // put new collection at the end
+    order ?? MAX_INT, // put new collection at the end
     parentId ?? null,
     description ?? null,
     url ?? null,
     dateUpdated ? getUnixTime(dateUpdated) : null,
     refreshInterval ?? defaultRefreshInterval,
-    layout ?? null,
+    layout ?? defaultCollectionLayout,
+    isHome ?? false,
   ];
   return sql<{ id: ID }>`
 INSERT INTO collections (
@@ -52,7 +55,8 @@ INSERT INTO collections (
   "url",
   "date_updated",
   "refresh_interval",
-  "layout")
+  "layout",
+  "is_home")
 VALUES (
   ${sql.join(values, sql`, `)})
 RETURNING
@@ -71,26 +75,6 @@ WHERE
 `;
 };
 
-export const getAllCollectionIds = (userId: ID) => {
-  return sql<{ id: ID }>`
-SELECT
-  id
-from
-  collections
-WHERE
-  "user_id" = ${userId}
-`;
-};
-
-export const deleteCollection = (collectionId: ID) => {
-  return sql<{ id: ID }>`
-DELETE FROM collections
-WHERE id = ANY (${getCollectionChildrenIds(collectionId)})
-RETURNING
-  id
-`;
-};
-
 export const deleteCollections = (collectionIds: Array<ID>) => {
   return sql<{ id: ID }>`
 DELETE FROM collections
@@ -100,9 +84,7 @@ RETURNING
 `;
 };
 
-export const updateCollection = (
-  collection: Omit<Collection, 'unreadCount' | 'children'>
-) => {
+export const updateCollection = (collection: UpdateCollection) => {
   const { id, title, icon, parentId, description, refreshInterval } =
     collection;
 
@@ -133,7 +115,12 @@ export const moveCollections = (
 
 export type DBCollection = Omit<
   Collection,
-  'children' | 'parentId' | 'dateUpdated' | 'unreadCount' | 'refreshInterval'
+  | 'children'
+  | 'parentId'
+  | 'dateUpdated'
+  | 'unreadCount'
+  | 'refreshInterval'
+  | 'sortBy'
 > & {
   parents: Array<ID>;
   children: Array<ID>;
@@ -146,6 +133,9 @@ export type DBCollection = Omit<
   unread_count: number | null;
   refresh_interval: number;
   is_last_child: boolean;
+  sort_by: string | null;
+  is_home: boolean;
+  etag: string | null;
 };
 
 export const getCollectionOwner = (id: ID) => {
@@ -176,6 +166,10 @@ WITH RECURSIVE data AS (
     m.date_updated,
     m.refresh_interval,
     m.layout,
+    m.filter,
+    m.grouping,
+    m.sort_by,
+    m.is_home,
     ARRAY[]::integer[] AS parents,
     0 AS level,
     ARRAY[m.order]::integer[] AS order_path,
@@ -184,7 +178,7 @@ WITH RECURSIVE data AS (
   FROM
     collections m
   WHERE
-    m.parent_id IS NULL
+    m.is_home IS TRUE
     AND "user_id" = ${userId}
   UNION ALL
   SELECT
@@ -198,6 +192,10 @@ WITH RECURSIVE data AS (
     c.date_updated,
     c.refresh_interval,
     c.layout,
+    c.filter,
+    c.grouping,
+    c.sort_by,
+    c.is_home,
     d.parents || c.parent_id,
     d.level + 1,
     d.order_path || c.order,
@@ -247,6 +245,10 @@ SELECT
   d.date_updated,
   d.refresh_interval,
   d.layout,
+  d.filter,
+  d.grouping,
+  d.sort_by,
+  d.is_home,
   d.level,
   d.order_path,
   d.parents,
@@ -391,15 +393,40 @@ WHERE
 `;
 };
 
-export const setCollectionLayout = (
-  collectionId: ID,
-  layout: CollectionLayout
-) => {
+interface SetCollectionPreferencesArgs {
+  collectionId: ID;
+  preferences: CollectionPreferences;
+}
+export const setCollectionPreferences = ({
+  collectionId,
+  preferences,
+}: SetCollectionPreferencesArgs) => {
+  const layout = preferences.layout
+    ? sql`layout = ${preferences.layout}`
+    : EMPTY;
+  const filter = preferences.filter
+    ? sql`"filter" = ${preferences.filter}`
+    : EMPTY;
+  const grouping = preferences.grouping
+    ? sql`"grouping" = ${preferences.grouping}`
+    : EMPTY;
+
   return sql`
 UPDATE
   collections
 SET
-  layout = ${layout}
+  ${layout} ${filter} ${grouping}
+WHERE
+  id = ${collectionId}
+`;
+};
+
+export const updateCollectionETag = (collectionId: ID, etag: string) => {
+  return sql`
+UPDATE
+  collections
+SET
+  etag = ${etag}
 WHERE
   id = ${collectionId}
 `;

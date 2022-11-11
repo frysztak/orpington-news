@@ -37,5 +37,27 @@ sizes.forEach((size) => {
       cy.wait('@apiAuthRegister').its('response.statusCode').should('eq', 200);
       cy.url().should('include', '/login');
     });
+
+    it('shows error when username is already used', () => {
+      cy.signupByApi('end2end', 'end2endpass', 'E2E').loginByApi(
+        'end2end',
+        'end2endpass'
+      );
+
+      cy.intercept({
+        method: 'POST',
+        url: getApiPath('/auth/register'),
+      }).as('apiAuthRegister');
+
+      cy.visit('/signup');
+      cy.getBySel('username').type('end2end');
+      cy.getBySel('displayName').type('E2E');
+      cy.getBySel('password').type('end2endpass');
+      cy.getBySel('passwordConfirm').type('end2endpass');
+      cy.getBySel('submit').click();
+
+      cy.wait('@apiAuthRegister').its('response.statusCode').should('eq', 500);
+      cy.url().should('include', '/signup');
+    });
   });
 });

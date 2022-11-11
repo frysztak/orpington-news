@@ -1,37 +1,31 @@
-import { CollectionLayout, ID } from '@orpington-news/shared';
 import { useCallback } from 'react';
-import { useSetActiveView } from './queries';
-
-type SetActiveCollectionData =
-  | {
-      id: 'home';
-    }
-  | {
-      id: ID;
-      title: string;
-      layout: CollectionLayout;
-    };
+import { useGetUserHomeId } from '@features/Auth';
+import { usePutActiveCollection } from './queries';
+import { useCollectionById } from '@features/Collections';
 
 export const useSetActiveCollection = () => {
-  const { mutate: setActiveView } = useSetActiveView();
-  const setActiveCollection = useCallback(
-    (data: SetActiveCollectionData) => {
-      setActiveView(
-        data.id === 'home'
-          ? {
-              activeView: 'home',
-              activeCollectionTitle: 'Home',
-            }
-          : {
-              activeView: 'collection',
-              activeCollectionId: data.id,
-              activeCollectionTitle: data.title,
-              activeCollectionLayout: data.layout,
-            }
-      );
-    },
-    [setActiveView]
-  );
+  const { mutate } = usePutActiveCollection();
+  const homeId = useGetUserHomeId();
+  const { data: homeCollection } = useCollectionById(homeId);
 
-  return { setActiveCollection };
+  const setHomeCollection = useCallback(() => {
+    if (homeId === undefined) {
+      console.error(`setHomeCollection without homeId!`);
+      return;
+    }
+    if (!homeCollection) {
+      console.error(`setHomeCollection without homeCollection!`);
+      return;
+    }
+
+    mutate({
+      activeCollectionId: homeId,
+      activeCollectionTitle: homeCollection.title,
+      activeCollectionLayout: homeCollection.layout!,
+      activeCollectionFilter: homeCollection.filter!,
+      activeCollectionGrouping: homeCollection.grouping!,
+    });
+  }, [homeCollection, homeId, mutate]);
+
+  return { setActiveCollection: mutate, setHomeCollection };
 };

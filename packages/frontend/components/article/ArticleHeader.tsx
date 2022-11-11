@@ -6,7 +6,6 @@ import {
   Heading,
   HStack,
   IconButton,
-  Text,
   Link,
   VStack,
   Menu,
@@ -16,24 +15,29 @@ import {
   MenuOptionGroup,
   MenuItemOption,
   MenuDivider,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
 import {
   ArticleWidth,
-  CollectionItemDetails,
+  CollectionItem,
   defaultArticleWidth,
 } from '@orpington-news/shared';
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
-import { CgCalendar } from '@react-icons/all-files/cg/CgCalendar';
-import { CgTime } from '@react-icons/all-files/cg/CgTime';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
 import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
+import {
+  NewspaperIcon,
+  CalendarDaysIcon,
+  ClockIcon,
+} from '@heroicons/react/24/outline';
 import { format, fromUnixTime } from 'date-fns';
 
 export type ArticleMenuAction = 'markAsUnread';
 
 export interface ArticleHeaderProps {
-  article: CollectionItemDetails;
+  article: CollectionItem;
   articleWidth?: ArticleWidth;
 
   disableActionButtons?: boolean;
@@ -52,6 +56,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
       dateRead,
       readingTime,
       onReadingList,
+      collection: { title: collectionTitle },
     },
     articleWidth,
 
@@ -80,6 +85,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           onClick={onGoBackClicked}
           isDisabled={disableActionButtons}
           display={{ base: 'inline-flex', lg: 'none' }}
+          data-test="goBack"
         />
 
         <IconButton
@@ -151,22 +157,31 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
         >
           {title}
         </Heading>
-        <Box
+
+        <Wrap
+          color="gray.500"
           fontFamily="var(--article-font-family)"
           fontSize="calc(1rem * var(--article-font-size-scale))"
         >
-          <Text color="gray.500" as={HStack}>
-            <Icon as={CgCalendar} mr={1} />
-            <>
-              published on{' '}
-              {format(fromUnixTime(datePublished), 'dd/MM/yyyy (EEE)')}
-            </>
-          </Text>
-          <Text color="gray.500" as={HStack}>
-            <Icon as={CgTime} mr={1} />
-            <>estimated reading time {Math.ceil(readingTime)} minutes</>
-          </Text>
-        </Box>
+          <WrapItem display="flex" alignItems="center">
+            <Icon as={NewspaperIcon} mr={1} />
+            <span title="Collection">{collectionTitle}</span>
+          </WrapItem>
+
+          <WrapItem display="flex" alignItems="center">
+            <Icon as={CalendarDaysIcon} mr={1} />
+            <span title="Published on">
+              {format(fromUnixTime(datePublished), 'dd/MM/yyyy')}
+            </span>
+          </WrapItem>
+
+          <WrapItem display="flex" alignItems="center">
+            <Icon as={ClockIcon} mr={1} />
+            <span title="Estimated reading time">
+              {Math.ceil(readingTime)}m
+            </span>
+          </WrapItem>
+        </Wrap>
 
         <Divider pt={3} />
       </VStack>

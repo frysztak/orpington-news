@@ -6,13 +6,16 @@ import {
 import { useActiveCollection } from '@features/Preferences';
 import { CollectionList } from '@components/collection/list';
 import { ClientRender } from '@utils';
+import { ID } from '@orpington-news/shared';
 
-interface CollectionItemsListProps {}
+interface CollectionItemsListProps {
+  activeArticleId?: ID;
+}
 
 export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
   props
 ) => {
-  const {} = props;
+  const { activeArticleId } = props;
 
   const activeCollection = useActiveCollection();
   const {
@@ -21,16 +24,13 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
     isLoading,
     hasNextPage,
     allItems,
-  } = useCollectionItems(activeCollection?.id);
+  } = useCollectionItems(activeCollection?.id, activeCollection?.filter);
 
   const { mutate: refreshCollection, isLoading: isRefreshing } =
     useRefreshCollection();
   const handleRefreshClick = useCallback(() => {
     if (activeCollection) {
       const collectionId = activeCollection.id;
-      if (typeof collectionId === 'string' && collectionId !== 'home') {
-        return;
-      }
 
       refreshCollection({ id: collectionId });
     } else {
@@ -49,10 +49,11 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
         h="full"
         isLoading={isLoading}
         isFetchingMoreItems={isFetchingNextPage}
-        onFetchMoreItems={fetchNextPage}
+        onFetchMoreItems={() => fetchNextPage({ cancelRefetch: false })}
         canFetchMoreItems={hasNextPage}
         isRefreshing={isRefreshing}
         onRefresh={handleRefreshClick}
+        activeArticleId={activeArticleId}
       />
     </ClientRender>
   );

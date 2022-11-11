@@ -41,7 +41,7 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
           flexGrow={1}
           sidebar={<Sidebar />}
           collectionItemHeader={<CollectionItemsHeader />}
-          collectionItemList={<CollectionItemsList />}
+          collectionItemList={<CollectionItemsList activeArticleId={itemId} />}
           mainContent={
             articlePage && (
               <Article

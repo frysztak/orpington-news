@@ -1,10 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getItemDetails, setDateRead, useApi, useHandleError } from '@api';
-import {
-  CollectionItem,
-  CollectionItemDetails,
-  ID,
-} from '@orpington-news/shared';
+import { CollectionItem, ID } from '@orpington-news/shared';
 import { collectionKeys } from '@features';
 import { useActiveCollection } from '@features/Preferences';
 import { mutatePageData } from '@utils';
@@ -32,7 +28,7 @@ export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
         // Optimistically update article
         await queryClient.cancelQueries(detailKey);
         const previousDetails = queryClient.getQueryData<
-          CollectionItemDetails | undefined
+          CollectionItem | undefined
         >(detailKey);
         if (previousDetails) {
           queryClient.setQueryData(detailKey, {
@@ -43,13 +39,15 @@ export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
 
         // Optimistically update active list
         const activeListKey =
-          activeCollection && collectionKeys.list(activeCollection.id);
+          activeCollection && collectionKeys.lists(activeCollection.id);
         const previousList =
-          activeListKey && queryClient.getQueryData(activeListKey);
+          activeListKey && queryClient.getQueriesData(activeListKey);
 
         if (activeCollection) {
-          queryClient.setQueryData(
-            collectionKeys.list(activeCollection.id),
+          queryClient.setQueriesData(
+            {
+              queryKey: collectionKeys.lists(activeCollection.id),
+            },
             mutatePageData<CollectionItem>((item) =>
               item.id === itemId
                 ? {
@@ -73,12 +71,6 @@ export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
         }
       },
       onSettled: () => {
-        queryClient.invalidateQueries(collectionKeys.allForId(collectionId!));
-        if (activeCollection) {
-          queryClient.invalidateQueries(
-            collectionKeys.allForId(activeCollection.id)
-          );
-        }
         queryClient.invalidateQueries(collectionKeys.tree);
       },
     }
@@ -89,7 +81,7 @@ export const useArticleDetails = (
   collectionId?: ID,
   itemId?: ID,
   options?: {
-    onSuccess: (data: CollectionItemDetails) => void;
+    onSuccess: (data: CollectionItem) => void;
   }
 ) => {
   const api = useApi();

@@ -6,6 +6,10 @@ declare namespace Cypress {
       dataTestAttribute: string,
       args?: any
     ): Chainable<JQuery<HTMLElement>>;
+    getBySelVisible(
+      dataTestAttribute: string,
+      args?: any
+    ): Chainable<JQuery<HTMLElement>>;
 
     getBySelLike(
       dataTestPrefixAttribute: string,
@@ -14,6 +18,8 @@ declare namespace Cypress {
 
     openDrawerIfExists(): Chainable<JQuery<HTMLElement>>;
     closeDrawerIfExists(): Chainable<JQuery<HTMLElement>>;
+    waitForDrawerToClose(): Chainable<JQuery<HTMLElement>>;
+
     getReadItems(): Chainable<JQuery<HTMLElement>>;
     getUnreadItems(): Chainable<JQuery<HTMLElement>>;
 
@@ -28,6 +34,10 @@ declare namespace Cypress {
     ): Chainable<JQuery<HTMLElement>>;
 
     clickCollectionHeaderLayout(layout: string): Chainable<JQuery<HTMLElement>>;
+
+    clickGoBackIfExists(): Chainable<JQuery<HTMLElement>>;
+
+    changeActiveCollection(id: string): Chainable<JQuery<HTMLElement>>;
 
     /**
      * Signs user up by using API request
@@ -56,9 +66,21 @@ declare namespace Cypress {
       layout?: string;
     }): Chainable<Response<void>>;
 
-    //       login(email: string, password: string): Chainable<void>
-    //       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-    //       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-    //       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
+    /**
+     * Change date read by API
+     */
+    putDateReadByApi(data: {
+      collectionId: number;
+      articleId: number;
+      dateRead: number | null;
+    }): Chainable<Response<void>>;
+
+    /**
+     * Change collection preferences by API
+     */
+    putCollectionPreferencesByApi(data: {
+      collectionId: number;
+      preferences: object;
+    }): Chainable<Response<void>>;
   }
 }

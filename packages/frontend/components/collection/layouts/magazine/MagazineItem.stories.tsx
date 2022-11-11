@@ -42,3 +42,11 @@ Read.args = {
     dateRead: 666,
   },
 };
+
+export const Active = Template.bind({});
+Active.args = {
+  item: {
+    ...sampleItem,
+  },
+  isActive: true,
+};

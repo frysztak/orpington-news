@@ -47,6 +47,7 @@ export const CollectionIconPicker: React.FC<CollectionIconPickerProps> = (
                   <Icon as={getCollectionIcon(icon)} fill={fill} w={6} h={6} />
                 }
                 onClick={handleOnClick(icon)}
+                data-test={`collectionIcon-${icon}`}
               />
             </Tooltip>
           </WrapItem>

@@ -6,7 +6,7 @@ import {
   DraggableCollections,
   DraggableCollectionsProps,
 } from './DraggableCollections';
-import { sampleFlatCollections } from '../../components/collection/sampleData';
+import { sampleCollections } from '../../components/collection/sampleData';
 
 export default {
   title: 'Features/OrganizeCollections/DraggableCollections',
@@ -29,14 +29,14 @@ Empty.args = {
 export const SomeFeeds = Template.bind({});
 SomeFeeds.args = {
   ...Empty.args,
-  collections: sampleFlatCollections,
+  collections: sampleCollections,
   expandedCollectionIDs: new Set([3]),
 };
 
 export const RootDropLocationForbidden = Template.bind({});
 RootDropLocationForbidden.args = {
   ...Empty.args,
-  collections: sampleFlatCollections,
+  collections: sampleCollections,
   expandedCollectionIDs: new Set([3]),
   hoverStatus: {
     status: 'dropLocationForbidden',
@@ -58,7 +58,7 @@ DeepDropLocationForbidden.args = {
 export const RootDropLocationChild = Template.bind({});
 RootDropLocationChild.args = {
   ...Empty.args,
-  collections: sampleFlatCollections,
+  collections: sampleCollections,
   expandedCollectionIDs: new Set([3]),
   hoverStatus: {
     status: 'dropLocationAllowed',
@@ -80,7 +80,7 @@ DeepDropLocationChild.args = {
 export const RootDropLocationBelow = Template.bind({});
 RootDropLocationBelow.args = {
   ...Empty.args,
-  collections: sampleFlatCollections,
+  collections: sampleCollections,
   expandedCollectionIDs: new Set([3]),
   hoverStatus: {
     status: 'dropLocationAllowed',
@@ -102,7 +102,7 @@ DeepDropLocationBelow.args = {
 export const RootDropLocationBelowParent = Template.bind({});
 RootDropLocationBelowParent.args = {
   ...Empty.args,
-  collections: sampleFlatCollections,
+  collections: sampleCollections,
   expandedCollectionIDs: new Set([3]),
   hoverStatus: {
     status: 'dropLocationAllowed',

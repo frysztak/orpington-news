@@ -1,7 +1,6 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { faker } from '@faker-js/faker';
 import { CardItem, CardItemProps } from './CardItem';
 import {
   generateSampleCollection,
@@ -27,18 +26,18 @@ Default.args = {
   onReadingListButtonClicked: action('onReadingListButtonClicked'),
 };
 
-export const WithImage = Template.bind({});
-WithImage.args = {
-  item: {
-    ...sampleItem,
-    thumbnailUrl: faker.image.cats(),
-  },
-};
-
 export const Read = Template.bind({});
 Read.args = {
   item: {
     ...sampleItem,
     dateRead: 666,
   },
+};
+
+export const Active = Template.bind({});
+Active.args = {
+  item: {
+    ...sampleItem,
+  },
+  isActive: true,
 };

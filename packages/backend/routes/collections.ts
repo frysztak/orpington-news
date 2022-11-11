@@ -7,23 +7,20 @@ import {
   addCollection,
   DBCollection,
   deleteCollections,
-  getAllCollectionIds,
   getCollectionById,
   getCollectionChildrenIds,
   getCollectionOwner,
   getCollections,
   getCollectionsFromRootId,
-  getCollectionsWithUrl,
   hasCollectionWithUrl,
   markCollectionAsRead,
   moveCollections,
   recalculateCollectionsOrder,
-  setCollectionLayout,
+  setCollectionPreferences,
   updateCollection,
 } from '@db/collections';
 import {
   DBCollectionItemWithoutText,
-  getAllCollectionItems,
   getCollectionItems,
   getItemDetails,
   setItemDateRead,
@@ -32,19 +29,22 @@ import {
   getPreferences,
   modifyExpandedCollections,
   pruneExpandedCollections,
-  setActiveView,
-  setHomeCollectionLayout,
+  setActiveCollection,
 } from '@db/preferences';
-import { addPagination, PaginationParams, PaginationSchema } from '@db/common';
+import { addPagination, PaginationSchema } from '@db/common';
 import {
   Collection,
-  FlatCollection,
   CollectionLayout,
   defaultCollectionLayout,
   ID,
-  CollectionId,
-  HomeCollectionId,
   numeric,
+  UpdateCollection,
+  AddCollection,
+  CollectionId,
+  CollectionFilter,
+  defaultCollectionFilter,
+  defaultCollectionGrouping,
+  CollectionGrouping,
 } from '@orpington-news/shared';
 import { MAX_INT, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
@@ -56,21 +56,12 @@ import {
   extractFeedUrl,
 } from '@tasks/fetchRSS';
 import { importOPML } from '@services/opml';
+import { none } from 'rambda';
+import { getUser } from '@db/users';
 
-const PostCollection = Collection.pick({
-  title: true,
-  icon: true,
-  parentId: true,
-  description: true,
-  url: true,
-  refreshInterval: true,
+const PostCollection = AddCollection.omit({
+  layout: true,
 });
-
-const PutCollection = PostCollection.merge(
-  z.object({
-    id: ID,
-  })
-);
 
 const MoveCollection = z.object({
   collectionId: ID,
@@ -78,13 +69,12 @@ const MoveCollection = z.object({
   newOrder: z.number(),
 });
 
-const ItemDetailsParams = HomeCollectionId.merge(
-  z.object({
-    itemId: numeric(ID),
-  })
-);
+const ItemDetailsParams = z.object({
+  id: numeric(ID),
+  itemId: numeric(ID),
+});
 
-const mapDBCollection = (collection: DBCollection): FlatCollection => {
+const mapDBCollection = (collection: DBCollection): Collection => {
   const {
     date_updated,
     refresh_interval,
@@ -95,15 +85,25 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
     parent_id,
     parent_order,
     is_last_child,
+    filter,
+    grouping,
+    sort_by,
+    is_home,
+    description,
     ...rest
   } = collection;
 
   return {
     ...rest,
+    description: description ?? undefined,
     dateUpdated: date_updated,
     refreshInterval: refresh_interval,
     unreadCount: unread_count ?? 0,
     layout: layout ?? defaultCollectionLayout,
+    filter: filter ?? defaultCollectionFilter,
+    grouping: grouping ?? defaultCollectionGrouping,
+    sortBy: sort_by ?? 'ee',
+    isHome: is_home,
     parents,
     parentId: parent_id ?? undefined,
     parentOrder: parent_order ?? undefined,
@@ -112,9 +112,7 @@ const mapDBCollection = (collection: DBCollection): FlatCollection => {
   };
 };
 
-const calculateUnreadCount = (
-  collections: FlatCollection[]
-): FlatCollection[] => {
+const calculateUnreadCount = (collections: Collection[]): Collection[] => {
   const lut = new Map<ID, number>(
     collections.map(({ id, unreadCount }) => [id, unreadCount])
   );
@@ -137,7 +135,7 @@ const queryCollections = async (userId: ID) => {
 };
 
 const verifyCollectionOwner = async (
-  request: FastifyRequest<{ Params: z.infer<typeof HomeCollectionId> }>,
+  request: FastifyRequest<{ Params: z.infer<typeof CollectionId> }>,
   reply: FastifyReply
 ) => {
   const {
@@ -145,11 +143,9 @@ const verifyCollectionOwner = async (
     session: { userId },
   } = request;
 
-  if (typeof id === 'number') {
-    const owner = await pool.maybeOne(getCollectionOwner(id));
-    if (owner !== null && owner.userId !== userId) {
-      reply.status(403).send({ errorCode: 403, message: 'Access forbidden.' });
-    }
+  const owner = await pool.maybeOne(getCollectionOwner(id));
+  if (owner !== null && owner.userId !== userId) {
+    reply.status(403).send({ errorCode: 403, message: 'Access forbidden.' });
   }
 };
 
@@ -159,7 +155,7 @@ export const collections: FastifyPluginAsync = async (
 ): Promise<void> => {
   fastify.addHook('preHandler', fastify.auth([fastify.verifySession]));
 
-  fastify.get<{ Reply: Array<FlatCollection> }>(
+  fastify.get<{ Reply: Array<Collection> }>(
     '/',
     {
       schema: {
@@ -176,7 +172,7 @@ export const collections: FastifyPluginAsync = async (
 
   fastify.post<{
     Body: z.infer<typeof PostCollection>;
-    Reply: Array<FlatCollection>;
+    Reply: Array<Collection>;
   }>(
     '/',
     {
@@ -190,13 +186,18 @@ export const collections: FastifyPluginAsync = async (
         body,
         session: { userId },
       } = request;
-      const preferences = await pool.one(getPreferences(userId));
+      const { defaultCollectionLayout } = await pool.one(
+        getPreferences(userId)
+      );
+      const { homeId } = await pool.one(getUser(userId));
+
       await pool.transaction(async (conn) => {
         await conn.any(
           addCollection(
             {
               ...body,
-              layout: preferences.defaultCollectionLayout,
+              parentId: body.parentId ?? homeId,
+              layout: defaultCollectionLayout,
             },
             userId
           )
@@ -218,7 +219,7 @@ export const collections: FastifyPluginAsync = async (
 
   fastify.post<{
     Body: z.infer<typeof MoveCollection>;
-    Reply: Array<FlatCollection>;
+    Reply: Array<Collection>;
   }>(
     '/move',
     {
@@ -240,11 +241,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.put<{ Body: z.infer<typeof PutCollection> }>(
+  fastify.put<{ Body: UpdateCollection }>(
     '/',
     {
       schema: {
-        body: PutCollection,
+        body: UpdateCollection,
         tags: ['Collections'],
       },
     },
@@ -284,11 +285,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.delete<{ Params: z.infer<typeof HomeCollectionId> }>(
+  fastify.delete<{ Params: z.infer<typeof CollectionId> }>(
     '/:id',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -299,11 +300,6 @@ export const collections: FastifyPluginAsync = async (
         session: { userId },
       } = request;
 
-      if (id === 'home') {
-        reply.status(500);
-        return { errorCode: 500, message: 'Cannot DELETE home collection' };
-      }
-
       const [idsToDelete, preferences] = await Promise.all([
         pool
           .many(getCollectionChildrenIds(id))
@@ -312,20 +308,14 @@ export const collections: FastifyPluginAsync = async (
         pool.one(getPreferences(userId)),
       ]);
 
-      const deletingCurrentlyActiveCollection =
-        preferences.activeView === 'collection' &&
-        idsToDelete.includes(preferences.activeCollectionId!);
+      const deletingCurrentlyActiveCollection = idsToDelete.includes(
+        preferences.activeCollectionId
+      );
 
       const deletedIds = await pool.transaction(async (conn) => {
         if (deletingCurrentlyActiveCollection) {
-          await conn.query(
-            setActiveView(
-              {
-                activeView: 'home',
-              },
-              userId
-            )
-          );
+          const { homeId } = await conn.one(getUser(userId));
+          await conn.query(setActiveCollection(homeId, userId));
         }
 
         const deletedIds = await conn.any(deleteCollections(idsToDelete));
@@ -342,11 +332,11 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  fastify.post<{ Params: z.infer<typeof HomeCollectionId> }>(
+  fastify.post<{ Params: z.infer<typeof CollectionId> }>(
     '/:id/markAsRead',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -360,18 +350,9 @@ export const collections: FastifyPluginAsync = async (
       const timestamp = getUnixTime(new Date());
 
       await pool.any(
-        markCollectionAsRead(
-          id === 'home'
-            ? getAllCollectionIds(userId)
-            : getCollectionChildrenIds(id),
-          timestamp
-        )
+        markCollectionAsRead(getCollectionChildrenIds(id), timestamp)
       );
-      const children = await pool.any(
-        id === 'home'
-          ? getAllCollectionIds(userId)
-          : getCollectionChildrenIds(id)
-      );
+      const children = await pool.any(getCollectionChildrenIds(id));
 
       const ids = children.map(({ id }) => id);
       const collections = await queryCollections(userId);
@@ -379,15 +360,20 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
+  const GetItemsParams = PaginationSchema.merge(
+    z.object({
+      filter: CollectionFilter.optional(),
+    })
+  );
   fastify.get<{
-    Params: z.infer<typeof HomeCollectionId>;
-    Querystring: PaginationParams;
+    Params: z.infer<typeof CollectionId>;
+    Querystring: z.infer<typeof GetItemsParams>;
   }>(
     '/:id/items',
     {
       schema: {
-        params: HomeCollectionId,
-        querystring: PaginationSchema,
+        params: CollectionId,
+        querystring: GetItemsParams,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -395,14 +381,17 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         params: { id },
-        query: pagination,
+        query: { pageIndex, pageSize, filter = 'all' },
         session: { userId },
       } = request;
-      console.log(id);
-      const itemsQuery =
-        id === 'home' ? getAllCollectionItems(userId) : getCollectionItems(id);
+
+      const itemsQuery = getCollectionItems({
+        userId,
+        collectionId: id,
+        filter,
+      });
       const items = (await pool.any(
-        addPagination(pagination, itemsQuery)
+        addPagination({ pageIndex, pageSize }, itemsQuery)
       )) as readonly DBCollectionItemWithoutText[];
 
       return items.map((dbItem) => ({
@@ -439,12 +428,9 @@ export const collections: FastifyPluginAsync = async (
       preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
-      const { params } = request;
-      const { id, itemId } = params;
-      // TODO
-      if (id === 'home') {
-        return;
-      }
+      const {
+        params: { id, itemId },
+      } = request;
 
       try {
         const details = await pool.one(getItemDetails(id, itemId));
@@ -458,6 +444,8 @@ export const collections: FastifyPluginAsync = async (
           thumbnail_url,
           reading_time,
           collection_id,
+          collection_title,
+          collection_icon,
           ...rest
         } = details;
 
@@ -471,6 +459,11 @@ export const collections: FastifyPluginAsync = async (
           dateUpdated: timestampMsToSeconds(date_updated),
           thumbnailUrl: thumbnail_url,
           readingTime: reading_time,
+          collection: {
+            id: collection_id,
+            title: collection_title,
+            icon: collection_icon,
+          },
         };
       } catch (error) {
         if (error instanceof NotFoundError) {
@@ -484,6 +477,9 @@ export const collections: FastifyPluginAsync = async (
           logger.error(
             'There is more than one row matching the select criteria.'
           );
+          reply.status(500).send({ errorCode: 500, message: 'Server error.' });
+        } else {
+          logger.error(error);
           reply.status(500).send({ errorCode: 500, message: 'Server error.' });
         }
       }
@@ -512,21 +508,16 @@ export const collections: FastifyPluginAsync = async (
         body: { dateRead },
       } = request;
 
-      // TODO
-      if (id === 'home') {
-        return;
-      }
-
       await pool.any(setItemDateRead(id, itemId, dateRead));
       return true;
     }
   );
 
-  fastify.post<{ Params: z.infer<typeof HomeCollectionId> }>(
+  fastify.post<{ Params: z.infer<typeof CollectionId> }>(
     '/:id/refresh',
     {
       schema: {
-        params: HomeCollectionId,
+        params: CollectionId,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
@@ -536,19 +527,12 @@ export const collections: FastifyPluginAsync = async (
         params: { id },
       } = request;
 
-      const collections = await pool.any(
-        id === 'home' ? getCollectionsWithUrl() : getCollectionsFromRootId(id)
-      );
+      const collections = await pool.any(getCollectionsFromRootId(id));
       const result = await updateCollections(collections);
 
       if (result) {
-        if (id === 'home') {
-          const children = await pool.any(getCollectionsWithUrl());
-          return { ids: children.map(({ id }) => id) };
-        } else {
-          const children = await pool.any(getCollectionChildrenIds(id));
-          return { ids: children.map(({ id }) => id) };
-        }
+        const children = await pool.any(getCollectionChildrenIds(id));
+        return { ids: children.map(({ id }) => id) };
       } else {
         const noun = collections.length > 1 ? 'Feeds' : 'Feed';
         reply
@@ -558,35 +542,38 @@ export const collections: FastifyPluginAsync = async (
     }
   );
 
-  const LayoutBody = z.object({
-    layout: CollectionLayout,
+  const PreferencesBody = z.object({
+    layout: CollectionLayout.optional(),
+    filter: CollectionFilter.optional(),
+    grouping: CollectionGrouping.optional(),
   });
 
   fastify.put<{
-    Params: z.infer<typeof HomeCollectionId>;
-    Body: z.infer<typeof LayoutBody>;
+    Params: z.infer<typeof CollectionId>;
+    Body: z.infer<typeof PreferencesBody>;
   }>(
-    '/:id/layout',
+    '/:id/preferences',
     {
       schema: {
-        params: HomeCollectionId,
-        body: LayoutBody,
+        params: CollectionId,
+        body: PreferencesBody,
         tags: ['Collections'],
       },
       preHandler: verifyCollectionOwner,
     },
     async (request, reply) => {
       const {
-        body: { layout },
+        body: preferences,
         params: { id },
-        session: { userId },
       } = request;
 
-      if (typeof id === 'number') {
-        await pool.query(setCollectionLayout(id, layout));
-      } else if (id === 'home') {
-        await pool.query(setHomeCollectionLayout(layout, userId));
+      if (none(Boolean, Object.values(preferences))) {
+        return true;
       }
+
+      await pool.query(
+        setCollectionPreferences({ collectionId: id, preferences })
+      );
 
       return true;
     }

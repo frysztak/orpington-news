@@ -97,7 +97,7 @@ export const AddModal: React.FC = () => {
       onVerifyUrlClicked={onVerifyUrlClicked}
       areCollectionsLoading={areCollectionsLoading}
       collections={emptyIfUndefined(collections)}
-      isLoading={isVerifying || isSaving}
+      isLoading={isVerifying || isSaving || isEditing}
       onSubmit={state.editedFeedId ? editCollection : saveCollection}
     />
   );

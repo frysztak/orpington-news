@@ -21,14 +21,14 @@ export type SidebarContentProps = Omit<
   CollectionsProps,
   'activeCollectionId'
 > & {
-  activeCollectionId?: ID | 'home';
+  activeCollectionId?: ID;
   onMenuItemClicked: (menuAction: MenuItem) => void;
   footer?: JSX.Element;
 };
 
 export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
   const { onMenuItemClicked, footer, ...collectionsProps } = props;
-  const { activeCollectionId } = collectionsProps;
+  const { activeCollectionId, homeCollectionId } = collectionsProps;
 
   const handleClick = useCallback(
     (menuAction: MenuItem) => () => {
@@ -57,7 +57,7 @@ export const SidebarContent: React.FC<SidebarContentProps> = (props) => {
       <SidebarItem
         title="Home"
         icon={AiOutlineHome}
-        isActive={activeCollectionId === 'home'}
+        isActive={activeCollectionId === homeCollectionId}
         onClick={handleClick('home')}
       />
 

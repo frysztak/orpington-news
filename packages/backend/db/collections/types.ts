@@ -7,7 +7,7 @@ export type RootCollection = Omit<
   children?: Array<RootCollection>;
 };
 
-export type FlatCollectionItem = {
+export type CollectionItem = {
   title: string;
   icon: string;
   order: number;

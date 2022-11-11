@@ -1,5 +1,5 @@
 import Parser from 'rss-parser';
-import fetch from 'node-fetch';
+import fetch, { Headers } from 'node-fetch';
 import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { Static, Type } from '@sinclair/typebox';
@@ -56,8 +56,29 @@ export const detectXMLEncoding = (xml: ArrayBuffer): string => {
   return encoding?.[1] ?? 'UTF-8';
 };
 
-export const fetchFeed = async (feedUrl: string) => {
-  const response = await fetch(feedUrl);
+export type FetchFeedResult =
+  | {
+      status: 'fetched';
+      data: Awaited<ReturnType<typeof parser.parseString>>;
+      etag?: string;
+    }
+  | { status: 'notModified' };
+
+export const fetchFeed = async (
+  feedUrl: string,
+  etag?: string | null
+): Promise<FetchFeedResult> => {
+  const headers = new Headers();
+  if (etag) {
+    headers.append('If-None-Match', etag);
+  }
+  const response = await fetch(feedUrl, {
+    headers,
+  });
+
+  if (response.status === 304) {
+    return { status: 'notModified' };
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -68,7 +89,11 @@ export const fetchFeed = async (feedUrl: string) => {
   const arrayBuffer = await response.arrayBuffer();
   const encoding = detectXMLEncoding(arrayBuffer);
   const decoder = new TextDecoder(encoding);
-  return parser.parseString(decoder.decode(arrayBuffer));
+  return {
+    status: 'fetched',
+    data: await parser.parseString(decoder.decode(arrayBuffer)),
+    etag: response.headers.get('ETag') ?? undefined,
+  };
 };
 
 export const mapFeedItems = (

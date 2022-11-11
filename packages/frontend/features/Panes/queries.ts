@@ -11,11 +11,8 @@ import {
 import type { AddCollectionFormData } from '@components/collection/add';
 import { useSetActiveCollection } from '@features/Preferences';
 import { collectionKeys, preferencesKeys } from '@features/queryKeys';
-import {
-  defaultRefreshInterval,
-  FlatCollection,
-  ID,
-} from '@orpington-news/shared';
+import { useGetUserHomeId } from '@features/Auth';
+import { defaultRefreshInterval, Collection, ID } from '@orpington-news/shared';
 
 export const useVerifyFeedURL = () => {
   const api = useApi();
@@ -33,6 +30,7 @@ export const useSaveCollection = ({
 }) => {
   const api = useApi();
   const { onError } = useHandleError();
+  const homeId = useGetUserHomeId();
 
   const queryClient = useQueryClient();
 
@@ -43,12 +41,12 @@ export const useSaveCollection = ({
         url: data.url?.length === 0 ? undefined : data.url,
         description: data.description,
         icon: data.icon,
-        parentId: data.parentId,
+        parentId: data.parentId ?? homeId,
         refreshInterval: data.refreshInterval ?? defaultRefreshInterval,
       }),
     {
       onError,
-      onSuccess: (data: FlatCollection[], formData: AddCollectionFormData) => {
+      onSuccess: (data: Collection[], formData: AddCollectionFormData) => {
         onSuccess?.();
         queryClient.setQueryData(collectionKeys.tree, data);
 
@@ -71,6 +69,7 @@ export const useEditCollection = ({
 }) => {
   const api = useApi();
   const { onError } = useHandleError();
+  const homeId = useGetUserHomeId();
 
   const queryClient = useQueryClient();
 
@@ -82,12 +81,12 @@ export const useEditCollection = ({
         url: data.url?.length === 0 ? undefined : data.url,
         description: data.description,
         icon: data.icon,
-        parentId: data.parentId,
+        parentId: data.parentId ?? homeId,
         refreshInterval: data.refreshInterval ?? defaultRefreshInterval,
       }),
     {
       onError,
-      onSuccess: (data: FlatCollection[], formData: AddCollectionFormData) => {
+      onSuccess: (data: Collection[], formData: AddCollectionFormData) => {
         onSuccess?.();
         queryClient.setQueryData(collectionKeys.tree, data);
         queryClient.invalidateQueries(collectionKeys.allForId(id));
@@ -112,18 +111,23 @@ export const useDeleteCollection = ({
   const { onError } = useHandleError();
 
   const queryClient = useQueryClient();
-  const { setActiveCollection } = useSetActiveCollection();
+  const { setHomeCollection } = useSetActiveCollection();
+  const homeId = useGetUserHomeId();
 
   return useMutation(({ id }: { id: ID }) => deleteCollection(api, id), {
     onError,
     onSuccess: ({ ids, navigateHome }) => {
       onSuccess?.(ids);
-      queryClient.invalidateQueries(collectionKeys.tree);
+      queryClient.invalidateQueries({ queryKey: collectionKeys.tree });
+      if (homeId !== undefined) {
+        queryClient.invalidateQueries(collectionKeys.lists(homeId));
+      }
 
       if (navigateHome) {
-        setActiveCollection({ id: 'home' });
-        router.push('/');
-        queryClient.invalidateQueries(preferencesKeys.base);
+        router.push('/', '/', { shallow: true }).then(() => {
+          setHomeCollection();
+          queryClient.invalidateQueries(preferencesKeys.base);
+        });
       }
     },
   });

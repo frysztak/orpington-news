@@ -9,15 +9,25 @@ import {
   VStack,
   forwardRef,
   BoxProps,
+  useColorModeValue,
+  Icon,
+  chakra,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import { format, fromUnixTime } from 'date-fns';
+import { fromUnixTime } from 'date-fns';
+import {
+  CalendarDaysIcon,
+  ClockIcon,
+  NewspaperIcon,
+} from '@heroicons/react/24/solid';
+import { formatRelative } from '@utils';
+import { clamp } from 'rambda';
 import { CollectionItemProps } from '../../types';
 
 export type MagazineItemProps = CollectionItemProps & BoxProps;
 
 export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
-  const { item, ...rest } = props;
+  const { item, isActive, ...rest } = props;
   const {
     id,
     title,
@@ -28,11 +38,21 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
     dateRead,
     datePublished,
   } = item;
-  const readingTimeRounded = Math.ceil(readingTime);
+  const readingTimeRounded = clamp(1, 99, Math.ceil(readingTime));
+
+  const activeBorder = useColorModeValue('purple.300', 'gray.500');
 
   return (
-    <LinkBox as="article" ref={ref} {...rest}>
-      <HStack spacing={4} align="stretch">
+    <LinkBox as="article" ref={ref} py={2} pr={3} {...rest}>
+      <HStack
+        spacing={4}
+        p={2}
+        align="stretch"
+        borderWidth="1px"
+        borderRadius="md"
+        borderColor={isActive ? activeBorder : 'transparent'}
+        transition="border-color 0.2s"
+      >
         {thumbnailUrl && (
           <Image
             src={thumbnailUrl}
@@ -66,11 +86,24 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
           <Text noOfLines={[2, 3]} overflowWrap="anywhere">
             {summary}
           </Text>
-          <Text color="gray.500">
-            by {collection.title} •{' '}
-            {format(fromUnixTime(datePublished), 'dd/MM/yyyy')}
-            {readingTimeRounded > 0 && ` • about ${readingTimeRounded} min`}
-          </Text>
+          <HStack color="gray.500">
+            <HStack spacing={0}>
+              <Icon as={NewspaperIcon} mr={1} />
+              <Text noOfLines={1} wordBreak="break-all">
+                {collection.title}
+              </Text>
+            </HStack>
+
+            <HStack title="Published on" spacing={0} flexShrink={0}>
+              <Icon as={CalendarDaysIcon} mr={1} />
+              <span>{formatRelative(fromUnixTime(datePublished))}</span>
+            </HStack>
+
+            <HStack title="Estimated reading time" spacing={0}>
+              <Icon as={ClockIcon} mr={1} />
+              <chakra.span w="4ch">{`${readingTimeRounded}m`}</chakra.span>
+            </HStack>
+          </HStack>
         </VStack>
       </HStack>
     </LinkBox>

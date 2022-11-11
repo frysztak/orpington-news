@@ -9,7 +9,7 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/solid';
 import { Virtuoso } from 'react-virtuoso';
-import { ID, FlatCollection } from '@orpington-news/shared';
+import { ID, Collection } from '@orpington-news/shared';
 import { SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
 import { CollectionsSkeleton } from './CollectionsSkeleton';
@@ -18,16 +18,16 @@ import { filterVisibleCollections } from './filterVisibleCollections';
 export type CollectionMenuAction = 'markAsRead' | 'refresh' | 'edit' | 'delete';
 
 interface ItemContentProps {
-  collection: FlatCollection;
+  collection: Collection;
 
   activeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
   collectionsCurrentlyUpdated?: Set<ID>;
 
-  onCollectionClicked: (collection: FlatCollection) => void;
-  onChevronClicked: (collection: FlatCollection) => void;
+  onCollectionClicked: (collection: Collection) => void;
+  onChevronClicked: (collection: Collection) => void;
   onCollectionMenuActionClicked: (
-    collection: FlatCollection,
+    collection: Collection,
     action: CollectionMenuAction
   ) => void;
 }
@@ -72,7 +72,8 @@ const ItemContent: React.FC<ItemContentProps> = ({
       title={title}
       isActive={activeCollectionId === id}
       icon={icon}
-      level={level}
+      // subtract one because we're not showing home collection
+      level={level - 1}
       counter={unreadCount}
       isLoading={collectionsCurrentlyUpdated?.has(id) ?? false}
       chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
@@ -119,15 +120,16 @@ const ItemContent: React.FC<ItemContentProps> = ({
 export interface CollectionsProps {
   isLoading?: boolean;
   isError?: boolean;
-  collections: FlatCollection[];
+  collections: Collection[];
   activeCollectionId?: ID;
+  homeCollectionId?: ID;
   expandedCollectionIDs?: Array<ID>;
   collectionsCurrentlyUpdated?: Set<ID>;
 
-  onCollectionClicked: (collection: FlatCollection) => void;
-  onChevronClicked: (collection: FlatCollection) => void;
+  onCollectionClicked: (collection: Collection) => void;
+  onChevronClicked: (collection: Collection) => void;
   onCollectionMenuActionClicked: (
-    collection: FlatCollection,
+    collection: Collection,
     action: CollectionMenuAction
   ) => void;
 }
@@ -167,7 +169,8 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
             Failed to fetch feeds.
           </Text>
         </>
-      ) : collections.length === 0 ? (
+      ) : // don't count Home collection
+      collections.length <= 1 ? (
         <>
           <Icon
             as={InformationCircleIcon}
@@ -176,7 +179,7 @@ export const Collections: React.FC<CollectionsProps> = (props) => {
             mt={4}
             mb={2}
           />
-          <Text fontSize="xl" fontWeight="bold">
+          <Text fontSize="xl" fontWeight="bold" data-test="thereAreNoFeedsYet">
             There are no feeds yet.
           </Text>
         </>

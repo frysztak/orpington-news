@@ -12,7 +12,7 @@ export const addPagination = (
   paginationParams: PaginationParams,
   query: SqlSqlToken
 ) => {
-  const { pageIndex = 0, pageSize = 20 } = paginationParams;
+  const { pageIndex = 0, pageSize = 30 } = paginationParams;
   const offset = pageIndex * pageSize;
 
   return sql`${query} LIMIT ${pageSize} OFFSET ${offset}`;

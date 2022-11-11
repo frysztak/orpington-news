@@ -5,7 +5,6 @@ import {
   CollectionItem,
   defaultIcon,
   defaultRefreshInterval,
-  FlatCollection,
 } from '@orpington-news/shared';
 
 export const generateSampleCollectionItem = (
@@ -38,10 +37,10 @@ export const generateSampleCollection = (name?: string): Collection => {
     icon: defaultIcon,
     unreadCount: faker.datatype.number(),
     refreshInterval: defaultRefreshInterval,
-  };
+  } as Collection;
 };
 
-export const sampleFlatCollections: FlatCollection[] = [
+export const sampleCollections: Collection[] = [
   {
     id: 1,
     title: 'Feed 01',
@@ -53,6 +52,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     order: 0,
     orderPath: [0],
     isLastChild: false,
+    isHome: false,
   },
   {
     id: 2,
@@ -65,6 +65,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     order: 1,
     orderPath: [1],
     isLastChild: false,
+    isHome: false,
   },
   {
     id: 3,
@@ -77,6 +78,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     order: 2,
     orderPath: [2],
     isLastChild: false,
+    isHome: false,
   },
   {
     id: 301,
@@ -91,6 +93,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     order: 0,
     orderPath: [2, 0],
     isLastChild: false,
+    isHome: false,
   },
   {
     id: 302,
@@ -103,6 +106,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     order: 1,
     orderPath: [2, 1],
     isLastChild: true,
+    isHome: false,
   },
   {
     id: 30201,
@@ -115,6 +119,7 @@ export const sampleFlatCollections: FlatCollection[] = [
     order: 0,
     orderPath: [2, 1, 0],
     isLastChild: true,
+    isHome: false,
   },
   {
     id: 4,
@@ -127,5 +132,6 @@ export const sampleFlatCollections: FlatCollection[] = [
     order: 3,
     orderPath: [3],
     isLastChild: false,
+    isHome: false,
   },
 ];

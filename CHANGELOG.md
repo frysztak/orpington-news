@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2022-11-11
+
+### Added
+
+-   Collection filters (read, unread)
+-   Collection item list: highlight active article
+-   Collection item list: list layout
+-   Article view: updated header
+-   Add support for ETags, which significantly reduces collection refresh time
+
+### Changed
+
+-   Refactored how Home collection works internally
+-   Changed collection page size to 30
+
+### Fixed
+
+-   Fixed missing loading state in Edit Collection modal
+
 ## [0.7.4] - 2022-10-20
 
 ### Fixed
@@ -214,7 +233,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.7.4...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.8.0...HEAD
+
+[0.8.0]: https://github.com/frysztak/orpington-news/compare/0.7.4...0.8.0
 
 [0.7.4]: https://github.com/frysztak/orpington-news/compare/0.7.3...0.7.4
 

@@ -2,17 +2,17 @@ import React, { useMemo } from 'react';
 import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Box } from '@chakra-ui/react';
-import { FlatCollection } from '@orpington-news/shared';
+import { Collection } from '@orpington-news/shared';
 import { DraggableCollections } from './DraggableCollections';
 import { useDndHandler } from './useDndHandler';
-import { sampleFlatCollections } from '../../components/collection/sampleData';
+import { sampleCollections } from '../../components/collection/sampleData';
 
 interface UseDndHandlerWrapperProps {
-  flatCollections: FlatCollection[];
+  Collections: Collection[];
 }
 
 const UseDndHandlerWrapper: React.FC<UseDndHandlerWrapperProps> = (props) => {
-  const { flatCollections } = props;
+  const { Collections } = props;
 
   const {
     hoverStatus,
@@ -22,12 +22,12 @@ const UseDndHandlerWrapper: React.FC<UseDndHandlerWrapperProps> = (props) => {
     onChevronClicked,
   } = useDndHandler(
     useMemo(() => action('onDrop'), []),
-    flatCollections
+    Collections
   );
 
   return (
     <DraggableCollections
-      collections={flatCollections}
+      collections={Collections}
       hoverStatus={hoverStatus}
       expandedCollectionIDs={expandedCollections}
       parentsMap={parentsMap}
@@ -50,5 +50,5 @@ const Template: Story<UseDndHandlerWrapperProps> = (props) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  flatCollections: sampleFlatCollections,
+  Collections: sampleCollections,
 };

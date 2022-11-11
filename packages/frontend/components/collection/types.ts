@@ -1,7 +1,12 @@
-import { CollectionItem, CollectionLayout, ID } from '@orpington-news/shared';
+import {
+  CollectionItem,
+  CollectionLayout,
+  CollectionFilter,
+} from '@orpington-news/shared';
 
 export interface CollectionItemProps {
   item: CollectionItem;
+  isActive?: boolean;
 }
 
 export interface CollectionLayoutProps {
@@ -9,13 +14,14 @@ export interface CollectionLayoutProps {
   collectionItems: CollectionItem[];
 }
 
-export interface ActiveCollection {
-  id: ID | 'home';
-  title: string;
-  layout: CollectionLayout;
-}
-
 export const CollectionLayoutName: Record<CollectionLayout, string> = {
   magazine: 'Magazine',
   card: 'Card',
+  list: 'List',
+};
+
+export const CollectionFilterName: Record<CollectionFilter, string> = {
+  all: 'All',
+  read: 'Read',
+  unread: 'Unread',
 };

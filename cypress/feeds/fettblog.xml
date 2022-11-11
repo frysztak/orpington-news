@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>fettblog.eu | TypeScript, JavaScript, Jamstack</title>
+	<link href="https://fettblog.eu/feed.xml" rel="self" />
+	<link href="https://fettblog.eu/" />
+	<updated>2022-10-31T08:37:35.282Z</updated>
+	<id>https://fettblog.eu</id>
+	<author>
+		<name>Stefan Baumgartner</name>
+		<email>stefan@scriptconf.org</email>
+	</author>
+
+	<entry>
+		<title>TypeScript: Iterating over objects</title>
+		<link href="https://fettblog.eu/typescript-iterating-over-objects/" />
+		<updated>2022-05-11T00:00:00.000Z</updated>
+		<id>https://fettblog.eu/typescript-iterating-over-objects/</id>
+		>
+		<content type="html">&lt;p&gt;There is rarely a head-scratcher in TypeScript as prominent as trying to access an object property via iterating through its keys. This is a pattern that’s so common in JavaScript, yet TypeScript seems to through all the obstacles at you. This simple line:&lt;/p&gt;</content>
+	</entry>
+
+	<entry>
+		<title>The road to universal JavaScript</title>
+		<link href="https://fettblog.eu/the-road-to-universal-javascript/" />
+		<updated>2022-05-09T00:00:00.000Z</updated>
+		<id>https://fettblog.eu/the-road-to-universal-javascript/</id>
+		>
+		<content type="html">&lt;p&gt;Universal JavaScript. JavaScript that works in every environment. JavaScript that runs on both the client and the server, something thinking about for years (see &lt;a href=&quot;https://medium.com/@mjackson/universal-javascript-4761051b7ae9&quot;&gt;1&lt;/a&gt;, &lt;a href=&quot;https://medium.com/airbnb-engineering/isomorphic-javascript-the-future-of-web-apps-10882b7a2ebc&quot;&gt;2&lt;/a&gt;). Where are we now?&lt;/p&gt;</content>
+	</entry>
+
+	<entry>
+		<title>10 years of fettblog.eu</title>
+		<link href="https://fettblog.eu/10-years-of-fettblog/" />
+		<updated>2022-04-27T00:00:00.000Z</updated>
+		<id>https://fettblog.eu/10-years-of-fettblog/</id>
+		>
+		<content type="html">&lt;p&gt;I missed a little anniversary. Roughly 10 years ago (on April 8, 2012), I started blogging on &lt;a href=&quot;http://fettblog.eu&quot;&gt;fettblog.eu&lt;/a&gt;! Time flies! I think this is my longest-running project, let’s take some time to reflect.&lt;/p&gt;</content>
+	</entry>
+</feed>

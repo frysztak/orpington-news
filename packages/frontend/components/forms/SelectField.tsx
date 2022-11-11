@@ -50,6 +50,7 @@ export const SelectField = forwardRef<SelectFieldProps, 'input'>(
           options={options}
           onChange={handleChange}
           defaultValue={defaultValue}
+          classNamePrefix="select-field"
         />
         <FormErrorMessage>{meta.error}</FormErrorMessage>
       </FormControl>

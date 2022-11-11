@@ -1,26 +1,28 @@
 import {
+  AddCollection,
   Collection,
   CollectionItem,
-  CollectionItemDetails,
-  CollectionLayout,
-  FlatCollection,
+  CollectionPreferences,
+  CollectionFilter,
   ID,
+  UpdateCollection,
 } from '@orpington-news/shared';
 import type { Wretch } from '@api';
 
 export const getCollections = (api: Wretch) =>
-  api.url('/collections').get().json<FlatCollection[]>();
+  api.url('/collections').get().json<Collection[]>();
 
 export const getCollectionItems = (
   api: Wretch,
   signal: AbortSignal | undefined,
   collectionId: string | ID,
-  pageIndex?: number
+  pageIndex: number,
+  filter: CollectionFilter
 ) =>
   api
     .options({ signal })
     .url(`/collections/${collectionId}/items`)
-    .query({ pageIndex })
+    .query({ pageIndex, filter })
     .get()
     .json<CollectionItem[]>();
 
@@ -28,7 +30,7 @@ export const getItemDetails = (api: Wretch, collectionId: ID, itemId: ID) =>
   api
     .url(`/collections/${collectionId}/item/${itemId}`)
     .get()
-    .json<CollectionItemDetails>();
+    .json<CollectionItem>();
 
 export const setDateRead = (
   api: Wretch,
@@ -49,16 +51,11 @@ export const verifyFeedUrl = (api: Wretch, url: string) =>
 
 export const addCollection = (
   api: Wretch,
-  collection: Omit<
-    Collection,
-    'id' | 'unreadCount' | 'children' | 'dateUpdated'
-  >
-) => api.url(`/collections`).post(collection).json<FlatCollection[]>();
+  collection: Omit<AddCollection, 'layout'>
+) => api.url(`/collections`).post(collection).json<Collection[]>();
 
-export const editCollection = (
-  api: Wretch,
-  collection: Omit<Collection, 'unreadCount' | 'children' | 'dateUpdated'>
-) => api.url(`/collections`).put(collection).json<FlatCollection[]>();
+export const editCollection = (api: Wretch, collection: UpdateCollection) =>
+  api.url(`/collections`).put(collection).json<Collection[]>();
 
 export const deleteCollection = (api: Wretch, collectionId: ID) =>
   api
@@ -66,13 +63,13 @@ export const deleteCollection = (api: Wretch, collectionId: ID) =>
     .delete()
     .json<{ ids: ID[]; navigateHome: boolean }>();
 
-export const markCollectionAsRead = (api: Wretch, collectionId: ID | 'home') =>
+export const markCollectionAsRead = (api: Wretch, collectionId: ID) =>
   api
     .url(`/collections/${collectionId}/markAsRead`)
     .post()
-    .json<{ ids: ID[]; timestamp: number; collections: FlatCollection[] }>();
+    .json<{ ids: ID[]; timestamp: number; collections: Collection[] }>();
 
-export const refreshCollection = (api: Wretch, collectionId: ID | 'home') =>
+export const refreshCollection = (api: Wretch, collectionId: ID) =>
   api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();
 
 export interface MoveCollectionBody {
@@ -82,16 +79,16 @@ export interface MoveCollectionBody {
 }
 
 export const moveCollection = (api: Wretch, body: MoveCollectionBody) =>
-  api.url(`/collections/move`).post(body).json<FlatCollection[]>();
+  api.url(`/collections/move`).post(body).json<Collection[]>();
 
-export const setCollectionLayout = (
+export const setCollectionPreferences = (
   api: Wretch,
-  collectionId: ID | 'home',
-  layout: CollectionLayout
+  collectionId: ID,
+  preferences: CollectionPreferences
 ) =>
   api
-    .url(`/collections/${collectionId}/layout`)
-    .put({ layout })
+    .url(`/collections/${collectionId}/preferences`)
+    .put(preferences)
     .json<boolean>();
 
 export const importOPML = (api: Wretch, file: File) =>
