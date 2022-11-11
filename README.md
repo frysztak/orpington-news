@@ -37,8 +37,8 @@
   <a href="#development-quick-start">Development Quick Start</a>
   <br />
   <br />
-  <a href="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" target="_blank">
-    <img src="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" width="640px" alt="dark theme screenshot" />
+  <a href="https://user-images.githubusercontent.com/217806/201395573-a9268808-4b53-45b5-ab22-0d7b68ec15e8.png" target="_blank">
+    <img src="https://user-images.githubusercontent.com/217806/201395573-a9268808-4b53-45b5-ab22-0d7b68ec15e8.png" width="640px" alt="dark theme screenshot" />
   </a>
 </p>
 
@@ -51,11 +51,11 @@
   </li>
   </li>
   <li>Light and dark theme<br/>
-    <a href="https://user-images.githubusercontent.com/217806/195675963-59a88540-2ac8-4876-a580-fe9e9884999c.png" target="_blank">
-      <img src="https://user-images.githubusercontent.com/217806/195675963-59a88540-2ac8-4876-a580-fe9e9884999c.png" width="390px" alt="light theme screenshot" />
+    <a href="https://user-images.githubusercontent.com/217806/201395742-d422dd26-c5e5-439e-a1eb-a6fcf0bd0bcc.png" target="_blank">
+      <img src="https://user-images.githubusercontent.com/217806/201395742-d422dd26-c5e5-439e-a1eb-a6fcf0bd0bcc.png" width="390px" alt="light theme screenshot" />
     </a>
-    <a href="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" target="_blank">
-      <img src="https://user-images.githubusercontent.com/217806/195675958-3ecf972e-e9aa-437d-ad68-b7d29fcc6562.png" width="390px" alt="dark theme screenshot" />
+    <a href="https://user-images.githubusercontent.com/217806/201395573-a9268808-4b53-45b5-ab22-0d7b68ec15e8.png" target="_blank">
+      <img src="https://user-images.githubusercontent.com/217806/201395573-a9268808-4b53-45b5-ab22-0d7b68ec15e8.png" width="390px" alt="dark theme screenshot" />
     </a>
   </li>
   <li>Mobile-friendly UI with PWA support
@@ -81,9 +81,30 @@
     </ul>
     <br/>
     Settings live preview:<br/>
-    <a href="https://user-images.githubusercontent.com/217806/195675969-1b50efd8-925c-4965-bfde-0443878c4a0d.png" target="_blank">
-      <img src="https://user-images.githubusercontent.com/217806/195675969-1b50efd8-925c-4965-bfde-0443878c4a0d.png" width="640px" alt="settings screenshot" />
+    <a href="https://user-images.githubusercontent.com/217806/201395852-22023b63-738c-4779-8b4a-c8a71199aba3.png" target="_blank">
+      <img src="https://user-images.githubusercontent.com/217806/201395852-22023b63-738c-4779-8b4a-c8a71199aba3.png" width="640px" alt="settings screenshot" />
     </a>
+  </li>
+  <li>Three collection layouts
+    <br/>
+    <ul>
+      <li>
+        Card<br/>
+        <a href="https://user-images.githubusercontent.com/217806/201396193-b87cd218-5ec6-4885-afd7-a030db53da63.png" target="_blank">
+          <img src="https://user-images.githubusercontent.com/217806/201396193-b87cd218-5ec6-4885-afd7-a030db53da63.png" width="440px" alt="card layout" />
+        </a>
+      </li>
+      <li>Magazine<br/>
+        <a href="https://user-images.githubusercontent.com/217806/201396481-fbb54761-a445-42c4-8e7e-e099fe13c4ef.png" target="_blank">
+          <img src="https://user-images.githubusercontent.com/217806/201396481-fbb54761-a445-42c4-8e7e-e099fe13c4ef.png" width="440px" alt="card layout" />
+        </a>
+      </li>
+      <li>List<br/>
+      <a href="https://user-images.githubusercontent.com/217806/201396652-39fc0058-752d-460f-8cd7-38869edc8101.png" target="_blank">
+          <img src="https://user-images.githubusercontent.com/217806/201396652-39fc0058-752d-460f-8cd7-38869edc8101.png" width="440px" alt="card layout" />
+        </a>      
+      </li>
+    </ul>
   </li>
   <li>RSS feed auto-detection from page URL<br/>
     <video src="https://user-images.githubusercontent.com/217806/195674349-ab6a9a31-8dcd-4e2a-87f1-98cf2a16a0c2.mp4"></video>
@@ -91,6 +112,7 @@
   </li>
   <li>OPML import</li>
   <li>Small Docker image size (170 MB uncompressed)</li>
+  <li>ARM64 support</li>
 </ul>
 
 ## Installation
