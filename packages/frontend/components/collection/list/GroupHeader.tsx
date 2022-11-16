@@ -7,8 +7,9 @@ export interface GroupHeaderProps {
 export const GroupHeader: React.FC<GroupHeaderProps> = ({ title }) => {
   return (
     <Heading
-      p={2}
-      fontSize={{ base: '2xl', lg: '3xl' }}
+      px={2}
+      py={4}
+      fontSize="2xl"
       backgroundColor="var(--chakra-colors-chakra-body-bg)"
       data-test={`groupHeader-${title}`}
     >
