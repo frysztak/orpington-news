@@ -765,7 +765,7 @@ sizes.forEach((size) => {
         });
       });
 
-      it('can change grouping via UI', () => {
+      it('by feed', () => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
@@ -788,6 +788,50 @@ sizes.forEach((size) => {
 
         cy.getBySel('groupHeader-fettblog.eu').should('be.visible');
         cy.getBySel('groupHeader-Kent C. Dodds Blog').should('be.visible');
+      });
+
+      describe('by date', () => {
+        beforeEach(() => {
+          cy.intercept({
+            method: 'GET',
+            url: getApiPath(
+              `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+            ),
+          }).as('apiGetItemsWithoutGrouping');
+
+          cy.intercept({
+            method: 'GET',
+            url: getApiPath(
+              `/collections/1/items?pageIndex=0&filter=all&grouping=date`
+            ),
+          }).as('apiGetItemsWithGrouping');
+        });
+
+        it('Today', () => {
+          cy.clock(new Date(2022, 4, 11), ['Date']);
+          cy.visit('/');
+          cy.wait('@apiGetItemsWithoutGrouping');
+
+          cy.clickCollectionHeaderMenuAction('grouping-date');
+          cy.wait('@apiGetItemsWithGrouping');
+
+          cy.getBySel('groupHeader-Today').should('be.visible');
+          cy.getBySel('groupHeader-This week').should('be.visible');
+          cy.getBySel('groupHeader-Over a month ago').should('be.visible');
+        });
+
+        it('Yesterday', () => {
+          cy.clock(new Date(2022, 4, 12), ['Date']);
+          cy.visit('/');
+          cy.wait('@apiGetItemsWithoutGrouping');
+
+          cy.clickCollectionHeaderMenuAction('grouping-date');
+          cy.wait('@apiGetItemsWithGrouping');
+
+          cy.getBySel('groupHeader-Yesterday').should('be.visible');
+          cy.getBySel('groupHeader-This week').should('be.visible');
+          cy.getBySel('groupHeader-Over a month ago').should('be.visible');
+        });
       });
     });
   });
