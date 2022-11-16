@@ -225,7 +225,9 @@ sizes.forEach((size) => {
       });
       cy.intercept({
         method: 'GET',
-        url: getApiPath('/collections/2/items?pageIndex=0&filter=all'),
+        url: getApiPath(
+          '/collections/2/items?pageIndex=0&filter=all&grouping=none'
+        ),
       }).as('apiGetItems');
       cy.intercept({
         method: 'GET',
@@ -301,7 +303,9 @@ sizes.forEach((size) => {
       it('from collection header', () => {
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/2/items?pageIndex=0&filter=all'),
+          url: getApiPath(
+            '/collections/2/items?pageIndex=0&filter=all&grouping=none'
+          ),
         }).as('apiGetItems');
 
         cy.intercept({
@@ -358,7 +362,9 @@ sizes.forEach((size) => {
 
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
+          url: getApiPath(
+            '/collections/1/items?pageIndex=0&filter=all&grouping=none'
+          ),
         }).as('apiGetHomeItems');
 
         cy.addFeedByApi({
@@ -404,7 +410,9 @@ sizes.forEach((size) => {
         }).as('apiMarkAsRead');
         cy.intercept({
           method: 'GET',
-          url: getApiPath('/collections/1/items?pageIndex=0&filter=all'),
+          url: getApiPath(
+            '/collections/1/items?pageIndex=0&filter=all&grouping=none'
+          ),
         }).as('apiGetHomeItems');
 
         cy.addFeedByApi({
@@ -474,7 +482,9 @@ sizes.forEach((size) => {
           it(`to ${layout}`, () => {
             cy.intercept({
               method: 'GET',
-              url: getApiPath('/collections/2/items?pageIndex=0&filter=all'),
+              url: getApiPath(
+                '/collections/2/items?pageIndex=0&filter=all&grouping=none'
+              ),
             }).as('apiGetItems');
 
             cy.intercept({
@@ -536,7 +546,9 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/1/items?pageIndex=0&filter=all`),
+          url: getApiPath(
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+          ),
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();
@@ -578,7 +590,9 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/1/items?pageIndex=0&filter=all`),
+          url: getApiPath(
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+          ),
         }).as('apiGetHomeItems');
         cy.intercept({
           method: 'PUT',
@@ -641,7 +655,9 @@ sizes.forEach((size) => {
         }).as('apiDeleteCollection');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/1/items?pageIndex=0&filter=all`),
+          url: getApiPath(
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+          ),
         }).as('apiGetHomeItems');
 
         cy.getBySel('confirmDelete').click();
@@ -700,11 +716,15 @@ sizes.forEach((size) => {
 
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/2/items?pageIndex=0&filter=unread`),
+          url: getApiPath(
+            `/collections/2/items?pageIndex=0&filter=unread&grouping=none`
+          ),
         }).as('apiGetItems2');
         cy.intercept({
           method: 'GET',
-          url: getApiPath(`/collections/3/items?pageIndex=0&filter=read`),
+          url: getApiPath(
+            `/collections/3/items?pageIndex=0&filter=read&grouping=none`
+          ),
         }).as('apiGetItems3');
 
         cy.visit('/');
