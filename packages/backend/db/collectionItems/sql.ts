@@ -1,5 +1,9 @@
 import { sql } from 'slonik';
-import { CollectionFilter, ID } from '@orpington-news/shared';
+import {
+  CollectionFilter,
+  CollectionGrouping,
+  ID,
+} from '@orpington-news/shared';
 import { getCollectionChildrenIds } from '@db/collections';
 import { TRUE } from '@utils';
 import { DBCollectionItem, DBCollectionItemWithoutText } from './types';
@@ -72,12 +76,14 @@ export interface GetCollectionItemsArgs {
   userId: ID;
   collectionId: ID;
   filter: CollectionFilter;
+  grouping: CollectionGrouping;
 }
 
 export const getCollectionItems = ({
   userId,
   collectionId,
   filter,
+  grouping,
 }: GetCollectionItemsArgs) => {
   const showFilter =
     filter === 'all'
@@ -85,6 +91,11 @@ export const getCollectionItems = ({
       : filter === 'unread'
       ? sql`collection_items.date_read IS NULL`
       : sql`collection_items.date_read IS NOT NULL`;
+
+  const orderBy =
+    grouping === 'feed'
+      ? sql`lower(collection_title) ASC, date_published DESC`
+      : sql`date_published DESC`;
 
   return sql.type(DBCollectionItemWithoutText)`
 SELECT
@@ -118,7 +129,7 @@ WHERE
   AND
   ${showFilter}
 ORDER BY
-  date_published DESC
+  ${orderBy}
 `;
 };
 

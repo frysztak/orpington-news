@@ -26,9 +26,18 @@ import {
   Preferences,
   CollectionFilter,
   defaultCollectionFilter,
+  CollectionGrouping,
+  defaultCollectionGrouping,
+  defaultPageSize,
 } from '@orpington-news/shared';
 import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
+import {
+  getGroupCounts,
+  getGroupNames,
+  groupByCollection,
+  groupByDate,
+} from './helpers';
 
 export const useCollectionsList = <TSelectedData = Collection[]>(opts?: {
   enabled?: boolean;
@@ -57,14 +66,20 @@ export const useCollectionById = (collectionId?: ID | null) => {
 };
 
 export const collectionsItemsQueryFn =
-  (api: Wretch, collectionId: ID, filter: CollectionFilter) =>
+  (
+    api: Wretch,
+    collectionId: ID,
+    filter: CollectionFilter,
+    grouping: CollectionGrouping
+  ) =>
   ({ pageParam = 0, signal }: QueryFunctionContext) => {
     return getCollectionItems(
       api,
       signal,
       collectionId,
       pageParam,
-      filter
+      filter,
+      grouping
     ).then((items) => ({
       items,
       pageParam,
@@ -73,18 +88,21 @@ export const collectionsItemsQueryFn =
 
 export const useCollectionItems = (
   collectionId?: ID,
-  filter: CollectionFilter = defaultCollectionFilter
+  filter: CollectionFilter = defaultCollectionFilter,
+  grouping: CollectionGrouping = defaultCollectionGrouping
 ) => {
   const api = useApi();
   const { onError } = useHandleError();
 
   const { data, ...rest } = useInfiniteQuery(
-    collectionKeys.list(collectionId!, filter),
-    collectionsItemsQueryFn(api, collectionId!, filter),
+    collectionKeys.list(collectionId!, filter, grouping),
+    collectionsItemsQueryFn(api, collectionId!, filter, grouping),
     {
       enabled: collectionId !== undefined,
       getNextPageParam: (lastPage) =>
-        lastPage.items.length === 0 ? undefined : lastPage.pageParam + 1,
+        lastPage.items.length < defaultPageSize
+          ? undefined
+          : lastPage.pageParam + 1,
       onError,
     }
   );
@@ -93,7 +111,20 @@ export const useCollectionItems = (
     return data?.pages?.flatMap((page) => [...page.items]) || [];
   }, [data]);
 
-  return { ...rest, data, allItems };
+  const { groupCounts, groupNames } = useMemo(() => {
+    if (grouping === 'none') {
+      return {};
+    }
+
+    const grouped =
+      grouping === 'date' ? groupByDate(allItems) : groupByCollection(allItems);
+    return {
+      groupCounts: getGroupCounts(grouped),
+      groupNames: getGroupNames(grouped),
+    };
+  }, [allItems, grouping]);
+
+  return { ...rest, data, allItems, groupCounts, groupNames };
 };
 
 export const useMarkCollectionAsRead = () => {

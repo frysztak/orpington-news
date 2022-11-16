@@ -8,7 +8,11 @@ import {
   useSetCollectionPreferences,
 } from '@features/Collections';
 import { useActiveCollection } from '@features/Preferences';
-import { CollectionLayout, CollectionFilter } from '@orpington-news/shared';
+import {
+  CollectionLayout,
+  CollectionFilter,
+  CollectionGrouping,
+} from '@orpington-news/shared';
 import { ModalContext } from './ModalContext';
 
 export const CollectionItemsHeader: React.FC = () => {
@@ -39,6 +43,7 @@ export const CollectionItemsHeader: React.FC = () => {
   }, [activeCollection, refreshCollection]);
 
   const { mutate: setCollectionPreferences } = useSetCollectionPreferences();
+  // TODO: unify the three functions below
   const handleCollectionLayoutChanged = useCallback(
     (layout: CollectionLayout) => {
       if (activeCollection?.id === undefined) {
@@ -67,6 +72,22 @@ export const CollectionItemsHeader: React.FC = () => {
       setCollectionPreferences({
         id: activeCollection.id,
         preferences: { filter },
+      });
+    },
+    [activeCollection?.id, setCollectionPreferences]
+  );
+  const handleCollectionGroupingChanged = useCallback(
+    (grouping: CollectionGrouping) => {
+      if (activeCollection?.id === undefined) {
+        console.error(
+          `handleCollectionLayoutChanged() without active collection`
+        );
+        return;
+      }
+
+      setCollectionPreferences({
+        id: activeCollection.id,
+        preferences: { grouping },
       });
     },
     [activeCollection?.id, setCollectionPreferences]
@@ -108,6 +129,7 @@ export const CollectionItemsHeader: React.FC = () => {
       onHamburgerClicked={toggleDrawer}
       onChangeLayout={handleCollectionLayoutChanged}
       onShowFilterChanged={handleCollectionFilterChanged}
+      onGroupingChanged={handleCollectionGroupingChanged}
       onMenuActionClicked={handleMenuActionClicked}
     />
   );

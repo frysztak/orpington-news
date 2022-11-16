@@ -23,8 +23,13 @@ import {
   CollectionLayout,
   CollectionFilter,
   ActiveCollection,
+  CollectionGrouping,
 } from '@orpington-news/shared';
-import { CollectionLayoutName, CollectionFilterName } from '../types';
+import {
+  CollectionLayoutName,
+  CollectionFilterName,
+  CollectionGroupingName,
+} from '../types';
 
 export type MenuAction = 'refresh' | 'markAsRead';
 
@@ -37,6 +42,7 @@ export interface CollectionHeaderProps {
   onChangeLayout?: (layout: CollectionLayout) => void;
   onMenuActionClicked?: (action: MenuAction) => void;
   onShowFilterChanged?: (showFilter: CollectionFilter) => void;
+  onGroupingChanged?: (grouping: CollectionGrouping) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
@@ -48,6 +54,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     onChangeLayout,
     onMenuActionClicked,
     onShowFilterChanged,
+    onGroupingChanged,
   } = props;
 
   const isLoading = collection === undefined;
@@ -127,7 +134,11 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                 tabIndex={0}
                 data-test="menuButton"
               />
-              <MenuList data-focus-visible-disabled data-test="menuList">
+              <MenuList
+                data-focus-visible-disabled
+                data-test="menuList"
+                zIndex="docked"
+              >
                 <MenuItem
                   icon={<IoCheckmarkDone />}
                   onClick={() => onMenuActionClicked?.('markAsRead')}
@@ -135,6 +146,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                 >
                   Mark as read
                 </MenuItem>
+
                 <MenuDivider />
 
                 <MenuOptionGroup
@@ -150,6 +162,25 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                       data-test={`show-${showFilter}`}
                     >
                       {CollectionFilterName[showFilter]}
+                    </MenuItemOption>
+                  ))}
+                </MenuOptionGroup>
+
+                <MenuDivider />
+
+                <MenuOptionGroup
+                  value={collection?.grouping}
+                  title="Group by"
+                  type="radio"
+                >
+                  {CollectionGrouping.options.map((grouping) => (
+                    <MenuItemOption
+                      key={grouping}
+                      value={grouping}
+                      onClick={() => onGroupingChanged?.(grouping)}
+                      data-test={`grouping-${grouping}`}
+                    >
+                      {CollectionGroupingName[grouping]}
                     </MenuItemOption>
                   ))}
                 </MenuOptionGroup>

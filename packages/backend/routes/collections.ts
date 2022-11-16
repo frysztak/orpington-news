@@ -363,6 +363,7 @@ export const collections: FastifyPluginAsync = async (
   const GetItemsParams = PaginationSchema.merge(
     z.object({
       filter: CollectionFilter.optional(),
+      grouping: CollectionGrouping.optional(),
     })
   );
   fastify.get<{
@@ -381,7 +382,12 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         params: { id },
-        query: { pageIndex, pageSize, filter = 'all' },
+        query: {
+          pageIndex,
+          pageSize,
+          filter = defaultCollectionFilter,
+          grouping = defaultCollectionGrouping,
+        },
         session: { userId },
       } = request;
 
@@ -389,6 +395,7 @@ export const collections: FastifyPluginAsync = async (
         userId,
         collectionId: id,
         filter,
+        grouping,
       });
       const items = (await pool.any(
         addPagination({ pageIndex, pageSize }, itemsQuery)
