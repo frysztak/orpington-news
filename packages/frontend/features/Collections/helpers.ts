@@ -19,7 +19,7 @@ export const groupByDate = groupBy<CollectionItem>(({ datePublished }) => {
   } else if (isThisMonth(date)) {
     return 'This month';
   } else {
-    return 'More than a month ago';
+    return 'Over a month ago';
   }
 });
 
