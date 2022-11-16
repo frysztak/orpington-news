@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import fastifySwagger from '@fastify/swagger';
+import fastifySwaggerUi from '@fastify/swagger-ui';
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
 import fastifyAuth from '@fastify/auth';
@@ -8,6 +9,7 @@ import fastifyETag from '@fastify/etag';
 import fastifySchedule from '@fastify/schedule';
 import fastifyMultipart from '@fastify/multipart';
 import {
+  jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
@@ -42,35 +44,39 @@ const getCookieSecret = (): string => {
 };
 
 async function setupFastify() {
-  await fastify.register(fastifySwagger, {
-    routePrefix: '/openapi',
-    openapi: {
-      info: {
-        title: 'Orpington News API',
-        version: '0.1.0',
+  if (process.env.NODE_ENV === 'development') {
+    await fastify.register(fastifySwagger, {
+      transform: jsonSchemaTransform,
+      openapi: {
+        info: {
+          title: 'Orpington News API',
+          version: '0.1.0',
+        },
+        tags: [
+          { name: 'Collections' },
+          { name: 'CollectionItem' },
+          { name: 'Auth' },
+        ],
       },
-      tags: [
-        { name: 'Collections' },
-        { name: 'CollectionItem' },
-        { name: 'Auth' },
-      ],
-    },
-    uiConfig: {
-      docExpansion: 'full',
-      deepLinking: false,
-    },
-    uiHooks: {
-      onRequest: function (request, reply, next) {
-        next();
+    });
+    await fastify.register(fastifySwaggerUi, {
+      initOAuth: {},
+      uiConfig: {
+        docExpansion: 'full',
+        deepLinking: false,
       },
-      preHandler: function (request, reply, next) {
-        next();
+      uiHooks: {
+        onRequest: function (request, reply, next) {
+          next();
+        },
+        preHandler: function (request, reply, next) {
+          next();
+        },
       },
-    },
-    staticCSP: true,
-    transformStaticCSP: (header) => header,
-    exposeRoute: true,
-  });
+      staticCSP: true,
+      transformStaticCSP: (header) => header,
+    });
+  }
 
   await fastify.register(fastifyCookie);
   await fastify.register(fastifySession, {

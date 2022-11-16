@@ -6,7 +6,7 @@ export const coverage: FastifyPluginAsync = async (
   fastify,
   opts
 ): Promise<void> => {
-  fastify.get('/', (request, reply) => {
+  fastify.get('/', { schema: {} }, (request, reply) => {
     return global.__coverage__ ? { coverage: global.__coverage__ } : null;
   });
 };
