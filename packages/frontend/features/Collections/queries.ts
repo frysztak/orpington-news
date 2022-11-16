@@ -31,7 +31,12 @@ import {
 } from '@orpington-news/shared';
 import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
-import { getGroupCounts, getGroupNames, groupByDates } from './helpers';
+import {
+  getGroupCounts,
+  getGroupNames,
+  groupByCollection,
+  groupByDate,
+} from './helpers';
 
 export const useCollectionsList = <TSelectedData = Collection[]>(opts?: {
   enabled?: boolean;
@@ -104,15 +109,16 @@ export const useCollectionItems = (
   }, [data]);
 
   const { groupCounts, groupNames } = useMemo(() => {
-    if (grouping === 'date') {
-      const grouped = groupByDates(allItems);
-      return {
-        groupCounts: getGroupCounts(grouped),
-        groupNames: getGroupNames(grouped),
-      };
+    if (grouping === 'none') {
+      return {};
     }
 
-    return {};
+    const grouped =
+      grouping === 'date' ? groupByDate(allItems) : groupByCollection(allItems);
+    return {
+      groupCounts: getGroupCounts(grouped),
+      groupNames: getGroupNames(grouped),
+    };
   }, [allItems, grouping]);
 
   return { ...rest, data, allItems, groupCounts, groupNames };

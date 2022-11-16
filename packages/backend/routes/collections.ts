@@ -395,6 +395,7 @@ export const collections: FastifyPluginAsync = async (
         userId,
         collectionId: id,
         filter,
+        grouping,
       });
       const items = (await pool.any(
         addPagination({ pageIndex, pageSize }, itemsQuery)

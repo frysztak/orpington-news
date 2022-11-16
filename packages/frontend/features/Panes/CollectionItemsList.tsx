@@ -47,7 +47,7 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
   }, [activeCollection, refreshCollection]);
 
   const items: CollectionListItems = useMemo(() => {
-    if (activeCollection?.grouping === 'date') {
+    if (activeCollection?.grouping !== 'none') {
       return {
         type: 'group',
         list: allItems,

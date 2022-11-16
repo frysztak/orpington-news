@@ -8,7 +8,7 @@ import {
 } from 'date-fns';
 import { CollectionItem } from '@orpington-news/shared';
 
-export const groupByDates = groupBy<CollectionItem>(({ datePublished }) => {
+export const groupByDate = groupBy<CollectionItem>(({ datePublished }) => {
   const date = fromUnixTime(datePublished);
   if (isToday(date)) {
     return 'Today';
@@ -22,6 +22,12 @@ export const groupByDates = groupBy<CollectionItem>(({ datePublished }) => {
     return 'More than a month ago';
   }
 });
+
+export const groupByCollection = groupBy<CollectionItem>(
+  ({ collection: { title } }) => {
+    return title;
+  }
+);
 
 export const getGroupCounts = (
   groups: Record<string, CollectionItem[]>
