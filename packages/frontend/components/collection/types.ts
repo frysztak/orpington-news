@@ -2,6 +2,7 @@ import {
   CollectionItem,
   CollectionLayout,
   CollectionFilter,
+  CollectionGrouping,
 } from '@orpington-news/shared';
 
 export interface CollectionItemProps {
@@ -24,4 +25,10 @@ export const CollectionFilterName: Record<CollectionFilter, string> = {
   all: 'All',
   read: 'Read',
   unread: 'Unread',
+};
+
+export const CollectionGroupingName: Record<CollectionGrouping, string> = {
+  date: 'Date',
+  feed: 'Feed',
+  none: 'None',
 };
