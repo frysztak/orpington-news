@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import fastifySwagger from '@fastify/swagger';
+import fastifySwaggerUi from '@fastify/swagger-ui';
 import fastifyCookie from '@fastify/cookie';
 import fastifySession from '@fastify/session';
 import fastifyAuth from '@fastify/auth';
@@ -8,6 +9,7 @@ import fastifyETag from '@fastify/etag';
 import fastifySchedule from '@fastify/schedule';
 import fastifyMultipart from '@fastify/multipart';
 import {
+  jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
@@ -43,7 +45,7 @@ const getCookieSecret = (): string => {
 
 async function setupFastify() {
   await fastify.register(fastifySwagger, {
-    routePrefix: '/openapi',
+    transform: jsonSchemaTransform,
     openapi: {
       info: {
         title: 'Orpington News API',
@@ -55,6 +57,9 @@ async function setupFastify() {
         { name: 'Auth' },
       ],
     },
+  });
+  await fastify.register(fastifySwaggerUi, {
+    initOAuth: {},
     uiConfig: {
       docExpansion: 'full',
       deepLinking: false,
@@ -69,7 +74,6 @@ async function setupFastify() {
     },
     staticCSP: true,
     transformStaticCSP: (header) => header,
-    exposeRoute: true,
   });
 
   await fastify.register(fastifyCookie);
