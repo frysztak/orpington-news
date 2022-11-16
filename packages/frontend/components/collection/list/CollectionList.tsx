@@ -136,6 +136,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       <RefreshIndicator isRefreshing={isRefreshing} />
       {items.type === 'list' ? (
         <Virtuoso
+          key="flat"
           style={{ height: '100%', width: '100%' }}
           data={items.list}
           computeItemKey={(_, item) => item.id}
@@ -154,6 +155,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         />
       ) : (
         <GroupedVirtuoso
+          key="grouped"
           style={{ height: '100%', width: '100%' }}
           groupCounts={items.groupCounts}
           endReached={onFetchMoreItems}
