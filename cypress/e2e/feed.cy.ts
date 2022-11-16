@@ -722,5 +722,53 @@ sizes.forEach((size) => {
         });
       });
     });
+
+    describe('grouping', () => {
+      beforeEach(() => {
+        cy.putCollectionPreferencesByApi({
+          collectionId: 1,
+          preferences: { layout: 'list' },
+        });
+
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+
+        cy.addFeedByApi({
+          title: 'fettblog.eu',
+          url: getFeedUrl('fettblog.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+      });
+
+      it('can change grouping via UI', () => {
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+          ),
+        }).as('apiGetItemsWithoutGrouping');
+
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(
+            `/collections/1/items?pageIndex=0&filter=all&grouping=feed`
+          ),
+        }).as('apiGetItemsWithGrouping');
+
+        cy.visit('/');
+        cy.wait('@apiGetItemsWithoutGrouping');
+
+        cy.clickCollectionHeaderMenuAction('grouping-feed');
+        cy.wait('@apiGetItemsWithGrouping');
+
+        cy.getBySel('groupHeader-fettblog.eu').should('be.visible');
+        cy.getBySel('groupHeader-Kent C. Dodds Blog').should('be.visible');
+      });
+    });
   });
 });

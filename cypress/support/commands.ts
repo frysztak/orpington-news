@@ -30,15 +30,15 @@ import { getApiPath } from '../e2e/utils';
 //
 
 Cypress.Commands.add('getBySel', (selector, ...args) => {
-  return cy.get(`[data-test=${selector}]`, ...args);
+  return cy.get(`[data-test="${selector}"]`, ...args);
 });
 
 Cypress.Commands.add('getBySelVisible', (selector, ...args) => {
-  return cy.get(`[data-test=${selector}]:visible`, ...args);
+  return cy.get(`[data-test="${selector}"]:visible`, ...args);
 });
 
 Cypress.Commands.add('getBySelLike', (selector, ...args) => {
-  return cy.get(`[data-test*=${selector}]`, ...args);
+  return cy.get(`[data-test*="${selector}"]`, ...args);
 });
 
 Cypress.Commands.add('openDrawerIfExists', () => {
