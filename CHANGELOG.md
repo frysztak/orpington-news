@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Collection grouping (by date or by Collection)
 
+### Fixed
+
+- Fixed redundant fetching of empty collection pages
+
 ## [0.8.0] - 2022-11-11
 
 ### Added

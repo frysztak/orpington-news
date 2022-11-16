@@ -28,6 +28,7 @@ import {
   defaultCollectionFilter,
   CollectionGrouping,
   defaultCollectionGrouping,
+  defaultPageSize,
 } from '@orpington-news/shared';
 import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
@@ -99,7 +100,9 @@ export const useCollectionItems = (
     {
       enabled: collectionId !== undefined,
       getNextPageParam: (lastPage) =>
-        lastPage.items.length === 0 ? undefined : lastPage.pageParam + 1,
+        lastPage.items.length < defaultPageSize
+          ? undefined
+          : lastPage.pageParam + 1,
       onError,
     }
   );
