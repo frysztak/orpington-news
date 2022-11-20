@@ -132,7 +132,7 @@ Cypress.Commands.add('changeActiveCollection', (id: string) => {
   cy.intercept({
     method: 'GET',
     url: getApiPath(
-      `/collections/${id}/items?pageIndex=0&filter=all&grouping=none`
+      `/collections/${id}/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst`
     ),
   }).as('apiGetItems');
 

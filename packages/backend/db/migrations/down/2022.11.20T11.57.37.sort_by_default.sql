@@ -1,0 +1,2 @@
+ALTER TABLE "collections" 
+ALTER COLUMN "sort_by" SET DEFAULT NULL;

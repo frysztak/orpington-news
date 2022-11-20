@@ -6,6 +6,8 @@ import {
   defaultCollectionGrouping,
   defaultCollectionLayout,
   defaultCollectionFilter,
+  CollectionSortBy,
+  defaultCollectionSortBy,
 } from './collection';
 import { ID } from './id';
 
@@ -22,6 +24,7 @@ export const Preferences = z.object({
   activeCollectionLayout: CollectionLayout,
   activeCollectionFilter: CollectionFilter,
   activeCollectionGrouping: CollectionGrouping,
+  activeCollectionSortBy: CollectionSortBy,
 });
 
 export type Preferences = z.infer<typeof Preferences>;
@@ -32,6 +35,7 @@ export const SetActiveCollectionData = Preferences.pick({
   activeCollectionLayout: true,
   activeCollectionFilter: true,
   activeCollectionGrouping: true,
+  activeCollectionSortBy: true,
 });
 export type SetActiveCollectionData = z.infer<typeof SetActiveCollectionData>;
 
@@ -40,6 +44,7 @@ export const defaultPreferences: Preferences = {
   activeCollectionLayout: defaultCollectionLayout,
   activeCollectionFilter: defaultCollectionFilter,
   activeCollectionGrouping: defaultCollectionGrouping,
+  activeCollectionSortBy: defaultCollectionSortBy,
   activeCollectionId: 0,
   defaultCollectionLayout,
   expandedCollectionIds: [],

@@ -12,6 +12,7 @@ import {
   CollectionLayout,
   CollectionFilter,
   CollectionGrouping,
+  CollectionSortBy,
 } from '@orpington-news/shared';
 import { ModalContext } from './ModalContext';
 
@@ -92,6 +93,22 @@ export const CollectionItemsHeader: React.FC = () => {
     },
     [activeCollection?.id, setCollectionPreferences]
   );
+  const handleCollectionSortByChanged = useCallback(
+    (sortBy: CollectionSortBy) => {
+      if (activeCollection?.id === undefined) {
+        console.error(
+          `handleCollectionLayoutChanged() without active collection`
+        );
+        return;
+      }
+
+      setCollectionPreferences({
+        id: activeCollection.id,
+        preferences: { sortBy },
+      });
+    },
+    [activeCollection?.id, setCollectionPreferences]
+  );
 
   const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
   const handleMarkAsRead = useCallback(() => {
@@ -130,6 +147,7 @@ export const CollectionItemsHeader: React.FC = () => {
       onChangeLayout={handleCollectionLayoutChanged}
       onShowFilterChanged={handleCollectionFilterChanged}
       onGroupingChanged={handleCollectionGroupingChanged}
+      onSortByChanged={handleCollectionSortByChanged}
       onMenuActionClicked={handleMenuActionClicked}
     />
   );

@@ -1,6 +1,7 @@
 import {
   CollectionFilter,
   CollectionGrouping,
+  CollectionSortBy,
   ID,
 } from '@orpington-news/shared';
 
@@ -14,8 +15,13 @@ export const collectionKeys = {
   list: (
     collectionId: ID,
     filter?: CollectionFilter,
-    grouping?: CollectionGrouping
-  ) => [...collectionKeys.lists(collectionId), { filter, grouping }] as const,
+    grouping?: CollectionGrouping,
+    sortBy?: CollectionSortBy
+  ) =>
+    [
+      ...collectionKeys.lists(collectionId),
+      { filter, grouping, sortBy },
+    ] as const,
   detail: (collectionId: ID, itemId: ID) =>
     [...collectionKeys.base, collectionId, 'detail', { itemId }] as const,
 };

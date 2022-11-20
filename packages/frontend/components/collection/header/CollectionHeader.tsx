@@ -24,11 +24,13 @@ import {
   CollectionFilter,
   ActiveCollection,
   CollectionGrouping,
+  CollectionSortBy,
 } from '@orpington-news/shared';
 import {
   CollectionLayoutName,
   CollectionFilterName,
   CollectionGroupingName,
+  CollectionSortByName,
 } from '../types';
 
 export type MenuAction = 'refresh' | 'markAsRead';
@@ -43,6 +45,7 @@ export interface CollectionHeaderProps {
   onMenuActionClicked?: (action: MenuAction) => void;
   onShowFilterChanged?: (showFilter: CollectionFilter) => void;
   onGroupingChanged?: (grouping: CollectionGrouping) => void;
+  onSortByChanged?: (sortBy: CollectionSortBy) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
@@ -55,6 +58,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     onMenuActionClicked,
     onShowFilterChanged,
     onGroupingChanged,
+    onSortByChanged,
   } = props;
 
   const isLoading = collection === undefined;
@@ -181,6 +185,25 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                       data-test={`grouping-${grouping}`}
                     >
                       {CollectionGroupingName[grouping]}
+                    </MenuItemOption>
+                  ))}
+                </MenuOptionGroup>
+
+                <MenuDivider />
+
+                <MenuOptionGroup
+                  value={collection?.sortBy}
+                  title="Sort by"
+                  type="radio"
+                >
+                  {CollectionSortBy.options.map((sortBy) => (
+                    <MenuItemOption
+                      key={sortBy}
+                      value={sortBy}
+                      onClick={() => onSortByChanged?.(sortBy)}
+                      data-test={`sortBy-${sortBy}`}
+                    >
+                      {CollectionSortByName[sortBy]}
                     </MenuItemOption>
                   ))}
                 </MenuOptionGroup>

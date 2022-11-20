@@ -3,6 +3,7 @@ import {
   CollectionLayout,
   CollectionFilter,
   CollectionGrouping,
+  CollectionSortBy,
 } from '@orpington-news/shared';
 
 export interface CollectionItemProps {
@@ -31,4 +32,9 @@ export const CollectionGroupingName: Record<CollectionGrouping, string> = {
   date: 'Date',
   feed: 'Feed',
   none: 'None',
+};
+
+export const CollectionSortByName: Record<CollectionSortBy, string> = {
+  newestFirst: 'Newest first',
+  oldestFirst: 'Oldest first',
 };
