@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Collection grouping (by date or by Collection)
+- Collection item grouping (by date or by Collection)
+- Collection item sorting (newest/oldest first)
 
 ### Fixed
 

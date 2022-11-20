@@ -24,11 +24,14 @@ import {
   CollectionFilter,
   ActiveCollection,
   CollectionGrouping,
+  CollectionSortBy,
+  CollectionPreferences,
 } from '@orpington-news/shared';
 import {
   CollectionLayoutName,
   CollectionFilterName,
   CollectionGroupingName,
+  CollectionSortByName,
 } from '../types';
 
 export type MenuAction = 'refresh' | 'markAsRead';
@@ -39,10 +42,8 @@ export interface CollectionHeaderProps {
   isRefreshing?: boolean;
 
   onHamburgerClicked?: () => void;
-  onChangeLayout?: (layout: CollectionLayout) => void;
   onMenuActionClicked?: (action: MenuAction) => void;
-  onShowFilterChanged?: (showFilter: CollectionFilter) => void;
-  onGroupingChanged?: (grouping: CollectionGrouping) => void;
+  onPreferenceChanged?: (preferences: CollectionPreferences) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
@@ -51,10 +52,8 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     menuButtonRef,
     isRefreshing = false,
     onHamburgerClicked,
-    onChangeLayout,
     onMenuActionClicked,
-    onShowFilterChanged,
-    onGroupingChanged,
+    onPreferenceChanged,
   } = props;
 
   const isLoading = collection === undefined;
@@ -111,7 +110,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                       <MenuItemOption
                         key={layout}
                         value={layout}
-                        onClick={() => onChangeLayout?.(layout)}
+                        onClick={() => onPreferenceChanged?.({ layout })}
                         data-test={`layout-${layout}`}
                       >
                         {CollectionLayoutName[layout]}
@@ -154,14 +153,14 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                   title="Show"
                   type="radio"
                 >
-                  {CollectionFilter.options.map((showFilter) => (
+                  {CollectionFilter.options.map((filter) => (
                     <MenuItemOption
-                      key={showFilter}
-                      value={showFilter}
-                      onClick={() => onShowFilterChanged?.(showFilter)}
-                      data-test={`show-${showFilter}`}
+                      key={filter}
+                      value={filter}
+                      onClick={() => onPreferenceChanged?.({ filter })}
+                      data-test={`show-${filter}`}
                     >
-                      {CollectionFilterName[showFilter]}
+                      {CollectionFilterName[filter]}
                     </MenuItemOption>
                   ))}
                 </MenuOptionGroup>
@@ -177,10 +176,29 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                     <MenuItemOption
                       key={grouping}
                       value={grouping}
-                      onClick={() => onGroupingChanged?.(grouping)}
+                      onClick={() => onPreferenceChanged?.({ grouping })}
                       data-test={`grouping-${grouping}`}
                     >
                       {CollectionGroupingName[grouping]}
+                    </MenuItemOption>
+                  ))}
+                </MenuOptionGroup>
+
+                <MenuDivider />
+
+                <MenuOptionGroup
+                  value={collection?.sortBy}
+                  title="Sort by"
+                  type="radio"
+                >
+                  {CollectionSortBy.options.map((sortBy) => (
+                    <MenuItemOption
+                      key={sortBy}
+                      value={sortBy}
+                      onClick={() => onPreferenceChanged?.({ sortBy })}
+                      data-test={`sortBy-${sortBy}`}
+                    >
+                      {CollectionSortByName[sortBy]}
                     </MenuItemOption>
                   ))}
                 </MenuOptionGroup>

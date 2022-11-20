@@ -29,6 +29,8 @@ import {
   CollectionGrouping,
   defaultCollectionGrouping,
   defaultPageSize,
+  CollectionSortBy,
+  defaultCollectionSortBy,
 } from '@orpington-news/shared';
 import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
@@ -70,7 +72,8 @@ export const collectionsItemsQueryFn =
     api: Wretch,
     collectionId: ID,
     filter: CollectionFilter,
-    grouping: CollectionGrouping
+    grouping: CollectionGrouping,
+    sortBy: CollectionSortBy
   ) =>
   ({ pageParam = 0, signal }: QueryFunctionContext) => {
     return getCollectionItems(
@@ -79,7 +82,8 @@ export const collectionsItemsQueryFn =
       collectionId,
       pageParam,
       filter,
-      grouping
+      grouping,
+      sortBy
     ).then((items) => ({
       items,
       pageParam,
@@ -89,14 +93,15 @@ export const collectionsItemsQueryFn =
 export const useCollectionItems = (
   collectionId?: ID,
   filter: CollectionFilter = defaultCollectionFilter,
-  grouping: CollectionGrouping = defaultCollectionGrouping
+  grouping: CollectionGrouping = defaultCollectionGrouping,
+  sortBy: CollectionSortBy = defaultCollectionSortBy
 ) => {
   const api = useApi();
   const { onError } = useHandleError();
 
   const { data, ...rest } = useInfiniteQuery(
-    collectionKeys.list(collectionId!, filter, grouping),
-    collectionsItemsQueryFn(api, collectionId!, filter, grouping),
+    collectionKeys.list(collectionId!, filter, grouping, sortBy),
+    collectionsItemsQueryFn(api, collectionId!, filter, grouping, sortBy),
     {
       enabled: collectionId !== undefined,
       getNextPageParam: (lastPage) =>
@@ -189,7 +194,10 @@ export const useRefreshCollection = () => {
   });
 };
 
-type CollectionPreferences = Pick<Collection, 'layout' | 'filter' | 'grouping'>;
+type CollectionPreferences = Pick<
+  Collection,
+  'layout' | 'filter' | 'grouping' | 'sortBy'
+>;
 
 export const useSetCollectionPreferences = () => {
   const api = useApi();
@@ -213,6 +221,8 @@ export const useSetCollectionPreferences = () => {
                 preferences.filter ?? old.activeCollectionFilter,
               activeCollectionGrouping:
                 preferences.grouping ?? old.activeCollectionGrouping,
+              activeCollectionSortBy:
+                preferences.sortBy ?? old.activeCollectionSortBy,
             }
         );
 
@@ -232,6 +242,7 @@ export const useSetCollectionPreferences = () => {
             layout: preferences.layout ?? oldCollection.layout,
             filter: preferences.filter ?? oldCollection.filter,
             grouping: preferences.grouping ?? oldCollection.grouping,
+            sortBy: preferences.sortBy ?? oldCollection.sortBy,
           };
 
           return set(lensIndex(idx), updatedCollection, old);

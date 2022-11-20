@@ -21,9 +21,8 @@ Default.args = {
     layout: 'magazine',
   },
   onHamburgerClicked: action('onHamburgerClicked'),
-  onChangeLayout: action('onChangeLayout'),
   onMenuActionClicked: action('onMenuActionClicked'),
-  onShowFilterChanged: action('onShowFilterChanged'),
+  onPreferenceChanged: action('onPreferenceChanged'),
 };
 
 export const Mobile = Template.bind({});

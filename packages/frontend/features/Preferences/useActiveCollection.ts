@@ -10,6 +10,7 @@ export const useActiveCollection = () => {
         layout: prefs.activeCollectionLayout,
         filter: prefs.activeCollectionFilter,
         grouping: prefs.activeCollectionGrouping,
+        sortBy: prefs.activeCollectionSortBy,
       };
     },
   });

@@ -8,11 +8,7 @@ import {
   useSetCollectionPreferences,
 } from '@features/Collections';
 import { useActiveCollection } from '@features/Preferences';
-import {
-  CollectionLayout,
-  CollectionFilter,
-  CollectionGrouping,
-} from '@orpington-news/shared';
+import { CollectionPreferences } from '@orpington-news/shared';
 import { ModalContext } from './ModalContext';
 
 export const CollectionItemsHeader: React.FC = () => {
@@ -43,9 +39,8 @@ export const CollectionItemsHeader: React.FC = () => {
   }, [activeCollection, refreshCollection]);
 
   const { mutate: setCollectionPreferences } = useSetCollectionPreferences();
-  // TODO: unify the three functions below
-  const handleCollectionLayoutChanged = useCallback(
-    (layout: CollectionLayout) => {
+  const handlePreferenceChange = useCallback(
+    (preferences: CollectionPreferences) => {
       if (activeCollection?.id === undefined) {
         console.error(
           `handleCollectionLayoutChanged() without active collection`
@@ -55,39 +50,7 @@ export const CollectionItemsHeader: React.FC = () => {
 
       setCollectionPreferences({
         id: activeCollection.id,
-        preferences: { layout },
-      });
-    },
-    [activeCollection?.id, setCollectionPreferences]
-  );
-  const handleCollectionFilterChanged = useCallback(
-    (filter: CollectionFilter) => {
-      if (activeCollection?.id === undefined) {
-        console.error(
-          `handleCollectionLayoutChanged() without active collection`
-        );
-        return;
-      }
-
-      setCollectionPreferences({
-        id: activeCollection.id,
-        preferences: { filter },
-      });
-    },
-    [activeCollection?.id, setCollectionPreferences]
-  );
-  const handleCollectionGroupingChanged = useCallback(
-    (grouping: CollectionGrouping) => {
-      if (activeCollection?.id === undefined) {
-        console.error(
-          `handleCollectionLayoutChanged() without active collection`
-        );
-        return;
-      }
-
-      setCollectionPreferences({
-        id: activeCollection.id,
-        preferences: { grouping },
+        preferences,
       });
     },
     [activeCollection?.id, setCollectionPreferences]
@@ -127,10 +90,8 @@ export const CollectionItemsHeader: React.FC = () => {
       isRefreshing={isRefreshing || showBgLoadingIndicator}
       menuButtonRef={drawerButtonRef}
       onHamburgerClicked={toggleDrawer}
-      onChangeLayout={handleCollectionLayoutChanged}
-      onShowFilterChanged={handleCollectionFilterChanged}
-      onGroupingChanged={handleCollectionGroupingChanged}
       onMenuActionClicked={handleMenuActionClicked}
+      onPreferenceChanged={handlePreferenceChange}
     />
   );
 };

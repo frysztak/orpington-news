@@ -170,6 +170,7 @@ sizes.forEach((size) => {
           activeCollectionTitle: 'Kent C. Dodds Blog',
           activeCollectionFilter: 'all',
           activeCollectionGrouping: 'none',
+          activeCollectionSortBy: 'newestFirst',
         });
         expect(response.statusCode).to.eq(200);
       });
@@ -226,7 +227,7 @@ sizes.forEach((size) => {
       cy.intercept({
         method: 'GET',
         url: getApiPath(
-          '/collections/2/items?pageIndex=0&filter=all&grouping=none'
+          '/collections/2/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst'
         ),
       }).as('apiGetItems');
       cy.intercept({
@@ -304,7 +305,7 @@ sizes.forEach((size) => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            '/collections/2/items?pageIndex=0&filter=all&grouping=none'
+            '/collections/2/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst'
           ),
         }).as('apiGetItems');
 
@@ -363,7 +364,7 @@ sizes.forEach((size) => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            '/collections/1/items?pageIndex=0&filter=all&grouping=none'
+            '/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst'
           ),
         }).as('apiGetHomeItems');
 
@@ -411,7 +412,7 @@ sizes.forEach((size) => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            '/collections/1/items?pageIndex=0&filter=all&grouping=none'
+            '/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst'
           ),
         }).as('apiGetHomeItems');
 
@@ -483,7 +484,7 @@ sizes.forEach((size) => {
             cy.intercept({
               method: 'GET',
               url: getApiPath(
-                '/collections/2/items?pageIndex=0&filter=all&grouping=none'
+                '/collections/2/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst'
               ),
             }).as('apiGetItems');
 
@@ -547,7 +548,7 @@ sizes.forEach((size) => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst`
           ),
         }).as('apiGetHomeItems');
 
@@ -591,7 +592,7 @@ sizes.forEach((size) => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst`
           ),
         }).as('apiGetHomeItems');
         cy.intercept({
@@ -617,6 +618,7 @@ sizes.forEach((size) => {
             activeCollectionFilter: 'all',
             activeCollectionGrouping: 'none',
             activeCollectionLayout: 'card',
+            activeCollectionSortBy: 'newestFirst',
           });
           expect(response.statusCode).to.eq(200);
         });
@@ -656,7 +658,7 @@ sizes.forEach((size) => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst`
           ),
         }).as('apiGetHomeItems');
 
@@ -717,13 +719,13 @@ sizes.forEach((size) => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            `/collections/2/items?pageIndex=0&filter=unread&grouping=none`
+            `/collections/2/items?pageIndex=0&filter=unread&grouping=none&sortBy=newestFirst`
           ),
         }).as('apiGetItems2');
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            `/collections/3/items?pageIndex=0&filter=read&grouping=none`
+            `/collections/3/items?pageIndex=0&filter=read&grouping=none&sortBy=newestFirst`
           ),
         }).as('apiGetItems3');
 
@@ -769,14 +771,14 @@ sizes.forEach((size) => {
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst`
           ),
         }).as('apiGetItemsWithoutGrouping');
 
         cy.intercept({
           method: 'GET',
           url: getApiPath(
-            `/collections/1/items?pageIndex=0&filter=all&grouping=feed`
+            `/collections/1/items?pageIndex=0&filter=all&grouping=feed&sortBy=newestFirst`
           ),
         }).as('apiGetItemsWithGrouping');
 
@@ -795,14 +797,14 @@ sizes.forEach((size) => {
           cy.intercept({
             method: 'GET',
             url: getApiPath(
-              `/collections/1/items?pageIndex=0&filter=all&grouping=none`
+              `/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst`
             ),
           }).as('apiGetItemsWithoutGrouping');
 
           cy.intercept({
             method: 'GET',
             url: getApiPath(
-              `/collections/1/items?pageIndex=0&filter=all&grouping=date`
+              `/collections/1/items?pageIndex=0&filter=all&grouping=date&sortBy=newestFirst`
             ),
           }).as('apiGetItemsWithGrouping');
         });
@@ -832,6 +834,75 @@ sizes.forEach((size) => {
           cy.getBySel('groupHeader-This week').should('be.visible');
           cy.getBySel('groupHeader-Over a month ago').should('be.visible');
         });
+      });
+    });
+
+    describe('sorting', () => {
+      beforeEach(() => {
+        cy.putCollectionPreferencesByApi({
+          collectionId: 1,
+          preferences: { layout: 'list' },
+        });
+
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+      });
+
+      it('oldest first', () => {
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst`
+          ),
+        }).as('apiGetItems');
+
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(
+            `/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=oldestFirst`
+          ),
+        }).as('apiGetItemsOldestFirst');
+
+        cy.visit('/');
+        cy.wait('@apiGetItems');
+
+        cy.clickCollectionHeaderMenuAction('sortBy-oldestFirst');
+        cy.wait('@apiGetItemsOldestFirst');
+
+        cy.getBySel('collectionItemList')
+          .within(() => {
+            cy.get('[data-index=0]')
+              .within(() => {
+                cy.getBySelVisible('title').should(
+                  'have.text',
+                  'How I help you build better websites'
+                );
+              })
+              .should('exist');
+
+            cy.get('[data-index=1]')
+              .within(() => {
+                cy.getBySelVisible('title').should(
+                  'have.text',
+                  'Why I Love Remix'
+                );
+              })
+              .should('exist');
+
+            cy.get('[data-index=2]')
+              .within(() => {
+                cy.getBySelVisible('title').should(
+                  'have.text',
+                  "Remix: The Yang to React's Yin"
+                );
+              })
+              .should('exist');
+          })
+          .should('exist');
       });
     });
   });

@@ -31,7 +31,8 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
   } = useCollectionItems(
     activeCollection?.id,
     activeCollection?.filter,
-    activeCollection?.grouping
+    activeCollection?.grouping,
+    activeCollection?.sortBy
   );
 
   const { mutate: refreshCollection, isLoading: isRefreshing } =
