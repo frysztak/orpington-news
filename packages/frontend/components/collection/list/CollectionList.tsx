@@ -7,7 +7,7 @@ import {
   VStack,
   Text,
 } from '@chakra-ui/react';
-import { Virtuoso } from 'react-virtuoso';
+import { GroupedVirtuoso, Virtuoso } from 'react-virtuoso';
 import { InformationCircleIcon } from '@heroicons/react/24/solid';
 import {
   CollectionItem,
@@ -19,10 +19,27 @@ import {
 import { usePullToRefresh } from '@utils';
 import { CardItem, ListItem, MagazineItem } from '../layouts';
 import { RefreshIndicator } from './RefreshIndicator';
+import { GroupHeader } from './GroupHeader';
+
+export type CollectionListItems =
+  | {
+      type: 'list';
+      list: CollectionItem[];
+    }
+  | {
+      type: 'group';
+      list: CollectionItem[];
+      groupNames: string[];
+      groupCounts: number[];
+    };
+
+const isEmpty = (items: CollectionListItems): boolean => {
+  return items.list.length === 0;
+};
 
 export interface CollectionListProps {
   layout?: CollectionLayout;
-  items: CollectionItem[];
+  items: CollectionListItems;
 
   isLoading?: boolean;
   isFetchingMoreItems?: boolean;
@@ -94,7 +111,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     );
   }
 
-  if (!isLoading && items.length === 0) {
+  if (!isLoading && isEmpty(items)) {
     return (
       <VStack w="full" pt={8} justify="center" data-test="thisFeedHasNoItems">
         <Icon as={InformationCircleIcon} boxSize={12} color="blue.400" />
@@ -117,23 +134,50 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       {...rest}
     >
       <RefreshIndicator isRefreshing={isRefreshing} />
-      <Virtuoso
-        style={{ height: '100%', width: '100%' }}
-        data={items}
-        computeItemKey={(_, item) => item.id}
-        endReached={onFetchMoreItems}
-        scrollerRef={handleScrollerRef}
-        itemContent={(index, data) => (
-          <Item
-            item={data}
-            isActive={data.id === activeArticleId}
-            data-test={`item-id-${data.id}`}
-          />
-        )}
-        components={{
-          Footer: canFetchMoreItems ? Skeleton : undefined,
-        }}
-      />
+      {items.type === 'list' ? (
+        <Virtuoso
+          key="flat"
+          style={{ height: '100%', width: '100%' }}
+          data={items.list}
+          computeItemKey={(_, item) => item.id}
+          endReached={onFetchMoreItems}
+          scrollerRef={handleScrollerRef}
+          itemContent={(index, data) => (
+            <Item
+              item={data}
+              isActive={data.id === activeArticleId}
+              data-test={`item-id-${data.id}`}
+            />
+          )}
+          components={{
+            Footer: canFetchMoreItems ? Skeleton : undefined,
+          }}
+        />
+      ) : (
+        <GroupedVirtuoso
+          key="grouped"
+          style={{ height: '100%', width: '100%' }}
+          groupCounts={items.groupCounts}
+          endReached={onFetchMoreItems}
+          scrollerRef={handleScrollerRef}
+          groupContent={(groupIndex) => (
+            <GroupHeader title={items.groupNames[groupIndex]} />
+          )}
+          itemContent={(index) => {
+            const data = items.list[index];
+            return (
+              <Item
+                item={data}
+                isActive={data.id === activeArticleId}
+                data-test={`item-id-${data.id}`}
+              />
+            );
+          }}
+          components={{
+            Footer: canFetchMoreItems ? Skeleton : undefined,
+          }}
+        />
+      )}
     </Box>
   );
 };

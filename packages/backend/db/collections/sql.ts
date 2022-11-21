@@ -4,6 +4,7 @@ import {
   AddCollection,
   Collection,
   CollectionPreferences,
+  CollectionSortBy,
   defaultCollectionLayout,
   defaultIcon,
   defaultRefreshInterval,
@@ -133,7 +134,7 @@ export type DBCollection = Omit<
   unread_count: number | null;
   refresh_interval: number;
   is_last_child: boolean;
-  sort_by: string | null;
+  sort_by: CollectionSortBy | null;
   is_home: boolean;
   etag: string | null;
 };
@@ -410,12 +411,15 @@ export const setCollectionPreferences = ({
   const grouping = preferences.grouping
     ? sql`"grouping" = ${preferences.grouping}`
     : EMPTY;
+  const sortBy = preferences.sortBy
+    ? sql`"sort_by" = ${preferences.sortBy}`
+    : EMPTY;
 
   return sql`
 UPDATE
   collections
 SET
-  ${layout} ${filter} ${grouping}
+  ${layout} ${filter} ${grouping} ${sortBy}
 WHERE
   id = ${collectionId}
 `;

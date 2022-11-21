@@ -6,6 +6,8 @@ import {
   CollectionFilter,
   ID,
   UpdateCollection,
+  CollectionGrouping,
+  CollectionSortBy,
 } from '@orpington-news/shared';
 import type { Wretch } from '@api';
 
@@ -17,12 +19,14 @@ export const getCollectionItems = (
   signal: AbortSignal | undefined,
   collectionId: string | ID,
   pageIndex: number,
-  filter: CollectionFilter
+  filter: CollectionFilter,
+  grouping: CollectionGrouping,
+  sortBy: CollectionSortBy
 ) =>
   api
     .options({ signal })
     .url(`/collections/${collectionId}/items`)
-    .query({ pageIndex, filter })
+    .query({ pageIndex, filter, grouping, sortBy })
     .get()
     .json<CollectionItem[]>();
 

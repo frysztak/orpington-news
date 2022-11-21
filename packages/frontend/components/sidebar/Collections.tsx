@@ -86,7 +86,7 @@ const ItemContent: React.FC<ItemContentProps> = ({
             onClick={handleMenuItemClick('markAsRead')}
             data-test="markAsRead"
           >
-            Mark as read
+            Mark all as read
           </MenuItem>
           <MenuItem
             icon={<IoRefresh />}

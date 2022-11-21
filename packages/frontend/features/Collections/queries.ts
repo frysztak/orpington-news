@@ -26,9 +26,20 @@ import {
   Preferences,
   CollectionFilter,
   defaultCollectionFilter,
+  CollectionGrouping,
+  defaultCollectionGrouping,
+  defaultPageSize,
+  CollectionSortBy,
+  defaultCollectionSortBy,
 } from '@orpington-news/shared';
 import { mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
+import {
+  getGroupCounts,
+  getGroupNames,
+  groupByCollection,
+  groupByDate,
+} from './helpers';
 
 export const useCollectionsList = <TSelectedData = Collection[]>(opts?: {
   enabled?: boolean;
@@ -57,14 +68,22 @@ export const useCollectionById = (collectionId?: ID | null) => {
 };
 
 export const collectionsItemsQueryFn =
-  (api: Wretch, collectionId: ID, filter: CollectionFilter) =>
+  (
+    api: Wretch,
+    collectionId: ID,
+    filter: CollectionFilter,
+    grouping: CollectionGrouping,
+    sortBy: CollectionSortBy
+  ) =>
   ({ pageParam = 0, signal }: QueryFunctionContext) => {
     return getCollectionItems(
       api,
       signal,
       collectionId,
       pageParam,
-      filter
+      filter,
+      grouping,
+      sortBy
     ).then((items) => ({
       items,
       pageParam,
@@ -73,18 +92,22 @@ export const collectionsItemsQueryFn =
 
 export const useCollectionItems = (
   collectionId?: ID,
-  filter: CollectionFilter = defaultCollectionFilter
+  filter: CollectionFilter = defaultCollectionFilter,
+  grouping: CollectionGrouping = defaultCollectionGrouping,
+  sortBy: CollectionSortBy = defaultCollectionSortBy
 ) => {
   const api = useApi();
   const { onError } = useHandleError();
 
   const { data, ...rest } = useInfiniteQuery(
-    collectionKeys.list(collectionId!, filter),
-    collectionsItemsQueryFn(api, collectionId!, filter),
+    collectionKeys.list(collectionId!, filter, grouping, sortBy),
+    collectionsItemsQueryFn(api, collectionId!, filter, grouping, sortBy),
     {
       enabled: collectionId !== undefined,
       getNextPageParam: (lastPage) =>
-        lastPage.items.length === 0 ? undefined : lastPage.pageParam + 1,
+        lastPage.items.length < defaultPageSize
+          ? undefined
+          : lastPage.pageParam + 1,
       onError,
     }
   );
@@ -93,7 +116,20 @@ export const useCollectionItems = (
     return data?.pages?.flatMap((page) => [...page.items]) || [];
   }, [data]);
 
-  return { ...rest, data, allItems };
+  const { groupCounts, groupNames } = useMemo(() => {
+    if (grouping === 'none') {
+      return {};
+    }
+
+    const grouped =
+      grouping === 'date' ? groupByDate(allItems) : groupByCollection(allItems);
+    return {
+      groupCounts: getGroupCounts(grouped),
+      groupNames: getGroupNames(grouped),
+    };
+  }, [allItems, grouping]);
+
+  return { ...rest, data, allItems, groupCounts, groupNames };
 };
 
 export const useMarkCollectionAsRead = () => {
@@ -112,8 +148,8 @@ export const useMarkCollectionAsRead = () => {
       queryClient.setQueryData(collectionKeys.tree, collections);
 
       for (const id of ids) {
-        queryClient.setQueryData(
-          collectionKeys.list(id),
+        queryClient.setQueriesData(
+          collectionKeys.lists(id),
           mutatePageData<CollectionItem>((item) => ({
             ...item,
             dateRead: timestamp,
@@ -124,8 +160,8 @@ export const useMarkCollectionAsRead = () => {
       }
 
       if (homeId !== undefined) {
-        queryClient.setQueryData(
-          collectionKeys.list(homeId),
+        queryClient.setQueriesData(
+          collectionKeys.lists(homeId),
           mutatePageData<CollectionItem>((item) =>
             ids.includes(item.collection.id)
               ? { ...item, dateRead: timestamp }
@@ -158,7 +194,10 @@ export const useRefreshCollection = () => {
   });
 };
 
-type CollectionPreferences = Pick<Collection, 'layout' | 'filter' | 'grouping'>;
+type CollectionPreferences = Pick<
+  Collection,
+  'layout' | 'filter' | 'grouping' | 'sortBy'
+>;
 
 export const useSetCollectionPreferences = () => {
   const api = useApi();
@@ -182,6 +221,8 @@ export const useSetCollectionPreferences = () => {
                 preferences.filter ?? old.activeCollectionFilter,
               activeCollectionGrouping:
                 preferences.grouping ?? old.activeCollectionGrouping,
+              activeCollectionSortBy:
+                preferences.sortBy ?? old.activeCollectionSortBy,
             }
         );
 
@@ -201,6 +242,7 @@ export const useSetCollectionPreferences = () => {
             layout: preferences.layout ?? oldCollection.layout,
             filter: preferences.filter ?? oldCollection.filter,
             grouping: preferences.grouping ?? oldCollection.grouping,
+            sortBy: preferences.sortBy ?? oldCollection.sortBy,
           };
 
           return set(lensIndex(idx), updatedCollection, old);

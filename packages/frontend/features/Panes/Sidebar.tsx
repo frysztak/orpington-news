@@ -21,6 +21,7 @@ import {
   defaultCollectionLayout,
   emptyIfUndefined,
   Collection,
+  defaultCollectionSortBy,
 } from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
 import { ModalContext } from './ModalContext';
@@ -105,6 +106,7 @@ export const Sidebar: React.FC = () => {
           activeCollectionLayout: collection.layout ?? defaultCollectionLayout,
           activeCollectionFilter: collection.filter!,
           activeCollectionGrouping: collection.grouping!,
+          activeCollectionSortBy: collection.sortBy ?? defaultCollectionSortBy,
         });
       });
     },

@@ -70,6 +70,10 @@ export const CollectionGrouping = z.enum(['none', 'feed', 'date']);
 export type CollectionGrouping = z.infer<typeof CollectionGrouping>;
 export const defaultCollectionGrouping: CollectionGrouping = 'none';
 
+export const CollectionSortBy = z.enum(['newestFirst', 'oldestFirst']);
+export type CollectionSortBy = z.infer<typeof CollectionSortBy>;
+export const defaultCollectionSortBy: CollectionSortBy = 'newestFirst';
+
 export const Collection = z.object({
   id: ID,
   title: z.string(),
@@ -84,7 +88,7 @@ export const Collection = z.object({
   layout: z.optional(CollectionLayout),
   filter: z.optional(CollectionFilter),
   grouping: z.optional(CollectionGrouping),
-  sortBy: z.optional(z.string()),
+  sortBy: z.optional(CollectionSortBy),
 
   isHome: z.boolean(),
   parents: z.array(ID),
@@ -154,6 +158,7 @@ export const CollectionPreferences = Collection.pick({
   layout: true,
   filter: true,
   grouping: true,
+  sortBy: true,
 });
 export type CollectionPreferences = z.infer<typeof CollectionPreferences>;
 
@@ -163,5 +168,6 @@ export const ActiveCollection = Collection.pick({
   layout: true,
   filter: true,
   grouping: true,
+  sortBy: true,
 });
 export type ActiveCollection = z.infer<typeof ActiveCollection>;

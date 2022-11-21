@@ -20,17 +20,18 @@ const Template: Story<CollectionListProps> = (props) => (
 
 const collection = generateSampleCollection('Fun Blog');
 const items2 = genN(2).map((_) => generateSampleCollectionItem(collection));
+const items20 = genN(20).map((_) => generateSampleCollectionItem(collection));
 const items100 = genN(100).map((_) => generateSampleCollectionItem(collection));
 
 export const Empty = Template.bind({});
 Empty.args = {
-  items: [],
+  items: { type: 'list', list: [] },
   layout: 'magazine',
 };
 
 export const EmptyFetching = Template.bind({});
 EmptyFetching.args = {
-  items: [],
+  items: { type: 'list', list: [] },
   layout: 'magazine',
   isLoading: true,
 };
@@ -38,19 +39,30 @@ EmptyFetching.args = {
 export const TwoItems = Template.bind({});
 TwoItems.args = {
   layout: 'magazine',
-  items: items2,
+  items: { type: 'list', list: items2 },
 };
 
 export const HundredItems = Template.bind({});
 HundredItems.args = {
   layout: 'magazine',
-  items: items100,
+  items: { type: 'list', list: items100 },
+};
+
+export const HundredItemsGrouped = Template.bind({});
+HundredItemsGrouped.args = {
+  layout: 'list',
+  items: {
+    type: 'group',
+    list: [...items20, ...items20],
+    groupNames: ['One', 'Two'],
+    groupCounts: [20, 20],
+  },
 };
 
 export const IsFetchingMore = Template.bind({});
 IsFetchingMore.args = {
   layout: 'magazine',
-  items: items2,
+  items: { type: 'list', list: items2 },
   canFetchMoreItems: true,
   isFetchingMoreItems: true,
 };
@@ -58,7 +70,7 @@ IsFetchingMore.args = {
 export const HundredItemsIsRefreshing = Template.bind({});
 HundredItemsIsRefreshing.args = {
   layout: 'magazine',
-  items: items100,
+  items: { type: 'list', list: items100 },
   isRefreshing: true,
 };
 
@@ -91,7 +103,7 @@ const FetchTemplate: Story<CollectionListProps> = (props) => {
       isFetchingMoreItems={isFetching}
       canFetchMoreItems={page < 5}
       onFetchMoreItems={fetchMoreItems}
-      items={items}
+      items={{ type: 'list', list: items }}
     />
   );
 };

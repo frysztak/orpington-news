@@ -45,6 +45,8 @@ import {
   defaultCollectionFilter,
   defaultCollectionGrouping,
   CollectionGrouping,
+  CollectionSortBy,
+  defaultCollectionSortBy,
 } from '@orpington-news/shared';
 import { MAX_INT, normalizeUrl } from '@utils';
 import { logger } from '@utils/logger';
@@ -102,7 +104,7 @@ const mapDBCollection = (collection: DBCollection): Collection => {
     layout: layout ?? defaultCollectionLayout,
     filter: filter ?? defaultCollectionFilter,
     grouping: grouping ?? defaultCollectionGrouping,
-    sortBy: sort_by ?? 'ee',
+    sortBy: sort_by ?? defaultCollectionSortBy,
     isHome: is_home,
     parents,
     parentId: parent_id ?? undefined,
@@ -363,6 +365,8 @@ export const collections: FastifyPluginAsync = async (
   const GetItemsParams = PaginationSchema.merge(
     z.object({
       filter: CollectionFilter.optional(),
+      grouping: CollectionGrouping.optional(),
+      sortBy: CollectionSortBy.optional(),
     })
   );
   fastify.get<{
@@ -381,7 +385,13 @@ export const collections: FastifyPluginAsync = async (
     async (request, reply) => {
       const {
         params: { id },
-        query: { pageIndex, pageSize, filter = 'all' },
+        query: {
+          pageIndex,
+          pageSize,
+          filter = defaultCollectionFilter,
+          grouping = defaultCollectionGrouping,
+          sortBy = defaultCollectionSortBy,
+        },
         session: { userId },
       } = request;
 
@@ -389,6 +399,8 @@ export const collections: FastifyPluginAsync = async (
         userId,
         collectionId: id,
         filter,
+        grouping,
+        sortBy,
       });
       const items = (await pool.any(
         addPagination({ pageIndex, pageSize }, itemsQuery)
@@ -546,6 +558,7 @@ export const collections: FastifyPluginAsync = async (
     layout: CollectionLayout.optional(),
     filter: CollectionFilter.optional(),
     grouping: CollectionGrouping.optional(),
+    sortBy: CollectionSortBy.optional(),
   });
 
   fastify.put<{

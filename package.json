@@ -21,7 +21,7 @@
     "@cypress/code-coverage": "^3.10.0",
     "@slonik/migrator": "^0.11.3",
     "cross-env": "^7.0.3",
-    "cypress": "^10.11.0",
+    "cypress": "^11.1.0",
     "cypress-dark": "^1.8.3",
     "dotenv": "^16.0.3",
     "husky": "^8.0.2",
@@ -30,7 +30,7 @@
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
     "slonik": "^31.4.2",
-    "typescript": "4.8.4",
+    "typescript": "4.9.3",
     "yarn-audit-fix": "^9.3.7"
   },
   "workspaces": [
@@ -40,5 +40,5 @@
     "*.{js,cjs,css,md,ts,tsx,json,yml,yaml}": "prettier --write"
   },
   "packageManager": "yarn@3.2.0",
-  "version": "0.8.0"
+  "version": "0.9.0"
 }

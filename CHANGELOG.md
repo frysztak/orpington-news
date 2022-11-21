@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] - 2022-11-21
+
+### Added
+
+-   Collection item grouping (by date or by Collection)
+-   Collection item sorting (newest/oldest first)
+
+### Changed
+
+-   Mark as read: relabel as "Mark all as read"
+
+### Fixed
+
+-   Fixed redundant fetching of empty collection pages
+-   Mark as read: improve snappiness
+
 ## [0.8.0] - 2022-11-11
 
 ### Added
@@ -233,7 +249,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.9.0...HEAD
+
+[0.9.0]: https://github.com/frysztak/orpington-news/compare/0.8.0...0.9.0
 
 [0.8.0]: https://github.com/frysztak/orpington-news/compare/0.7.4...0.8.0
 

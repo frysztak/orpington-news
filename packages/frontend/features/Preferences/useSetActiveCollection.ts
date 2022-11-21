@@ -24,6 +24,7 @@ export const useSetActiveCollection = () => {
       activeCollectionLayout: homeCollection.layout!,
       activeCollectionFilter: homeCollection.filter!,
       activeCollectionGrouping: homeCollection.grouping!,
+      activeCollectionSortBy: homeCollection.sortBy!,
     });
   }, [homeCollection, homeId, mutate]);
 
