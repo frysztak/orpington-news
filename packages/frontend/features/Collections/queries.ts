@@ -148,8 +148,8 @@ export const useMarkCollectionAsRead = () => {
       queryClient.setQueryData(collectionKeys.tree, collections);
 
       for (const id of ids) {
-        queryClient.setQueryData(
-          collectionKeys.list(id),
+        queryClient.setQueriesData(
+          collectionKeys.lists(id),
           mutatePageData<CollectionItem>((item) => ({
             ...item,
             dateRead: timestamp,
@@ -160,8 +160,8 @@ export const useMarkCollectionAsRead = () => {
       }
 
       if (homeId !== undefined) {
-        queryClient.setQueryData(
-          collectionKeys.list(homeId),
+        queryClient.setQueriesData(
+          collectionKeys.lists(homeId),
           mutatePageData<CollectionItem>((item) =>
             ids.includes(item.collection.id)
               ? { ...item, dateRead: timestamp }

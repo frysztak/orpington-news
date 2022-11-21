@@ -143,7 +143,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                   onClick={() => onMenuActionClicked?.('markAsRead')}
                   data-test="markAsRead"
                 >
-                  Mark as read
+                  Mark all as read
                 </MenuItem>
 
                 <MenuDivider />
