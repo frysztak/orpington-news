@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed redundant fetching of empty collection pages
+- Mark as read: improve snappiness
 
 ## [0.8.0] - 2022-11-11
 
