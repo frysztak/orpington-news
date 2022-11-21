@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Collection item grouping (by date or by Collection)
 - Collection item sorting (newest/oldest first)
 
+### Changed
+
+- Mark as read: relabel as "Mark all as read"
+
 ### Fixed
 
 - Fixed redundant fetching of empty collection pages
