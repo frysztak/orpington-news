@@ -127,24 +127,26 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                   </MenuOptionGroup>
                 )}
 
-                <MenuDivider />
+                <Box display={{ base: 'none', lg: 'block' }}>
+                  <MenuDivider />
 
-                <MenuOptionGroup
-                  value={panesLayout}
-                  title="Panes layout"
-                  type="radio"
-                >
-                  {PanesLayouts.map((layout) => (
-                    <MenuItemOption
-                      key={layout}
-                      value={layout}
-                      onClick={() => onPanesLayoutChanged?.(layout)}
-                      data-test={`layout-${layout}`}
-                    >
-                      {PanesLayoutName[layout]}
-                    </MenuItemOption>
-                  ))}
-                </MenuOptionGroup>
+                  <MenuOptionGroup
+                    value={panesLayout}
+                    title="Panes layout"
+                    type="radio"
+                  >
+                    {PanesLayouts.map((layout) => (
+                      <MenuItemOption
+                        key={layout}
+                        value={layout}
+                        onClick={() => onPanesLayoutChanged?.(layout)}
+                        data-test={`layout-${layout}`}
+                      >
+                        {PanesLayoutName[layout]}
+                      </MenuItemOption>
+                    ))}
+                  </MenuOptionGroup>
+                </Box>
               </MenuList>
             </Menu>
           </Box>
