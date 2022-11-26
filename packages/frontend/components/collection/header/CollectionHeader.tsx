@@ -32,6 +32,9 @@ import {
   CollectionFilterName,
   CollectionGroupingName,
   CollectionSortByName,
+  PanesLayouts,
+  PanesLayoutName,
+  PanesLayout,
 } from '../types';
 
 export type MenuAction = 'refresh' | 'markAsRead';
@@ -40,10 +43,12 @@ export interface CollectionHeaderProps {
   collection?: ActiveCollection;
   menuButtonRef?: React.MutableRefObject<HTMLButtonElement | null>;
   isRefreshing?: boolean;
+  panesLayout?: PanesLayout;
 
   onHamburgerClicked?: () => void;
   onMenuActionClicked?: (action: MenuAction) => void;
   onPreferenceChanged?: (preferences: CollectionPreferences) => void;
+  onPanesLayoutChanged?: (layout: PanesLayout) => void;
 }
 
 export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
@@ -51,9 +56,12 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     collection,
     menuButtonRef,
     isRefreshing = false,
+    panesLayout,
+
     onHamburgerClicked,
     onMenuActionClicked,
     onPreferenceChanged,
+    onPanesLayoutChanged,
   } = props;
 
   const isLoading = collection === undefined;
@@ -103,7 +111,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                 {collection && (
                   <MenuOptionGroup
                     value={collection.layout}
-                    title="Layout"
+                    title="List layout"
                     type="radio"
                   >
                     {CollectionLayout.options.map((layout) => (
@@ -118,6 +126,25 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                     ))}
                   </MenuOptionGroup>
                 )}
+
+                <MenuDivider />
+
+                <MenuOptionGroup
+                  value={panesLayout}
+                  title="Panes layout"
+                  type="radio"
+                >
+                  {PanesLayouts.map((layout) => (
+                    <MenuItemOption
+                      key={layout}
+                      value={layout}
+                      onClick={() => onPanesLayoutChanged?.(layout)}
+                      data-test={`layout-${layout}`}
+                    >
+                      {PanesLayoutName[layout]}
+                    </MenuItemOption>
+                  ))}
+                </MenuOptionGroup>
               </MenuList>
             </Menu>
           </Box>
