@@ -103,8 +103,9 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         align="stretch"
         spacing={6}
         px={3}
+        overflowY="clip"
       >
-        {genN(10).map((x) => (
+        {genN(5).map((x) => (
           <Skeleton key={x} />
         ))}
       </VStack>
