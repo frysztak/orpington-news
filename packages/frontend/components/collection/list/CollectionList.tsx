@@ -17,9 +17,10 @@ import {
   ID,
 } from '@orpington-news/shared';
 import { usePullToRefresh } from '@utils';
-import { CardItem, ListItem, MagazineItem } from '../layouts';
+import { CardItem, ListItem, MagazineItem, ExpandedItem } from '../layouts';
 import { RefreshIndicator } from './RefreshIndicator';
 import { GroupHeader } from './GroupHeader';
+import { PanesLayout } from '../types';
 
 export type CollectionListItems =
   | {
@@ -39,6 +40,7 @@ const isEmpty = (items: CollectionListItems): boolean => {
 
 export interface CollectionListProps {
   layout?: CollectionLayout;
+  panesLayout: PanesLayout;
   items: CollectionListItems;
 
   isLoading?: boolean;
@@ -69,6 +71,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
 ) => {
   const {
     layout = defaultCollectionLayout,
+    panesLayout,
     items,
     isLoading,
     isFetchingMoreItems,
@@ -143,13 +146,21 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
           computeItemKey={(_, item) => item.id}
           endReached={onFetchMoreItems}
           scrollerRef={handleScrollerRef}
-          itemContent={(index, data) => (
-            <Item
-              item={data}
-              isActive={data.id === activeArticleId}
-              data-test={`item-id-${data.id}`}
-            />
-          )}
+          itemContent={(index, data) =>
+            panesLayout === 'expandable' && data.id === activeArticleId ? (
+              <ExpandedItem
+                item={data}
+                isActive={data.id === activeArticleId}
+                data-test={`item-id-${data.id}`}
+              />
+            ) : (
+              <Item
+                item={data}
+                isActive={data.id === activeArticleId}
+                data-test={`item-id-${data.id}`}
+              />
+            )
+          }
           components={{
             Footer: canFetchMoreItems ? Skeleton : undefined,
           }}
@@ -166,7 +177,14 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
           )}
           itemContent={(index) => {
             const data = items.list[index];
-            return (
+            return panesLayout === 'expandable' &&
+              data.id === activeArticleId ? (
+              <ExpandedItem
+                item={data}
+                isActive={data.id === activeArticleId}
+                data-test={`item-id-${data.id}`}
+              />
+            ) : (
               <Item
                 item={data}
                 isActive={data.id === activeArticleId}

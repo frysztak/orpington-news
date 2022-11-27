@@ -39,10 +39,11 @@ export const CollectionSortByName: Record<CollectionSortBy, string> = {
   oldestFirst: 'Oldest first',
 };
 
-export const PanesLayouts = ['horizontal', 'vertical'] as const;
+export const PanesLayouts = ['horizontal', 'vertical', 'expandable'] as const;
 export type PanesLayout = typeof PanesLayouts[number];
 
 export const PanesLayoutName: Record<PanesLayout, string> = {
   horizontal: 'Horizontal',
   vertical: 'Vertical',
+  expandable: 'Expandable',
 };
