@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Vertical panes layout
 
+### Changed
+
+- Drawer on mobile no longer takes 100% width
+
 ## [0.9.1] - 2022-11-28
 
 ### Fixed
