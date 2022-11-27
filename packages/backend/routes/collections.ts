@@ -20,7 +20,7 @@ import {
   updateCollection,
 } from '@db/collections';
 import {
-  DBCollectionItemWithoutText,
+  DBCollectionItem,
   getCollectionItems,
   getItemDetails,
   setItemDateRead,
@@ -404,7 +404,7 @@ export const collections: FastifyPluginAsync = async (
       });
       const items = (await pool.any(
         addPagination({ pageIndex, pageSize }, itemsQuery)
-      )) as readonly DBCollectionItemWithoutText[];
+      )) as readonly DBCollectionItem[];
 
       return items.map((dbItem) => ({
         id: dbItem.id,
@@ -415,6 +415,7 @@ export const collections: FastifyPluginAsync = async (
         datePublished: timestampMsToSeconds(dbItem.date_published),
         dateUpdated: timestampMsToSeconds(dbItem.date_updated),
         dateRead: timestampMsToSeconds(dbItem.date_read),
+        fullText: dbItem.full_text ?? '',
         categories: dbItem.categories ?? undefined,
         comments: dbItem.comments ?? undefined,
         readingTime: dbItem.reading_time,
