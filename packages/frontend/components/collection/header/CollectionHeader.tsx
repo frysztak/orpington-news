@@ -107,7 +107,11 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
                 variant="ghost"
                 data-test="layoutButton"
               />
-              <MenuList data-focus-visible-disabled data-test="layoutMenuList">
+              <MenuList
+                zIndex="docked"
+                data-focus-visible-disabled
+                data-test="layoutMenuList"
+              >
                 {collection && (
                   <MenuOptionGroup
                     value={collection.layout}
