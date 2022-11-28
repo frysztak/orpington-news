@@ -257,17 +257,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-<<<<<<< HEAD
-
-- # The entire app!
 - The entire app!
 
-[unreleased]: https://github.com/frysztak/orpington-news/compare/0.9.1...HEAD
-[0.9.1]: https://github.com/frysztak/orpington-news/compare/0.9.0...0.9.1
-
-> > > > > > > release/v0.9.1
-
 [unreleased]: https://github.com/frysztak/orpington-news/compare/0.9.0...HEAD
+[0.9.1]: https://github.com/frysztak/orpington-news/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/frysztak/orpington-news/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/frysztak/orpington-news/compare/0.7.4...0.8.0
 [0.7.4]: https://github.com/frysztak/orpington-news/compare/0.7.3...0.7.4
