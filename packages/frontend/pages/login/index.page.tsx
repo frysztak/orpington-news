@@ -33,8 +33,8 @@ const LoginPage: NextPageWithLayout = () => {
     (data: LoginFormData) => {
       mutate(data, {
         onSuccess: async () => {
-          await window.caches.delete('next-data');
-          await window.caches.delete('apis');
+          await window.caches?.delete('next-data');
+          await window.caches?.delete('apis');
           router.push('/');
           attemptToConnect();
         },
