@@ -14,7 +14,7 @@
     <img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/frysztak/orpington-news">
   </a>
   <a href="https://github.com/frysztak/orpington-news/pkgs/container/orpington-news" target="_blank">
-    <img alt="Docker image size" src="https://ghcr-badge.herokuapp.com/frysztak/orpington-news/size">
+    <img alt="Docker image size" src="https://ghcr-badge.deta.dev/frysztak/orpington-news/size">
   </a>
   <a href="https://github.com/frysztak/orpington-news/blob/master/LICENSE" target="_blank">
     <img alt="License" src="https://img.shields.io/github/license/frysztak/orpington-news">
