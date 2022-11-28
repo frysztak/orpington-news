@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   Box,
   BoxProps,
@@ -7,7 +7,7 @@ import {
   VStack,
   Text,
 } from '@chakra-ui/react';
-import { GroupedVirtuoso, Virtuoso } from 'react-virtuoso';
+import { GroupedVirtuoso, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { InformationCircleIcon } from '@heroicons/react/24/solid';
 import {
   CollectionItem,
@@ -88,12 +88,30 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   const handleScrollerRef = useCallback((ref: any) => {
     scrollerRef.current = ref;
   }, []);
+  const virtuosoRef = useRef<VirtuosoHandle | null>(null);
 
   usePullToRefresh({
     scrollerRef,
     isRefreshing,
     onRefresh,
   });
+
+  useEffect(() => {
+    if (panesLayout !== 'expandable' || activeArticleId === undefined) {
+      return;
+    }
+
+    const idx = items.list.findIndex(({ id }) => id === activeArticleId);
+    if (idx === -1) {
+      return;
+    }
+
+    virtuosoRef.current?.scrollIntoView({
+      index: idx,
+      align: 'start',
+      behavior: 'auto',
+    });
+  }, [activeArticleId, items.list, panesLayout]);
 
   const Skeleton = layout === 'list' ? SkeletonList : SkeletonBox;
 
@@ -141,6 +159,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       {items.type === 'list' ? (
         <Virtuoso
           key="flat"
+          ref={virtuosoRef}
           style={{ height: '100%', width: '100%' }}
           data={items.list}
           computeItemKey={(_, item) => item.id}
@@ -168,6 +187,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       ) : (
         <GroupedVirtuoso
           key="grouped"
+          ref={virtuosoRef}
           style={{ height: '100%', width: '100%' }}
           groupCounts={items.groupCounts}
           endReached={onFetchMoreItems}
