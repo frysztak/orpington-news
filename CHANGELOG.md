@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Vertical panes layout
 
+## [0.9.1] - 2022-11-28
+
+### Fixed
+
+- Fixed crash when not using HTTPS ([#94](https://github.com/frysztak/orpington-news/issues/94))
+
 ## [0.9.0] - 2022-11-21
 
 ### Added
@@ -254,6 +260,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The entire app!
 
 [unreleased]: https://github.com/frysztak/orpington-news/compare/0.9.0...HEAD
+[0.9.1]: https://github.com/frysztak/orpington-news/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/frysztak/orpington-news/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/frysztak/orpington-news/compare/0.7.4...0.8.0
 [0.7.4]: https://github.com/frysztak/orpington-news/compare/0.7.3...0.7.4
