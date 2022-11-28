@@ -14,8 +14,8 @@ const Page: NextPageWithLayout = () => {
   useTimeout(() => {
     mutate(void 0, {
       onSuccess: async () => {
-        await window.caches.delete('next-data');
-        await window.caches.delete('apis');
+        await window.caches?.delete('next-data');
+        await window.caches?.delete('apis');
         queryClient.clear();
         router.push('/login');
       },
