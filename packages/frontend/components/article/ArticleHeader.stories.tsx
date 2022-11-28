@@ -36,6 +36,16 @@ Mobile.parameters = {
   },
 };
 
+export const LongNameInline = Template.bind({});
+LongNameInline.args = {
+  ...Default.args,
+  article: {
+    ...article,
+    title:
+      'Johann Gambolputty de von Ausfern-schplenden-schlitter-crasscrenbon-fried-digger-dingle-dangle-dongle-dungle-burstein-von-knacker-thrasher-apple-banger-horowitz-ticolensic-grander-knotty-spelltinkle-grandlich-grumblemeyer-spelterwasser-kurstlich-himbleeisen-bahnwagen-gutenabend-bitte-ein-nürnburger-bratwustle-gerspurten-mitzweimache-luber-hundsfut-gumberaber-shönendanker-kalbsfleisch-mittler-aucher von Hautkopft of Ulm',
+  },
+};
+
 export const LongName = Template.bind({});
 LongName.args = {
   ...Default.args,
