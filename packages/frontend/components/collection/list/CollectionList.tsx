@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   BoxProps,
@@ -96,22 +96,29 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     onRefresh,
   });
 
-  useEffect(() => {
-    if (panesLayout !== 'expandable' || activeArticleId === undefined) {
-      return;
+  const activeArticleIdx = useMemo(() => {
+    if (!activeArticleId) {
+      return -1;
     }
 
-    const idx = items.list.findIndex(({ id }) => id === activeArticleId);
-    if (idx === -1) {
+    return items.list.findIndex(({ id }) => id === activeArticleId);
+  }, [activeArticleId, items.list]);
+
+  useEffect(() => {
+    if (
+      panesLayout !== 'expandable' ||
+      activeArticleIdx === undefined ||
+      activeArticleIdx === -1
+    ) {
       return;
     }
 
     virtuosoRef.current?.scrollIntoView({
-      index: idx,
+      index: activeArticleIdx,
       align: 'start',
       behavior: 'auto',
     });
-  }, [activeArticleId, items.list, panesLayout]);
+  }, [activeArticleIdx, panesLayout]);
 
   const Skeleton = layout === 'list' ? SkeletonList : SkeletonBox;
 
