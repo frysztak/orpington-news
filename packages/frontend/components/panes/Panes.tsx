@@ -66,6 +66,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         h="full"
         display={{ base: 'none', lg: 'flex' }}
         data-test="panesDesktop"
+        data-test-layout={layout}
         {...rest}
       >
         <Resizable

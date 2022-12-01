@@ -527,6 +527,29 @@ sizes.forEach((size) => {
       });
     });
 
+    if (size.includes('macbook')) {
+      describe('change panes layout', () => {
+        beforeEach(() => {
+          cy.addFeedByApi({
+            title: 'Kent C. Dodds Blog',
+            url: getFeedUrl('kentcdodds.xml'),
+            icon: 'Code',
+            refreshInterval: 120,
+          });
+        });
+
+        ['vertical', 'expandable'].forEach((layout) => {
+          it(`to ${layout}`, () => {
+            cy.visit('/');
+            cy.clickCollectionHeaderLayout(layout);
+            cy.get(`[data-test-layout=${layout}]`)
+              .should('exist')
+              .and('be.visible');
+          });
+        });
+      });
+    }
+
     describe('remove collection', () => {
       it('inactive collection', () => {
         cy.addFeedByApi({
