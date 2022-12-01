@@ -204,7 +204,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
         onDragEnd={handleDragEnd}
         style={{ x, width: '100%', height: '100%' }}
       >
-        {!isRouterReady || query.status === 'loading' ? (
+        {!isRouterReady || query.isLoading ? (
           <ArticleSkeleton />
         ) : query.status === 'error' ? (
           <VStack spacing={6} h="full" w="full" justify="center">
