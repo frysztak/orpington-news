@@ -55,7 +55,12 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
               onPanesLayoutChanged={setPanesLayout}
             />
           }
-          collectionItemList={<CollectionItemsList activeArticleId={itemId} />}
+          collectionItemList={
+            <CollectionItemsList
+              panesLayout={panesLayout}
+              activeArticleId={itemId}
+            />
+          }
           mainContent={
             articlePage && (
               <Article

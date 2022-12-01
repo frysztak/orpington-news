@@ -26,7 +26,7 @@ export const Drawer: React.FC<DrawerProps> = ({ sidebar }) => {
     <ChakraDrawer
       isOpen={isDrawerOpen}
       placement="left"
-      size="full"
+      size={{ base: 'full', sm: 'sm' }}
       autoFocus={false}
       returnFocusOnClose={false}
       onClose={closeDrawer}

@@ -66,6 +66,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         h="full"
         display={{ base: 'none', lg: 'flex' }}
         data-test="panesDesktop"
+        data-test-layout={layout}
         {...rest}
       >
         <Resizable
@@ -102,7 +103,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
 
             {mainContent || <EmptyMain h="auto" />}
           </>
-        ) : (
+        ) : layout === 'vertical' ? (
           <VStack h="100vh" w="full" spacing={0}>
             <Resizable
               enable={{ bottom: true }}
@@ -122,6 +123,14 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
             <Divider />
 
             {mainContent || <EmptyMain h="full" />}
+          </VStack>
+        ) : (
+          <VStack spacing={0} h="100vh" w="full">
+            {collectionItemHeader}
+
+            <Divider pt={4} />
+
+            {collectionItemList}
           </VStack>
         )}
       </HStack>

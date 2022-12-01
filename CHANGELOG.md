@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Vertical panes layout
+- Expandable panes layout
+
+### Changed
+
+- Drawer on mobile no longer takes 100% width
+- Made Article and Collection headers shorter on desktop
 
 ## [0.9.1] - 2022-11-28
 
