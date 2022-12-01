@@ -239,12 +239,10 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
         display={{ base: 'flex', lg: 'none' }}
       >
         <IconButton
-          display={{ base: 'inline-flex', lg: 'none' }}
           icon={<CgMenuLeftAlt />}
           aria-label="Menu"
           variant="ghost"
           ref={menuButtonRef}
-          isDisabled={isLoading}
           onClick={onHamburgerClicked}
           data-test="hamburgerButton"
         />
