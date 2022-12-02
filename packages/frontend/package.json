@@ -82,6 +82,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "react-test-renderer": "^18.2.0",
     "storybook-addon-next-router": "^4.0.1",
+    "storybook-addon-performance": "^0.16.1",
     "string-to-color": "^2.2.2",
     "swc-plugin-coverage-instrument": "^0.0.12",
     "tsconfig-paths-webpack-plugin": "^4.0.0",

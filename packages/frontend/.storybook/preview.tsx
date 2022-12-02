@@ -1,11 +1,15 @@
 import React from 'react';
 import { themes } from '@storybook/theming';
+import { addDecorator } from '@storybook/react';
 import { Global } from '@emotion/react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { RouterContext } from 'next/dist/shared/lib/router-context';
+import { withPerformance } from 'storybook-addon-performance';
 import { theme } from '../theme';
 import { fontFaces } from '../theme/fonts';
+
+addDecorator(withPerformance);
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
