@@ -27,12 +27,13 @@ import {
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
-import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import {
   NewspaperIcon,
   CalendarDaysIcon,
   ClockIcon,
 } from '@heroicons/react/24/outline';
+import { Icon as IconifyIcon } from '@iconify/react';
+import radioboxBlank from '@iconify/icons-mdi/radiobox-blank';
 import { format, fromUnixTime } from 'date-fns';
 
 export type ArticleMenuAction = 'markAsUnread';
@@ -108,7 +109,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
             />
             <MenuList data-focus-visible-disabled>
               <MenuItem
-                icon={<IoCheckmarkDone />}
+                icon={<IconifyIcon icon={radioboxBlank} />}
                 onClick={handleMenuItemClick('markAsUnread')}
                 isDisabled={!dateRead}
               >

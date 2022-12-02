@@ -3292,6 +3292,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@iconify/icons-mdi@npm:^1.2.34":
+  version: 1.2.34
+  resolution: "@iconify/icons-mdi@npm:1.2.34"
+  dependencies:
+    "@iconify/types": "*"
+  checksum: 018a06d5bd01d0a9799dc8a7932cfc6cf3deb261b38cdc0c6fc09d59a3f697a87c6134ca6024af2a782f821b38147a72050c005bfbc1dedb77b46c7e334c39e3
+  languageName: node
+  linkType: hard
+
+"@iconify/react@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@iconify/react@npm:4.0.1"
+  dependencies:
+    "@iconify/types": ^2.0.0
+  peerDependencies:
+    react: ">=16"
+  checksum: db4d991b81b9412228b418ee3592d8589aabca973b2784423951b1caf7a42411d41d60d1949ee024eb9bc4a61cc691fa1dadabff94fb9a1eb5166fcccf1b5b01
+  languageName: node
+  linkType: hard
+
+"@iconify/types@npm:*, @iconify/types@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@iconify/types@npm:2.0.0"
+  checksum: 029f58542c160e9d4a746869cf2e475b603424d3adf3994c5cc8d0406c47e6e04a3b898b2707840c1c5b9bd5563a1660a34b110d89fce43923baca5222f4e597
+  languageName: node
+  linkType: hard
+
 "@isaacs/string-locale-compare@npm:^1.1.0":
   version: 1.1.0
   resolution: "@isaacs/string-locale-compare@npm:1.1.0"
@@ -5193,6 +5220,8 @@ __metadata:
     "@emotion/styled": ^11.10.5
     "@faker-js/faker": ^7.6.0
     "@heroicons/react": ^2.0.13
+    "@iconify/icons-mdi": ^1.2.34
+    "@iconify/react": ^4.0.1
     "@microsoft/fetch-event-source": ^2.0.1
     "@next/bundle-analyzer": ^12.3.3
     "@orpington-news/shared": ^0.0.0

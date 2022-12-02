@@ -30,6 +30,8 @@
     "@emotion/styled": "^11.10.5",
     "@faker-js/faker": "^7.6.0",
     "@heroicons/react": "^2.0.13",
+    "@iconify/icons-mdi": "^1.2.34",
+    "@iconify/react": "^4.0.1",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@next/bundle-analyzer": "^12.3.3",
     "@orpington-news/shared": "^0.0.0",

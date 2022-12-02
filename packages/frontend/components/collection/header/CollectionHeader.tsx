@@ -19,7 +19,8 @@ import { CgMenuLeftAlt } from '@react-icons/all-files/cg/CgMenuLeftAlt';
 import { BsLayoutWtf } from '@react-icons/all-files/bs/BsLayoutWtf';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
-import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
+import { Icon as IconifyIcon } from '@iconify/react';
+import checkCircleOutline from '@iconify/icons-mdi/check-circle-outline';
 import {
   CollectionLayout,
   CollectionFilter,
@@ -157,7 +158,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
             zIndex="docked"
           >
             <MenuItem
-              icon={<IoCheckmarkDone />}
+              icon={<IconifyIcon icon={checkCircleOutline} />}
               onClick={() => onMenuActionClicked?.('markAsRead')}
               data-test="markAsRead"
             >
