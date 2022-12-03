@@ -842,7 +842,11 @@ sizes.forEach((size) => {
 
           cy.getBySel('groupHeader-Today').should('be.visible');
           cy.getBySel('groupHeader-This week').should('be.visible');
-          cy.getBySel('groupHeader-Over a month ago').should('be.visible');
+          cy.getBySel('groupHeader-Last 30 days').should('be.visible');
+          cy.getBySel('groupHeader-This year')
+            .scrollIntoView()
+            .should('be.visible');
+          cy.getBySel('groupHeader-Lifetime ago').should('be.visible');
         });
 
         it('Yesterday', () => {
@@ -855,7 +859,11 @@ sizes.forEach((size) => {
 
           cy.getBySel('groupHeader-Yesterday').should('be.visible');
           cy.getBySel('groupHeader-This week').should('be.visible');
-          cy.getBySel('groupHeader-Over a month ago').should('be.visible');
+          cy.getBySel('groupHeader-Last 30 days').should('be.visible');
+          cy.getBySel('groupHeader-This year')
+            .scrollIntoView()
+            .should('be.visible');
+          cy.getBySel('groupHeader-Lifetime ago').should('be.visible');
         });
       });
     });
