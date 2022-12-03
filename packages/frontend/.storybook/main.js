@@ -9,6 +9,14 @@ module.exports = {
     'storybook-addon-next-router',
     '@chakra-ui/storybook-addon',
     'storybook-addon-performance/register',
+    {
+      name: '@storybook/addon-postcss',
+      options: {
+        postcssLoaderOptions: {
+          implementation: require('postcss'),
+        },
+      },
+    },
   ],
   core: {
     builder: 'webpack5',
