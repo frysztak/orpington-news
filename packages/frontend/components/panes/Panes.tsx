@@ -1,9 +1,11 @@
 import React, { ReactNode, useCallback } from 'react';
 import { Box, BoxProps, Divider, HStack, VStack } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
+import { PanesLayout } from '@components/collection/types';
 import { EmptyMain } from './EmptyMain';
 
 export interface PanesProps {
+  layout?: PanesLayout;
   sidebar?: ReactNode;
   collectionItemHeader?: ReactNode;
   collectionItemList?: ReactNode;
@@ -14,10 +16,14 @@ export interface PanesProps {
 
   collectionItemsWidth: number;
   onCollectionItemsWidthChanged?: (width: number) => void;
+
+  collectionItemsHeight: number;
+  onCollectionItemsHeightChanged?: (height: number) => void;
 }
 
 export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
   const {
+    layout = 'horizontal',
     sidebar,
     collectionItemHeader,
     collectionItemList,
@@ -28,6 +34,9 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
 
     collectionItemsWidth,
     onCollectionItemsWidthChanged,
+
+    collectionItemsHeight,
+    onCollectionItemsHeightChanged,
 
     ...rest
   } = props;
@@ -40,9 +49,13 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
   );
   const handleCollectionItemsResize: ResizeCallback = useCallback(
     (e, dir, elementRef, d) => {
-      onCollectionItemsWidthChanged?.(elementRef.clientWidth);
+      if (layout === 'horizontal') {
+        onCollectionItemsWidthChanged?.(elementRef.clientWidth);
+      } else {
+        onCollectionItemsHeightChanged?.(elementRef.clientHeight);
+      }
     },
-    [onCollectionItemsWidthChanged]
+    [layout, onCollectionItemsHeightChanged, onCollectionItemsWidthChanged]
   );
 
   return (
@@ -53,6 +66,7 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
         h="full"
         display={{ base: 'none', lg: 'flex' }}
         data-test="panesDesktop"
+        data-test-layout={layout}
         {...rest}
       >
         <Resizable
@@ -67,25 +81,58 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
           </HStack>
         </Resizable>
 
-        <Resizable
-          enable={{ right: true }}
-          minWidth={400}
-          size={{ width: collectionItemsWidth, height: 'auto' }}
-          onResizeStop={handleCollectionItemsResize}
-        >
-          <HStack h="full">
-            <VStack spacing={0} h="full" w="full">
-              {collectionItemHeader}
+        {layout === 'horizontal' ? (
+          <>
+            <Resizable
+              enable={{ right: true }}
+              minWidth={400}
+              size={{ width: collectionItemsWidth, height: 'auto' }}
+              onResizeStop={handleCollectionItemsResize}
+            >
+              <HStack h="full">
+                <VStack spacing={0} h="full" w="full">
+                  {collectionItemHeader}
 
-              <Divider pt={4} />
+                  <Divider pt={4} />
 
-              {collectionItemList}
-            </VStack>
-            <Divider orientation="vertical" h="full" />
-          </HStack>
-        </Resizable>
+                  {collectionItemList}
+                </VStack>
+                <Divider orientation="vertical" h="full" />
+              </HStack>
+            </Resizable>
 
-        {mainContent || <EmptyMain />}
+            {mainContent || <EmptyMain h="auto" />}
+          </>
+        ) : layout === 'vertical' ? (
+          <VStack h="100vh" w="full" spacing={0}>
+            <Resizable
+              enable={{ bottom: true }}
+              minHeight={100}
+              size={{ width: '100%', height: collectionItemsHeight }}
+              onResizeStop={handleCollectionItemsResize}
+            >
+              <VStack spacing={0} h="full" w="full">
+                {collectionItemHeader}
+
+                <Divider pt={4} />
+
+                {collectionItemList}
+              </VStack>
+            </Resizable>
+
+            <Divider />
+
+            {mainContent || <EmptyMain h="full" />}
+          </VStack>
+        ) : (
+          <VStack spacing={0} h="100vh" w="full">
+            {collectionItemHeader}
+
+            <Divider pt={4} />
+
+            {collectionItemList}
+          </VStack>
+        )}
       </HStack>
 
       {/* Mobile view */}

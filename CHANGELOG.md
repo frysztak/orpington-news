@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2022-12-04
+
+### Added
+
+-   Vertical panes layout
+-   Expandable panes layout
+-   Group by date: additional date buckets
+
+### Changed
+
+-   Drawer on mobile no longer takes 100% width
+-   Made Article and Collection headers shorter on desktop
+
+### Fixed
+
+-   Icons for "Mark all as read"/"Mark as unread" are now different
+-   List layout: improved scrolling performance on mobile
+
 ## [0.9.1] - 2022-11-28
 
 ### Fixed
@@ -255,7 +273,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.9.1...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.10.0...HEAD
+
+[0.10.0]: https://github.com/frysztak/orpington-news/compare/0.9.1...0.10.0
 
 [0.9.1]: https://github.com/frysztak/orpington-news/compare/0.9.0...0.9.1
 

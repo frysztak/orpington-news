@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  InfiniteData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { getItemDetails, setDateRead, useApi, useHandleError } from '@api';
 import { CollectionItem, ID } from '@orpington-news/shared';
 import { collectionKeys } from '@features';
@@ -94,7 +99,7 @@ export const useArticleDetails = (
     enabled: Boolean(collectionId) && Boolean(itemId),
     retry: false,
     onError,
-    onSuccess: (data) => {
+    onSuccess: (data: CollectionItem) => {
       const { nextId } = data;
 
       // prefetch next article
@@ -106,6 +111,24 @@ export const useArticleDetails = (
       }
 
       options?.onSuccess?.(data);
+    },
+    initialData: () => {
+      const queries = queryClient.getQueriesData<
+        InfiniteData<{ items: CollectionItem[] }>
+      >(collectionKeys.lists(collectionId!));
+      const query = queries.find(([queryKey, queryData]) => Boolean(queryData));
+      if (!query) {
+        return;
+      }
+
+      const queryData = query[1]!;
+      for (const page of queryData.pages) {
+        for (const item of page.items) {
+          if (item.id === itemId) {
+            return item;
+          }
+        }
+      }
     },
   });
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   BoxProps,
@@ -7,7 +7,7 @@ import {
   VStack,
   Text,
 } from '@chakra-ui/react';
-import { GroupedVirtuoso, Virtuoso } from 'react-virtuoso';
+import { GroupedVirtuoso, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { InformationCircleIcon } from '@heroicons/react/24/solid';
 import {
   CollectionItem,
@@ -17,9 +17,10 @@ import {
   ID,
 } from '@orpington-news/shared';
 import { usePullToRefresh } from '@utils';
-import { CardItem, ListItem, MagazineItem } from '../layouts';
+import { CardItem, ListItem, MagazineItem, ExpandedItem } from '../layouts';
 import { RefreshIndicator } from './RefreshIndicator';
 import { GroupHeader } from './GroupHeader';
+import { PanesLayout } from '../types';
 
 export type CollectionListItems =
   | {
@@ -39,6 +40,7 @@ const isEmpty = (items: CollectionListItems): boolean => {
 
 export interface CollectionListProps {
   layout?: CollectionLayout;
+  panesLayout: PanesLayout;
   items: CollectionListItems;
 
   isLoading?: boolean;
@@ -69,6 +71,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
 ) => {
   const {
     layout = defaultCollectionLayout,
+    panesLayout,
     items,
     isLoading,
     isFetchingMoreItems,
@@ -85,12 +88,37 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   const handleScrollerRef = useCallback((ref: any) => {
     scrollerRef.current = ref;
   }, []);
+  const virtuosoRef = useRef<VirtuosoHandle | null>(null);
 
   usePullToRefresh({
     scrollerRef,
     isRefreshing,
     onRefresh,
   });
+
+  const activeArticleIdx = useMemo(() => {
+    if (!activeArticleId) {
+      return -1;
+    }
+
+    return items.list.findIndex(({ id }) => id === activeArticleId);
+  }, [activeArticleId, items.list]);
+
+  useEffect(() => {
+    if (
+      panesLayout !== 'expandable' ||
+      activeArticleIdx === undefined ||
+      activeArticleIdx === -1
+    ) {
+      return;
+    }
+
+    virtuosoRef.current?.scrollIntoView({
+      index: activeArticleIdx,
+      align: 'start',
+      behavior: 'auto',
+    });
+  }, [activeArticleIdx, panesLayout]);
 
   const Skeleton = layout === 'list' ? SkeletonList : SkeletonBox;
 
@@ -103,8 +131,9 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
         align="stretch"
         spacing={6}
         px={3}
+        overflowY="clip"
       >
-        {genN(10).map((x) => (
+        {genN(5).map((x) => (
           <Skeleton key={x} />
         ))}
       </VStack>
@@ -137,18 +166,27 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       {items.type === 'list' ? (
         <Virtuoso
           key="flat"
+          ref={virtuosoRef}
           style={{ height: '100%', width: '100%' }}
           data={items.list}
           computeItemKey={(_, item) => item.id}
           endReached={onFetchMoreItems}
           scrollerRef={handleScrollerRef}
-          itemContent={(index, data) => (
-            <Item
-              item={data}
-              isActive={data.id === activeArticleId}
-              data-test={`item-id-${data.id}`}
-            />
-          )}
+          itemContent={(index, data) =>
+            panesLayout === 'expandable' && data.id === activeArticleId ? (
+              <ExpandedItem
+                item={data}
+                isActive={data.id === activeArticleId}
+                data-test={`item-id-${data.id}`}
+              />
+            ) : (
+              <Item
+                item={data}
+                isActive={data.id === activeArticleId}
+                data-test={`item-id-${data.id}`}
+              />
+            )
+          }
           components={{
             Footer: canFetchMoreItems ? Skeleton : undefined,
           }}
@@ -156,6 +194,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       ) : (
         <GroupedVirtuoso
           key="grouped"
+          ref={virtuosoRef}
           style={{ height: '100%', width: '100%' }}
           groupCounts={items.groupCounts}
           endReached={onFetchMoreItems}
@@ -165,7 +204,14 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
           )}
           itemContent={(index) => {
             const data = items.list[index];
-            return (
+            return panesLayout === 'expandable' &&
+              data.id === activeArticleId ? (
+              <ExpandedItem
+                item={data}
+                isActive={data.id === activeArticleId}
+                data-test={`item-id-${data.id}`}
+              />
+            ) : (
               <Item
                 item={data}
                 isActive={data.id === activeArticleId}

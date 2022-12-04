@@ -2,12 +2,13 @@ import React, { useCallback, useMemo } from 'react';
 import { Icon, MenuDivider, Text, MenuItem, VStack } from '@chakra-ui/react';
 import { CgRemove } from '@react-icons/all-files/cg/CgRemove';
 import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
-import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import { AiTwotoneEdit } from '@react-icons/all-files/ai/AiTwotoneEdit';
 import {
   ExclamationCircleIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/solid';
+import { Icon as IconifyIcon } from '@iconify/react';
+import checkCircleOutline from '@iconify/icons-mdi/check-circle-outline';
 import { Virtuoso } from 'react-virtuoso';
 import { ID, Collection } from '@orpington-news/shared';
 import { SidebarItem } from './SidebarItem';
@@ -82,7 +83,7 @@ const ItemContent: React.FC<ItemContentProps> = ({
       menuItems={
         <>
           <MenuItem
-            icon={<IoCheckmarkDone />}
+            icon={<IconifyIcon icon={checkCircleOutline} />}
             onClick={handleMenuItemClick('markAsRead')}
             data-test="markAsRead"
           >

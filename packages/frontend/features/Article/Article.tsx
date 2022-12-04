@@ -29,6 +29,7 @@ export interface ArticleProps {
   collectionId?: ID;
   itemId?: ID;
   isRouterReady?: boolean;
+  fullHeight?: boolean;
 
   onGoBackClicked?: () => void;
 }
@@ -45,7 +46,13 @@ const getWidth = (setting: ArticleWidth): string => {
 };
 
 export const Article: React.FC<ArticleProps> = (props) => {
-  const { collectionId, itemId, isRouterReady, onGoBackClicked } = props;
+  const {
+    collectionId,
+    itemId,
+    isRouterReady,
+    fullHeight = true,
+    onGoBackClicked,
+  } = props;
 
   const router = useRouter();
   const toast = useToast();
@@ -181,7 +188,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
       flexGrow={1}
       overflow="auto"
       overflowX="hidden"
-      h="100vh"
+      h={fullHeight ? '100vh' : undefined}
       w="full"
       spacing={1}
       ref={ref}
@@ -197,7 +204,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
         onDragEnd={handleDragEnd}
         style={{ x, width: '100%', height: '100%' }}
       >
-        {!isRouterReady || query.status === 'loading' ? (
+        {!isRouterReady || query.isLoading ? (
           <ArticleSkeleton />
         ) : query.status === 'error' ? (
           <VStack spacing={6} h="full" w="full" justify="center">

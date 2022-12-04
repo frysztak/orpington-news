@@ -12,6 +12,7 @@ import { CollectionItemsHeader } from './CollectionItemsHeader';
 import { Drawer } from './Drawer';
 import { AddModal } from './AddModal';
 import { DeleteModal } from './DeleteModal';
+import { PanesLayout, PanesLayouts } from '@components/collection/types';
 
 interface PanesProps {}
 
@@ -31,6 +32,14 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
     'collectionItemsWidth',
     400
   );
+  const [collectionItemsHeight, setCollectionItemsHeight] = useLocalStorage(
+    'collectionItemsHeight',
+    400
+  );
+  const [panesLayout, setPanesLayout] = useLocalStorage<PanesLayout>(
+    'panesLayout',
+    PanesLayouts[0]
+  );
 
   usePrefetchPreferences();
 
@@ -40,8 +49,18 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
         <PanesComponent
           flexGrow={1}
           sidebar={<Sidebar />}
-          collectionItemHeader={<CollectionItemsHeader />}
-          collectionItemList={<CollectionItemsList activeArticleId={itemId} />}
+          collectionItemHeader={
+            <CollectionItemsHeader
+              panesLayout={panesLayout}
+              onPanesLayoutChanged={setPanesLayout}
+            />
+          }
+          collectionItemList={
+            <CollectionItemsList
+              panesLayout={panesLayout}
+              activeArticleId={itemId}
+            />
+          }
           mainContent={
             articlePage && (
               <Article
@@ -57,6 +76,9 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
           onSidebarWidthChanged={setSidebarWidth}
           collectionItemsWidth={collectionItemsWidth}
           onCollectionItemsWidthChanged={setCollectionItemsWidth}
+          collectionItemsHeight={collectionItemsHeight}
+          onCollectionItemsHeightChanged={setCollectionItemsHeight}
+          layout={panesLayout}
         />
       </ClientRender>
 

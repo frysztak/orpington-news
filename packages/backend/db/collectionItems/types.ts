@@ -21,9 +21,3 @@ export const DBCollectionItem = z.object({
   collection_icon: CollectionIcons,
 });
 export type DBCollectionItem = z.infer<typeof DBCollectionItem>;
-export const DBCollectionItemWithoutText = DBCollectionItem.omit({
-  full_text: true,
-});
-export type DBCollectionItemWithoutText = z.infer<
-  typeof DBCollectionItemWithoutText
->;

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   Icon,
@@ -17,6 +17,7 @@ import {
   MenuDivider,
   Wrap,
   WrapItem,
+  Flex,
 } from '@chakra-ui/react';
 import {
   ArticleWidth,
@@ -26,12 +27,13 @@ import {
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
-import { IoCheckmarkDone } from '@react-icons/all-files/io5/IoCheckmarkDone';
 import {
   NewspaperIcon,
   CalendarDaysIcon,
   ClockIcon,
 } from '@heroicons/react/24/outline';
+import { Icon as IconifyIcon } from '@iconify/react';
+import radioboxBlank from '@iconify/icons-mdi/radiobox-blank';
 import { format, fromUnixTime } from 'date-fns';
 
 export type ArticleMenuAction = 'markAsUnread';
@@ -74,20 +76,9 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
     [onMenuItemClicked]
   );
 
-  return (
-    <>
-      <HStack w="full" justify="flex-end">
-        <IconButton
-          icon={<IoReturnUpBack />}
-          aria-label="Go back to collection"
-          variant="ghost"
-          mr="auto"
-          onClick={onGoBackClicked}
-          isDisabled={disableActionButtons}
-          display={{ base: 'inline-flex', lg: 'none' }}
-          data-test="goBack"
-        />
-
+  const actions = useMemo(
+    () => (
+      <HStack>
         <IconButton
           icon={<HiOutlineExternalLink />}
           as={Link}
@@ -118,7 +109,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
             />
             <MenuList data-focus-visible-disabled>
               <MenuItem
-                icon={<IoCheckmarkDone />}
+                icon={<IconifyIcon icon={radioboxBlank} />}
                 onClick={handleMenuItemClick('markAsUnread')}
                 isDisabled={!dateRead}
               >
@@ -147,21 +138,59 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           </Menu>
         </Box>
       </HStack>
+    ),
+    [
+      articleWidth,
+      dateRead,
+      disableActionButtons,
+      handleMenuItemClick,
+      onArticleWidthChanged,
+      url,
+    ]
+  );
 
-      <VStack w="full" align="flex-start" spacing={1} px={4}>
-        <Heading
-          overflowWrap="anywhere"
-          fontFamily="var(--article-font-family)"
-          fontSize="calc(var(--chakra-fontSizes-3xl) * var(--article-font-size-scale))"
-          data-test="articleHeader"
-        >
-          {title}
-        </Heading>
+  return (
+    <>
+      <HStack
+        w="full"
+        justify="space-between"
+        display={{ base: 'flex', lg: 'none' }}
+      >
+        <IconButton
+          icon={<IoReturnUpBack />}
+          aria-label="Go back to collection"
+          variant="ghost"
+          mr="auto"
+          onClick={onGoBackClicked}
+          isDisabled={disableActionButtons}
+          data-test="goBack"
+        />
+
+        {actions}
+      </HStack>
+
+      <VStack w="full" align="flex-start" spacing={1} px={4} pt={4}>
+        <HStack h="full" w="full" justify="space-between" align="stretch">
+          <Flex align="center">
+            <Heading
+              overflowWrap="anywhere"
+              fontFamily="var(--article-font-family)"
+              fontSize="calc(var(--chakra-fontSizes-3xl) * var(--article-font-size-scale, 1))"
+              data-test="articleHeader"
+            >
+              {title}
+            </Heading>
+          </Flex>
+
+          <Flex h="full" align="center" display={{ base: 'none', lg: 'flex' }}>
+            {actions}
+          </Flex>
+        </HStack>
 
         <Wrap
           color="gray.500"
           fontFamily="var(--article-font-family)"
-          fontSize="calc(1rem * var(--article-font-size-scale))"
+          fontSize="calc(1rem * var(--article-font-size-scale, 1))"
         >
           <WrapItem display="flex" alignItems="center">
             <Icon as={NewspaperIcon} mr={1} />

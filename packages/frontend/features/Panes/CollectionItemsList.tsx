@@ -9,16 +9,17 @@ import {
   CollectionListItems,
 } from '@components/collection/list';
 import { ID } from '@orpington-news/shared';
+import { PanesLayout } from '@components/collection/types';
 
 interface CollectionItemsListProps {
   activeArticleId?: ID;
+  panesLayout: PanesLayout;
 }
 
-export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
-  props
-) => {
-  const { activeArticleId } = props;
-
+export const CollectionItemsList: React.FC<CollectionItemsListProps> = ({
+  activeArticleId,
+  panesLayout,
+}) => {
   const activeCollection = useActiveCollection();
   const {
     fetchNextPage,
@@ -63,6 +64,7 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = (
   return (
     <CollectionList
       layout={activeCollection?.layout}
+      panesLayout={panesLayout}
       items={items}
       pl={3}
       mt={3}

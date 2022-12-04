@@ -102,18 +102,18 @@ Cypress.Commands.add(
 Cypress.Commands.add('clickCollectionHeaderMenuAction', (action: string) => {
   const selector = '[data-test=collectionHeader]:visible';
   return cy.get(selector).within((item) => {
-    cy.getBySel('menuButton').click({ force: true });
+    cy.getBySelVisible('menuButton').click({ force: true });
     cy.getBySel('menuList').should('be.visible');
-    cy.getBySel(action).click();
+    cy.getBySelVisible(action).click();
   });
 });
 
 Cypress.Commands.add('clickCollectionHeaderLayout', (layout: string) => {
   const selector = '[data-test=collectionHeader]:visible';
   return cy.get(selector).within((item) => {
-    cy.getBySel('layoutButton').click();
+    cy.getBySelVisible('layoutButton').click();
     cy.getBySel('layoutMenuList').should('be.visible');
-    cy.getBySel(`layout-${layout}`).click();
+    cy.getBySelVisible(`layout-${layout}`).click();
   });
 });
 

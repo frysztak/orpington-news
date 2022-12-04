@@ -10,8 +10,17 @@ import {
 import { useActiveCollection } from '@features/Preferences';
 import { CollectionPreferences } from '@orpington-news/shared';
 import { ModalContext } from './ModalContext';
+import { PanesLayout } from '@components/collection/types';
 
-export const CollectionItemsHeader: React.FC = () => {
+export interface CollectionItemsHeaderProps {
+  panesLayout?: PanesLayout;
+  onPanesLayoutChanged?: (layout: PanesLayout) => void;
+}
+
+export const CollectionItemsHeader: React.FC<CollectionItemsHeaderProps> = ({
+  panesLayout,
+  onPanesLayoutChanged,
+}) => {
   const toggleDrawer = useContextSelector(
     ModalContext,
     (ctx) => ctx.toggleDrawer
@@ -89,9 +98,11 @@ export const CollectionItemsHeader: React.FC = () => {
       collection={activeCollection}
       isRefreshing={isRefreshing || showBgLoadingIndicator}
       menuButtonRef={drawerButtonRef}
+      panesLayout={panesLayout}
       onHamburgerClicked={toggleDrawer}
       onMenuActionClicked={handleMenuActionClicked}
       onPreferenceChanged={handlePreferenceChange}
+      onPanesLayoutChanged={onPanesLayoutChanged}
     />
   );
 };

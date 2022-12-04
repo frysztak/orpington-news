@@ -1,3 +1,4 @@
+import '../styles/global.css';
 import React, { PropsWithChildren, useState } from 'react';
 import type { AppPropsWithLayout } from './types';
 import { ChakraProvider, Flex } from '@chakra-ui/react';

@@ -7,7 +7,7 @@ import {
 } from '@orpington-news/shared';
 import { getCollectionChildrenIds } from '@db/collections';
 import { TRUE } from '@utils';
-import { DBCollectionItem, DBCollectionItemWithoutText } from './types';
+import { DBCollectionItem } from './types';
 
 type InsertDBCollectionItem = Omit<
   DBCollectionItem,
@@ -102,7 +102,7 @@ export const getCollectionItems = ({
       ? sql`lower(collection_title) ASC, date_published ${sort}`
       : sql`date_published ${sort}`;
 
-  return sql.type(DBCollectionItemWithoutText)`
+  return sql.type(DBCollectionItem)`
 SELECT
   collection_items.id,
   collection_items.title,
@@ -112,6 +112,7 @@ SELECT
   collection_items.date_published,
   collection_items.date_updated,
   collection_items.date_read,
+  collection_items.full_text,
   collection_items.categories,
   collection_items.comments,
   collection_items.reading_time,
