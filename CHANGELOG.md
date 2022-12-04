@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Icons for "Mark all as read"/"Mark as unread" are now different
+- List layout: improved scrolling performance on mobile
 
 ## [0.9.1] - 2022-11-28
 
