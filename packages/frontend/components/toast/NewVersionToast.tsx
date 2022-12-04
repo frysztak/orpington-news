@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 
 export interface NewVersionToastProps {
-  id: ToastId;
+  id?: ToastId;
   isReloading: boolean;
   onClose: () => void;
   onReload: () => void;
