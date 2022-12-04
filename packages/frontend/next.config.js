@@ -7,6 +7,7 @@ const PWA = require('next-pwa')({
   disable: process.env.NODE_ENV !== 'production',
   register: false,
   skipWaiting: false,
+  dynamicStartUrl: false,
 });
 
 module.exports = () => {
