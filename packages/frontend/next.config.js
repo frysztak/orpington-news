@@ -4,9 +4,11 @@ const bundleAnalyzer = require('@next/bundle-analyzer')({
 const PWA = require('next-pwa')({
   dest: 'public',
   runtimeCaching: require('./pwa/runtimeCaching'),
-  disable: process.env.NODE_ENV !== 'production',
+  disable:
+    process.env.NODE_ENV !== 'production' || process.env.DISABLE_SW === 'true',
   register: false,
   skipWaiting: false,
+  cacheStartUrl: true,
   dynamicStartUrl: false,
 });
 
