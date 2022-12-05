@@ -7,6 +7,7 @@ services:
       dockerfile: docker/Dockerfile
       args:
         - INSTRUMENT_COVERAGE=true
+        - DISABLE_SW=true
     environment:
       - APP_URL=http://localhost:8000
       - DB_HOST=db

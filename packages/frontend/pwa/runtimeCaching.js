@@ -169,7 +169,11 @@ module.exports = [
   {
     urlPattern: ({ url }) => {
       const isSameOrigin = self.origin === url.origin;
-      return !isSameOrigin;
+      if (isSameOrigin) return false;
+      // `avoid caching localhost:5000/events when testing SW locally
+      const pathname = url.pathname;
+      if (pathname.startsWith('/events')) return false;
+      return true;
     },
     handler: 'NetworkFirst',
     options: {
