@@ -1,22 +1,15 @@
 import React, { useCallback, useMemo } from 'react';
-import { Icon, MenuDivider, Text, MenuItem, VStack } from '@chakra-ui/react';
-import { CgRemove } from '@react-icons/all-files/cg/CgRemove';
-import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
-import { AiTwotoneEdit } from '@react-icons/all-files/ai/AiTwotoneEdit';
+import { Icon, Text, VStack } from '@chakra-ui/react';
 import {
   ExclamationCircleIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/solid';
-import { Icon as IconifyIcon } from '@iconify/react';
-import checkCircleOutline from '@iconify/icons-mdi/check-circle-outline';
 import { Virtuoso } from 'react-virtuoso';
 import { ID, Collection } from '@orpington-news/shared';
-import { SidebarItem } from './SidebarItem';
+import { CollectionMenuAction, SidebarItem } from './SidebarItem';
 import { getCollectionIcon } from './CollectionIcon';
 import { CollectionsSkeleton } from './CollectionsSkeleton';
 import { filterVisibleCollections } from './filterVisibleCollections';
-
-export type CollectionMenuAction = 'markAsRead' | 'refresh' | 'edit' | 'delete';
 
 interface ItemContentProps {
   collection: Collection;
@@ -62,7 +55,8 @@ const ItemContent: React.FC<ItemContentProps> = ({
   );
 
   const handleMenuItemClick = useCallback(
-    (action: CollectionMenuAction) => () => {
+    (action: CollectionMenuAction) => {
+      console.log('action');
       onCollectionMenuActionClicked(collection, action);
     },
     [collection, onCollectionMenuActionClicked]
@@ -80,39 +74,7 @@ const ItemContent: React.FC<ItemContentProps> = ({
       chevron={hasChildren ? (isOpen ? 'bottom' : 'top') : undefined}
       onClick={handleClick}
       onChevronClick={handleChevronClick}
-      menuItems={
-        <>
-          <MenuItem
-            icon={<IconifyIcon icon={checkCircleOutline} />}
-            onClick={handleMenuItemClick('markAsRead')}
-            data-test="markAsRead"
-          >
-            Mark all as read
-          </MenuItem>
-          <MenuItem
-            icon={<IoRefresh />}
-            onClick={handleMenuItemClick('refresh')}
-            data-test="refresh"
-          >
-            Refresh
-          </MenuItem>
-          <MenuItem
-            icon={<AiTwotoneEdit />}
-            onClick={handleMenuItemClick('edit')}
-            data-test="edit"
-          >
-            Edit
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem
-            icon={<CgRemove />}
-            onClick={handleMenuItemClick('delete')}
-            data-test="delete"
-          >
-            Delete
-          </MenuItem>
-        </>
-      }
+      onMenuActionClicked={handleMenuItemClick}
       data-test={`collection-id-${id}`}
     />
   );

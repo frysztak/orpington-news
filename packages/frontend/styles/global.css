@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply inline-flex select-none items-center justify-center rounded px-4 py-2 text-sm font-medium;
+    @apply transition-colors;
+    @apply bg-purple-50 dark:bg-purple-200/25;
+    @apply text-gray-700 dark:text-gray-100;
+    @apply hover:bg-purple-100/70  dark:hover:bg-purple-200/50;
+    @apply focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75;
+    @apply radix-state-open:bg-purple-100/100 radix-state-open:dark:bg-purple-200/60;
+  }
+
+  .spinner {
+    @apply animate-spin-fast;
+    @apply h-7 w-7 rounded-full;
+    @apply border-current border-2 border-l-transparent border-b-transparent;
+  }
+}

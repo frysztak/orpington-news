@@ -16,7 +16,6 @@ import {
 } from '@features/Preferences';
 import { useGetUserHomeId } from '@features/Auth';
 import { MenuItem, SidebarContent } from '@components/sidebar';
-import { CollectionMenuAction } from '@components/sidebar/Collections';
 import {
   defaultCollectionLayout,
   emptyIfUndefined,
@@ -25,6 +24,7 @@ import {
 } from '@orpington-news/shared';
 import { SidebarFooter } from './SidebarFooter';
 import { ModalContext } from './ModalContext';
+import { CollectionMenuAction } from '@components/sidebar/SidebarItem';
 
 export const Sidebar: React.FC = () => {
   const { push } = useRouter();
