@@ -33,6 +33,17 @@ export default defineConfig({
         return `postgres://${db_user}:${db_pass}@${db_host}:${db_port}/${db_name}`;
       };
 
+      on('before:browser:launch', (browser, launchOptions) => {
+        const REDUCE = 1;
+        if (browser.family === 'firefox') {
+          launchOptions.preferences['ui.prefersReducedMotion'] = REDUCE;
+        }
+        if (browser.family === 'chromium') {
+          launchOptions.args.push('--force-prefers-reduced-motion');
+        }
+        return launchOptions;
+      });
+
       on('task', {
         async 'db:seed'() {
           const migrator = new SlonikMigrator({
