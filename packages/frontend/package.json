@@ -29,6 +29,7 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@faker-js/faker": "^7.6.0",
+    "@headlessui/react": "^1.7.5",
     "@heroicons/react": "^2.0.13",
     "@iconify/icons-mdi": "^1.2.34",
     "@iconify/react": "^4.0.1",

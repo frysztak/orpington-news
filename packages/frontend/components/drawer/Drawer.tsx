@@ -17,7 +17,7 @@ export const DrawerContent = React.forwardRef<
   <DialogPrimitive.Portal>
     <DialogPrimitive.Overlay
       className={cx(
-        'fixed top-0 left-0 bottom-0 right-0 radix-state-open:bg-red-700/20',
+        'fixed top-0 left-0 bottom-0 right-0',
         'radix-state-open:bg-black/50 radix-state-open:animate-fade-in radix-state-closed:animate-fade-out'
       )}
     />
