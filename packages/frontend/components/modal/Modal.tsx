@@ -95,7 +95,11 @@ export const Modal: React.FC<PropsWithChildren<ModalProps>> = ({
 }) => {
   return (
     <ModalRoot open={open} onOpenChange={onOpenChange}>
-      <ModalContent open={open} data-test={contentTestId}>
+      <ModalContent
+        open={open}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        data-test={contentTestId}
+      >
         {children}
       </ModalContent>
     </ModalRoot>

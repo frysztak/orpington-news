@@ -27,7 +27,7 @@ export const DrawerContent = React.forwardRef<
       {...props}
       ref={forwardedRef}
       className={cx(
-        'bg-white dark:bg-gray-700 fixed top-0 bottom-0 w-full sm:w-96 shadow-lg',
+        'bg-white dark:bg-gray-700 fixed top-0 bottom-0 w-full sm:w-96 shadow-lg z-10',
         'motion-safe:radix-state-open:animate-enter-from-left',
         'motion-safe:radix-state-closed:animate-exit-to-left'
       )}
