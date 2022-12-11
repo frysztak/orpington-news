@@ -570,7 +570,7 @@ sizes.forEach((size) => {
           ),
         }).as('apiGetHomeItems');
 
-        cy.getBySel('confirmDelete').click();
+        cy.getBySel('action').click();
         cy.closeDrawerIfExists();
 
         cy.wait('@apiDeleteCollection').then(({ response }) => {
@@ -618,7 +618,7 @@ sizes.forEach((size) => {
           url: getApiPath('/preferences/activeView'),
         }).as('apiPreferencesActiveView');
 
-        cy.getBySel('confirmDelete').click();
+        cy.getBySel('action').click();
         cy.closeDrawerIfExists();
 
         cy.wait('@apiDeleteCollection').then(({ response }) => {
@@ -680,7 +680,7 @@ sizes.forEach((size) => {
           ),
         }).as('apiGetHomeItems');
 
-        cy.getBySel('confirmDelete').click();
+        cy.getBySel('action').click();
         cy.closeDrawerIfExists();
 
         cy.wait('@apiDeleteCollection').then(({ response }) => {
