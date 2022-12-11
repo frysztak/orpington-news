@@ -47,12 +47,7 @@ Cypress.Commands.add('openDrawerIfExists', () => {
     if ($body.find(selector).length > 0) {
       cy.get(selector).then(($button) => {
         $button.trigger('click');
-        cy.getBySel('drawer').should(
-          'have.css',
-          'transform',
-          // scaleX = 1, scaleY = 1
-          'matrix(1, 0, 0, 1, 0, 0)'
-        );
+        cy.getBySel('drawer').should('exist');
       });
     }
   });

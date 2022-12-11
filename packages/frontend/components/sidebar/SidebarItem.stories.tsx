@@ -1,7 +1,6 @@
 import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { AiOutlineHome } from 'react-icons/ai';
-import { MenuItem } from '@chakra-ui/react';
 import { action } from '@storybook/addon-actions';
 import { SidebarItem, SidebarItemProps } from './SidebarItem';
 
@@ -18,6 +17,7 @@ Default.args = {
   title: 'Home',
   onClick: action('onClick'),
   onChevronClick: action('onChevronClick'),
+  onMenuActionClicked: action('onMenuActionClicked'),
 };
 export const Active = Template.bind({});
 Active.args = {
@@ -61,14 +61,8 @@ VeryLongText.args = {
     'Johann Gambolputty de von Ausfern-schplenden-schlitter-crasscrenbon-fried-digger-dingle-dangle-dongle-dungle-burstein-von-knacker-thrasher-apple-banger-horowitz-ticolensic-grander-knotty-spelltinkle-grandlich-grumblemeyer-spelterwasser-kurstlich-himbleeisen-bahnwagen-gutenabend-bitte-ein-nürnburger-bratwustle-gerspurten-mitzweimache-luber-hundsfut-gumberaber-shönendanker-kalbsfleisch-mittler-aucher von Hautkopft of Ulm',
 };
 
-export const CounterAndMenu = Template.bind({});
-CounterAndMenu.args = {
+export const NoMenu = Template.bind({});
+NoMenu.args = {
   ...Default.args,
-  counter: 9999,
-  menuItems: (
-    <>
-      <MenuItem>New Tab</MenuItem>
-      <MenuItem>New Window</MenuItem>
-    </>
-  ),
+  noMenu: true,
 };

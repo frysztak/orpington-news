@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Performance: cache start page using service worker
+- Performance: use Tailwind for Drawer, Modal, Sidebar components
 
 ## [0.10.0] - 2022-12-04
 
