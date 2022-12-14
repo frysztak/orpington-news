@@ -44,9 +44,9 @@ export const ModalContent = React.forwardRef<
         ref={forwardedRef}
         forceMount
         className={cx(
-          'bg-white dark:bg-gray-700 drop-shadow-lg',
+          'bg-white dark:bg-gray-700 drop-shadow-lg rounded-lg p-4 ',
           'fixed z-50',
-          'w-[100vw] sm:w-[95vw] sm:max-w-lg rounded-lg p-4 md:w-full',
+          'w-[100vw] sm:w-[95vw] sm:max-w-lg md:w-full h-full sm:h-auto',
           'top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]'
         )}
       >

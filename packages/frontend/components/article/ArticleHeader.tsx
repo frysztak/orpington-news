@@ -8,13 +8,6 @@ import {
   IconButton,
   Link,
   VStack,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuOptionGroup,
-  MenuItemOption,
-  MenuDivider,
   Wrap,
   WrapItem,
   Flex,
@@ -35,6 +28,16 @@ import {
 import { Icon as IconifyIcon } from '@iconify/react';
 import radioboxBlank from '@iconify/icons-mdi/radiobox-blank';
 import { format, fromUnixTime } from 'date-fns';
+import {
+  Menu,
+  MenuContent,
+  MenuDivider,
+  MenuItem,
+  MenuLabel,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuTrigger,
+} from '@components/menu';
 
 export type ArticleMenuAction = 'markAsUnread';
 
@@ -99,42 +102,38 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
 
         <Box>
           <Menu>
-            <MenuButton
-              as={IconButton}
-              aria-label="Menu"
-              icon={<BsThreeDotsVertical />}
-              variant="ghost"
-              tabIndex={0}
-              isDisabled={disableActionButtons}
-            />
-            <MenuList data-focus-visible-disabled>
+            <MenuTrigger asChild>
+              <IconButton
+                aria-label="Menu"
+                icon={<BsThreeDotsVertical />}
+                variant="ghost"
+                tabIndex={0}
+                isDisabled={disableActionButtons}
+              />
+            </MenuTrigger>
+            <MenuContent>
               <MenuItem
                 icon={<IconifyIcon icon={radioboxBlank} />}
                 onClick={handleMenuItemClick('markAsUnread')}
-                isDisabled={!dateRead}
+                disabled={!dateRead}
               >
                 Mark as unread
               </MenuItem>
 
-              <Box display={{ base: 'none', lg: 'block' }}>
+              <div className="hidden lg:block">
                 <MenuDivider />
-                <MenuOptionGroup
-                  title="Article width"
-                  type="radio"
+                <MenuLabel>Article width</MenuLabel>
+                <MenuRadioGroup
                   defaultValue="narrow"
                   value={articleWidth ?? defaultArticleWidth}
-                  /**
-                   * `onChange` expects handler to accept `string | string[]`, but since
-                   * group type is `radio`, it can't call `onChange` with an array
-                   */
-                  onChange={onArticleWidthChanged as any}
+                  onValueChange={onArticleWidthChanged as any}
                 >
-                  <MenuItemOption value="narrow">Narrow</MenuItemOption>
-                  <MenuItemOption value="wide">Wide</MenuItemOption>
-                  <MenuItemOption value="unlimited">Unlimited</MenuItemOption>
-                </MenuOptionGroup>
-              </Box>
-            </MenuList>
+                  <MenuRadioItem value="narrow">Narrow</MenuRadioItem>
+                  <MenuRadioItem value="wide">Wide</MenuRadioItem>
+                  <MenuRadioItem value="unlimited">Unlimited</MenuRadioItem>
+                </MenuRadioGroup>
+              </div>
+            </MenuContent>
           </Menu>
         </Box>
       </HStack>
