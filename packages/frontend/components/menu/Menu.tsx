@@ -15,10 +15,11 @@ export const MenuContent: React.FC<PropsWithChildren<{}>> = ({
       sideOffset={5}
       className={cx(
         'motion-safe:radix-side-top:animate-slide-up motion-safe:radix-side-bottom:animate-slide-down',
-        'w-48 rounded-md py-1 shadow-md md:w-56',
+        'w-48 rounded-md py-1 shadow-2xl md:w-56 z-20',
         'border border-gray-200 dark:border-gray-600',
         'bg-white dark:bg-gray-700'
       )}
+      data-focus-visible-disabled
       {...rest}
     >
       {children}

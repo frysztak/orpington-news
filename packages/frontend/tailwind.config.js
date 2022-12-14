@@ -58,6 +58,18 @@ module.exports = {
           800: '#2a103d',
           900: '#110419',
         },
+        gray: {
+          50: '#F7FAFC',
+          100: '#EDF2F7',
+          200: '#E2E8F0',
+          300: '#CBD5E0',
+          400: '#A0AEC0',
+          500: '#718096',
+          600: '#4A5568',
+          700: '#2D3748',
+          800: '#1A202C',
+          900: '#171923',
+        },
       },
       keyframes: {
         // Dropdown menu
@@ -172,6 +184,9 @@ module.exports = {
         'toast-slide-in-bottom':
           'toast-slide-in-bottom 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         'toast-swipe-out': 'toast-swipe-out 100ms ease-out forwards',
+      },
+      boxShadow: {
+        dark: 'rgba(0, 0, 0, 0.1) 0px 0px 0px 1px,rgba(0, 0, 0, 0.2) 0px 5px 10px,rgba(0, 0, 0, 0.4) 0px 15px 40px',
       },
       // fontFamily: fonts,
     },
