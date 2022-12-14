@@ -5317,7 +5317,6 @@ __metadata:
     eslint-config-next: 12.3.4
     eslint-plugin-storybook: ^0.6.7
     eslint-plugin-unused-imports: ^2.0.0
-    focus-visible: ^5.2.0
     formik: ^2.2.9
     framer-motion: ^7.6.18
     html-react-parser: ^3.0.4
@@ -15171,13 +15170,6 @@ __metadata:
   dependencies:
     tslib: ^2.0.3
   checksum: f1a62ea7bbdf71fcc7311a49d84e2f0a37f479539007152c887802e44d4910638611421aec915867353c63212c513e5aab4194bb7fe693d1d8dc1c4c7d43366b
-  languageName: node
-  linkType: hard
-
-"focus-visible@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "focus-visible@npm:5.2.0"
-  checksum: 876f646ef453680d3d34e9f9b23961527ffd5ccaed8690f423d4fbfa37ff023d98a490972bc1387850e37ec2e44958c81f6096ef95b67462e5c4b5404cf1dbb9
   languageName: node
   linkType: hard
 

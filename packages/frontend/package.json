@@ -71,7 +71,6 @@
     "eslint-config-next": "12.3.4",
     "eslint-plugin-storybook": "^0.6.7",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "focus-visible": "^5.2.0",
     "formik": "^2.2.9",
     "framer-motion": "^7.6.18",
     "html-react-parser": "^3.0.4",
