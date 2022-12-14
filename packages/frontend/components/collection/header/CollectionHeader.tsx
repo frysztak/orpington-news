@@ -5,13 +5,6 @@ import {
   Heading,
   HStack,
   IconButton,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuItemOption,
-  MenuList,
-  MenuOptionGroup,
   Skeleton,
   VStack,
 } from '@chakra-ui/react';
@@ -29,6 +22,16 @@ import {
   CollectionSortBy,
   CollectionPreferences,
 } from '@orpington-news/shared';
+import {
+  Menu,
+  MenuContent,
+  MenuDivider,
+  MenuItem,
+  MenuLabel,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuTrigger,
+} from '@components/menu';
 import {
   CollectionLayoutName,
   CollectionFilterName,
@@ -85,78 +88,74 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
             />*/}
       <Box>
         <Menu>
-          <MenuButton
-            as={IconButton}
-            isDisabled={isLoading}
-            icon={<BsLayoutWtf />}
-            aria-label="Layout"
-            variant="ghost"
-            data-test="layoutButton"
-          />
-          <MenuList
-            zIndex="docked"
-            data-focus-visible-disabled
-            data-test="layoutMenuList"
-          >
+          <MenuTrigger asChild>
+            <IconButton
+              isDisabled={isLoading}
+              icon={<BsLayoutWtf />}
+              aria-label="Layout"
+              variant="ghost"
+              data-test="layoutButton"
+            />
+          </MenuTrigger>
+          <MenuContent data-test="layoutMenuList">
             {collection && (
-              <MenuOptionGroup
-                value={collection.layout}
-                title="List layout"
-                type="radio"
-              >
-                {CollectionLayout.options.map((layout) => (
-                  <MenuItemOption
-                    key={layout}
-                    value={layout}
-                    onClick={() => onPreferenceChanged?.({ layout })}
-                    data-test={`layout-${layout}`}
-                  >
-                    {CollectionLayoutName[layout]}
-                  </MenuItemOption>
-                ))}
-              </MenuOptionGroup>
+              <>
+                <MenuLabel>List layout</MenuLabel>
+                <MenuRadioGroup
+                  value={collection.layout}
+                  onValueChange={(layout: any) =>
+                    onPreferenceChanged?.({ layout })
+                  }
+                >
+                  {CollectionLayout.options.map((layout) => (
+                    <MenuRadioItem
+                      key={layout}
+                      value={layout}
+                      data-test={`layout-${layout}`}
+                    >
+                      {CollectionLayoutName[layout]}
+                    </MenuRadioItem>
+                  ))}
+                </MenuRadioGroup>
+              </>
             )}
 
             <Box display={{ base: 'none', lg: 'block' }}>
               <MenuDivider />
 
-              <MenuOptionGroup
+              <MenuLabel>Panes layout</MenuLabel>
+              <MenuRadioGroup
                 value={panesLayout}
-                title="Panes layout"
-                type="radio"
+                onValueChange={(layout: any) => onPanesLayoutChanged?.(layout)}
               >
                 {PanesLayouts.map((layout) => (
-                  <MenuItemOption
+                  <MenuRadioItem
                     key={layout}
                     value={layout}
-                    onClick={() => onPanesLayoutChanged?.(layout)}
                     data-test={`layout-${layout}`}
                   >
                     {PanesLayoutName[layout]}
-                  </MenuItemOption>
+                  </MenuRadioItem>
                 ))}
-              </MenuOptionGroup>
+              </MenuRadioGroup>
             </Box>
-          </MenuList>
+          </MenuContent>
         </Menu>
       </Box>
 
       <Box>
         <Menu>
-          <MenuButton
-            as={IconButton}
-            isDisabled={isLoading}
-            aria-label="Menu"
-            icon={<BsThreeDotsVertical />}
-            variant="ghost"
-            tabIndex={0}
-            data-test="menuButton"
-          />
-          <MenuList
-            data-focus-visible-disabled
-            data-test="menuList"
-            zIndex="docked"
-          >
+          <MenuTrigger asChild>
+            <IconButton
+              isDisabled={isLoading}
+              aria-label="Menu"
+              icon={<BsThreeDotsVertical />}
+              variant="ghost"
+              tabIndex={0}
+              data-test="menuButton"
+            />
+          </MenuTrigger>
+          <MenuContent data-test="menuList">
             <MenuItem
               icon={<IconifyIcon icon={checkCircleOutline} />}
               onClick={() => onMenuActionClicked?.('markAsRead')}
@@ -167,61 +166,60 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
 
             <MenuDivider />
 
-            <MenuOptionGroup
+            <MenuLabel>Show</MenuLabel>
+            <MenuRadioGroup
               value={collection?.filter}
-              title="Show"
-              type="radio"
+              onValueChange={(filter: any) => onPreferenceChanged?.({ filter })}
             >
               {CollectionFilter.options.map((filter) => (
-                <MenuItemOption
+                <MenuRadioItem
                   key={filter}
                   value={filter}
-                  onClick={() => onPreferenceChanged?.({ filter })}
                   data-test={`show-${filter}`}
                 >
                   {CollectionFilterName[filter]}
-                </MenuItemOption>
+                </MenuRadioItem>
               ))}
-            </MenuOptionGroup>
+            </MenuRadioGroup>
 
             <MenuDivider />
 
-            <MenuOptionGroup
+            <MenuLabel>Group by</MenuLabel>
+            <MenuRadioGroup
               value={collection?.grouping}
-              title="Group by"
-              type="radio"
+              onValueChange={(grouping: any) =>
+                onPreferenceChanged?.({ grouping })
+              }
             >
               {CollectionGrouping.options.map((grouping) => (
-                <MenuItemOption
+                <MenuRadioItem
                   key={grouping}
                   value={grouping}
-                  onClick={() => onPreferenceChanged?.({ grouping })}
                   data-test={`grouping-${grouping}`}
                 >
                   {CollectionGroupingName[grouping]}
-                </MenuItemOption>
+                </MenuRadioItem>
               ))}
-            </MenuOptionGroup>
+            </MenuRadioGroup>
 
             <MenuDivider />
 
-            <MenuOptionGroup
+            <MenuLabel>Sort by</MenuLabel>
+            <MenuRadioGroup
               value={collection?.sortBy}
-              title="Sort by"
-              type="radio"
+              onValueChange={(sortBy: any) => onPreferenceChanged?.({ sortBy })}
             >
               {CollectionSortBy.options.map((sortBy) => (
-                <MenuItemOption
+                <MenuRadioItem
                   key={sortBy}
                   value={sortBy}
-                  onClick={() => onPreferenceChanged?.({ sortBy })}
                   data-test={`sortBy-${sortBy}`}
                 >
                   {CollectionSortByName[sortBy]}
-                </MenuItemOption>
+                </MenuRadioItem>
               ))}
-            </MenuOptionGroup>
-          </MenuList>
+            </MenuRadioGroup>
+          </MenuContent>
         </Menu>
       </Box>
     </HStack>
