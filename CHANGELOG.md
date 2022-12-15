@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Performance: cache start page using service worker
 - Performance: use Tailwind for Drawer, Modal, Sidebar components
+- Respect "prefers reduced motion" setting
+
+### Changed
+
+- Use Node.js 18
 
 ## [0.10.0] - 2022-12-04
 

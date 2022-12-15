@@ -40,20 +40,21 @@ SELECT
   collection_filter as "activeCollectionFilter",
   collection_grouping as "activeCollectionGrouping",
   collection_sort_by as "activeCollectionSortBy",
-  COALESCE(expanded_collection_ids, '{}') as "expandedCollectionIds",
+  coalesce(expanded_collection_ids, '{}') as "expandedCollectionIds",
   default_collection_layout as "defaultCollectionLayout",
   avatar_style as "avatarStyle"
 FROM
   preferences
-LEFT OUTER JOIN (SELECT
-  id as collection_id,
-  title as collection_title,
-  layout as collection_layout,
-  "filter" as collection_filter,
-  "grouping" as collection_grouping,
-  "sort_by" as collection_sort_by
-    FROM
-      collections) collections ON collections.collection_id = preferences.active_collection_id
+  LEFT OUTER JOIN (
+  SELECT
+    id as collection_id,
+    title as collection_title,
+    layout as collection_layout,
+    "filter" as collection_filter,
+    "grouping" as collection_grouping,
+    "sort_by" as collection_sort_by
+  FROM
+    collections) collections ON collections.collection_id = preferences.active_collection_id
 WHERE
   "user_id" = ${userId}
 `;
@@ -90,7 +91,7 @@ SET
   expanded_collection_ids = subquery.ids || '{}'
 FROM (
   SELECT
-    uniq (COALESCE(expanded_collection_ids, '{}') ${sign} ${sql.array(
+    uniq (coalesce(expanded_collection_ids, '{}') ${sign} ${sql.array(
     [collectionId],
     'int4'
   )}) as ids

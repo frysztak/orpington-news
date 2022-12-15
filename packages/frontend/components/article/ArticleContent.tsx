@@ -17,7 +17,6 @@ import {
   UnorderedList,
   OrderedList,
   ListItem,
-  Skeleton,
   Image,
 } from '@chakra-ui/react';
 import { ReactFCC } from '@utils/react';
@@ -25,7 +24,7 @@ import { ReactFCC } from '@utils/react';
 const SyntaxHighlighterWithTheme = dynamic(
   () => import('./SyntaxHighlighterWithTheme'),
   {
-    loading: () => <Skeleton w="full" h={40} />,
+    loading: () => <div className="skeleton w-full h-40" />,
   }
 );
 

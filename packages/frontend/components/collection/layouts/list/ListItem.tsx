@@ -70,7 +70,7 @@ export const ListItem = forwardRef<HTMLAnchorElement, ListItemProps>(
           {/* Desktop */}
           <div className="hidden lg:flex items-center gap-x-2 w-full py-3 px-2">
             <div className="flex items-center flex-shrink-0 flex-grow-0 w-1/5 gap-x-1 break-all dark:text-gray-300 text-gray-700">
-              <NewspaperIcon className="h-4 w-4" />
+              <NewspaperIcon className="h-4 w-4 flex-shrink-0" />
               <p className="line-clamp-1">{collection.title}</p>
             </div>
             {titleEl}
