@@ -5,7 +5,6 @@ import {
   Heading,
   HStack,
   IconButton,
-  Skeleton,
   VStack,
 } from '@chakra-ui/react';
 import { CgMenuLeftAlt } from '@react-icons/all-files/cg/CgMenuLeftAlt';
@@ -257,15 +256,13 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
         px={4}
         minH={12}
       >
-        <Skeleton
-          isLoaded={!isLoading}
-          w="full"
-          maxW={isLoading ? 96 : 'unset'}
-        >
-          <Flex h="full" align="flex-start">
+        {isLoading ? (
+          <div className="skeleton w-full max-w-md" />
+        ) : (
+          <div className="flex h-full items-start">
             <Heading>{collection?.title}</Heading>
-          </Flex>
-        </Skeleton>
+          </div>
+        )}
         <Flex
           h="full"
           align="flex-start"

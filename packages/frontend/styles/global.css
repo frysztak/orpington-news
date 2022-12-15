@@ -18,4 +18,10 @@
     @apply h-7 w-7 rounded-full;
     @apply border-current border-2 border-l-transparent border-b-transparent;
   }
+
+  .skeleton {
+    @apply bg-slate-300 dark:bg-slate-700;
+    @apply rounded;
+    @apply animate-pulse motion-reduce:hidden;
+  }
 }

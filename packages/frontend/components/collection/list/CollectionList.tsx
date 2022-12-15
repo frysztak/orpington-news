@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import {
-  Box,
-  BoxProps,
-  Icon,
-  SkeletonText,
-  VStack,
-  Text,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Icon, VStack, Text } from '@chakra-ui/react';
 import { GroupedVirtuoso, Virtuoso, VirtuosoHandle } from 'react-virtuoso';
 import { InformationCircleIcon } from '@heroicons/react/24/solid';
 import {
@@ -120,23 +113,13 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
     });
   }, [activeArticleIdx, panesLayout]);
 
-  const Skeleton = layout === 'list' ? SkeletonList : SkeletonBox;
-
   if (isLoading) {
     return (
-      <VStack
-        w="full"
-        h="full"
-        justify="flex-start"
-        align="stretch"
-        spacing={6}
-        px={3}
-        overflowY="clip"
-      >
-        {genN(5).map((x) => (
+      <div className="flex flex-col w-full h-full justify-start items-stretch gap-6 px-3 pt-4 overflow-clip">
+        {genN(7).map((x) => (
           <Skeleton key={x} />
         ))}
-      </VStack>
+      </div>
     );
   }
 
@@ -228,21 +211,12 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
   );
 };
 
-const SkeletonBox: React.FC = (props) => {
+const Skeleton: React.FC = (props) => {
   return (
-    <Box pb={4} pr={4}>
-      <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
-      <SkeletonText mt="4" noOfLines={2} spacing="4" />
-    </Box>
-  );
-};
-
-const SkeletonList: React.FC = (props) => {
-  return (
-    <Box pb={4} pl={1} pr={6}>
-      <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
-      <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
-      <SkeletonText mt="4" noOfLines={1} spacing="4" skeletonHeight={4} />
-    </Box>
+    <div className="pb-4 pl-1 pr-6 flex flex-col gap-4">
+      <div className="skeleton h-4 w-full" />
+      <div className="skeleton h-4 w-full" />
+      <div className="skeleton h-4 w-4/5" />
+    </div>
   );
 };
