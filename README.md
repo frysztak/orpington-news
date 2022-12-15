@@ -172,7 +172,7 @@ $ yarn build
 
 ```sh
 $ cd packages/backend
-$ docker-compose -f docker-compose.db.yml up -d
+$ docker compose -f docker-compose.db.yml up -d
 ```
 
 You should be able now to access pgAdmin at `http://localhost:8080`.
