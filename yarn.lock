@@ -5247,7 +5247,7 @@ __metadata:
     reading-time: ^1.5.0
     rimraf: ^3.0.2
     rss-parser: ^3.12.0
-    slonik: 31.4.2
+    slonik: ^32.0.0
     slonik-interceptor-query-logging: ^1.4.7
     striptags: ^3.2.0
     tinypool: ^0.3.0
@@ -21245,7 +21245,7 @@ __metadata:
     lint-staged: ^13.1.0
     prettier: ^2.8.1
     rimraf: ^3.0.2
-    slonik: ^31.4.2
+    slonik: ^32.0.0
     typescript: 4.9.4
     yarn-audit-fix: ^9.3.7
   languageName: unknown
@@ -25336,9 +25336,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slonik@npm:31.4.2, slonik@npm:^31.4.2":
-  version: 31.4.2
-  resolution: "slonik@npm:31.4.2"
+"slonik@npm:^32.0.0":
+  version: 32.0.0
+  resolution: "slonik@npm:32.0.0"
   dependencies:
     concat-stream: ^2.0.0
     es6-error: ^4.1.1
@@ -25360,7 +25360,7 @@ __metadata:
     serialize-error: ^8.0.0
     through2: ^4.0.2
     zod: ^3.19.1
-  checksum: 5659ba3e3dd5e7218bf2da372b393f16a6402cd8a982074075b40261f4dbbe380592b66ca16676377b661b5180014ba3c508ad9b316c386d0291189a7182e7be
+  checksum: 4629ff3d1cd92c71d3437a451b8fddc6e2ad46731e47ed07bd19ceded9c122a851c1bad4822217dae6adbb9039562bdd894914c5aa5bc9f8e3e34bb11438e91f
   languageName: node
   linkType: hard
 
