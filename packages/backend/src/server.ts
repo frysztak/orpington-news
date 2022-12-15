@@ -24,6 +24,7 @@ import { fetchRSSJob, pingJob } from '@tasks';
 import { logger, readEnvVariable } from '@utils';
 import { buildDsn } from '@db';
 import { migrator } from '@db/migrator';
+import { fixMissingParents } from './fixMissingParents';
 
 const fastify = Fastify({
   logger: logger,
@@ -129,11 +130,12 @@ async function setupFastify() {
   });
 
   await migrator.up();
+  await fixMissingParents();
   await fastify.ready();
 
   fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);
   fastify.scheduler.addSimpleIntervalJob(pingJob);
-  await fastify.listen(
+  fastify.listen(
     {
       port: process.env.PORT ? parseInt(process.env.PORT, 10) : 5000,
       host: process.env.HOST || '0.0.0.0',

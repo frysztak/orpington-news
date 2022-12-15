@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Use Node.js 18
 
+### Fixed
+
+- Fix disappearing Collections when reordering
+
 ## [0.10.0] - 2022-12-04
 
 ### Added
