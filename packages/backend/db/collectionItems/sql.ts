@@ -39,8 +39,8 @@ SELECT
   summary,
   full_text,
   thumbnail_url,
-  TO_TIMESTAMP(date_published) as date_published,
-  TO_TIMESTAMP(date_updated) as date_updated,
+  to_timestamp(date_published) as date_published,
+  to_timestamp(date_updated) as date_updated,
   categories,
   comments,
   reading_time,
@@ -127,13 +127,14 @@ FROM
       title as collection_title,
       icon as collection_icon
     FROM
-      collections WHERE "user_id" = ${userId}) collections ON collections.collection_id = collection_items.collection_id
+      collections
+    WHERE
+      "user_id" = ${userId}) collections ON collections.collection_id = collection_items.collection_id
 WHERE
   collection_items.collection_id = ANY (${getCollectionChildrenIds(
     collectionId
   )})
-  AND
-  ${showFilter}
+  AND ${showFilter}
 ORDER BY
   ${orderBy}
 `;
@@ -149,8 +150,8 @@ FROM (
     collections.id as collection_id,
     collections.title as collection_title,
     collections.icon as collection_icon,
-    LAG(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) previous_id,
-    LEAD(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) next_id
+    lag(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) previous_id,
+    lead(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) next_id
   FROM collections
   INNER JOIN (
   SELECT
@@ -171,7 +172,7 @@ export const setItemDateRead = (
 UPDATE
   collection_items
 SET
-  date_read = TO_TIMESTAMP(${dateRead})
+  date_read = to_timestamp(${dateRead})
 WHERE
   id = ${itemId}
   AND collection_id = ${collectionId}
