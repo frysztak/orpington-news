@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:18.12.1-alpine
 
 RUN npm install --global http-server
 CMD http-server ./public -p 8002
