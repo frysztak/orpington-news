@@ -27,7 +27,7 @@ export const ModalContent = React.forwardRef<
     >
       <DialogPrimitive.Overlay
         forceMount
-        className={cx('fixed inset-0', 'radix-state-open:bg-black/50')}
+        className="fixed inset-0 z-[1] radix-state-open:bg-black/50"
       />
     </Transition.Child>
     <Transition.Child
