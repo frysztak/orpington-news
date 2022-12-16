@@ -157,7 +157,7 @@ export const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
           </span>
         )}
         <p
-          className={cx('flex-grow py-2', fg, {
+          className={cx('flex-grow py-2 break-words min-w-0', fg, {
             'font-bold': isActive,
           })}
           data-test="title"
