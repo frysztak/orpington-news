@@ -1,15 +1,12 @@
 import NextLink from 'next/link';
 import { Box, BoxProps, Button, VStack } from '@chakra-ui/react';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
-import { useIsTouchscreen } from '@utils';
 import { SettingsCategory } from './SettingsCategory';
 import { SettingsLink } from './SettingsLink';
 
 export type SettingsSidebarProps = BoxProps;
 
 export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
-  const isTouchscreen = useIsTouchscreen();
-
   return (
     <VStack w="full" align="flex-start" spacing={3} {...props}>
       <NextLink href="/" passHref>
@@ -27,11 +24,12 @@ export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
       </SettingsCategory>
 
       <SettingsCategory title="Collections">
-        {!isTouchscreen && (
-          <SettingsLink href="/settings/collections/organize">
-            Organize
-          </SettingsLink>
-        )}
+        <SettingsLink
+          href="/settings/collections/organize"
+          className="touch:hidden"
+        >
+          Organize
+        </SettingsLink>
         <SettingsLink href="/settings/collections/import">Import</SettingsLink>
       </SettingsCategory>
 

@@ -191,5 +191,9 @@ module.exports = {
       // fontFamily: fonts,
     },
   },
-  plugins: [require('@tailwindcss/line-clamp'), require('tailwindcss-radix')()],
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+    require('tailwindcss-radix')(),
+    require('tailwindcss-plugin-fancy'),
+  ],
 };

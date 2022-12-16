@@ -1,5 +1,6 @@
+import cx from 'classnames';
 import NextLink from 'next/link';
-import { HStack, Divider, VStack, Button } from '@chakra-ui/react';
+import { Divider, Button } from '@chakra-ui/react';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
 import { ReactFCC } from '@utils/react';
 import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
@@ -9,29 +10,19 @@ export interface SettingsLayoutProps {}
 export const SettingsLayout: ReactFCC<SettingsLayoutProps> = ({ children }) => {
   return (
     <>
-      <HStack
-        display={{ base: 'none', sm: 'flex' }}
-        w="full"
-        h="full"
-        align="flex-start"
-        flexGrow={1}
-      >
-        <HStack w={60} h="100vh" align="flex-start" px={2} flexShrink={0}>
+      <div className="hidden md:flex w-full h-full items-start flex-grow">
+        <div className="flex w-60 h-[100vh] items-start px-2 gap-x-2 flex-shrink-0">
           <SettingsSidebar py={4} />
           <Divider orientation="vertical" h="full" />
-        </HStack>
+        </div>
         {children}
-      </HStack>
+      </div>
 
-      <VStack
-        display={{ base: 'flex', sm: 'none' }}
-        w="full"
-        h="full"
-        align="flex-start"
-        flexGrow={1}
-        spacing={2}
-        pt={4}
-        px={2}
+      <div
+        className={cx(
+          'flex md:hidden flex-col items-start flex-grow gap-2',
+          'h-full w-full pt-4 px-2'
+        )}
       >
         <NextLink href="/settings" passHref>
           <Button
@@ -44,7 +35,7 @@ export const SettingsLayout: ReactFCC<SettingsLayoutProps> = ({ children }) => {
           </Button>
         </NextLink>
         {children}
-      </VStack>
+      </div>
     </>
   );
 };
