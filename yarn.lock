@@ -5346,6 +5346,7 @@ __metadata:
     string-to-color: ^2.2.2
     swc-plugin-coverage-instrument: ^0.0.12
     tailwindcss: ^3.2.4
+    tailwindcss-plugin-fancy: ^3.2.4
     tailwindcss-radix: ^2.6.1
     tsconfig-paths-webpack-plugin: ^4.0.0
     use-context-selector: ^1.4.1
@@ -26372,6 +26373,16 @@ __metadata:
   bin:
     synp: ./cli/synp.js
   checksum: 7dd1d50f8a1627e94b12a54fda69486a9772775448b53773b9fbd733f7c3b23bf8e3f4c489583260b73ad88c82549b9ee89508731ce4a06691a71b1b9d24ac4f
+  languageName: node
+  linkType: hard
+
+"tailwindcss-plugin-fancy@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "tailwindcss-plugin-fancy@npm:3.2.4"
+  peerDependencies:
+    postcss: ^8.2.8
+    tailwindcss: ^3.0.0
+  checksum: 93d66e0b0f842ec5e1ae7dc456f17f5b79366fe7fff092c15bba9efaf8bc35d2561bed5cd4cdbdf5ead021e6de8fa13a60401ee8d9ba7786719632b9128afcf5
   languageName: node
   linkType: hard
 

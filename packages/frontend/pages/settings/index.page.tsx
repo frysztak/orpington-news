@@ -9,7 +9,7 @@ import { SettingsSidebar } from './components/sidebar/SettingsSidebar';
 const Page: NextPageWithLayout = () => {
   const router = useRouter();
   const isClient = useIsClient();
-  const [isMobile] = useMediaQuery(['(max-width: 30em)']);
+  const [isMobile] = useMediaQuery(['(max-width: 768px)']);
 
   useEffect(() => {
     if (isClient && !isMobile) {

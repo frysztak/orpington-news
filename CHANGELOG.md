@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix disappearing Collections when reordering
+- Settings: fix mobile layout on some viewports
 
 ## [0.10.0] - 2022-12-04
 

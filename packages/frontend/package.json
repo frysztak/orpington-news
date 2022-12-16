@@ -98,6 +98,7 @@
     "string-to-color": "^2.2.2",
     "swc-plugin-coverage-instrument": "^0.0.12",
     "tailwindcss": "^3.2.4",
+    "tailwindcss-plugin-fancy": "^3.2.4",
     "tailwindcss-radix": "^2.6.1",
     "tsconfig-paths-webpack-plugin": "^4.0.0",
     "use-context-selector": "^1.4.1",
