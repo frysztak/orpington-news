@@ -1,3 +1,5 @@
+@use 'sass:meta';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -24,4 +26,20 @@
     @apply rounded;
     @apply animate-pulse motion-reduce:hidden;
   }
+}
+
+.prism-code {
+  background: #fafafa;
+
+  @include meta.load-css(
+    '../node_modules/prism-themes/themes/prism-one-light.css'
+  );
+}
+
+[data-theme='dark'] .prism-code {
+  background: #282a36;
+
+  @include meta.load-css(
+    '../node_modules/prism-themes/themes/prism-dracula.css'
+  );
 }
