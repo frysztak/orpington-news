@@ -8,7 +8,7 @@ import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { withPerformance } from 'storybook-addon-performance';
 import { theme } from '../theme';
 import { fontFaces } from '../theme/fonts';
-import '../styles/global.css';
+import '../styles/global.scss';
 
 addDecorator(withPerformance);
 

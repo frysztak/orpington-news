@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import dynamic from 'next/dynamic';
 import parse, {
   domToReact,
   attributesToProps,
@@ -7,7 +6,6 @@ import parse, {
   Element,
 } from 'html-react-parser';
 import {
-  Box,
   Link,
   Code,
   Text,
@@ -20,20 +18,19 @@ import {
   Image,
 } from '@chakra-ui/react';
 import { ReactFCC } from '@utils/react';
-
-const SyntaxHighlighterWithTheme = dynamic(
-  () => import('./SyntaxHighlighterWithTheme'),
-  {
-    loading: () => <div className="skeleton w-full h-40" />,
-  }
-);
+import { extractLanguage } from './extractLanguage';
+import { SyntaxHighlight } from './SyntaxHighlight';
 
 export interface ArticleContentProps {
   html: string;
 }
 
 const extractText = (node: any) =>
-  node.type === 'text' ? (node as any).data : '';
+  node.type === 'text'
+    ? (node as any).data
+    : node.type === 'tag' && node.name === 'br'
+    ? '\n'
+    : '';
 
 const getNodeText = (node: Element): string => {
   return (
@@ -186,10 +183,13 @@ const options: HTMLReactParserOptions = {
 
         if (isChildCode) {
           const text: string = getNodeText(domNode);
+          const language = extractLanguage(domNode);
           return (
-            <Box w="full">
-              <SyntaxHighlighterWithTheme>{text}</SyntaxHighlighterWithTheme>
-            </Box>
+            <SyntaxHighlight
+              className="w-full md:max-w-3xl overflow-x-auto p-4 font-articleMono"
+              language={language}
+              code={text}
+            />
           );
         }
       }

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Meta, Story } from '@storybook/react';
 import { ArticleContent, ArticleContentProps } from './ArticleContent';
 
@@ -7,7 +8,9 @@ export default {
 } as Meta;
 
 const Template: Story<ArticleContentProps> = (props) => (
-  <ArticleContent {...props} />
+  <div className="w-[50vw]">
+    <ArticleContent {...props} />
+  </div>
 );
 
 export const NoContent = Template.bind({});
@@ -30,13 +33,71 @@ CodeBlock.args = {
   html: `<pre><code>yarn add</code></pre>`,
 };
 
-export const CodeBlockGatsby = Template.bind({});
-CodeBlockGatsby.args = {
-  html: `<pre class="language-jsx">
-  <code class="language-jsx">
-  <span class="token keyword">import</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span>
+export const CodeBlockSyntaxHighlight = Template.bind({});
+CodeBlockSyntaxHighlight.args = {
+  html: `<pre class="language-jsx"><code class="language-jsx"><span class="token keyword">import</span> <span class="token punctuation">{</span> useState <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'react'</span><span class="token punctuation">;</span></code></pre>`,
+};
 
-  </code></pre>`,
+export const CodeBlockSyntaxHighlightLongLine = Template.bind({});
+CodeBlockSyntaxHighlightLongLine.args = {
+  html: `<pre class="language-jsx"><code class="language-jsx"><span class="token keyword">let</span> Rectangle <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">resizeTopLeft</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeTopRight</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeBottomLeft</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeBottomRight</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> Oval <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">resizeLeft</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeRight</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeTop</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeBottom</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">let</span> Header <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">resizeLeft</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeRight</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>  
+<span class="token punctuation">}</span>
+
+<span class="token keyword">let</span> TextBlock <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token function">resizeTopLeft</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeTopRight</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeBottomLeft</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token function">resizeBottomRight</span><span class="token punctuation">(</span><span class="token parameter">position<span class="token punctuation">,</span> size<span class="token punctuation">,</span> preserveAspect<span class="token punctuation">,</span> dx<span class="token punctuation">,</span> dy</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 10 repetitive lines of math</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>`,
+};
+CodeBlockSyntaxHighlightLongLine.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
 };
 
 export const HeadingWithSvg = Template.bind({});

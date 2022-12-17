@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Performance: cache start page using service worker
 - Performance: use Tailwind for Drawer, Modal, Sidebar components
 - Respect "prefers reduced motion" setting
+- New syntax highlighter:
+  - detects language from HTML classes (rather than relying on Highlight.js' expensive language auto-detection)
+  - uses Prism.js and CSS-based styles
 
 ### Changed
 
