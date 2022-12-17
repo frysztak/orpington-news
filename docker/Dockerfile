@@ -1,5 +1,5 @@
 # BASE
-FROM node:16.17.1-alpine as base
+FROM node:18.12.1-alpine as base
 
 # BUILDER
 FROM base as builder
@@ -22,6 +22,8 @@ COPY . /app
 
 ARG INSTRUMENT_COVERAGE
 ENV INSTRUMENT_COVERAGE=${INSTRUMENT_COVERAGE}
+ARG DISABLE_SW
+ENV DISABLE_SW=${DISABLE_SW}
 ARG DEMO_MODE
 ENV NEXT_PUBLIC_APP_DEMO=${DEMO_MODE}
 ARG COMMIT_SHA
@@ -34,7 +36,7 @@ RUN yarn build && rm -rf packages/**/node_modules
 # RUNTIME
 FROM nginx:alpine as runtime
 
-RUN apk add --no-cache nodejs icu-data-full yarn
+RUN apk add --no-cache nodejs>18.12.1-r0 icu-data-full yarn
 RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn global add pm2
 
 WORKDIR /app

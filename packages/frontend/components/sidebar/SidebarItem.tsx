@@ -1,28 +1,67 @@
-import React, { MouseEvent, useCallback, useRef } from 'react';
-import {
-  Badge,
-  Box,
-  Center,
-  forwardRef,
-  HStack,
-  Icon,
-  IconButton,
-  Menu,
-  MenuButton,
-  MenuList,
-  Spacer,
-  Spinner,
-  Text,
-  useColorModeValue,
-  useDisclosure,
-  useMergeRefs,
-  useOutsideClick,
-  VStack,
-} from '@chakra-ui/react';
+import React, { MouseEvent, useCallback } from 'react';
+import cx from 'classnames';
+import { Icon as IconifyIcon } from '@iconify/react';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
+import { CgRemove } from '@react-icons/all-files/cg/CgRemove';
+import { IoRefresh } from '@react-icons/all-files/io5/IoRefresh';
+import { AiTwotoneEdit } from '@react-icons/all-files/ai/AiTwotoneEdit';
+import checkCircleOutline from '@iconify/icons-mdi/check-circle-outline';
+import {
+  Menu,
+  MenuContent,
+  MenuDivider,
+  MenuItem,
+  MenuTrigger,
+} from '@components/menu';
+import { IconButton } from '@components/button';
 import { Chevron } from './Chevron';
-import { useIconFill } from '@utils/icon';
 import { calcItemPadding } from './calcItemPadding';
+import { Spinner } from '@components/spinner';
+
+export type CollectionMenuAction = 'markAsRead' | 'refresh' | 'edit' | 'delete';
+
+type BadgeTriggerProps = Pick<React.ComponentProps<'div'>, 'onPointerDown'> & {
+  counter: number;
+};
+const BadgeTrigger = React.forwardRef<HTMLButtonElement, BadgeTriggerProps>(
+  ({ counter, ...rest }, ref) => (
+    <div
+      className="group"
+      onClick={(event) => event.stopPropagation()}
+      {...rest}
+    >
+      <IconButton
+        ref={ref}
+        aria-label="Menu"
+        tabIndex={0}
+        data-test="menuButton"
+        data-state={(rest as any)['data-state']}
+        className="h-8 w-8 hidden group-hover:inline-flex radix-state-open:inline-flex"
+      >
+        <BsThreeDotsVertical />
+      </IconButton>
+      {counter > 0 ? (
+        <div
+          className={cx(
+            'group-hover:hidden radix-state-open:hidden',
+            'h-8 w-8 px-1 rounded text-xs font-bold uppercase whitespace-nowrap flex items-center justify-center',
+            'text-purple-700 bg-purple-50 dark:text-purple-200 dark:bg-purple-200 dark:bg-opacity-10'
+          )}
+          data-test="badge"
+          data-state={(rest as any)['data-state']}
+        >
+          {counter > 999 ? '999+' : counter}
+        </div>
+      ) : (
+        <div
+          data-state={(rest as any)['data-state']}
+          className="w-8 h-8 group-hover:hidden radix-state-open:hidden"
+        />
+      )}
+    </div>
+  )
+);
+BadgeTrigger.displayName = 'BadgeTrigger';
 
 export interface SidebarItemProps {
   isActive: boolean;
@@ -30,206 +69,148 @@ export interface SidebarItemProps {
   title: string;
   counter?: number;
   chevron?: 'top' | 'bottom';
-  menuItems?: JSX.Element;
+  noMenu?: boolean;
   isLoading?: boolean;
   level?: number;
+  style?: React.CSSProperties;
 
   onClick: () => void;
   onChevronClick?: () => void;
+  onMenuActionClicked?: (action: CollectionMenuAction) => void;
 }
 
-export const SidebarItem = forwardRef<SidebarItemProps, 'div'>((props, ref) => {
-  const {
-    isActive,
-    icon,
-    title,
-    counter,
-    chevron,
-    menuItems,
-    isLoading,
-    onClick,
-    onChevronClick,
-    level,
-    style,
-    ...rest
-  } = props;
+export const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
+  (props, ref) => {
+    const {
+      isActive,
+      icon,
+      title,
+      counter,
+      chevron,
+      noMenu,
+      isLoading,
+      onClick,
+      onChevronClick,
+      onMenuActionClicked,
+      level,
+      style,
+      ...rest
+    } = props;
 
-  const fg = useIconFill();
-  const bg = useColorModeValue('purple.50', 'gray.700');
-  const hoverBg = useColorModeValue('purple.10', 'gray.600');
-
-  const { isOpen, onToggle, onClose, onOpen } = useDisclosure();
-
-  const handleMenuClick: React.MouseEventHandler = useCallback(
-    (event) => {
-      event.stopPropagation();
-      onToggle();
-    },
-    [onToggle]
-  );
-
-  const handleClick: React.MouseEventHandler = useCallback(
-    (event) => {
-      if (isOpen) {
-        onClose();
-      } else {
-        onClick();
-      }
-    },
-    [isOpen, onClick, onClose]
-  );
-
-  const internalRef = useRef<HTMLDivElement | null>(null);
-  useOutsideClick({
-    ref: internalRef,
-    handler: useCallback(
-      (e: Event) => {
-        onClose();
+    const handleKeyDown: React.KeyboardEventHandler = useCallback(
+      (event) => {
+        const { key } = event;
+        if (key === 'Enter') {
+          onClick();
+        }
       },
-      [onClose]
-    ),
-  });
+      [onClick]
+    );
 
-  const handleKeyDown: React.KeyboardEventHandler = useCallback(
-    (event) => {
-      const { key } = event;
-      if (key === 'Escape') {
-        onClose();
-      } else if (key === 'Enter') {
-        onClick();
-      }
-    },
-    [onClick, onClose]
-  );
-
-  const handleChevronClick = useCallback(
-    (e?: MouseEvent) => {
-      e?.stopPropagation();
-      if (isOpen) {
-        onClose();
-      } else {
+    const handleChevronClick = useCallback(
+      (e?: MouseEvent) => {
+        e?.stopPropagation();
         onChevronClick?.();
-      }
-    },
-    [isOpen, onChevronClick, onClose]
-  );
+      },
+      [onChevronClick]
+    );
 
-  const handleChevronKeyDown: React.KeyboardEventHandler = useCallback(
-    (event) => {
-      const { key } = event;
-
-      if (key === ' ') {
-        handleChevronClick();
-        event.preventDefault();
-      }
-    },
-    [handleChevronClick]
-  );
-
-  const refs = useMergeRefs(internalRef, ref);
-
-  return (
-    <HStack
-      ref={refs}
-      w="full"
-      spacing={4}
-      pr={3}
-      minH={10}
-      align="center"
-      _hover={{
-        cursor: 'pointer',
-        bgColor: hoverBg,
-      }}
-      _focus={{
-        bgColor: hoverBg,
-        outline: 'none',
-      }}
-      bgColor={isActive ? bg : 'inherit'}
-      transition="background-color 0.2s"
-      userSelect="none"
-      role="group"
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      style={{
-        ...style,
-        paddingLeft: calcItemPadding(chevron, level),
-      }}
-      data-test="group"
-      {...rest}
-    >
-      {chevron && (
-        <IconButton
-          variant="ghost"
-          ml={1}
-          mr={-3}
-          size="2xs"
-          aria-label={chevron === 'top' ? 'Collapse menu' : 'Expand menu'}
-          icon={<Chevron pointTo={chevron} />}
-          onKeyDown={handleChevronKeyDown}
-          onClick={handleChevronClick}
-          data-test="chevron"
-        />
-      )}
-      {icon && <Icon as={icon} w={6} h={6} fill={fg} />}
-      <Text
-        flexGrow={1}
-        color={fg}
-        fontWeight={isActive ? 700 : 400}
-        py={2}
-        data-test="title"
+    const fg = 'text-purple.700 dark:text-white';
+    return (
+      <div
+        ref={ref}
+        className={cx(
+          'flex items-center gap-4',
+          'w-full pr-3 min-h-[2.5rem]',
+          'hover:bg-purple-10 dark:hover:bg-gray-600',
+          'focus:bg-purple-10 dark:focus:bg-gray-600',
+          'transition-colors',
+          'cursor-pointer group select-none',
+          {
+            'bg-purple-50 dark:bg-gray-700': isActive,
+          }
+        )}
+        onClick={onClick}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        style={{
+          ...style,
+          paddingLeft: calcItemPadding(chevron, level),
+        }}
+        data-test="group"
+        {...rest}
       >
-        {title}
-      </Text>
-
-      <VStack align="flex-end" spacing={0}>
-        {isLoading && (
-          <Center h={8} w={8}>
-            <Spinner />
-          </Center>
-        )}
-        {!isLoading &&
-          !isOpen &&
-          (counter ? (
-            <Badge
-              w={8}
-              h={8}
-              _groupHover={{
-                display: menuItems ? 'none' : '',
-              }}
-              data-test="badge"
-            >
-              <Center h="full">{counter > 999 ? '999+' : counter}</Center>
-            </Badge>
-          ) : (
-            <Spacer w={8} h={8} />
-          ))}
-        {!isLoading && menuItems && (
-          <Box
-            display={isOpen ? 'block' : 'none'}
-            _groupHover={{
-              display: 'block',
-            }}
+        {chevron && (
+          <IconButton
+            className="bg-transparent dark:bg-transparent ml-1 -mr-3 h-4 w-4 px-1"
+            aria-label={chevron === 'top' ? 'Collapse menu' : 'Expand menu'}
+            onKeyDown={(e) => e.stopPropagation()}
+            onClick={handleChevronClick}
+            data-test="chevron"
           >
-            <Menu isOpen={isOpen} onOpen={onOpen} isLazy>
-              <MenuButton
-                onClick={handleMenuClick}
-                as={IconButton}
-                aria-label="Menu"
-                icon={<BsThreeDotsVertical />}
-                variant="ghost"
-                size="sm"
-                tabIndex={0}
-                data-test="menuButton"
-              />
-              <MenuList data-focus-visible-disabled data-test="menuList">
-                {menuItems}
-              </MenuList>
-            </Menu>
-          </Box>
+            <Chevron pointTo={chevron} />
+          </IconButton>
         )}
-      </VStack>
-    </HStack>
-  );
-});
+        {icon && (
+          <span className={cx(fg, 'w-6 h-6 flex-shrink-0')}>
+            {icon({ style: { width: '100%', height: '100%' } })}
+          </span>
+        )}
+        <p
+          className={cx('flex-grow py-2 break-words min-w-0', fg, {
+            'font-bold': isActive,
+          })}
+          data-test="title"
+        >
+          {title}
+        </p>
+
+        {isLoading ? (
+          <Spinner className="m-1" />
+        ) : noMenu ? (
+          <div className="h-8 w-8" />
+        ) : (
+          <Menu>
+            <MenuTrigger asChild>
+              <BadgeTrigger counter={counter!} />
+            </MenuTrigger>
+            <MenuContent data-test="menuList">
+              <MenuItem
+                icon={<IconifyIcon icon={checkCircleOutline} />}
+                onSelect={() => onMenuActionClicked?.('markAsRead')}
+                data-test="markAsRead"
+              >
+                Mark all as read
+              </MenuItem>
+              <MenuItem
+                icon={<IoRefresh />}
+                onSelect={() => onMenuActionClicked?.('refresh')}
+                data-test="refresh"
+              >
+                Refresh
+              </MenuItem>
+              <MenuItem
+                icon={<AiTwotoneEdit />}
+                onSelect={() => onMenuActionClicked?.('edit')}
+                data-test="edit"
+              >
+                Edit
+              </MenuItem>
+
+              <MenuDivider />
+
+              <MenuItem
+                icon={<CgRemove />}
+                onSelect={() => onMenuActionClicked?.('delete')}
+                data-test="delete"
+              >
+                Delete
+              </MenuItem>
+            </MenuContent>
+          </Menu>
+        )}
+      </div>
+    );
+  }
+);
 SidebarItem.displayName = 'SidebarItem';

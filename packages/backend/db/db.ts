@@ -3,11 +3,13 @@ import { createPool } from 'slonik';
 import { createQueryLoggingInterceptor } from 'slonik-interceptor-query-logging';
 import { readEnvVariable } from '@utils';
 import { nonNull } from '@orpington-news/shared';
+import { createResultParserInterceptor } from './validatingInterceptor';
 
 const isDev = process.env.NODE_ENV === 'development';
-const interceptors = [isDev ? createQueryLoggingInterceptor() : null].filter(
-  nonNull
-);
+const interceptors = [
+  isDev ? createQueryLoggingInterceptor() : null,
+  isDev ? createResultParserInterceptor() : null,
+].filter(nonNull);
 
 export const buildDsn = (): string => {
   const user = process.env.DB_USER ?? 'postgres';

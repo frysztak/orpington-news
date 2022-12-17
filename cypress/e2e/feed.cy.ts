@@ -47,8 +47,7 @@ sizes.forEach((size) => {
             cy.getBySel('chevron').should('not.exist');
             cy.getBySel('badge').should('exist').and('have.text', '3');
           })
-          .should('exist')
-          .and('be.visible');
+          .should('exist');
       });
 
       it('can edit existing collection', () => {
@@ -286,12 +285,10 @@ sizes.forEach((size) => {
         cy.openDrawerIfExists();
         // mark as read
         cy.clickSidebarAction('2', 'markAsRead');
-        cy.closeDrawerIfExists();
         cy.wait('@apiMarkAsRead').then(({ request, response }) => {
           expect(response.statusCode).to.eq(200);
         });
 
-        cy.openDrawerIfExists();
         cy.getBySel('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
@@ -385,7 +382,6 @@ sizes.forEach((size) => {
         cy.openDrawerIfExists();
         // mark as read
         cy.clickSidebarAction('2', 'markAsRead');
-        cy.closeDrawerIfExists();
         cy.wait('@apiMarkAsRead').then(({ request, response }) => {
           expect(response.statusCode).to.eq(200);
         });
@@ -394,7 +390,6 @@ sizes.forEach((size) => {
           expect(response.statusCode).to.eq(200);
         });
 
-        cy.openDrawerIfExists();
         cy.getBySel('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
@@ -575,7 +570,7 @@ sizes.forEach((size) => {
           ),
         }).as('apiGetHomeItems');
 
-        cy.getBySel('confirmDelete').click();
+        cy.getBySel('action').click();
         cy.closeDrawerIfExists();
 
         cy.wait('@apiDeleteCollection').then(({ response }) => {
@@ -623,7 +618,7 @@ sizes.forEach((size) => {
           url: getApiPath('/preferences/activeView'),
         }).as('apiPreferencesActiveView');
 
-        cy.getBySel('confirmDelete').click();
+        cy.getBySel('action').click();
         cy.closeDrawerIfExists();
 
         cy.wait('@apiDeleteCollection').then(({ response }) => {
@@ -685,7 +680,7 @@ sizes.forEach((size) => {
           ),
         }).as('apiGetHomeItems');
 
-        cy.getBySel('confirmDelete').click();
+        cy.getBySel('action').click();
         cy.closeDrawerIfExists();
 
         cy.wait('@apiDeleteCollection').then(({ response }) => {

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2022-12-17
+
+### Added
+
+-   Performance: cache start page using service worker
+-   Performance: use Tailwind for Drawer, Modal, Sidebar components
+-   Respect "prefers reduced motion" setting
+-   New syntax highlighter:
+    -   detects language from HTML classes (rather than relying on Highlight.js' expensive language auto-detection)
+    -   uses Prism.js and CSS-based styles
+
+### Changed
+
+-   Use Node.js 18
+
+### Fixed
+
+-   Fix disappearing Collections when reordering
+-   Settings: fix mobile layout on some viewports
+
 ## [0.10.0] - 2022-12-04
 
 ### Added
@@ -273,7 +293,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.10.0...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.11.0...HEAD
+
+[0.11.0]: https://github.com/frysztak/orpington-news/compare/0.10.0...0.11.0
 
 [0.10.0]: https://github.com/frysztak/orpington-news/compare/0.9.1...0.10.0
 

@@ -228,7 +228,7 @@ roots AS (
 children AS (
   SELECT DISTINCT
     m.id,
-    ARRAY_REMOVE(ARRAY_AGG(r.id), m.id) AS children
+    array_remove(array_agg(r.id), m.id) AS children
   FROM
     roots r
     INNER JOIN collections m ON m.id = r.root
@@ -264,7 +264,7 @@ FROM
   LEFT JOIN (
     SELECT
       collection_id,
-      COUNT(*) as unread_count
+      count(*) as unread_count
     FROM
       collection_items
     WHERE
@@ -280,7 +280,7 @@ FROM
   LEFT JOIN (
     SELECT
       parent_id,
-      MAX("order") as max_order
+      max("order") as max_order
     FROM
       collections
     GROUP BY
@@ -362,7 +362,7 @@ export const setCollectionDateUpdated = (collectionId: ID, date: number) => {
 UPDATE
   collections
 SET
-  date_updated = TO_TIMESTAMP(${date})
+  date_updated = to_timestamp(${date})
 WHERE
   id = ${collectionId}
 `;
@@ -388,7 +388,7 @@ export const markCollectionAsRead = (
 UPDATE
   collection_items
 SET
-  date_read = TO_TIMESTAMP(${dateRead})
+  date_read = to_timestamp(${dateRead})
 WHERE
   collection_id = ANY (${collectionIds})
 `;

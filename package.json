@@ -7,7 +7,7 @@
     "dev:e2e": "cross-env NODE_ENV=development lerna run dev:e2e --stream --parallel",
     "test": "lerna run test --stream --parallel",
     "start": "lerna run start --stream",
-    "start:e2e": "docker-compose -f docker-compose.e2e.yml up --build --detach",
+    "start:e2e": "docker compose -f docker-compose.e2e.yml up --build --detach --pull always",
     "build": "lerna run build --stream",
     "lint": "lerna run lint --stream",
     "audit:fix": "yarn-audit-fix",
@@ -26,11 +26,11 @@
     "dotenv": "^16.0.3",
     "husky": "^8.0.2",
     "lerna": "^6.1.0",
-    "lint-staged": "^13.0.4",
-    "prettier": "^2.8.0",
+    "lint-staged": "^13.1.0",
+    "prettier": "^2.8.1",
     "rimraf": "^3.0.2",
-    "slonik": "^31.4.2",
-    "typescript": "4.9.3",
+    "slonik": "^32.0.0",
+    "typescript": "4.9.4",
     "yarn-audit-fix": "^9.3.7"
   },
   "workspaces": [
@@ -40,5 +40,5 @@
     "*.{js,cjs,css,md,ts,tsx,json,yml,yaml}": "prettier --write"
   },
   "packageManager": "yarn@3.2.0",
-  "version": "0.10.0"
+  "version": "0.11.0"
 }

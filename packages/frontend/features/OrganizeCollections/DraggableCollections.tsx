@@ -203,6 +203,7 @@ const ItemContent: React.FC<ItemContentProps> = (props) => {
           onClick={noop}
           onChevronClick={handleChevronClick(collection)}
           style={{ opacity }}
+          noMenu
         />
       </MotionHoverStatusWrapper>
     </div>

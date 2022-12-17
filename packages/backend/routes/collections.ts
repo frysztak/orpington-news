@@ -236,7 +236,8 @@ export const collections: FastifyPluginAsync = async (
         session: { userId },
       } = request;
 
-      await pool.any(moveCollections(collectionId, newParentId, newOrder));
+      const parentId = newParentId ?? (await pool.one(getUser(userId))).homeId;
+      await pool.any(moveCollections(collectionId, parentId, newOrder));
       await pool.query(pruneExpandedCollections(userId));
 
       return await queryCollections(userId);
