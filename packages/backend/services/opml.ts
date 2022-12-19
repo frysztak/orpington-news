@@ -5,12 +5,17 @@ import {
   hasCollectionWithUrl,
   recalculateCollectionsOrder,
 } from '@db/collections';
+import { getPreferences } from '@db/preferences';
+import { getUser } from '@db/users';
 import { defaultIcon, ID } from '@orpington-news/shared';
 import { normalizeUrl } from '@utils';
 import { fetchRSSJob } from '@tasks';
 
 export const importOPML = async (xml: string, userId: ID) => {
   const json = await opmlToJSON(xml);
+
+  const { homeId } = await pool.one(getUser(userId));
+  const { defaultCollectionLayout } = await pool.one(getPreferences(userId));
 
   await pool.transaction(async (conn) => {
     // Add root collection
@@ -19,6 +24,8 @@ export const importOPML = async (xml: string, userId: ID) => {
         {
           title: json.title,
           icon: defaultIcon,
+          layout: defaultCollectionLayout,
+          parentId: homeId,
         },
         userId
       )
@@ -42,6 +49,7 @@ export const importOPML = async (xml: string, userId: ID) => {
                 title: child.text as any,
                 icon: defaultIcon,
                 parentId,
+                layout: defaultCollectionLayout,
               },
               userId
             )
@@ -69,6 +77,7 @@ export const importOPML = async (xml: string, userId: ID) => {
                 url: xmlUrl,
                 icon: defaultIcon,
                 parentId,
+                layout: defaultCollectionLayout,
               },
               userId
             )

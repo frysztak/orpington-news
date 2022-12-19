@@ -56,7 +56,6 @@ const ItemContent: React.FC<ItemContentProps> = ({
 
   const handleMenuItemClick = useCallback(
     (action: CollectionMenuAction) => {
-      console.log('action');
       onCollectionMenuActionClicked(collection, action);
     },
     [collection, onCollectionMenuActionClicked]
