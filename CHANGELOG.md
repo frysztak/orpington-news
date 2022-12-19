@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.1] - 2022-12-19
+
+### Fixed
+
+-   Fix OPML import
+-   Fix missing Collection layout
+
 ## [0.11.0] - 2022-12-17
 
 ### Added
@@ -293,7 +300,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.11.0...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.11.1...HEAD
+
+[0.11.1]: https://github.com/frysztak/orpington-news/compare/0.11.0...0.11.1
 
 [0.11.0]: https://github.com/frysztak/orpington-news/compare/0.10.0...0.11.0
 
