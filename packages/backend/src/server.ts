@@ -25,6 +25,7 @@ import { logger, readEnvVariable } from '@utils';
 import { buildDsn } from '@db';
 import { migrator } from '@db/migrator';
 import { fixMissingParents } from './fixMissingParents';
+import { fixMissingCollectionLayout } from './fixMissingCollectionLayout';
 
 const fastify = Fastify({
   logger: logger,
@@ -131,6 +132,7 @@ async function setupFastify() {
 
   await migrator.up();
   await fixMissingParents();
+  await fixMissingCollectionLayout();
   await fastify.ready();
 
   fastify.scheduler.addSimpleIntervalJob(fetchRSSJob);

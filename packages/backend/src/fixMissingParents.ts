@@ -24,5 +24,7 @@ WHERE
   AND is_home = false
 `);
 
-  logger.info(`Fixed missing parent for ${rowCount} collections.`);
+  if (rowCount) {
+    logger.info(`Fixed missing parent for ${rowCount} collections.`);
+  }
 };
