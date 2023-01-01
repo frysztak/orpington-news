@@ -2,10 +2,7 @@ use actix_web::{error::InternalError, web, HttpResponse};
 use serde::Serialize;
 use sqlx::PgPool;
 
-use crate::{
-    routes::error_chain_fmt,
-    session_state::{TypedSession, ID},
-};
+use crate::{authentication::UserId, routes::error_chain_fmt, session_state::ID};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -16,19 +13,12 @@ struct UserInfo {
     home_id: ID,
 }
 
-#[tracing::instrument(skip(pool, session))]
+#[tracing::instrument(skip(pool))]
 pub async fn user_info(
     pool: web::Data<PgPool>,
-    session: TypedSession,
+    user_id: web::ReqData<UserId>,
 ) -> Result<HttpResponse, InternalError<UserInfoError>> {
-    let user_id = session
-        .get_user_id()
-        .map_err(Into::into)
-        .map_err(UserInfoError::UnexpectedError)?;
-
-    if let None = user_id {
-        return Err(UserInfoError::AuthError.into());
-    }
+    let user_id: ID = user_id.into_inner().into();
 
     sqlx::query_as!(
         UserInfo,
@@ -61,7 +51,6 @@ WHERE
 impl From<UserInfoError> for InternalError<UserInfoError> {
     fn from(error: UserInfoError) -> Self {
         let response = match error {
-            UserInfoError::AuthError => HttpResponse::Unauthorized(),
             UserInfoError::UnexpectedError(_) => HttpResponse::InternalServerError(),
         }
         .finish();
@@ -71,8 +60,6 @@ impl From<UserInfoError> for InternalError<UserInfoError> {
 
 #[derive(thiserror::Error)]
 pub enum UserInfoError {
-    #[error("Unauthenticated")]
-    AuthError,
     #[error("Something went wrong")]
     UnexpectedError(#[from] anyhow::Error),
 }
@@ -83,19 +70,12 @@ impl std::fmt::Debug for UserInfoError {
     }
 }
 
-#[tracing::instrument(skip(pool, session))]
+#[tracing::instrument(skip(pool))]
 pub async fn user_avatar(
     pool: web::Data<PgPool>,
-    session: TypedSession,
+    user_id: web::ReqData<UserId>,
 ) -> Result<HttpResponse, InternalError<UserAvatarError>> {
-    let user_id = session
-        .get_user_id()
-        .map_err(Into::into)
-        .map_err(UserAvatarError::UnexpectedError)?;
-
-    if let None = user_id {
-        return Err(UserAvatarError::AuthError.into());
-    }
+    let user_id: ID = user_id.into_inner().into();
 
     let avatar_result = sqlx::query!(
         r#"
@@ -129,8 +109,6 @@ WHERE
 
 #[derive(thiserror::Error)]
 pub enum UserAvatarError {
-    #[error("Unauthenticated")]
-    AuthError,
     #[error("Unknown MIME type")]
     UnknownMimeType,
     #[error("User has no avatar")]
@@ -148,7 +126,6 @@ impl std::fmt::Debug for UserAvatarError {
 impl From<UserAvatarError> for InternalError<UserAvatarError> {
     fn from(error: UserAvatarError) -> Self {
         let response = match error {
-            UserAvatarError::AuthError => HttpResponse::Unauthorized(),
             UserAvatarError::UnknownMimeType => HttpResponse::InternalServerError(),
             UserAvatarError::NoAvatar => HttpResponse::NotFound(),
             UserAvatarError::UnexpectedError(_) => HttpResponse::InternalServerError(),

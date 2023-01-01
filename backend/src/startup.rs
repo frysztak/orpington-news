@@ -1,21 +1,15 @@
+use crate::authentication::reject_anonymous_users;
 use crate::authentication::store::PostgresSessionStore;
-// use crate::authentication::reject_anonymous_users;
 use crate::config::AppConfig;
 use crate::routes::auth::{login::*, logout::*, user::*};
-// use crate::routes::{
-//     admin_dashboard, change_password, change_password_form, confirm, health_check, home, log_out,
-//     login, login_form, publish_newsletter, publish_newsletter_form, subscribe,
-// };
-// use actix_session::storage::RedisSessionStore;
 use actix_session::config::PersistentSession;
 use actix_session::SessionMiddleware;
 use actix_web::cookie::{self, Key};
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
+use actix_web_lab::middleware::from_fn;
 use secrecy::{ExposeSecret, Secret};
-// use actix_web_lab::middleware::from_fn;
-// use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
@@ -41,7 +35,6 @@ impl Application {
             db_pool,
             config.cookie_secret.clone(),
             // config.application.base_url,
-            // config.redis_uri,
         )
         .await?;
 
@@ -62,7 +55,6 @@ async fn run(
     db_pool: PgPool,
     // base_url: String,
     cookie_secret: Secret<String>,
-    // redis_uri: Secret<String>,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
     let session_store = PostgresSessionStore::new(db_pool.clone());
@@ -80,12 +72,13 @@ async fn run(
                     .build(),
             )
             .wrap(TracingLogger::default())
+            .route("auth/login", web::post().to(login))
             .service(
                 web::scope("/auth")
-                    .route("/login", web::post().to(login))
+                    .wrap(from_fn(reject_anonymous_users))
                     .route("/session", web::delete().to(logout))
                     .route("/user", web::get().to(user_info))
-                    .route("/user/avatar", web::get().to(user_avatar))
+                    .route("/user/avatar", web::get().to(user_avatar)),
             )
             //.service(
             //    web::scope("/admin")

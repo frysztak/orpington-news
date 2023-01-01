@@ -1,8 +1,7 @@
 use crate::session_state::ID;
 use crate::telemetry::spawn_blocking_with_tracing;
 use anyhow::Context;
-use argon2::password_hash::SaltString;
-use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version};
+use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
 
