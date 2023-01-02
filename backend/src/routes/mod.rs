@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod collection;
 
 pub fn error_chain_fmt(
     e: &impl std::error::Error,

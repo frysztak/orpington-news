@@ -2,6 +2,7 @@ use crate::authentication::reject_anonymous_users;
 use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
 use crate::routes::auth::{login::*, logout::*, user::*};
+use crate::routes::collection::collections::get_collections;
 use actix_session::config::PersistentSession;
 use actix_session::SessionMiddleware;
 use actix_web::cookie::{self, Key};
@@ -79,6 +80,11 @@ async fn run(
                     .route("/session", web::delete().to(logout))
                     .route("/user", web::get().to(user_info))
                     .route("/user/avatar", web::get().to(user_avatar)),
+            )
+            .service(
+                web::scope("/collections")
+                    .wrap(from_fn(reject_anonymous_users))
+                    .route("", web::get().to(get_collections))
             )
             //.service(
             //    web::scope("/admin")

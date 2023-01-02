@@ -26,3 +26,4 @@ argon2 = { version = "0.4.1", features = ["std"] }
 async-trait = "0.1.60"
 rand = "0.8.5"
 infer = "0.11.0"
+chrono = { version = "0.4.23", features = ["serde"] }
