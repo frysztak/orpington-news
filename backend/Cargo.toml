@@ -27,3 +27,5 @@ async-trait = "0.1.60"
 rand = "0.8.5"
 infer = "0.11.0"
 chrono = { version = "0.4.23", features = ["serde"] }
+actix-cors = "0.6.4"
+actix-identity = "0.5.2"

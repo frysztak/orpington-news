@@ -1,16 +1,16 @@
-use crate::authentication::reject_anonymous_users;
 use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
 use crate::routes::auth::{login::*, logout::*, user::*};
 use crate::routes::collection::collections::get_collections;
 use crate::routes::preferences::preferences::get_preferences;
+use actix_cors::Cors;
+use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;
-use actix_session::SessionMiddleware;
+use actix_session::{SessionMiddleware};
 use actix_web::cookie::{self, Key};
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
-use actix_web_lab::middleware::from_fn;
 use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
@@ -65,6 +65,18 @@ async fn run(
     let server = HttpServer::new(move || {
         App::new()
             .wrap(
+                Cors::permissive(), //.allowed_origin("http://localhost:3000")
+                                    //.allowed_methods(vec!["GET", "POST"])
+                                    //.allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+                                    //.allowed_header(header::CONTENT_TYPE)
+                                    //.supports_credentials()
+                                    // .allowed_headers(&[header::AUTHORIZATION, header::ACCEPT])
+                                    // .allowed_header(header::CONTENT_TYPE)
+                                    // .expose_headers(&[header::CONTENT_DISPOSITION])
+                                    // .supports_credentials(), // .max_age(3600),
+            )
+            .wrap(IdentityMiddleware::default())
+            .wrap(
                 SessionMiddleware::builder(session_store.clone(), secret_key.clone())
                     .cookie_name("sessionId".to_string())
                     .cookie_secure(false)
@@ -77,19 +89,16 @@ async fn run(
             .route("auth/login", web::post().to(login))
             .service(
                 web::scope("/auth")
-                    .wrap(from_fn(reject_anonymous_users))
                     .route("/session", web::delete().to(logout))
                     .route("/user", web::get().to(user_info))
                     .route("/user/avatar", web::get().to(user_avatar)),
             )
             .service(
                 web::scope("/collections")
-                    .wrap(from_fn(reject_anonymous_users))
                     .route("", web::get().to(get_collections)),
             )
             .service(
                 web::scope("/preferences")
-                    .wrap(from_fn(reject_anonymous_users))
                     .route("", web::get().to(get_preferences)),
             )
             //.service(

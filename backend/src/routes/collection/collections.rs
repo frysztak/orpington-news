@@ -37,12 +37,12 @@ pub struct Collection {
     is_last_child: Option<bool>,
 }
 
-#[tracing::instrument(skip(pool))]
+#[tracing::instrument(skip(pool, user_id))]
 pub async fn get_collections(
     pool: web::Data<PgPool>,
-    user_id: web::ReqData<UserId>,
+    user_id: UserId
 ) -> Result<HttpResponse, InternalError<CollectionsError>> {
-    let user_id: ID = user_id.into_inner().into();
+    let user_id: ID = user_id.into();
 
     let mut collections = sqlx::query_as::<_, Collection>(include_str!("collections_query.sql"))
         .bind(user_id)

@@ -3,7 +3,8 @@ use crate::{
     routes::error_chain_fmt,
     session_state::{JSONError, TypedSession},
 };
-use actix_web::{error::InternalError, web, HttpResponse};
+use actix_identity::Identity;
+use actix_web::{error::InternalError, web, HttpResponse, HttpRequest, HttpMessage};
 use serde::Deserialize;
 use sqlx::PgPool;
 
@@ -21,6 +22,7 @@ pub async fn login(
     body: web::Json<LoginData>,
     pool: web::Data<PgPool>,
     session: TypedSession,
+    request: HttpRequest
 ) -> Result<HttpResponse, InternalError<LoginError>> {
     let credentials = Credentials {
         username: body.username.clone(),
@@ -40,6 +42,7 @@ pub async fn login(
             session.insert_user_id(user_id).map_err(|e| {
                 InternalError::from_response(LoginError::UnexpectedError(e.into()), error_response)
             })?;
+            Identity::login(&request.extensions(), user_id.to_string()).unwrap();
             Ok(HttpResponse::Ok().finish())
         }
         Err(e) => {

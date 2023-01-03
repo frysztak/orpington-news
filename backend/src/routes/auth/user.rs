@@ -13,12 +13,12 @@ struct UserInfo {
     home_id: ID,
 }
 
-#[tracing::instrument(skip(pool))]
+#[tracing::instrument(skip(pool, user_id))]
 pub async fn user_info(
     pool: web::Data<PgPool>,
-    user_id: web::ReqData<UserId>,
+    user_id: UserId
 ) -> Result<HttpResponse, InternalError<UserInfoError>> {
-    let user_id: ID = user_id.into_inner().into();
+    let user_id: ID = user_id.into();
 
     sqlx::query_as!(
         UserInfo,
@@ -70,12 +70,12 @@ impl std::fmt::Debug for UserInfoError {
     }
 }
 
-#[tracing::instrument(skip(pool))]
+#[tracing::instrument(skip(pool, user_id))]
 pub async fn user_avatar(
     pool: web::Data<PgPool>,
-    user_id: web::ReqData<UserId>,
+    user_id: UserId
 ) -> Result<HttpResponse, InternalError<UserAvatarError>> {
-    let user_id: ID = user_id.into_inner().into();
+    let user_id: ID = user_id.into();
 
     let avatar_result = sqlx::query!(
         r#"

@@ -22,9 +22,9 @@ pub struct Preferences {
 #[tracing::instrument(skip(pool))]
 pub async fn get_preferences(
     pool: web::Data<PgPool>,
-    user_id: web::ReqData<UserId>,
+    user_id: UserId
 ) -> Result<HttpResponse, InternalError<PreferencesError>> {
-    let user_id: ID = user_id.into_inner().into();
+    let user_id: ID = user_id.into();
 
     sqlx::query_as::<_, Preferences>(include_str!("preferences_query.sql"))
         .bind(user_id)
