@@ -3,6 +3,7 @@ use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
 use crate::routes::auth::{login::*, logout::*, user::*};
 use crate::routes::collection::collections::get_collections;
+use crate::routes::preferences::preferences::get_preferences;
 use actix_session::config::PersistentSession;
 use actix_session::SessionMiddleware;
 use actix_web::cookie::{self, Key};
@@ -84,7 +85,12 @@ async fn run(
             .service(
                 web::scope("/collections")
                     .wrap(from_fn(reject_anonymous_users))
-                    .route("", web::get().to(get_collections))
+                    .route("", web::get().to(get_collections)),
+            )
+            .service(
+                web::scope("/preferences")
+                    .wrap(from_fn(reject_anonymous_users))
+                    .route("", web::get().to(get_preferences)),
             )
             //.service(
             //    web::scope("/admin")
