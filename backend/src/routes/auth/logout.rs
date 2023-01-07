@@ -8,7 +8,7 @@ use actix_web::{cookie::Cookie, error::HttpError, HttpResponse};
 pub async fn logout(session: TypedSession) -> Result<HttpResponse, HttpError> {
     session.log_out();
 
-    let mut response = HttpResponse::Ok().finish();
+    let mut response = HttpResponse::Ok().json(true);
     let mut cookie = Cookie::new("sessionId", "");
     cookie.set_domain("/");
     response.add_removal_cookie(&cookie)?;

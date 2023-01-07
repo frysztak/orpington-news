@@ -28,7 +28,7 @@ pub async fn get_preferences(
 
     sqlx::query_as::<_, Preferences>(include_str!("preferences_query.sql"))
         .bind(user_id)
-        .fetch_all(pool.as_ref())
+        .fetch_one(pool.as_ref())
         .await
         .map(|preferences| HttpResponse::Ok().json(preferences))
         .map_err(Into::into)

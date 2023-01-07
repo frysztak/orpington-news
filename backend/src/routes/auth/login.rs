@@ -43,7 +43,7 @@ pub async fn login(
                 InternalError::from_response(LoginError::UnexpectedError(e.into()), error_response)
             })?;
             Identity::login(&request.extensions(), user_id.to_string()).unwrap();
-            Ok(HttpResponse::Ok().finish())
+            Ok(HttpResponse::Ok().json(true))
         }
         Err(e) => {
             let e = match e {
