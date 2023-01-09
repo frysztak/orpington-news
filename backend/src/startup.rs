@@ -29,6 +29,8 @@ impl Application {
             .connect_with(config.database.get_db_options())
             .await?;
 
+        sqlx::migrate!("./migrations").run(&db_pool).await?;
+
         let address = format!("{}:{}", config.host, config.port);
         let listener = TcpListener::bind(&address)?;
         let port = listener.local_addr().unwrap().port();
