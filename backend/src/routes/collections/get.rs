@@ -44,7 +44,7 @@ pub async fn get_collections(
 ) -> Result<HttpResponse, InternalError<CollectionsError>> {
     let user_id: ID = user_id.into();
 
-    let mut collections = sqlx::query_as::<_, Collection>(include_str!("collections_query.sql"))
+    let mut collections = sqlx::query_as::<_, Collection>(include_str!("get.sql"))
         .bind(user_id)
         .fetch_all(pool.as_ref())
         .await

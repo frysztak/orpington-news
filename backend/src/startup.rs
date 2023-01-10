@@ -1,16 +1,14 @@
 use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
-use crate::routes::auth::{login::*, logout::*, user::*};
-use crate::routes::collection::collections::get_collections;
-use crate::routes::preferences::preferences::get_preferences;
+use crate::routes::{auth, collections, preferences};
 use actix_cors::Cors;
 use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;
-use actix_session::{SessionMiddleware};
+use actix_session::SessionMiddleware;
 use actix_web::cookie::{self, Key};
 use actix_web::dev::Server;
 use actix_web::web::Data;
-use actix_web::{web, App, HttpServer};
+use actix_web::{App, HttpServer};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
@@ -88,37 +86,9 @@ async fn run(
                     .build(),
             )
             .wrap(TracingLogger::default())
-            .route("auth/login", web::post().to(login))
-            .service(
-                web::scope("/auth")
-                    .route("/session", web::delete().to(logout))
-                    .route("/user", web::get().to(user_info))
-                    .route("/user/avatar", web::get().to(user_avatar)),
-            )
-            .service(
-                web::scope("/collections")
-                    .route("", web::get().to(get_collections)),
-            )
-            .service(
-                web::scope("/preferences")
-                    .route("", web::get().to(get_preferences)),
-            )
-            //.service(
-            //    web::scope("/admin")
-            //        .wrap(from_fn(reject_anonymous_users))
-            //        .route("/dashboard", web::get().to(admin_dashboard))
-            //        .route("/newsletters", web::get().to(publish_newsletter_form))
-            //        .route("/newsletters", web::post().to(publish_newsletter))
-            //        .route("/password", web::get().to(change_password_form))
-            //        .route("/password", web::post().to(change_password))
-            //        .route("/logout", web::post().to(log_out)),
-            //)
-            //.route("/login", web::get().to(login_form))
-            //.route("/login", web::post().to(login))
-            //.route("/health_check", web::get().to(health_check))
-            //.route("/subscriptions", web::post().to(subscribe))
-            //.route("/subscriptions/confirm", web::get().to(confirm))
-            //.route("/newsletters", web::post().to(publish_newsletter))
+            .service(auth())
+            .service(collections())
+            .service(preferences())
             .app_data(db_pool.clone())
         //.app_data(email_client.clone())
         //.app_data(base_url.clone())

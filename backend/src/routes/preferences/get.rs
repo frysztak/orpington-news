@@ -26,7 +26,7 @@ pub async fn get_preferences(
 ) -> Result<HttpResponse, InternalError<PreferencesError>> {
     let user_id: ID = user_id.into();
 
-    sqlx::query_as::<_, Preferences>(include_str!("preferences_query.sql"))
+    sqlx::query_as::<_, Preferences>(include_str!("get.sql"))
         .bind(user_id)
         .fetch_one(pool.as_ref())
         .await

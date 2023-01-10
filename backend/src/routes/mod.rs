@@ -1,7 +1,3 @@
-pub mod auth;
-pub mod collection;
-pub mod preferences;
-
 pub fn error_chain_fmt(
     e: &impl std::error::Error,
     f: &mut std::fmt::Formatter<'_>,
@@ -14,3 +10,12 @@ pub fn error_chain_fmt(
     }
     Ok(())
 }
+
+pub mod auth;
+pub use self::auth::auth;
+
+mod collections;
+pub use self::collections::collections;
+
+pub mod preferences;
+pub use self::preferences::preferences;
