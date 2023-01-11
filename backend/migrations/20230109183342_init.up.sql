@@ -200,7 +200,7 @@ BEGIN
   RETURN QUERY
   WITH RECURSIVE tree AS (
   SELECT
-    id,
+    collections.id,
     '{}'::integer[] AS ancestors
   FROM
     collections
@@ -220,7 +220,7 @@ BEGIN
     root_collection_id as id
   UNION
   SELECT
-    id
+    tree.id
   FROM
     tree;
 END; $$;
