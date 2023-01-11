@@ -11,6 +11,8 @@ pub fn error_chain_fmt(
     Ok(())
 }
 
+pub mod error;
+
 pub mod auth;
 pub use self::auth::auth;
 

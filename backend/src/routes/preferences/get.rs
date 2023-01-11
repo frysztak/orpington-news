@@ -2,7 +2,7 @@ use actix_web::{error::InternalError, web, HttpResponse};
 use serde::Serialize;
 use sqlx::PgPool;
 
-use crate::{authentication::UserId, routes::error_chain_fmt, session_state::ID};
+use crate::{authentication::UserId, routes::error::GenericError, session_state::ID};
 
 #[derive(Debug, sqlx::FromRow, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -22,8 +22,8 @@ pub struct Preferences {
 #[tracing::instrument(skip(pool))]
 pub async fn get_preferences(
     pool: web::Data<PgPool>,
-    user_id: UserId
-) -> Result<HttpResponse, InternalError<PreferencesError>> {
+    user_id: UserId,
+) -> Result<HttpResponse, InternalError<GenericError>> {
     let user_id: ID = user_id.into();
 
     sqlx::query_as::<_, Preferences>(include_str!("get.sql"))
@@ -32,28 +32,6 @@ pub async fn get_preferences(
         .await
         .map(|preferences| HttpResponse::Ok().json(preferences))
         .map_err(Into::into)
-        .map_err(PreferencesError::UnexpectedError)
-        .map_err(Into::<InternalError<PreferencesError>>::into)
-}
-
-#[derive(thiserror::Error)]
-pub enum PreferencesError {
-    #[error("Something went wrong")]
-    UnexpectedError(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for PreferencesError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
-impl From<PreferencesError> for InternalError<PreferencesError> {
-    fn from(error: PreferencesError) -> Self {
-        let response = match error {
-            PreferencesError::UnexpectedError(_) => HttpResponse::InternalServerError(),
-        }
-        .finish();
-        InternalError::from_response(error, response)
-    }
+        .map_err(GenericError::UnexpectedError)
+        .map_err(Into::<InternalError<GenericError>>::into)
 }

@@ -7,7 +7,8 @@ use actix_web::{FromRequest, HttpRequest, HttpResponse};
 use std::future::{ready, Ready};
 use std::str::FromStr;
 
-use crate::session_state::{JSONError, ID};
+use crate::routes::error::JSONError;
+use crate::session_state::ID;
 
 #[derive(Copy, Clone, Debug, sqlx::Type)]
 #[sqlx(transparent)]

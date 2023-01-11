@@ -1,7 +1,7 @@
 use crate::{
     authentication::{validate_credentials, AuthError, Credentials},
-    routes::error_chain_fmt,
-    session_state::{JSONError, TypedSession},
+    routes::{error_chain_fmt, error::JSONError},
+    session_state::{TypedSession},
 };
 use actix_identity::Identity;
 use actix_web::{error::InternalError, web, HttpResponse, HttpRequest, HttpMessage};

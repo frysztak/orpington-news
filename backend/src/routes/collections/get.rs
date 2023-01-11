@@ -7,7 +7,7 @@ use sqlx::{
 };
 use std::collections::HashMap;
 
-use crate::{authentication::UserId, routes::error_chain_fmt, session_state::ID};
+use crate::{authentication::UserId, routes::error::GenericError, session_state::ID};
 
 #[derive(Debug, sqlx::FromRow, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -40,8 +40,8 @@ pub struct Collection {
 #[tracing::instrument(skip(pool, user_id))]
 pub async fn get_collections(
     pool: web::Data<PgPool>,
-    user_id: UserId
-) -> Result<HttpResponse, InternalError<CollectionsError>> {
+    user_id: UserId,
+) -> Result<HttpResponse, InternalError<GenericError>> {
     let user_id: ID = user_id.into();
 
     let mut collections = sqlx::query_as::<_, Collection>(include_str!("get.sql"))
@@ -49,8 +49,8 @@ pub async fn get_collections(
         .fetch_all(pool.as_ref())
         .await
         .map_err(Into::into)
-        .map_err(CollectionsError::UnexpectedError)
-        .map_err(Into::<InternalError<CollectionsError>>::into)?;
+        .map_err(GenericError::UnexpectedError)
+        .map_err(Into::<InternalError<GenericError>>::into)?;
 
     calculate_unread_count(&mut collections);
     Ok(HttpResponse::Ok().json(collections))
@@ -68,27 +68,5 @@ fn calculate_unread_count(collections: &mut Vec<Collection>) {
             .into_iter()
             .fold(0, |acc, c| acc + map.get(&c).unwrap_or(&0));
         collection.unread_count = children_unread_count;
-    }
-}
-
-#[derive(thiserror::Error)]
-pub enum CollectionsError {
-    #[error("Something went wrong")]
-    UnexpectedError(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for CollectionsError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
-impl From<CollectionsError> for InternalError<CollectionsError> {
-    fn from(error: CollectionsError) -> Self {
-        let response = match error {
-            CollectionsError::UnexpectedError(_) => HttpResponse::InternalServerError(),
-        }
-        .finish();
-        InternalError::from_response(error, response)
     }
 }

@@ -4,20 +4,12 @@ use actix_session::SessionGetError;
 use actix_session::SessionInsertError;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpRequest};
-use serde::Serialize;
 use std::future::{ready, Ready};
 
 pub struct TypedSession(Session);
 
 // TODO: move somewhere
 pub type ID = i32;
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct JSONError {
-    pub status_code: u32,
-    pub message: String,
-}
 
 impl TypedSession {
     const USER_ID_KEY: &'static str = "user_id";
