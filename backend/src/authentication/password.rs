@@ -1,7 +1,10 @@
 use crate::session_state::ID;
 use crate::telemetry::spawn_blocking_with_tracing;
 use anyhow::Context;
-use argon2::{Argon2, PasswordHash, PasswordVerifier};
+use argon2::{
+    password_hash::SaltString, Algorithm, Argon2, Params, PasswordHash, PasswordHasher,
+    PasswordVerifier, Version,
+};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
 
@@ -87,4 +90,12 @@ fn verify_password_hash(
         )
         .context("Invalid password.")
         .map_err(AuthError::InvalidCredentials)
+}
+
+pub fn compute_password_hash(password: Secret<String>) -> Result<Secret<String>, anyhow::Error> {
+    let salt = SaltString::generate(&mut rand::thread_rng());
+    let password_hash = Argon2::new(Algorithm::Argon2id, Version::V0x13, Params::default())
+        .hash_password(password.expose_secret().as_bytes(), &salt)?
+        .to_string();
+    Ok(Secret::new(password_hash))
 }
