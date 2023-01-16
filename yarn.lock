@@ -9868,6 +9868,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "axios@npm:1.2.2"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 6e357491b38426c5720f7328ecbafca3c643b03952c052d787570672ce7a9365717c2d64db4ce97cfbee3f830fa405101e360e14d0857ef7f96a9f4d814c4e03
+  languageName: node
+  linkType: hard
+
 "axios@npm:~0.21.1":
   version: 0.21.4
   resolution: "axios@npm:0.21.4"
@@ -21227,6 +21238,7 @@ __metadata:
   dependencies:
     "@cypress/code-coverage": ^3.10.0
     "@slonik/migrator": ^0.11.3
+    axios: ^1.2.2
     cross-env: ^7.0.3
     cypress: ^11.2.0
     cypress-dark: ^1.8.3

@@ -1,5 +1,6 @@
-DROP TABLE IF EXISTS "session" CASCADE;
-DROP INDEX IF EXISTS "IDX_session_expire";
+-- omit "session" table
+-- DROP TABLE IF EXISTS "session" CASCADE;
+-- DROP INDEX IF EXISTS "IDX_session_expire";
 DROP TABLE IF EXISTS "users" CASCADE;
 DROP TABLE IF EXISTS "collections" CASCADE;
 DROP TABLE IF EXISTS "collection_items" CASCADE;

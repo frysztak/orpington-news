@@ -3,13 +3,12 @@ use sqlx::postgres::{PgConnectOptions, PgSslMode};
 use std::env::var;
 use std::fs::read_to_string;
 use std::io;
-use std::net::{AddrParseError, Ipv4Addr};
 use std::num::ParseIntError;
 
 #[derive(Debug)]
 pub struct AppConfig {
     pub database: DBConfig,
-    pub host: Ipv4Addr,
+    pub host: String,
     pub port: u16,
     pub cookie_secret: Secret<String>,
 }
@@ -19,22 +18,15 @@ pub struct DBConfig {
     pub username: String,
     pub password: Secret<String>,
     pub port: u16,
-    pub host: Ipv4Addr,
+    pub host: String,
     pub name: String,
 }
 
 #[derive(Debug)]
 pub enum AppConfigError {
     ExclusiveOptions(String),
-    HostParseError(AddrParseError),
     PortParseError(ParseIntError),
     IOError(io::Error),
-}
-
-impl From<AddrParseError> for AppConfigError {
-    fn from(err: AddrParseError) -> Self {
-        AppConfigError::HostParseError(err)
-    }
 }
 
 impl From<ParseIntError> for AppConfigError {
@@ -44,16 +36,16 @@ impl From<ParseIntError> for AppConfigError {
 }
 
 pub fn read_config() -> Result<AppConfig, AppConfigError> {
-    let host = read_var("HOST", "0.0.0.0".to_string()).parse()?;
+    let host = read_var("HOST", "0.0.0.0".to_string());
     let port = read_var("PORT", "5000".to_string()).parse()?;
 
     let cookie_secret = read_var_from_file(
         "COOKIE_SECRET",
-        "C9+YT8xJAaz5lppSeC/s/gZ2bitWCLRTUg8SOCYQe4k=".to_string(),
+        "gIFu/XtobXNB+iqbndgHualAe/a2k43w76VukhbG2s+q1CJst9BghwtQtD5/YUEwDmdGG8mea9QKcOjNU1ktSg==".to_string(),
     )?;
 
     let db_pass = read_var_from_file("DB_PASS", "".to_string())?;
-    let db_host = read_var_from_file("DB_HOST", "0.0.0.0".to_string())?.parse()?;
+    let db_host = read_var_from_file("DB_HOST", "0.0.0.0".to_string())?;
     let db_port = read_var("DB_PORT", "5432".to_string()).parse()?;
 
     Ok(AppConfig {

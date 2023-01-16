@@ -1,0 +1,205 @@
+{
+  "db": "PostgreSQL",
+  "49bfcf02b564e2ab7820b4d182038d881666cd3e657e6b631d237c2e854fc8f2": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4", "Int4"]
+      }
+    },
+    "query": "\nUPDATE\n  users\nSET\n  home_id = $1\nWHERE\n  users.id = $2\n        "
+  },
+  "6731b5cbb4901c40637bed0fa7de064b23b2e45ab035e40e909ae85d93e95434": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Text"]
+      }
+    },
+    "query": "SELECT id FROM users WHERE name = $1"
+  },
+  "695895aad1856dafa5389ba34e9f42d04617323414a206331efd6f8be65c98c9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4", "Int4", "Int4Array", "Text", "Text"]
+      }
+    },
+    "query": "\nINSERT INTO preferences (\n  \"user_id\",\n  \"active_collection_id\",\n  \"expanded_collection_ids\",\n  \"default_collection_layout\",\n  \"avatar_style\")\nVALUES (\n  $1, $2, $3, $4, $5\n)\n    "
+  },
+  "6d7a4b4ed2475a568ce8afc13741efdfceef180c9b1048a2b53cce9bdf0e431a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "password",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [false, false],
+      "parameters": {
+        "Left": ["Text"]
+      }
+    },
+    "query": "\n        SELECT id, password\n        FROM users\n        WHERE name = $1\n        "
+  },
+  "8bfe3d1eee30f74c8087e8111ee0611c68f8b1391d884adba32c89fa9ae26f87": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Text", "Text", "Text", "Bytea", "Int4"]
+      }
+    },
+    "query": "\nINSERT INTO \"users\" (\n  name,\n  password,\n  display_name,\n  avatar,\n  home_id)\nVALUES (\n  $1,\n  $2,\n  $3,\n  $4,\n  $5)\nRETURNING\n  id\n    "
+  },
+  "c846a853fd3b54a17db17123e36b66930622d1e16b87ca469f87143c22f99e78": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Text"]
+      }
+    },
+    "query": "DELETE FROM session WHERE sid = $1"
+  },
+  "d879f699406c058e8bea3701635e45130f3815b7e2b9f8d328ab6d02ac196c06": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4", "Text", "Bool", "Int4", "Text", "Text"]
+      }
+    },
+    "query": "\nINSERT INTO collections (\n  \"user_id\",\n  \"title\",\n  \"is_home\",\n  \"order\",\n  \"icon\",\n  \"layout\"\n  )\nVALUES (\n  $1, $2, $3, $4, $5, $6\n)\nRETURNING\n  id\n    "
+  },
+  "e0b0c822468ec3941f43bed6e17eeeec9ba705fb0ff31db3be5523325c16bc56": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Varchar", "Json", "Timestamp"]
+      }
+    },
+    "query": "INSERT INTO session(sid, sess, expire) VALUES ($1, $2, $3)"
+  },
+  "e13ea37d18989e04352b0fcc0ef0f018b385e2ed900833d6fb041bb21fa92ae3": {
+    "describe": {
+      "columns": [
+        {
+          "name": "sid",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        },
+        {
+          "name": "sess",
+          "ordinal": 1,
+          "type_info": "Json"
+        },
+        {
+          "name": "expire",
+          "ordinal": 2,
+          "type_info": "Timestamp"
+        }
+      ],
+      "nullable": [false, false, false],
+      "parameters": {
+        "Left": ["Text"]
+      }
+    },
+    "query": "SELECT * FROM session WHERE sid = $1"
+  },
+  "e1464cde7fcc41e7196575c3fec21793a322191d334c281db4f31b993750cebe": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Json", "Timestamp", "Text"]
+      }
+    },
+    "query": "UPDATE session\n              SET sess = $1,\n                  expire = $2\n              WHERE sid = $3 AND expire < now()"
+  },
+  "e3a17392270e91768fa1dde95b967be3dbd875c9cdb15a35487e9149f563b2f9": {
+    "describe": {
+      "columns": [
+        {
+          "name": "avatar",
+          "ordinal": 0,
+          "type_info": "Bytea"
+        }
+      ],
+      "nullable": [true],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nSELECT\n  avatar\nFROM\n  \"users\"\nWHERE\n  id = $1\n    "
+  },
+  "e4eedb1eaefb30f6860deda9bc695635ef5e8e0ecf8f06694099ac2310e108a1": {
+    "describe": {
+      "columns": [
+        {
+          "name": "username",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "display_name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "avatar_url",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "home_id",
+          "ordinal": 3,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false, true, null, false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nSELECT\n  name as username,\n  display_name,\n  (\n    CASE WHEN avatar IS NULL THEN\n     NULL \n    ELSE\n      '/api/auth/user/avatar'\n    END) as avatar_url,\n  home_id\nFROM\n  \"users\"\nWHERE\n  id = $1\n    "
+  },
+  "e9873c049adf7bea72cb2d1f976a64126e9e601c2bbb906baf5cb7467bd8bf9c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Timestamp", "Text"]
+      }
+    },
+    "query": "UPDATE session\n              SET expire = $1\n              WHERE sid = $2"
+  }
+}

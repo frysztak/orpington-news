@@ -1,6 +1,6 @@
 use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
-use crate::routes::{auth, collections, preferences};
+use crate::routes::{auth, collections, preferences, e2e};
 use actix_cors::Cors;
 use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;
@@ -89,6 +89,7 @@ async fn run(
             .service(auth())
             .service(collections())
             .service(preferences())
+            .service(e2e())
             .app_data(db_pool.clone())
         //.app_data(email_client.clone())
         //.app_data(base_url.clone())

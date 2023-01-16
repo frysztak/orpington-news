@@ -1,3 +1,33 @@
+FROM clux/muslrust:stable AS chef
+USER root
+RUN cargo install cargo-chef
+WORKDIR /app
+
+FROM chef AS planner
+COPY backend .
+RUN cargo chef prepare --recipe-path recipe.json
+
+FROM chef AS be-builder
+COPY --from=planner /app/recipe.json recipe.json
+# Build dependencies - this is the caching Docker layer!
+RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path recipe.json
+# Build application
+COPY backend .
+
+ARG INSTRUMENT_COVERAGE
+ENV INSTRUMENT_COVERAGE=${INSTRUMENT_COVERAGE}
+
+RUN if [ "true" = "$INSTRUMENT_COVERAGE" ]; then \
+  cargo build \
+  --release \
+  --features e2e \
+  --target x86_64-unknown-linux-musl; \
+ else \
+  cargo build \
+  --release \
+  --target x86_64-unknown-linux-musl; \
+fi
+
 # BASE
 FROM node:18.12.1-alpine as base
 
@@ -47,18 +77,21 @@ COPY --from=builder /app/yarn.lock .
 COPY --from=builder /app/.yarnrc.yml .
 COPY --from=builder /app/.yarn .yarn
 
-COPY --from=builder /app/packages/backend/dist /app/packages/backend
-COPY --from=builder /app/packages/backend/db/migrations /app/packages/backend/db/migrations
-COPY --from=builder /app/packages/backend/package.json /app/packages/backend/package.json
+#COPY --from=builder /app/packages/backend/dist /app/packages/backend
+#COPY --from=builder /app/packages/backend/db/migrations /app/packages/backend/db/migrations
+#COPY --from=builder /app/packages/backend/package.json /app/packages/backend/package.json
 
 COPY --from=builder /app/packages/frontend/public /app/packages/frontend/public
 COPY --from=builder /app/packages/frontend/package.json /app/packages/frontend/package.json
 COPY --from=builder /app/packages/frontend/.next/standalone /app/packages/frontend
 COPY --from=builder /app/packages/frontend/.next/static /app/packages/frontend/.next/static
 
-WORKDIR /app/packages/backend
-RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn workspaces focus --production
-WORKDIR /app
+#WORKDIR /app/packages/backend
+#RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn workspaces focus --production
+#WORKDIR /app
+
+WORKDIR /app/backend
+COPY --from=be-builder /app/target/x86_64-unknown-linux-musl/release/backend /app/backend/backend
 
 EXPOSE 8000
 CMD /bin/sh /app/run.sh

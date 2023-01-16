@@ -10,7 +10,9 @@ async fn main() -> anyhow::Result<()> {
     let subscriber = get_subscriber("backend".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
 
-    dotenv().expect("Missing .env file");
+    if let Err(err) = dotenv() {
+        tracing::warn!("Reading .env failed with {}", err);
+    }
     let config = read_config().expect("Failed to read app config");
     let application = Application::build(&config).await?;
     let application_task = tokio::spawn(application.run_until_stopped());

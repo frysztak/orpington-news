@@ -10,7 +10,7 @@ actix-web = "4"
 actix-web-lab = "0.18.8"
 actix-session = { version = "0.7.2", features = ["cookie-session"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
-sqlx = { version = "0.6", default-features = false, features = ["runtime-actix-rustls", "macros", "postgres", "uuid", "chrono", "migrate", "json"] }
+sqlx = { version = "0.6", default-features = false, features = ["offline", "runtime-actix-rustls", "macros", "postgres", "uuid", "chrono", "migrate", "json"] }
 tracing = "0.1.19"
 tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
 tracing-bunyan-formatter = "0.3.1"
@@ -31,3 +31,6 @@ actix-cors = "0.6.4"
 actix-identity = "0.5.2"
 data-url = "0.2.0"
 strum = { version = "0.24", features = ["derive"] }
+
+[features]
+e2e = []

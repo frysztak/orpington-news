@@ -21,3 +21,6 @@ pub use self::collections::collections;
 
 pub mod preferences;
 pub use self::preferences::preferences;
+
+pub mod e2e;
+pub use self::e2e::e2e;
