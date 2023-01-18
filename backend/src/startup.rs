@@ -1,13 +1,13 @@
 use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
-use crate::routes::{auth, collections, preferences, e2e};
+use crate::routes::{auth, collections, e2e, preferences, spa};
 use actix_cors::Cors;
 use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;
 use actix_session::SessionMiddleware;
 use actix_web::cookie::{self, Key};
 use actix_web::dev::Server;
-use actix_web::web::Data;
+use actix_web::web::{self, Data};
 use actix_web::{App, HttpServer};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
@@ -86,10 +86,14 @@ async fn run(
                     .build(),
             )
             .wrap(TracingLogger::default())
-            .service(auth())
-            .service(collections())
-            .service(preferences())
-            .service(e2e())
+            .service(
+                web::scope("/api")
+                    .service(auth())
+                    .service(collections())
+                    .service(preferences())
+                    .service(e2e()),
+            )
+            .service(spa())
             .app_data(db_pool.clone())
         //.app_data(email_client.clone())
         //.app_data(base_url.clone())

@@ -34,3 +34,4 @@ strum = { version = "0.24", features = ["derive"] }
 
 [features]
 e2e = []
+spa = []
