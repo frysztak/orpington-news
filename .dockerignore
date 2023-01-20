@@ -6,7 +6,7 @@
 **/coverage
 **/storybook-static
 **/dist
-**/Dockerfile
+**/Dockerfile*
 **/docker-compose*.yml
 backend/target
 

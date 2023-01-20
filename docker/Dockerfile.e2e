@@ -1,4 +1,38 @@
-FROM node:18.12.1-alpine
+FROM node:18.12.1-alpine as web-builder
+WORKDIR /app
+COPY package.json yarn.lock lerna.json .yarnrc.yml ./
+COPY .yarn/ ./.yarn/
+COPY packages/shared/package.json /app/packages/shared/package.json
+COPY packages/frontend/package.json /app/packages/frontend/package.json
+COPY packages/backend/package.json /app/packages/backend/package.json
+RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --immutable
 
-RUN npm install --global http-server
-CMD http-server ./public -p 8002
+COPY . /app
+
+ENV INSTRUMENT_COVERAGE=true
+ENV DISABLE_SW=true
+ARG DEMO_MODE
+ENV NEXT_PUBLIC_APP_DEMO=${DEMO_MODE}
+ARG COMMIT_SHA
+ENV NEXT_PUBLIC_GIT_COMMIT_HASH=${COMMIT_SHA}
+ARG BUILD_VERSION
+ENV NEXT_PUBLIC_VERSION=${BUILD_VERSION}
+
+RUN yarn build && cd /app/packages/frontend && yarn next export
+
+# RUNTIME
+FROM rust:1.66.1 AS runtime 
+RUN rustup component add llvm-tools-preview
+RUN cargo install grcov
+
+WORKDIR /app
+COPY backend backend
+RUN cd backend && RUSTFLAGS="-C instrument-coverage" cargo build \
+  --features e2e,spa
+COPY --from=web-builder /app/packages/frontend/out /app/web
+
+WORKDIR /app
+EXPOSE 8000
+ENV PORT=8000
+ENV LLVM_PROFILE_FILE="api-%p-%m.profraw"
+CMD /app/backend/target/debug/backend
