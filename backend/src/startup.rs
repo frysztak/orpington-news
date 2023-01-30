@@ -1,5 +1,6 @@
 use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
+use crate::queue::queue::Queue;
 use crate::routes::{auth, collections, e2e, preferences, spa};
 use actix_cors::Cors;
 use actix_identity::IdentityMiddleware;
@@ -10,9 +11,9 @@ use actix_web::dev::Server;
 use actix_web::web::{self, Data};
 use actix_web::{App, HttpServer};
 use secrecy::{ExposeSecret, Secret};
-use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
+use std::sync::Arc;
 use tracing_actix_web::TracingLogger;
 
 pub struct Application {
@@ -21,14 +22,11 @@ pub struct Application {
 }
 
 impl Application {
-    pub async fn build(config: &AppConfig) -> Result<Self, anyhow::Error> {
-        let db_pool = PgPoolOptions::new()
-            .acquire_timeout(std::time::Duration::from_secs(2))
-            .connect_with(config.database.get_db_options())
-            .await?;
-
-        sqlx::migrate!("./migrations").run(&db_pool).await?;
-
+    pub async fn build(
+        config: &AppConfig,
+        db_pool: &PgPool,
+        task_queue: Arc<dyn Queue>,
+    ) -> Result<Self, anyhow::Error> {
         let address = format!("{}:{}", config.host, config.port);
         let listener = TcpListener::bind(&address)?;
         let port = listener.local_addr().unwrap().port();
@@ -37,6 +35,7 @@ impl Application {
             db_pool,
             config.cookie_secret.clone(),
             // config.application.base_url,
+            task_queue,
         )
         .await?;
 
@@ -54,11 +53,13 @@ impl Application {
 
 async fn run(
     listener: TcpListener,
-    db_pool: PgPool,
+    db_pool: &PgPool,
     // base_url: String,
     cookie_secret: Secret<String>,
+    task_queue: Arc<dyn Queue>,
 ) -> Result<Server, anyhow::Error> {
-    let db_pool = Data::new(db_pool);
+    let db_pool = Data::new(db_pool.to_owned());
+    let task_queue = Data::new(task_queue.to_owned());
     let session_store = PostgresSessionStore::new(db_pool.clone());
     // let base_url = Data::new(ApplicationBaseUrl(base_url));
     let secret_key = Key::from(cookie_secret.expose_secret().as_bytes());
@@ -95,6 +96,7 @@ async fn run(
             )
             .service(spa())
             .app_data(db_pool.clone())
+            .app_data(task_queue.clone())
         //.app_data(email_client.clone())
         //.app_data(base_url.clone())
         //.app_data(Data::new(HmacSecret(hmac_secret.clone())))
