@@ -59,7 +59,7 @@ async fn run(
     task_queue: Arc<dyn Queue>,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool.to_owned());
-    let task_queue = Data::new(task_queue.to_owned());
+    let task_queue = Data::from(task_queue.to_owned());
     let session_store = PostgresSessionStore::new(db_pool.clone());
     // let base_url = Data::new(ApplicationBaseUrl(base_url));
     let secret_key = Key::from(cookie_secret.expose_secret().as_bytes());

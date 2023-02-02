@@ -1,41 +1,11 @@
 use actix_web::{error::InternalError, web, HttpResponse};
-use chrono::serde::ts_seconds_option;
-use serde::Serialize;
-use sqlx::{
-    types::chrono::{DateTime, Utc},
-    PgPool,
-};
+
+use sqlx::PgPool;
 use std::collections::HashMap;
 
 use crate::{authentication::UserId, routes::error::GenericError, session_state::ID};
 
-#[derive(Debug, sqlx::FromRow, Serialize)]
-#[serde(rename_all = "camelCase")]
-#[allow(dead_code)]
-pub struct Collection {
-    id: ID,
-    title: String,
-    icon: String,
-    order: i32,
-    description: Option<String>,
-    url: Option<String>,
-    #[serde(with = "ts_seconds_option")]
-    date_updated: Option<DateTime<Utc>>,
-    refresh_interval: i32,
-    layout: String,
-    filter: String,
-    grouping: String,
-    sort_by: String,
-    is_home: bool,
-    level: i32,
-    order_path: Vec<i32>,
-    parents: Vec<ID>,
-    parent_id: Option<ID>,
-    children: Vec<ID>,
-    unread_count: i32,
-    parent_order: Option<i32>,
-    is_last_child: Option<bool>,
-}
+use super::types::Collection;
 
 #[tracing::instrument(skip(pool, user_id))]
 pub async fn get_collections(

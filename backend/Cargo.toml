@@ -40,6 +40,13 @@ regex = "1.7.1"
 ulid = { version = "1.0.0", features = ["uuid"] }
 uuid = { version = "1.2.2", features = ["serde", "v4"] }
 futures = "0.3.25"
+ammonia = "3.3.0"
+estimated_read_time = "1.0.0"
+html-escape = "0.2.13"
+voca_rs = "1.15.2"
+lol_html = "0.3.2"
+html5ever = "0.26.0"
+markup5ever_rcdom = "0.2.0"
 
 [features]
 e2e = []
