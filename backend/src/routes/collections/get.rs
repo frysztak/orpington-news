@@ -1,6 +1,6 @@
 use actix_web::{error::InternalError, web, HttpResponse};
 
-use sqlx::PgPool;
+use sqlx::{Acquire, PgPool, Postgres};
 use std::collections::HashMap;
 
 use crate::{authentication::UserId, routes::error::GenericError, session_state::ID};
@@ -14,16 +14,12 @@ pub async fn get_collections(
 ) -> Result<HttpResponse, InternalError<GenericError>> {
     let user_id: ID = user_id.into();
 
-    let mut collections = sqlx::query_as::<_, Collection>(include_str!("get.sql"))
-        .bind(user_id)
-        .fetch_all(pool.as_ref())
+    get_collections_impl(pool.as_ref(), user_id)
         .await
+        .map(|collections| HttpResponse::Ok().json(collections))
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)
-        .map_err(Into::<InternalError<GenericError>>::into)?;
-
-    calculate_unread_count(&mut collections);
-    Ok(HttpResponse::Ok().json(collections))
+        .map_err(Into::<InternalError<GenericError>>::into)
 }
 
 fn calculate_unread_count(collections: &mut Vec<Collection>) {
@@ -39,4 +35,23 @@ fn calculate_unread_count(collections: &mut Vec<Collection>) {
             .fold(0, |acc, c| acc + map.get(&c).unwrap_or(&0));
         collection.unread_count = children_unread_count;
     }
+}
+
+pub async fn get_collections_impl<'a, A>(
+    conn: A,
+    user_id: ID,
+) -> Result<Vec<Collection>, sqlx::Error>
+where
+    A: Acquire<'a, Database = Postgres>,
+{
+    let mut conn = conn.acquire().await?;
+
+    let mut collections = sqlx::query_as::<_, Collection>(include_str!("get.sql"))
+        .bind(user_id)
+        .fetch_all(&mut *conn)
+        .await?;
+
+    calculate_unread_count(&mut collections);
+
+    Ok(collections)
 }
