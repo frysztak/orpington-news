@@ -49,7 +49,7 @@ WITH children_ids AS (
     let results = join_all(
         collections
             .into_iter()
-            .map(|c| update_collection(c.to_owned(), pool.as_ref()))
+            .map(|c| update_collection(c.to_owned(), pool.as_ref().clone()))
             .collect::<Vec<_>>(),
     )
     .await;

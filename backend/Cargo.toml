@@ -32,7 +32,7 @@ actix-identity = "0.5.2"
 data-url = "0.2.0"
 strum = { version = "0.24", features = ["derive"] }
 feed-rs = "1.2.0"
-reqwest = "0.11.14"
+reqwest = { version = "0.11.14", features = ["gzip"] }
 normalize-url-rs = "0.1.0"
 scraper = "0.14.0"
 url = "2.3.1"

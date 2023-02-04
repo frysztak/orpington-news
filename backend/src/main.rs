@@ -1,8 +1,9 @@
 use backend::config::read_config;
 use backend::queue::postgres::PostgresQueue;
 use backend::startup::Application;
+use backend::tasks::queue_task::run_queue_until_stopped;
+use backend::tasks::refresh_task::run_refresh_until_stopped;
 use backend::telemetry::{get_subscriber, init_subscriber};
-use backend::worker::run_worker_until_stopped;
 use dotenvy::dotenv;
 use sqlx::postgres::PgPoolOptions;
 use std::fmt::{Debug, Display};
@@ -27,14 +28,16 @@ async fn main() -> anyhow::Result<()> {
     sqlx::migrate!("./migrations").run(&db_pool).await?;
 
     let queue = Arc::new(PostgresQueue::new(db_pool.clone()));
-    let worker_task = tokio::spawn(run_worker_until_stopped(queue.clone()));
+    let queue_task = tokio::spawn(run_queue_until_stopped(queue.clone(), db_pool.clone()));
+    let refresh_task = tokio::spawn(run_refresh_until_stopped(queue.clone(), db_pool.clone()));
 
     let application = Application::build(&config, &db_pool, queue.clone()).await?;
     let application_task = tokio::spawn(application.run_until_stopped());
 
     tokio::select! {
         o = application_task => report_exit("API", o),
-        o = worker_task => report_exit("Background worker", o),
+        o = queue_task => report_exit("Queue worker", o),
+        o = refresh_task => report_exit("Refresh worker", o),
     };
 
     Ok(())

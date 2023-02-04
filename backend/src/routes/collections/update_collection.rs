@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use chrono::{DateTime, Utc};
 use feed_rs::{
     model::{Content, Feed, Text},
@@ -5,7 +7,7 @@ use feed_rs::{
 };
 use reqwest::{header::HeaderValue, StatusCode};
 use serde_json::json;
-use sqlx::{postgres::PgQueryResult, Acquire, PgPool, Postgres};
+use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, PgPool};
 use thiserror::Error;
 use url::Url;
 use voca_rs::chop::limit_words;
@@ -24,6 +26,8 @@ enum FetchFeedError {
     FetchError(#[source] anyhow::Error),
     #[error("Failed to parse feed")]
     ParseError(#[source] anyhow::Error),
+    #[error("Unexpected error")]
+    UnexpectedError(#[source] anyhow::Error),
 }
 
 enum FetchFeedSuccess {
@@ -33,7 +37,12 @@ enum FetchFeedSuccess {
 
 #[tracing::instrument()]
 async fn fetch_feed(collection: &CollectionToRefresh) -> Result<FetchFeedSuccess, FetchFeedError> {
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .timeout(Duration::from_secs(60))
+        .build()
+        .map_err(Into::into)
+        .map_err(FetchFeedError::UnexpectedError)?;
+
     let response = client
         .get(&collection.url)
         .header(
@@ -150,16 +159,11 @@ fn map_feed_items(
 }
 
 #[tracing::instrument(skip(conn))]
-async fn set_collection_date_updated<'a, A>(
-    conn: A,
+async fn set_collection_date_updated(
+    conn: &mut PgConnection,
     collection_id: ID,
     date_updated: DateTime<Utc>,
-) -> Result<PgQueryResult, sqlx::Error>
-where
-    A: Acquire<'a, Database = Postgres>,
-{
-    let mut conn = conn.acquire().await?;
-
+) -> Result<PgQueryResult, sqlx::Error> {
     sqlx::query!(
         r#"
 UPDATE
@@ -177,15 +181,12 @@ WHERE
 }
 
 #[tracing::instrument(skip(conn))]
-async fn set_collection_etag<'a, A>(
-    conn: A,
+async fn set_collection_etag(
+    conn: &mut PgConnection,
     collection_id: ID,
     etag: &str,
-) -> Result<PgQueryResult, sqlx::Error>
-where
-    A: Acquire<'a, Database = Postgres>,
-{
-    let mut conn = conn.acquire().await?;
+) -> Result<PgQueryResult, sqlx::Error> {
+    let conn = conn.acquire().await?;
 
     sqlx::query!(
         r#"
@@ -204,14 +205,11 @@ WHERE
 }
 
 #[tracing::instrument(skip(conn, items))]
-async fn insert_collection_items<'a, A>(
-    conn: A,
+async fn insert_collection_items(
+    conn: &mut PgConnection,
     items: &Vec<InsertCollectionItem>,
-) -> Result<PgQueryResult, sqlx::Error>
-where
-    A: Acquire<'a, Database = Postgres>,
-{
-    let mut conn = conn.acquire().await?;
+) -> Result<PgQueryResult, sqlx::Error> {
+    let conn = conn.acquire().await?;
 
     sqlx::query!(
         r#"
@@ -278,7 +276,7 @@ pub enum UpdateCollectionError {
 #[tracing::instrument(skip(pool))]
 pub async fn update_collection(
     collection: CollectionToRefresh,
-    pool: &PgPool,
+    pool: PgPool,
 ) -> Result<(), UpdateCollectionError> {
     let fetch_result = fetch_feed(&collection)
         .await
@@ -287,9 +285,15 @@ pub async fn update_collection(
 
     let now = Utc::now();
 
+    let mut conn = pool
+        .acquire()
+        .await
+        .map_err(Into::into)
+        .map_err(UpdateCollectionError::UnexpectedError)?;
+
     match &fetch_result {
         FetchFeedSuccess::NotModified => {
-            set_collection_date_updated(pool, collection.id, now)
+            set_collection_date_updated(&mut *conn, collection.id, now)
                 .await
                 .map_err(Into::into)
                 .map_err(UpdateCollectionError::UnexpectedError)?;

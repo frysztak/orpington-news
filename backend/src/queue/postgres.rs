@@ -120,6 +120,8 @@ impl Queue for PostgresQueue {
         let now_vec: Vec<DateTime<Utc>> = (0..n).map(|_| now).collect();
         let job_ids: Vec<Uuid> = (0..n).map(|_| Ulid::new().into()).collect(); // ULID to UUID
 
+        let mut transaction = self.db.begin().await?;
+
         sqlx::query!(
             r#"
 INSERT INTO queue
@@ -144,8 +146,22 @@ SELECT * FROM UNNEST(
             &priorities[..]: Vec<i32>,
             &messages[..]
         )
-        .execute(&self.db)
+        .execute(&mut transaction)
         .await?;
+
+        sqlx::query!(
+            r#"
+        DELETE FROM queue a
+        USING queue b
+        WHERE
+            a.id > b.id
+            AND a.message = b.message
+        "#
+        )
+        .execute(&mut transaction)
+        .await?;
+
+        transaction.commit().await?;
 
         Ok(())
     }

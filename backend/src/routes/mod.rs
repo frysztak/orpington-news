@@ -16,7 +16,7 @@ pub mod error;
 pub mod auth;
 pub use self::auth::auth;
 
-mod collections;
+pub mod collections;
 pub use self::collections::collections;
 
 pub mod preferences;
