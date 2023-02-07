@@ -1,4 +1,4 @@
-CREATE TABLE queue (
+CREATE TABLE IF NOT EXISTS queue (
   id UUID PRIMARY KEY,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -9,5 +9,5 @@ CREATE TABLE queue (
   priority INT NOT NULL,
   message JSONB NOT NULL
 );
-CREATE INDEX index_queue_on_scheduled_for ON queue (scheduled_for);
-CREATE INDEX index_queue_on_status ON queue (status);
+CREATE INDEX IF NOT EXISTS index_queue_on_scheduled_for ON queue (scheduled_for);
+CREATE INDEX IF NOT EXISTS index_queue_on_status ON queue (status);

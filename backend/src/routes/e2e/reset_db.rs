@@ -7,11 +7,16 @@ use crate::routes::error::GenericError;
 pub async fn reset_db(
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, InternalError<GenericError>> {
-    sqlx::migrate!("./migrations")
-        .undo(pool.as_ref(), 0)
-        .await
-        .map_err(Into::into)
-        .map_err(GenericError::UnexpectedError)?;
+    sqlx::query!(
+        r#"
+TRUNCATE TABLE users, session, queue, preferences, collections, collection_items
+RESTART IDENTITY
+CASCADE"#
+    )
+    .execute(pool.as_ref())
+    .await
+    .map_err(Into::into)
+    .map_err(GenericError::UnexpectedError)?;
 
     Ok(HttpResponse::Ok().json(true))
 }

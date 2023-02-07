@@ -1,3 +1,3 @@
-DROP TABLE queue;
-DROP INDEX index_queue_on_scheduled_for;
-DROP INDEX index_queue_on_status;
+DROP TABLE IF EXISTS queue;
+DROP INDEX IF EXISTS index_queue_on_scheduled_for;
+DROP INDEX IF EXISTS index_queue_on_status;
