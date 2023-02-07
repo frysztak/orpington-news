@@ -1,6 +1,7 @@
 use actix_web::{web, Scope};
 
 mod clean_html;
+mod delete;
 mod get;
 mod get_items;
 mod post;
@@ -14,6 +15,10 @@ pub fn collections() -> Scope {
         .route("", web::get().to(get::get_collections))
         .route("", web::post().to(post::post_collection))
         .route("/verifyUrl", web::post().to(verify_url::verify_url))
+        .route(
+            "/{collection_id}",
+            web::delete().to(delete::delete_collection),
+        )
         .route(
             "/{collection_id}/items",
             web::get().to(get_items::get_collection_items),
