@@ -31,7 +31,6 @@ actix-cors = "0.6.4"
 actix-identity = "0.5.2"
 data-url = "0.2.0"
 strum = { version = "0.24", features = ["derive"] }
-feed-rs = "1.2.0"
 reqwest = { version = "0.11.14", features = ["gzip"] }
 normalize-url-rs = "0.1.0"
 scraper = "0.14.0"
@@ -47,6 +46,7 @@ voca_rs = "1.15.2"
 lol_html = "0.3.2"
 html5ever = "0.26.0"
 markup5ever_rcdom = "0.2.0"
+feed-rs = { git = "https://github.com/feed-rs/feed-rs", rev = "3a26dbb3cc4f2e695e86e20c9cc59f4b22b79d11" }
 
 [features]
 e2e = []

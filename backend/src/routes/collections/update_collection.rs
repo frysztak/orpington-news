@@ -9,6 +9,7 @@ use reqwest::{header::HeaderValue, StatusCode};
 use serde_json::json;
 use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, PgPool};
 use thiserror::Error;
+use tracing::{info, warn};
 use url::Url;
 use voca_rs::chop::limit_words;
 
@@ -140,7 +141,7 @@ fn map_feed_items(
                 false => Some(entry.categories.iter().map(|c| c.term.clone()).collect()),
             };
 
-            let date_published = entry.published?;
+            let date_published = entry.published.or(entry.updated)?;
 
             Some(InsertCollectionItem {
                 title,
@@ -293,6 +294,7 @@ pub async fn update_collection(
 
     match &fetch_result {
         FetchFeedSuccess::NotModified => {
+            info!("Received 304");
             set_collection_date_updated(&mut *conn, collection.id, now)
                 .await
                 .map_err(Into::into)
@@ -300,6 +302,9 @@ pub async fn update_collection(
         }
         FetchFeedSuccess::Fetched { feed, etag } => {
             let items = map_feed_items(feed, collection.id, now);
+            if items.len() != feed.entries.len() {
+                warn!("Dropped {} feed entries", feed.entries.len() - items.len());
+            }
 
             let mut transaction = pool
                 .begin()
