@@ -1,6 +1,5 @@
 import { defineConfig } from 'cypress';
 import dotenv from 'dotenv';
-import axios from 'axios';
 
 dotenv.config({
   path: process.env.NODE_ENV === 'development' ? '.env.e2e.local' : '.env.e2e',
@@ -35,16 +34,6 @@ export default defineConfig({
           launchOptions.args.push('--force-prefers-reduced-motion');
         }
         return launchOptions;
-      });
-
-      on('task', {
-        async 'db:seed'() {
-          const { api_url } = config.env;
-          await axios.post(`${api_url}/e2e/reset_db`);
-          await axios.post(`${api_url}/e2e/setup_db`);
-
-          return true;
-        },
       });
 
       return config;

@@ -138,6 +138,10 @@ Cypress.Commands.add('changeActiveCollection', (id: string) => {
   cy.wait('@apiGetItems');
 });
 
+Cypress.Commands.add('resetDatabaseByApi', () => {
+  return cy.request('POST', `${Cypress.env('api_url')}/e2e/reset_db`);
+});
+
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {
   return cy.request('POST', `${Cypress.env('api_url')}/auth/register`, {
     username,
