@@ -5,12 +5,13 @@ use sqlx::PgPool;
 use crate::{
     authentication::UserId,
     defaults::{DEFAULT_COLLECTION_ICON, DEFAULT_REFRESH_INTERVAL},
-    queue::queue::{Message, Queue, TaskPriority},
     routes::{error::GenericError, preferences::expand_collapse::expand_collapse_impl},
     session_state::ID,
 };
 
-use super::get::get_collections_impl;
+use super::{
+    get::get_collections_impl, types::CollectionToRefresh, update_collection::update_collection,
+};
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -29,7 +30,6 @@ pub struct PostCollectionData {
 pub async fn post_collection(
     pool: web::Data<PgPool>,
     body: web::Json<PostCollectionData>,
-    task_queue: web::Data<dyn Queue>,
     user_id: UserId,
 ) -> Result<HttpResponse, InternalError<GenericError>> {
     let user_id: ID = user_id.into();
@@ -144,20 +144,17 @@ CALL preferences_prune_expanded_collections($1)
         .map_err(GenericError::UnexpectedError)
         .map_err(Into::<InternalError<GenericError>>::into)?;
 
-    task_queue
-        .push(
-            Message::RefreshFeed {
-                url: body.url.clone(),
-                feed_id: collection_id,
-                etag: None,
-            },
-            None,
-            Some(TaskPriority::High),
-        )
-        .await
-        .map_err(Into::into)
-        .map_err(GenericError::UnexpectedError)
-        .map_err(Into::<InternalError<GenericError>>::into)?;
+    update_collection(
+        CollectionToRefresh {
+            id: collection_id,
+            url: body.url.clone(),
+            etag: None,
+        },
+        pool.as_ref().clone(),
+    )
+    .await
+    .map_err(Into::into)
+    .map_err(GenericError::UnexpectedError)?;
 
     Ok(HttpResponse::Ok().json(collections))
 }
