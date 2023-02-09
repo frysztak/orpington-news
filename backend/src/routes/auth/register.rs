@@ -1,11 +1,11 @@
 use crate::defaults::*;
 use crate::preferences::Preferences;
+use crate::routes::auth::utils::map_avatar;
 use crate::{
     authentication::compute_password_hash,
     routes::{error::JSONError, error_chain_fmt},
 };
 use actix_web::{error::InternalError, web, HttpRequest, HttpResponse};
-use data_url::DataUrl;
 use secrecy::{ExposeSecret, Secret};
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -69,7 +69,7 @@ RETURNING
         body.username,
         hash.expose_secret(),
         body.display_name,
-        map_avatar(body.avatar),
+        map_avatar(body.avatar.as_ref()),
         2137
     )
     .fetch_one(&mut transaction)
@@ -104,7 +104,6 @@ RETURNING
     .await
     .map_err(Into::into)
     .map_err(RegisterError::UnexpectedError)?;
-
 
     sqlx::query!(
         r#"
@@ -153,14 +152,6 @@ WHERE
         .map_err(RegisterError::UnexpectedError)?;
 
     Ok(HttpResponse::Ok().json(true))
-}
-
-fn map_avatar(avatar_uri: Option<String>) -> Option<Vec<u8>> {
-    avatar_uri.and_then(|uri| {
-        let url = DataUrl::process(&uri).ok()?;
-        let (body, _fragment) = url.decode_to_vec().ok()?;
-        Some(body)
-    })
 }
 
 #[derive(thiserror::Error)]

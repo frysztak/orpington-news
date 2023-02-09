@@ -76,7 +76,7 @@ pub async fn validate_credentials(
     name = "Validate credentials",
     skip(expected_password_hash, password_candidate)
 )]
-fn verify_password_hash(
+pub fn verify_password_hash(
     expected_password_hash: Secret<String>,
     password_candidate: Secret<String>,
 ) -> Result<(), AuthError> {

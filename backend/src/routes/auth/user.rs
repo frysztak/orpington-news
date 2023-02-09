@@ -1,8 +1,13 @@
+use crate::routes::auth::utils::map_avatar;
 use actix_web::{error::InternalError, web, HttpResponse};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
-use crate::{authentication::UserId, routes::error_chain_fmt, session_state::ID};
+use crate::{
+    authentication::UserId,
+    routes::{error::GenericError, error_chain_fmt},
+    session_state::ID,
+};
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -14,12 +19,21 @@ struct UserInfo {
 }
 
 #[tracing::instrument(skip(pool, user_id))]
-pub async fn user_info(
+pub async fn get_user(
     pool: web::Data<PgPool>,
-    user_id: UserId
+    user_id: UserId,
 ) -> Result<HttpResponse, InternalError<UserInfoError>> {
     let user_id: ID = user_id.into();
 
+    get_user_impl(pool.as_ref(), user_id)
+        .await
+        .map(|user| HttpResponse::Ok().json(user))
+        .map_err(Into::into)
+        .map_err(UserInfoError::UnexpectedError)
+        .map_err(Into::into)
+}
+
+async fn get_user_impl(pool: &PgPool, user_id: ID) -> Result<UserInfo, sqlx::Error> {
     sqlx::query_as!(
         UserInfo,
         r#"
@@ -40,12 +54,8 @@ WHERE
     "#,
         user_id
     )
-    .fetch_one(pool.as_ref())
+    .fetch_one(pool)
     .await
-    .map(|user| HttpResponse::Ok().json(user))
-    .map_err(Into::into)
-    .map_err(UserInfoError::UnexpectedError)
-    .map_err(Into::into)
 }
 
 impl From<UserInfoError> for InternalError<UserInfoError> {
@@ -73,7 +83,7 @@ impl std::fmt::Debug for UserInfoError {
 #[tracing::instrument(skip(pool, user_id))]
 pub async fn user_avatar(
     pool: web::Data<PgPool>,
-    user_id: UserId
+    user_id: UserId,
 ) -> Result<HttpResponse, InternalError<UserAvatarError>> {
     let user_id: ID = user_id.into();
 
@@ -133,4 +143,51 @@ impl From<UserAvatarError> for InternalError<UserAvatarError> {
         .finish();
         InternalError::from_response(error, response)
     }
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PutUserData {
+    display_name: String,
+    avatar_url: Option<String>,
+}
+
+#[tracing::instrument(skip(pool, body, user_id))]
+pub async fn put_user(
+    pool: web::Data<PgPool>,
+    body: web::Json<PutUserData>,
+    user_id: UserId,
+) -> Result<HttpResponse, InternalError<GenericError>> {
+    let user_id: ID = user_id.into();
+
+    sqlx::query!(
+        r#"
+WITH old AS (
+  SELECT *
+  FROM users
+  WHERE id = $1
+)
+UPDATE
+  users
+SET
+  display_name = COALESCE($2, old.display_name),
+  avatar = COALESCE($3, old.avatar)
+FROM old
+WHERE users.id = $1
+    "#,
+        user_id,
+        body.display_name,
+        map_avatar(body.avatar_url.as_ref())
+    )
+    .execute(pool.as_ref())
+    .await
+    .map_err(Into::into)
+    .map_err(GenericError::UnexpectedError)?;
+
+    get_user_impl(pool.as_ref(), user_id)
+        .await
+        .map(|user| HttpResponse::Ok().json(user))
+        .map_err(Into::into)
+        .map_err(GenericError::UnexpectedError)
+        .map_err(Into::into)
 }
