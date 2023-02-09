@@ -12,24 +12,24 @@ use crate::{authentication::UserId, routes::error::GenericError, session_state::
 #[serde(rename_all = "camelCase")]
 #[allow(dead_code)]
 pub struct DBCollectionItem {
-    id: ID,
-    previous_id: Option<ID>,
-    next_id: Option<ID>,
-    url: String,
-    title: String,
-    full_text: String,
-    summary: String,
-    thumbnail_url: Option<String>,
+    pub id: ID,
+    pub previous_id: Option<ID>,
+    pub next_id: Option<ID>,
+    pub url: String,
+    pub title: String,
+    pub full_text: String,
+    pub summary: String,
+    pub thumbnail_url: Option<String>,
     #[serde(with = "ts_seconds")]
-    date_published: DateTime<Utc>,
+    pub date_published: DateTime<Utc>,
     #[serde(with = "ts_seconds")]
-    date_updated: DateTime<Utc>,
+    pub date_updated: DateTime<Utc>,
     #[serde(with = "ts_seconds_option")]
-    date_read: Option<DateTime<Utc>>,
-    reading_time: f32,
-    collection_id: ID,
-    collection_title: String,
-    collection_icon: String,
+    pub date_read: Option<DateTime<Utc>>,
+    pub reading_time: f32,
+    pub collection_id: ID,
+    pub collection_title: String,
+    pub collection_icon: String,
 }
 
 #[derive(Debug, sqlx::FromRow, Serialize)]
@@ -112,7 +112,7 @@ pub async fn get_collection_items(
     let user_id: ID = user_id.into();
     let page_size = query.page_size.unwrap_or(30);
     let page_index = query.page_index.unwrap_or(0);
-    
+
     sqlx::query_as::<_, DBCollectionItem>(include_str!("get_items.sql"))
         .bind(user_id)
         .bind(path.collection_id)
@@ -124,11 +124,8 @@ pub async fn get_collection_items(
         .fetch_all(pool.as_ref())
         .await
         .map(|data| {
-            Ok(HttpResponse::Ok().json(
-                data.iter()
-                    .map(Into::into)
-                    .collect::<Vec<CollectionItem>>(),
-            ))
+            Ok(HttpResponse::Ok()
+                .json(data.iter().map(Into::into).collect::<Vec<CollectionItem>>()))
         })
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)

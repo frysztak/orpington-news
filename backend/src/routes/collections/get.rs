@@ -30,10 +30,12 @@ fn calculate_unread_count(collections: &mut Vec<Collection>) {
 
     for mut collection in collections {
         let children = &collection.children;
-        let children_unread_count = children
-            .into_iter()
-            .fold(0, |acc, c| acc + map.get(&c).unwrap_or(&0));
-        collection.unread_count = children_unread_count;
+        if children.len() > 0 {
+            let children_unread_count = children
+                .into_iter()
+                .fold(0, |acc, c| acc + map.get(&c).unwrap_or(&0));
+            collection.unread_count = children_unread_count;
+        }
     }
 }
 

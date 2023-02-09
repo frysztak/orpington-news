@@ -138,12 +138,6 @@ CALL preferences_prune_expanded_collections($1)
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;
 
-    let collections = get_collections_impl(pool.as_ref(), user_id)
-        .await
-        .map_err(Into::into)
-        .map_err(GenericError::UnexpectedError)
-        .map_err(Into::<InternalError<GenericError>>::into)?;
-
     update_collection(
         CollectionToRefresh {
             id: collection_id,
@@ -155,6 +149,12 @@ CALL preferences_prune_expanded_collections($1)
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;
+
+    let collections = get_collections_impl(pool.as_ref(), user_id)
+        .await
+        .map_err(Into::into)
+        .map_err(GenericError::UnexpectedError)
+        .map_err(Into::<InternalError<GenericError>>::into)?;
 
     Ok(HttpResponse::Ok().json(collections))
 }

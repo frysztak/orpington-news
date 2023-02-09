@@ -4,8 +4,10 @@ mod clean_html;
 mod date_read;
 mod delete;
 mod get;
+mod get_item;
 mod get_items;
 mod mark_as_read;
+mod move_collection;
 mod post;
 mod preferences;
 mod put;
@@ -20,6 +22,7 @@ pub fn collections() -> Scope {
         .route("", web::post().to(post::post_collection))
         .route("", web::put().to(put::put_collection))
         .route("/verifyUrl", web::post().to(verify_url::verify_url))
+        .route("/move", web::post().to(move_collection::move_collection))
         .route(
             "/{collection_id}",
             web::delete().to(delete::delete_collection),
@@ -39,6 +42,10 @@ pub fn collections() -> Scope {
         .route(
             "/{collection_id}/preferences",
             web::put().to(preferences::preferences),
+        )
+        .route(
+            "/{collection_id}/item/{item_id}",
+            web::get().to(get_item::get_item),
         )
         .route(
             "/{collection_id}/item/{item_id}/dateRead",
