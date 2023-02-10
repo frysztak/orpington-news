@@ -1,5 +1,187 @@
 {
   "db": "PostgreSQL",
+  "004d5637ab06d5e73e3ae3e89021e889c476e872b3d748614847c856b50e866f": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Text", "Text", "Int4", "Text", "Text", "Int4", "Int4"]
+      }
+    },
+    "query": "\nUPDATE\n  collections\nSET\n  title = $1,\n  icon = $2,\n  parent_id = $3,\n  description = $4,\n  url = $5,\n  refresh_interval = $6\nWHERE\n  id = $7\n            "
+  },
+  "007a21d91caff90698164ae884a2bba315b55944a10a10a0dcc665444b924ce6": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\nCALL collections_recalculate_order()\n    "
+  },
+  "083adacdce8eb1c956242c6c118db828ecb5aae9a842ec6c91feec388a61e398": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4", "Int4"]
+      }
+    },
+    "query": "UPDATE preferences\n            SET active_collection_id = $1\n            WHERE user_id = $2"
+  },
+  "0cf206d2b37f97f40f96e6313890cb4c6d7858f9b8a6dac97955f59e23b75d8c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [null],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "SELECT id as \"id!\" FROM get_collection_children_ids($1)"
+  },
+  "0f42f0d361d6be0bb51ab2d0a7a096d651cf619a2ee46801f2d14833976c320d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [null],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\n    SELECT id as \"id!\" FROM get_collection_children_ids($1)"
+  },
+  "12ec41df634edc2ace1f340a5b2904c1b3a739a182f9a6e8e9f13d40a32604d3": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nCALL preferences_prune_expanded_collections($1)\n    "
+  },
+  "20168dc99a934e98984a489442684961fb55914e032d3abe4c9eaa9d306ea165": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Text", "Text", "Int4"]
+      }
+    },
+    "query": "\nUPDATE\n  preferences p\nSET\n  default_collection_layout = $1,\n  avatar_style = $2\nWHERE\n  p.user_id = $3\n"
+  },
+  "2c8ad759287953270eaa224710f5f465c8313179f9ce9b631cc3e8ff5ad82c4b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4Array"]
+      }
+    },
+    "query": "\n    DELETE FROM collections\n    WHERE id = ANY($1)\n    RETURNING id"
+  },
+  "2d2ee0ebbe376f33968b0aacf8c26df56fc82f8d4afd117332373a182a68b536": {
+    "describe": {
+      "columns": [
+        {
+          "name": "active_collection_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [true],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\n    SELECT active_collection_id FROM preferences WHERE user_id = $1"
+  },
+  "2dc0059b565e1e013cd26bf99ed7f0e3a0350e2c575c8dd775426b2f08062400": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Text", "Int4", "Int4"]
+      }
+    },
+    "query": "UPDATE\n  preferences p\nSET\n  expanded_collection_ids = subquery.ids || '{}'\nFROM (\n  SELECT\n    CASE\n      WHEN $1 = 'add' THEN\n        uniq(array_append(COALESCE(expanded_collection_ids, '{}'::int4[]), $2))\n      ELSE\n        uniq(array_remove(COALESCE(expanded_collection_ids, '{}'::int4[]), $2))\n    END AS ids\n  FROM\n    preferences\n  WHERE\n    \"user_id\" = $3\n) as subquery\nWHERE\n  p.user_id = $3\n"
+  },
+  "30cb1a541ef699b90701f30482255b228a43c098d951bf65e95bd8efb2444a7d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "count!",
+          "ordinal": 0,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [null],
+      "parameters": {
+        "Left": ["Timestamptz", "Int4", "Int4"]
+      }
+    },
+    "query": "\nWITH rows AS (\n  UPDATE\n    collection_items\n  SET\n    date_read = $1 \n  WHERE\n    id = $2\n    AND collection_id = $3\n  RETURNING 1\n)\nSELECT count(*) as \"count!\" FROM rows\n"
+  },
+  "3747b6053862a362741f106b5ad1f4bca1935aa3f365f9e24dc2183e9f88b7b0": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Text", "Int4"]
+      }
+    },
+    "query": "\nUPDATE\n  collections\nSET\n  etag = $1\nWHERE\n  id = $2\n"
+  },
+  "3998cc6ad891b967426787b5bf2eedc675c6cb3aae7f157cf613e17f0ade460e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "parent_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [true],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nSELECT parent_id\nFROM collections\nWHERE id = $1\n    "
+  },
+  "3d7ebe93e552692fedc80e2c37f4ca0a0de12b835a6a47f1442609bd9291aa19": {
+    "describe": {
+      "columns": [
+        {
+          "name": "password",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "SELECT password FROM users WHERE id = $1"
+  },
   "49bfcf02b564e2ab7820b4d182038d881666cd3e657e6b631d237c2e854fc8f2": {
     "describe": {
       "columns": [],
@@ -9,6 +191,62 @@
       }
     },
     "query": "\nUPDATE\n  users\nSET\n  home_id = $1\nWHERE\n  users.id = $2\n        "
+  },
+  "49c5119fc952951ba413acfebd50eb940e3969e79b4442d8f66d56e2e6619b47": {
+    "describe": {
+      "columns": [
+        {
+          "name": "home_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\n            SELECT home_id\n            FROM users\n            WHERE id = $1"
+  },
+  "58c0121e0c804667527c2a0f04019944e1aa7591fa5689dedafec1021ea568db": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4", "Text", "Text", "Text", "Text"]
+      }
+    },
+    "query": "\nWITH old AS (\n  SELECT * FROM collections WHERE id = $1\n)\nUPDATE collections\nSET\n  layout   = COALESCE($2, old.layout),\n  filter   = COALESCE($3, old.filter),\n  grouping = COALESCE($4, old.grouping),\n  sort_by  = COALESCE($5, old.sort_by)\nFROM old\nWHERE collections.id = $1\n"
+  },
+  "5d2f4e18afb8d30e6e7b6adedfe054ea5efc103856795ef4cfeea4b70b0bed57": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4", "Text", "Bytea"]
+      }
+    },
+    "query": "\nWITH old AS (\n  SELECT *\n  FROM users\n  WHERE id = $1\n)\nUPDATE\n  users\nSET\n  display_name = COALESCE($2, old.display_name),\n  avatar = COALESCE($3, old.avatar)\nFROM old\nWHERE users.id = $1\n    "
+  },
+  "5d7c5f3bd774a79ea6bf2fdf4f35d60041c5b6a0e391e55d74cb5605cf48c964": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nCALL preferences_prune_expanded_collections($1)\n            "
+  },
+  "6076db689ecb249e14fce825a7d6a85355cf63f982d122c34b59f43d704edb50": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        DELETE FROM queue a\n        USING queue b\n        WHERE\n            a.id > b.id\n            AND a.message = b.message\n        "
   },
   "6731b5cbb4901c40637bed0fa7de064b23b2e45ab035e40e909ae85d93e95434": {
     "describe": {
@@ -36,6 +274,35 @@
     },
     "query": "\nINSERT INTO preferences (\n  \"user_id\",\n  \"active_collection_id\",\n  \"expanded_collection_ids\",\n  \"default_collection_layout\",\n  \"avatar_style\")\nVALUES (\n  $1, $2, $3, $4, $5\n)\n    "
   },
+  "6b6c4f65d0f1b6ebca8ea1c58b40615d89921c96d9f4ece2a71d6854ab90d418": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4", "Int4", "Int4"]
+      }
+    },
+    "query": "\n            CALL move_collection($1, $2, $3)\n            "
+  },
+  "6b7135fc480176ad569286477aa83e74af58b774c7b1ddc41f3c93e2c2271125": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "UuidArray",
+          "TimestampArray",
+          "TimestampArray",
+          "TimestampArray",
+          "Int4Array",
+          "Int4Array",
+          "Int4Array",
+          "JsonbArray"
+        ]
+      }
+    },
+    "query": "\nINSERT INTO queue\n  (id, created_at, updated_at, scheduled_for, failed_attempts, status, priority, message)\nSELECT * FROM UNNEST(\n  $1::UUID[],\n  $2::TIMESTAMP[],\n  $3::TIMESTAMP[],\n  $4::TIMESTAMP[],\n  $5::INT[],\n  $6::INT[],\n  $7::INT[],\n  $8::JSONB[]\n)\n        "
+  },
   "6d7a4b4ed2475a568ce8afc13741efdfceef180c9b1048a2b53cce9bdf0e431a": {
     "describe": {
       "columns": [
@@ -57,6 +324,62 @@
     },
     "query": "\n        SELECT id, password\n        FROM users\n        WHERE name = $1\n        "
   },
+  "78600da980b492195ce57b52695b97c730f8618851f4f07ab5ddabf7b2ae67df": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "url!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "etag",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [false, true, true],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\nSELECT\n  id, url as \"url!\", etag\nFROM\n  collections\nWHERE\n  url IS NOT NULL\n  AND (date_updated + refresh_interval * interval '1 minute' <= now()\n    OR date_updated IS NULL);\n        "
+  },
+  "788be55774dd4e60b8ae7206b5c527f5878eb5b3f8d8b65879d75df8ce8907e9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Timestamptz", "Int4Array"]
+      }
+    },
+    "query": "\nUPDATE\n  collection_items\nSET\n  date_read = $1\nWHERE\n  collection_id = ANY($2)\n"
+  },
+  "89fef0d95e009e14c52a23f9e98b551c6e25ec83d947c8edceccfb040a1af776": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4", "Int4", "Int4"]
+      }
+    },
+    "query": "\nCALL move_collection($1, $2, $3)\n    "
+  },
+  "8b1398a7277539f663eeedd0099f840919abe69b9fca0fa1318b8af9ef4db3f0": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4", "Int4"]
+      }
+    },
+    "query": "\nUPDATE\n  preferences p\nSET\n  active_collection_id = $1\nWHERE\n  p.user_id = $2\n    "
+  },
   "8bfe3d1eee30f74c8087e8111ee0611c68f8b1391d884adba32c89fa9ae26f87": {
     "describe": {
       "columns": [
@@ -73,6 +396,182 @@
     },
     "query": "\nINSERT INTO \"users\" (\n  name,\n  password,\n  display_name,\n  avatar,\n  home_id)\nVALUES (\n  $1,\n  $2,\n  $3,\n  $4,\n  $5)\nRETURNING\n  id\n    "
   },
+  "93a92a8879a5a6b0e44bb121cab24a979981525dd7d2f30c3fb9f418f16c0bc4": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nCALL preferences_prune_expanded_collections($1)\n"
+  },
+  "a40a6f829416975207514ffcd928f7755cecb59af4e1b5244f1401c2f3f18d75": {
+    "describe": {
+      "columns": [
+        {
+          "name": "default_collection_layout",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nSELECT\n  default_collection_layout\nFROM\n  preferences\nWHERE\n  user_id = $1\n    "
+  },
+  "a86a18ea18b14ccdf5ec977fadbac9ea35600729193b412c50de3b7f8fa7a73b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "home_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nSELECT\n  home_id\nFROM\n  users\nWHERE\n  id = $1\n    "
+  },
+  "ab5389841385092c3cdc44b4ff9fd9d0182017d5230bec8da995ad2dee22e465": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "parent_id",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 2,
+          "type_info": "Int4"
+        },
+        {
+          "name": "title",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "icon",
+          "ordinal": 4,
+          "type_info": "Text"
+        },
+        {
+          "name": "order",
+          "ordinal": 5,
+          "type_info": "Int4"
+        },
+        {
+          "name": "description",
+          "ordinal": 6,
+          "type_info": "Text"
+        },
+        {
+          "name": "url",
+          "ordinal": 7,
+          "type_info": "Text"
+        },
+        {
+          "name": "date_updated",
+          "ordinal": 8,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "refresh_interval",
+          "ordinal": 9,
+          "type_info": "Int4"
+        },
+        {
+          "name": "layout",
+          "ordinal": 10,
+          "type_info": "Text"
+        },
+        {
+          "name": "filter",
+          "ordinal": 11,
+          "type_info": "Text"
+        },
+        {
+          "name": "grouping",
+          "ordinal": 12,
+          "type_info": "Text"
+        },
+        {
+          "name": "sort_by",
+          "ordinal": 13,
+          "type_info": "Text"
+        },
+        {
+          "name": "is_home",
+          "ordinal": 14,
+          "type_info": "Bool"
+        },
+        {
+          "name": "etag",
+          "ordinal": 15,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": ["Text", "Int4"]
+      }
+    },
+    "query": "\nSELECT\n  *\nFROM\n  collections\nWHERE\n  url = $1\n  AND user_id = $2\n    "
+  },
+  "b56c5a016f0f877fff742084e8e4f746d140ebda0601379796fed7d6aed51e63": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\nTRUNCATE TABLE users, session, queue, preferences, collections, collection_items\nRESTART IDENTITY\nCASCADE"
+  },
+  "b5ebaf168432156eb078cd944e965cb9a3dae84e64f441f2068e76c2e62ba053": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [null],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nSELECT id as \"id!\" FROM get_collection_children_ids($1)\n"
+  },
   "c846a853fd3b54a17db17123e36b66930622d1e16b87ca469f87143c22f99e78": {
     "describe": {
       "columns": [],
@@ -82,6 +581,42 @@
       }
     },
     "query": "DELETE FROM session WHERE sid = $1"
+  },
+  "ca79fc4619bf6759f7d2a370d4a32e330f34337893e6b4d2acfefcd42c308bb8": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Timestamptz", "Int4"]
+      }
+    },
+    "query": "\nUPDATE\n  collections\nSET\n  date_updated = $1\nWHERE\n  id = $2\n"
+  },
+  "d6f9c229ec809ac7642fe03d5c69357be0c996435e2a8fc1bfa29df4c4d67031": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "url!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "etag",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [false, true, true],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\nWITH children_ids AS (\n    SELECT * FROM get_collection_children_ids($1)\n  )\n  SELECT\n    collections.id, url as \"url!\", etag\n  FROM\n    collections, children_ids\n  WHERE\n    url IS NOT NULL\n    AND collections.id = children_ids.id\n"
   },
   "d879f699406c058e8bea3701635e45130f3815b7e2b9f8d328ab6d02ac196c06": {
     "describe": {
@@ -145,6 +680,22 @@
     },
     "query": "UPDATE session\n              SET sess = $1,\n                  expire = $2\n              WHERE sid = $3 AND expire < now()"
   },
+  "e27904a95dd3b7612eab4132da114eb80c89eb8556bbbefccb2bcbc88d6a4579": {
+    "describe": {
+      "columns": [
+        {
+          "name": "home_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "SELECT home_id FROM users WHERE id = $1"
+  },
   "e3a17392270e91768fa1dde95b967be3dbd875c9cdb15a35487e9149f563b2f9": {
     "describe": {
       "columns": [
@@ -192,6 +743,16 @@
     },
     "query": "\nSELECT\n  name as username,\n  display_name,\n  (\n    CASE WHEN avatar IS NULL THEN\n     NULL \n    ELSE\n      '/api/auth/user/avatar'\n    END) as avatar_url,\n  home_id\nFROM\n  \"users\"\nWHERE\n  id = $1\n    "
   },
+  "e58ed86477f8bab957d22887c345ad4e3ca38fe4b6c3889581012fafc865508e": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Jsonb"]
+      }
+    },
+    "query": "\nINSERT INTO collection_items (\n  \"url\",\n  title,\n  summary,\n  full_text,\n  thumbnail_url,\n  date_published,\n  date_updated,\n  categories,\n  reading_time,\n  collection_id)\nSELECT\n  \"url\",\n  title,\n  summary,\n  full_text,\n  thumbnail_url,\n  to_timestamp(date_published) as date_published,\n  to_timestamp(date_updated) as date_updated,\n  categories,\n  reading_time,\n  collection_id\nFROM jsonb_to_recordset($1) AS t(\n    \"url\" text,\n    title text,\n    summary text,\n    full_text text,\n    thumbnail_url text,\n    date_published integer,\n    date_updated integer,\n    categories text[],\n    reading_time float4,\n    collection_id integer)\nON CONFLICT (collection_id, \"url\")\nDO UPDATE SET\n    \"url\" = EXCLUDED. \"url\",\n    title = EXCLUDED.title,\n    summary = EXCLUDED.summary,\n    full_text = EXCLUDED.full_text,\n    thumbnail_url = EXCLUDED.thumbnail_url,\n    date_published = GREATEST (collection_items.date_published, EXCLUDED.date_published),\n    date_updated = GREATEST (collection_items.date_updated, EXCLUDED.date_updated),\n    categories = EXCLUDED.categories,\n    reading_time = EXCLUDED.reading_time\n"
+  },
   "e9873c049adf7bea72cb2d1f976a64126e9e601c2bbb906baf5cb7467bd8bf9c": {
     "describe": {
       "columns": [],
@@ -201,5 +762,41 @@
       }
     },
     "query": "UPDATE session\n              SET expire = $1\n              WHERE sid = $2"
+  },
+  "f416893544611678917682e25adf9aea00b2f202d40febedfbe172777b68a956": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": ["Text", "Int4"]
+      }
+    },
+    "query": "\n    UPDATE users\n    SET password = $1\n    WHERE id = $2"
+  },
+  "f830b11153fa568b0d0bd18ce774a386c06f64300e9459ff84700951284a32fe": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text",
+          "Text",
+          "Int4",
+          "Int4",
+          "Text",
+          "Text",
+          "Int4",
+          "Text"
+        ]
+      }
+    },
+    "query": "\nINSERT INTO collections (\n  \"user_id\",\n  \"title\",\n  \"icon\",\n  \"order\",\n  \"parent_id\",\n  \"description\",\n  \"url\",\n  \"refresh_interval\",\n  \"layout\")\nVALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\nRETURNING id\n    "
   }
 }
