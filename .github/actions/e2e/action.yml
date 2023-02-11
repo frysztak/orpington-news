@@ -97,7 +97,7 @@ runs:
     - name: Copy API coverage data
       shell: bash
       run: |
-        docker exec orpington-news-e2e curl -X POST http://localhost:8000/api/e2e/exit
+        docker exec orpington-news-e2e curl --silent -X POST http://localhost:8000/api/e2e/exit || true
         docker exec orpington-news-e2e grcov . -s backend --binary-path backend/target/debug --branch --ignore-not-existing -t lcov -o coverage.info
         docker cp orpington-news-e2e:/app/coverage.info api_coverage.info
 
