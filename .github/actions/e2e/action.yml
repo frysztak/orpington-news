@@ -73,8 +73,8 @@ runs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          COMMIT_SHA=${{ github.sha }}
-          BUILD_VERSION=${{ steps.package-version.outputs.current-version }}-e2e
+          INSTRUMENT_COVERAGE=true
+          DISABLE_SW=true
         cache-from: type=gha
         cache-to: type=gha,mode=max
 

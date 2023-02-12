@@ -9,6 +9,7 @@
 **/Dockerfile*
 **/docker-compose*.yml
 backend/target
+.github
 
 .pnp.*
 .yarn/*
