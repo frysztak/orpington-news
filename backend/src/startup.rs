@@ -1,7 +1,8 @@
 use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
 use crate::queue::queue::Queue;
-use crate::routes::{auth, collections, e2e, preferences, spa};
+use crate::routes::{auth, collections, e2e, events, preferences, spa};
+use crate::sse::broadcast::Broadcaster;
 use actix_cors::Cors;
 use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;
@@ -26,6 +27,7 @@ impl Application {
         config: &AppConfig,
         db_pool: &PgPool,
         task_queue: Arc<dyn Queue>,
+        broadcaster: Arc<Broadcaster>,
     ) -> Result<Self, anyhow::Error> {
         let address = format!("{}:{}", config.host, config.port);
         let listener = TcpListener::bind(&address)?;
@@ -36,6 +38,7 @@ impl Application {
             config.cookie_secret.clone(),
             // config.application.base_url,
             task_queue,
+            broadcaster,
         )
         .await?;
 
@@ -57,12 +60,14 @@ async fn run(
     // base_url: String,
     cookie_secret: Secret<String>,
     task_queue: Arc<dyn Queue>,
+    broadcaster: Arc<Broadcaster>,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool.to_owned());
     let task_queue = Data::from(task_queue.to_owned());
     let session_store = PostgresSessionStore::new(db_pool.clone());
     // let base_url = Data::new(ApplicationBaseUrl(base_url));
     let secret_key = Key::from(cookie_secret.expose_secret().as_bytes());
+
     let server = HttpServer::new(move || {
         App::new()
             .wrap(
@@ -92,11 +97,13 @@ async fn run(
                     .service(auth())
                     .service(collections())
                     .service(preferences())
-                    .service(e2e()),
+                    .service(e2e())
+                    .service(events()),
             )
             .service(spa())
             .app_data(db_pool.clone())
             .app_data(task_queue.clone())
+            .app_data(Data::from(broadcaster.clone()))
         //.app_data(email_client.clone())
         //.app_data(base_url.clone())
         //.app_data(Data::new(HmacSecret(hmac_secret.clone())))

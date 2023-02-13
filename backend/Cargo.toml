@@ -49,6 +49,8 @@ markup5ever_rcdom = "0.2.0"
 feed-rs = { git = "https://github.com/feed-rs/feed-rs", rev = "3a26dbb3cc4f2e695e86e20c9cc59f4b22b79d11" }
 actix-files = "0.6.2"
 actix-service = "2.0.2"
+futures-util = { version = "0.3.26", default-features = false, features = ["std"] }
+parking_lot = "0.12.1"
 
 [features]
 e2e = []

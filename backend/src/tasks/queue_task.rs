@@ -1,6 +1,7 @@
 use crate::{
     queue::queue::{Job, Message, Queue},
     routes::collections::{types::CollectionToRefresh, update_collection::update_collection},
+    sse::{broadcast::Broadcaster, messages::SSEMessage},
 };
 use futures::{stream, StreamExt};
 use sqlx::PgPool;
@@ -11,12 +12,17 @@ const CONCURRENCY: usize = 4;
 
 pub async fn run_queue_until_stopped(
     queue: Arc<dyn Queue>,
+    broadcaster: Arc<Broadcaster>,
     pool: PgPool,
 ) -> Result<(), anyhow::Error> {
-    run_queue(queue, pool).await
+    run_queue(queue, broadcaster, pool).await
 }
 
-async fn run_queue(queue: Arc<dyn Queue>, pool: PgPool) -> Result<(), anyhow::Error> {
+async fn run_queue(
+    queue: Arc<dyn Queue>,
+    broadcaster: Arc<Broadcaster>,
+    pool: PgPool,
+) -> Result<(), anyhow::Error> {
     loop {
         {
             let span = span!(Level::INFO, "Queue Task");
@@ -40,7 +46,7 @@ async fn run_queue(queue: Arc<dyn Queue>, pool: PgPool) -> Result<(), anyhow::Er
                 .for_each_concurrent(CONCURRENCY, |job| async {
                     let job_id = job.id;
 
-                    let res = match handle_job(job, pool.clone()).await {
+                    let res = match handle_job(job, broadcaster.clone(), pool.clone()).await {
                         Ok(_) => queue.delete_job(job_id).await,
                         Err(err) => {
                             warn!("Job failed: {}", err);
@@ -63,7 +69,11 @@ async fn run_queue(queue: Arc<dyn Queue>, pool: PgPool) -> Result<(), anyhow::Er
     }
 }
 
-async fn handle_job(job: Job, pool: PgPool) -> Result<(), anyhow::Error> {
+async fn handle_job(
+    job: Job,
+    broadcaster: Arc<Broadcaster>,
+    pool: PgPool,
+) -> Result<(), anyhow::Error> {
     match &job.message {
         Message::RefreshFeed { feed_id, etag, url } => {
             update_collection(
@@ -74,8 +84,15 @@ async fn handle_job(job: Job, pool: PgPool) -> Result<(), anyhow::Error> {
                 },
                 pool,
             )
-            .await
+            .await?;
+
+            broadcaster
+                .broadcast(SSEMessage::UpdatedFeeds {
+                    feed_ids: vec![*feed_id],
+                })
+                .await;
+
+            Ok(())
         }
     }
-    .map_err(Into::into)
 }

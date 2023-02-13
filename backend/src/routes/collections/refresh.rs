@@ -1,14 +1,13 @@
 use actix_web::{error::InternalError, web, HttpResponse};
-use futures::future::join_all;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
 use crate::{
+    queue::queue::{Message, Queue, TaskPriority},
     routes::{collections::types::CollectionToRefresh, error::GenericError},
     session_state::ID,
+    sse::{broadcast::Broadcaster, messages::SSEMessage},
 };
-
-use super::update_collection::update_collection;
 
 #[derive(Deserialize)]
 pub struct PathParams {
@@ -20,10 +19,12 @@ struct Response {
     ids: Vec<ID>,
 }
 
-#[tracing::instrument(skip(pool, path))]
+#[tracing::instrument(skip(pool, path, broadcaster))]
 pub async fn refresh_collection(
     path: web::Path<PathParams>,
     pool: web::Data<PgPool>,
+    broadcaster: web::Data<Broadcaster>,
+    task_queue: web::Data<dyn Queue>,
 ) -> Result<HttpResponse, InternalError<GenericError>> {
     let collections = sqlx::query_as!(
         CollectionToRefresh,
@@ -46,31 +47,25 @@ WITH children_ids AS (
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;
 
-    let results = join_all(
-        collections
-            .into_iter()
-            .map(|c| update_collection(c.to_owned(), pool.as_ref().clone()))
-            .collect::<Vec<_>>(),
-    )
-    .await;
+    let feed_ids = collections.iter().map(|c| c.id).collect();
+    broadcaster
+        .broadcast(SSEMessage::UpdatingFeeds { feed_ids })
+        .await;
 
-    for failed_update in results.iter().filter_map(|r| match &r {
-        Ok(_) => None,
-        Err(err) => Some(err),
-    }) {
-        tracing::warn!("{}", failed_update);
-    }
+    let jobs = collections
+        .iter()
+        .map(|c| Message::RefreshFeed {
+            feed_id: c.id,
+            etag: c.etag.clone(),
+            url: c.url.clone(),
+        })
+        .collect();
 
-    let ids = sqlx::query_scalar!(
-        r#"
-SELECT id as "id!" FROM get_collection_children_ids($1)
-"#,
-        path.collection_id
-    )
-    .fetch_all(pool.as_ref())
-    .await
-    .map_err(Into::into)
-    .map_err(GenericError::UnexpectedError)?;
+    task_queue
+        .push_bulk(jobs, None, Some(TaskPriority::High))
+        .await
+        .map_err(Into::into)
+        .map_err(GenericError::UnexpectedError)?;
 
-    Ok(HttpResponse::Ok().json(Response { ids }))
+    Ok(HttpResponse::Ok().json(true))
 }

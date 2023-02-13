@@ -1,5 +1,6 @@
 use backend::config::read_config;
 use backend::queue::postgres::PostgresQueue;
+use backend::sse::broadcast::Broadcaster;
 use backend::startup::Application;
 use backend::tasks::queue_task::run_queue_until_stopped;
 use backend::tasks::refresh_task::run_refresh_until_stopped;
@@ -10,7 +11,7 @@ use std::fmt::{Debug, Display};
 use std::sync::Arc;
 use tokio::task::JoinError;
 
-#[tokio::main]
+#[actix_web::main]
 async fn main() -> anyhow::Result<()> {
     let subscriber = get_subscriber("backend".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
@@ -28,10 +29,16 @@ async fn main() -> anyhow::Result<()> {
     sqlx::migrate!("./migrations").run(&db_pool).await?;
 
     let queue = Arc::new(PostgresQueue::new(db_pool.clone()));
-    let queue_task = tokio::spawn(run_queue_until_stopped(queue.clone(), db_pool.clone()));
+    let broadcaster = Broadcaster::create();
+    let queue_task = tokio::spawn(run_queue_until_stopped(
+        queue.clone(),
+        broadcaster.clone(),
+        db_pool.clone(),
+    ));
     let refresh_task = tokio::spawn(run_refresh_until_stopped(queue.clone(), db_pool.clone()));
 
-    let application = Application::build(&config, &db_pool, queue.clone()).await?;
+    let application =
+        Application::build(&config, &db_pool, queue.clone(), broadcaster.clone()).await?;
     let application_task = tokio::spawn(application.run_until_stopped());
 
     tokio::select! {

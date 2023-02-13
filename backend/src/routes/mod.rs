@@ -27,3 +27,6 @@ pub use self::e2e::e2e;
 
 pub mod spa;
 pub use self::spa::spa;
+
+pub mod events;
+pub use self::events::events;

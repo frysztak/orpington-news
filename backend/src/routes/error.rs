@@ -1,13 +1,21 @@
+use std::fmt::Display;
+
 use actix_web::{error::InternalError, HttpResponse};
 use serde::Serialize;
 
 use super::error_chain_fmt;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct JSONError {
     pub status_code: u32,
     pub message: String,
+}
+
+impl Display for JSONError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
 }
 
 #[derive(thiserror::Error)]
