@@ -182,6 +182,22 @@
     },
     "query": "SELECT password FROM users WHERE id = $1"
   },
+  "423fc4cc14658b9171ebe872daa6d3afeeefb098eee47bb93acea28002f5d32e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "SELECT user_id FROM collections WHERE id = $1"
+  },
   "49bfcf02b564e2ab7820b4d182038d881666cd3e657e6b631d237c2e854fc8f2": {
     "describe": {
       "columns": [],
@@ -555,22 +571,6 @@
       }
     },
     "query": "\nTRUNCATE TABLE users, session, queue, preferences, collections, collection_items\nRESTART IDENTITY\nCASCADE"
-  },
-  "b5ebaf168432156eb078cd944e965cb9a3dae84e64f441f2068e76c2e62ba053": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id!",
-          "ordinal": 0,
-          "type_info": "Int4"
-        }
-      ],
-      "nullable": [null],
-      "parameters": {
-        "Left": ["Int4"]
-      }
-    },
-    "query": "\nSELECT id as \"id!\" FROM get_collection_children_ids($1)\n"
   },
   "c846a853fd3b54a17db17123e36b66930622d1e16b87ca469f87143c22f99e78": {
     "describe": {
