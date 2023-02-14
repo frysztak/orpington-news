@@ -174,7 +174,7 @@ SELECT * FROM UNNEST(
                 SELECT id
                 FROM queue
                 WHERE status = $3 AND scheduled_for <= $4 AND failed_attempts < $5
-                ORDER BY scheduled_for, priority
+                ORDER BY priority DESC, scheduled_for
                 FOR UPDATE SKIP LOCKED
                 LIMIT $6
             )

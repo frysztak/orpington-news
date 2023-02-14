@@ -8,7 +8,7 @@ use sqlx::PgPool;
 use std::{sync::Arc, time::Duration};
 use tracing::{info, span, warn, Level};
 
-const CONCURRENCY: usize = 4;
+const CONCURRENCY: usize = 8;
 
 pub async fn run_queue_until_stopped(
     queue: Arc<dyn Queue>,

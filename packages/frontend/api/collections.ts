@@ -74,7 +74,7 @@ export const markCollectionAsRead = (api: Wretch, collectionId: ID) =>
     .json<{ ids: ID[]; timestamp: number; collections: Collection[] }>();
 
 export const refreshCollection = (api: Wretch, collectionId: ID) =>
-  api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();
+  api.url(`/collections/${collectionId}/refresh`).post().json<boolean>();
 
 export interface MoveCollectionBody {
   collectionId: ID;

@@ -181,16 +181,9 @@ export const useMarkCollectionAsRead = () => {
 export const useRefreshCollection = () => {
   const api = useApi();
   const { onError } = useHandleError();
-  const queryClient = useQueryClient();
 
   return useMutation(({ id }: { id: ID }) => refreshCollection(api, id), {
     onError,
-    onSuccess: ({ ids }) => {
-      for (const id of ids) {
-        queryClient.invalidateQueries(collectionKeys.allForId(id));
-      }
-      queryClient.invalidateQueries(collectionKeys.tree);
-    },
   });
 };
 

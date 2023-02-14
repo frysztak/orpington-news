@@ -162,7 +162,7 @@ pub async fn import_opml(
         .collect();
 
     task_queue
-        .push_bulk(jobs, None, Some(TaskPriority::High))
+        .push_bulk(jobs, None, Some(TaskPriority::Regular))
         .await
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;
