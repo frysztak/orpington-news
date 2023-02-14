@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::{borrow::Cow, io::ErrorKind, path::Path};
 
 use actix_files::{Files, NamedFile};
