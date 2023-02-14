@@ -9,6 +9,7 @@ mod delete;
 mod get;
 mod get_item;
 mod get_items;
+mod import_opml;
 mod mark_as_read;
 mod move_collection;
 mod post;
@@ -69,4 +70,5 @@ pub fn collections() -> Scope {
                 .to(date_read::date_read)
                 .wrap(from_fn(verify_owner_mw)),
         )
+        .route("/import/opml", web::post().to(import_opml::import_opml))
 }

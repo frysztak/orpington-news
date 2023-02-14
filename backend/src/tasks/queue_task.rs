@@ -76,7 +76,7 @@ async fn handle_job(
 ) -> Result<(), anyhow::Error> {
     match &job.message {
         Message::RefreshFeed { feed_id, etag, url } => {
-            update_collection(
+            let update_result = update_collection(
                 CollectionToRefresh {
                     id: *feed_id,
                     url: url.clone(),
@@ -84,7 +84,7 @@ async fn handle_job(
                 },
                 pool,
             )
-            .await?;
+            .await;
 
             broadcaster
                 .broadcast(SSEMessage::UpdatedFeeds {
@@ -92,7 +92,7 @@ async fn handle_job(
                 })
                 .await;
 
-            Ok(())
+            update_result.map_err(Into::into)
         }
     }
 }

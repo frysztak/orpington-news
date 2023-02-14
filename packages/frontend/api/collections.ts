@@ -96,4 +96,8 @@ export const setCollectionPreferences = (
     .json<boolean>();
 
 export const importOPML = (api: Wretch, file: File) =>
-  api.url(`/collections/import/opml`).formData({ file }).post().json<boolean>();
+  api
+    .url(`/collections/import/opml`)
+    .formData({ file })
+    .post()
+    .json<Collection[]>();
