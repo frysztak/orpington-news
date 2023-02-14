@@ -74,7 +74,7 @@ export const markCollectionAsRead = (api: Wretch, collectionId: ID) =>
     .json<{ ids: ID[]; timestamp: number; collections: Collection[] }>();
 
 export const refreshCollection = (api: Wretch, collectionId: ID) =>
-  api.url(`/collections/${collectionId}/refresh`).post().json<{ ids: ID[] }>();
+  api.url(`/collections/${collectionId}/refresh`).post().json<boolean>();
 
 export interface MoveCollectionBody {
   collectionId: ID;
@@ -96,4 +96,8 @@ export const setCollectionPreferences = (
     .json<boolean>();
 
 export const importOPML = (api: Wretch, file: File) =>
-  api.url(`/collections/import/opml`).formData({ file }).post().json<boolean>();
+  api
+    .url(`/collections/import/opml`)
+    .formData({ file })
+    .post()
+    .json<Collection[]>();

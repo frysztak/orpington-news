@@ -13,10 +13,10 @@
     },
     {
       "name": "api",
-      "cwd": "/app/packages/backend/",
-      "script": "server.mjs",
+      "cwd": "/app/backend/",
+      "script": "backend",
       "env": {
-        "NODE_ENV": "production",
+        "LLVM_PROFILE_FILE": "/coverage/api-%p-%m.profraw",
         "PORT": "5000"
       },
       "error_file": "/var/log/api/error.log",

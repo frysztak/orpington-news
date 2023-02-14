@@ -39,6 +39,8 @@ declare namespace Cypress {
 
     changeActiveCollection(id: string): Chainable<JQuery<HTMLElement>>;
 
+    resetDatabaseByApi(): Chainable<Response<void>>;
+
     /**
      * Signs user up by using API request
      */

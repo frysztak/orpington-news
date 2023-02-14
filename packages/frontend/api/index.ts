@@ -3,11 +3,8 @@ import formDataAddon from 'wretch/addons/formData';
 import queryStringAddon from 'wretch/addons/queryString';
 import abortAddon from 'wretch/addons/abort';
 
-export const getUrls = () => {
-  const apiUrl: string = process.env.NEXT_PUBLIC_API_URL ?? '/api';
-  const ssrApiUrl: string = apiUrl;
-
-  return { apiUrl, ssrApiUrl };
+export const getUrl = () => {
+  return process.env.NEXT_PUBLIC_API_URL ?? '/api';
 };
 
 export const makeApi = (url: string) =>

@@ -20,7 +20,7 @@ import '@cypress/code-coverage/support';
 require('cypress-dark');
 
 beforeEach(() => {
-  cy.task('db:seed');
+  cy.resetDatabaseByApi();
 });
 
 // Alternatively you can use CommonJS syntax:

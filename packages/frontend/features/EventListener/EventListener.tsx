@@ -4,7 +4,7 @@ import {
   EventStreamContentType,
   fetchEventSource,
 } from '@microsoft/fetch-event-source';
-import { getUrls } from '@api';
+import { getUrl } from '@api';
 import { ReactFCC } from '@utils/react';
 import { Msg, noop } from '@orpington-news/shared';
 
@@ -43,7 +43,7 @@ export const EventListenerContextProvider: ReactFCC = ({ children }) => {
   }, []);
 
   function connectToEventSource() {
-    const { apiUrl } = getUrls();
+    const apiUrl = getUrl();
     fetchEventSource(`${apiUrl}/events`, {
       openWhenHidden: true,
       keepalive: true,

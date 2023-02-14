@@ -1,8 +1,5 @@
 import { defineConfig } from 'cypress';
 import dotenv from 'dotenv';
-import { createPool } from 'slonik';
-import { SlonikMigrator } from '@slonik/migrator';
-import { join } from 'path';
 
 dotenv.config({
   path: process.env.NODE_ENV === 'development' ? '.env.e2e.local' : '.env.e2e',
@@ -18,20 +15,15 @@ export default defineConfig({
     db_port: process.env.DB_PORT,
     api_url: process.env.NEXT_PUBLIC_API_URL,
     feeds_url: process.env.FEEDS_URL,
-    codeCoverage: {
-      url: `${process.env.NEXT_PUBLIC_API_URL}/__coverage__`,
-      exclude: ['**/node_modules/**/*'],
-    },
+    //codeCoverage: {
+    //  url: `${process.env.NEXT_PUBLIC_API_URL}/__coverage__`,
+    //  exclude: ['**/node_modules/**/*'],
+    //},
   },
   e2e: {
     baseUrl: process.env.APP_URL,
     setupNodeEvents(on, config) {
       require('@cypress/code-coverage/task')(on, config);
-
-      const buildDSN = (): string => {
-        const { db_user, db_pass, db_host, db_name, db_port } = config.env;
-        return `postgres://${db_user}:${db_pass}@${db_host}:${db_port}/${db_name}`;
-      };
 
       on('before:browser:launch', (browser, launchOptions) => {
         const REDUCE = 1;
@@ -42,23 +34,6 @@ export default defineConfig({
           launchOptions.args.push('--force-prefers-reduced-motion');
         }
         return launchOptions;
-      });
-
-      on('task', {
-        async 'db:seed'() {
-          const migrator = new SlonikMigrator({
-            migrationsPath: join(
-              process.cwd(),
-              '/packages/backend/db/migrations'
-            ),
-            migrationTableName: 'migration',
-            slonik: await createPool(buildDSN()),
-            logger: undefined,
-          });
-
-          await migrator.down({ to: 0 });
-          return await migrator.up();
-        },
       });
 
       return config;

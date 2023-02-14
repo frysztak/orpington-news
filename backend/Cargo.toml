@@ -1,0 +1,60 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4"
+actix-web-lab = "0.18.8"
+actix-session = { version = "0.7.2", features = ["cookie-session"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+sqlx = { version = "0.6", default-features = false, features = ["offline", "runtime-actix-rustls", "macros", "postgres", "uuid", "chrono", "migrate", "json"] }
+tracing = "0.1.19"
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+tracing-bunyan-formatter = "0.3.1"
+tracing-log = "0.1.1"
+tracing-actix-web = "0.6"
+secrecy = { version = "0.8", features = ["serde"] }
+dotenvy = "0.15.6"
+anyhow = "1.0.68"
+thiserror = "1.0.38"
+serde = "1.0.152"
+serde_json = "1.0.91"
+argon2 = { version = "0.4.1", features = ["std"] }
+async-trait = "0.1.60"
+rand = "0.8.5"
+infer = "0.11.0"
+chrono = { version = "0.4.23", features = ["serde"] }
+actix-cors = "0.6.4"
+actix-identity = "0.5.2"
+data-url = "0.2.0"
+strum = { version = "0.24", features = ["derive"] }
+reqwest = { version = "0.11.14", features = ["gzip"] }
+normalize-url-rs = "0.1.0"
+scraper = "0.14.0"
+url = "2.3.1"
+regex = "1.7.1"
+ulid = { version = "1.0.0", features = ["uuid"] }
+uuid = { version = "1.2.2", features = ["serde", "v4"] }
+futures = "0.3.25"
+ammonia = "3.3.0"
+estimated_read_time = "1.0.0"
+html-escape = "0.2.13"
+voca_rs = "1.15.2"
+lol_html = "0.3.2"
+html5ever = "0.26.0"
+markup5ever_rcdom = "0.2.0"
+feed-rs = { git = "https://github.com/feed-rs/feed-rs", rev = "3a26dbb3cc4f2e695e86e20c9cc59f4b22b79d11" }
+actix-files = "0.6.2"
+actix-service = "2.0.2"
+futures-util = { version = "0.3.26", default-features = false, features = ["std"] }
+parking_lot = "0.12.1"
+opml = "1.1.5"
+async-recursion = "1.0.2"
+actix-multipart = "0.5.0"
+
+[features]
+e2e = []
+spa = []

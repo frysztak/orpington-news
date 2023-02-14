@@ -165,7 +165,7 @@ sizes.forEach((size) => {
       cy.wait('@apiPreferencesActiveView').then(({ request, response }) => {
         expect(request.body).to.deep.eq({
           activeCollectionId: 2,
-          activeCollectionLayout: 'card',
+          activeCollectionLayout: 'list',
           activeCollectionTitle: 'Kent C. Dodds Blog',
           activeCollectionFilter: 'all',
           activeCollectionGrouping: 'none',
@@ -187,11 +187,11 @@ sizes.forEach((size) => {
       cy.openDrawerIfExists();
       cy.getBySel('collection-id-2').click();
       cy.url().should('equal', `${baseUrl}/`);
-      cy.getBySel('collectionItemList')
+      cy.getBySelVisible('collectionItemList')
         .within(() => {
           cy.getBySel('item-id-1')
             .within(() => {
-              cy.getBySel('title').should(
+              cy.getBySelVisible('title').should(
                 'have.text',
                 "Remix: The Yang to React's Yin"
               );
@@ -200,7 +200,7 @@ sizes.forEach((size) => {
 
           cy.getBySel('item-id-2')
             .within(() => {
-              cy.getBySel('title').should(
+              cy.getBySelVisible('title').should(
                 'have.text',
                 'How I help you build better websites'
               );
@@ -209,7 +209,10 @@ sizes.forEach((size) => {
 
           cy.getBySel('item-id-3')
             .within(() => {
-              cy.getBySel('title').should('have.text', 'Why I Love Remix');
+              cy.getBySelVisible('title').should(
+                'have.text',
+                'Why I Love Remix'
+              );
             })
             .should('exist');
         })
@@ -275,7 +278,7 @@ sizes.forEach((size) => {
         cy.visit('/');
 
         // all unread
-        cy.getBySel('collectionItemList').within((itemList) => {
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getUnreadItems().should('have.length', 3);
         });
 
@@ -463,18 +466,18 @@ sizes.forEach((size) => {
 
         cy.visit('/');
 
-        cy.get(`[data-test-layout=card]`).should('exist').and('be.visible');
+        cy.get(`[data-test-layout=list]`).should('exist').and('be.visible');
 
         cy.clickCollectionHeaderLayout('magazine');
 
         cy.wait('@apiPutPreferences');
 
         cy.get(`[data-test-layout=magazine]`).should('exist').and('be.visible');
-        cy.get(`[data-test-layout=card]`).should('not.exist');
+        cy.get(`[data-test-layout=list]`).should('not.exist');
       });
 
       describe('other collection', () => {
-        ['magazine', 'list'].forEach((layout) => {
+        ['magazine', 'card'].forEach((layout) => {
           it(`to ${layout}`, () => {
             cy.intercept({
               method: 'GET',
@@ -507,7 +510,7 @@ sizes.forEach((size) => {
             cy.wait('@apiPreferencesActiveView');
             cy.wait('@apiGetItems');
 
-            cy.get(`[data-test-layout=card]`).should('exist').and('be.visible');
+            cy.get(`[data-test-layout=list]`).should('exist').and('be.visible');
 
             cy.clickCollectionHeaderLayout(layout);
 
@@ -516,7 +519,7 @@ sizes.forEach((size) => {
             cy.get(`[data-test-layout=${layout}]`)
               .should('exist')
               .and('be.visible');
-            cy.get(`[data-test-layout=card]`).should('not.exist');
+            cy.get(`[data-test-layout=list]`).should('not.exist');
           });
         });
       });
@@ -635,7 +638,7 @@ sizes.forEach((size) => {
             activeCollectionTitle: 'Home',
             activeCollectionFilter: 'all',
             activeCollectionGrouping: 'none',
-            activeCollectionLayout: 'card',
+            activeCollectionLayout: 'list',
             activeCollectionSortBy: 'newestFirst',
           });
           expect(response.statusCode).to.eq(200);

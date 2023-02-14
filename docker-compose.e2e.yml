@@ -4,7 +4,7 @@ services:
     container_name: orpington-news-e2e
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.e2e
       args:
         - INSTRUMENT_COVERAGE=true
         - DISABLE_SW=true
@@ -35,7 +35,7 @@ services:
     container_name: orpington-news-e2e-feeds
     build:
       context: .
-      dockerfile: docker/Dockerfile.e2e
+      dockerfile: docker/Dockerfile.e2e.feeds
     ports:
       - '8002:8002'
     volumes:

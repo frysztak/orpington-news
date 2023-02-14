@@ -17,7 +17,7 @@ export type ListItemProps = CollectionItemProps & {
 
 export const ListItem = forwardRef<HTMLAnchorElement, ListItemProps>(
   (props, ref) => {
-    const { item, isActive, onReadingListButtonClicked } = props;
+    const { item, isActive, onReadingListButtonClicked, ...rest } = props;
     const { id, title, collection, readingTime, dateRead, datePublished } =
       item;
     const readingTimeRounded = clamp(1, 99, Math.ceil(readingTime));
@@ -66,6 +66,7 @@ export const ListItem = forwardRef<HTMLAnchorElement, ListItemProps>(
               'border-purple-300 dark:border-gray-500': isActive,
             }
           )}
+          {...rest}
         >
           {/* Desktop */}
           <div className="hidden lg:flex items-center gap-x-2 w-full py-3 px-2">

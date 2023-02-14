@@ -72,11 +72,11 @@ Cypress.Commands.add('waitForDrawerToClose', () => {
 });
 
 Cypress.Commands.add('getReadItems', (...args) => {
-  return cy.get(`[data-test-read="true"]`, ...args);
+  return cy.get(`[data-test-read="true"]:visible`, ...args);
 });
 
 Cypress.Commands.add('getUnreadItems', (...args) => {
-  return cy.get(`[data-test-read="false"]`, ...args);
+  return cy.get(`[data-test-read="false"]:visible`, ...args);
 });
 
 Cypress.Commands.add('clickCollection', (id: string) => {
@@ -136,6 +136,10 @@ Cypress.Commands.add('changeActiveCollection', (id: string) => {
   cy.clickCollection(id);
 
   cy.wait('@apiGetItems');
+});
+
+Cypress.Commands.add('resetDatabaseByApi', () => {
+  return cy.request('POST', `${Cypress.env('api_url')}/e2e/reset_db`);
 });
 
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {

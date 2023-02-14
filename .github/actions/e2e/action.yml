@@ -45,10 +45,52 @@ runs:
       run: |
         yarn test
 
-    - name: Build & start Docker container
+    # - name: Extract version
+    #   uses: martinbeentjes/npm-get-version-action@main
+    #   id: package-version
+
+    - name: Expose GitHub Runtime
+      uses: crazy-max/ghaction-github-runtime@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # - name: Extract metadata (tags, labels) for Docker
+    #   id: meta
+    #   uses: docker/metadata-action@v4
+    #   with:
+    #     images: ghcr.io/${{ github.repository }}
+    #     tags: |
+    #       type=ref,event=branch
+
+    - name: Build images
       shell: bash
       run: |
-        DOCKER_BUILDKIT=1 docker compose -f docker-compose.e2e.yml up --build --pull always --detach
+        docker buildx create --use --driver=docker-container
+        docker buildx bake -f ./docker-compose.e2e.yml --set *.cache-to="type=gha,mode=max" --set *.cache-from="type=gha" --load
+
+    # - name: Build Docker image
+    #   uses: docker/build-push-action@v3
+    #   id: buildDocker
+    #   with:
+    #     context: .
+    #     file: ./docker/Dockerfile.e2e
+    #     platforms: linux/amd64
+    #     push: false
+    #     load: true
+    #     pull: true
+    #     tags: ${{ steps.meta.outputs.tags }}
+    #     labels: ${{ steps.meta.outputs.labels }}
+    #     build-args: |
+    #       INSTRUMENT_COVERAGE=true
+    #       DISABLE_SW=true
+    #     cache-from: type=gha
+    #     cache-to: type=gha,mode=max
+
+    - name: Start Docker container
+      shell: bash
+      run: |
+        DOCKER_BUILDKIT=1 docker compose -f docker-compose.e2e.yml up -d
         sleep 10  # wait for database to be ready
 
     - name: Run E2E tests
@@ -61,23 +103,23 @@ runs:
         CYPRESS_RECORD_KEY: ${{ inputs.cypress-key }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
 
-    - name: Generate E2E Lcov report
+    - name: Copy API coverage data
       shell: bash
       run: |
-        ./scripts/fix_nyc.sh
-        rm -rf coverage
-        npx nyc report --reporter=lcov --reporter=text
+        docker exec orpington-news-e2e curl --silent -X POST http://localhost:8000/api/e2e/exit || true
+        docker exec orpington-news-e2e grcov . -s backend --binary-path backend/target/debug --branch --ignore-not-existing -t lcov -o coverage.info
+        docker cp orpington-news-e2e:/app/coverage.info api_coverage.info
 
     - uses: codecov/codecov-action@v3
-      name: Upload E2E coverage
+      name: Upload Web coverage
       with:
         token: ${{ inputs.codecov-token }}
-        flags: e2e
+        flags: e2e-web
         directory: coverage
 
-    # - uses: codecov/codecov-action@v3
-    #   name: Upload Unit Test coverage
-    #   with:
-    #     token: ${{ inputs.codecov-token }}
-    #     flags: unit
-    #     files: ./packages/backend/jest-coverage/lcov.info
+    - uses: codecov/codecov-action@v3
+      name: Upload API coverage
+      with:
+        token: ${{ inputs.codecov-token }}
+        flags: e2e-api
+        files: ./api_coverage.info
