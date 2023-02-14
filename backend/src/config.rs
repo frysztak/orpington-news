@@ -4,6 +4,7 @@ use std::env::var;
 use std::fs::read_to_string;
 use std::io;
 use std::num::ParseIntError;
+use tracing::warn;
 
 #[derive(Debug)]
 pub struct AppConfig {
@@ -35,14 +36,21 @@ impl From<ParseIntError> for AppConfigError {
     }
 }
 
+static DEFAULT_COOKIE_SECRET: &'static str =
+    "gIFu/XtobXNB+iqbndgHualAe/a2k43w76VukhbG2s+q1CJst9BghwtQtD5/YUEwDmdGG8mea9QKcOjNU1ktSg==";
+
 pub fn read_config() -> Result<AppConfig, AppConfigError> {
     let host = read_var("HOST", "0.0.0.0".to_string());
     let port = read_var("PORT", "5000".to_string()).parse()?;
 
-    let cookie_secret = read_var_from_file(
-        "COOKIE_SECRET",
-        "gIFu/XtobXNB+iqbndgHualAe/a2k43w76VukhbG2s+q1CJst9BghwtQtD5/YUEwDmdGG8mea9QKcOjNU1ktSg==".to_string(),
-    )?;
+    let cookie_secret =
+        match read_var_from_file("COOKIE_SECRET", DEFAULT_COOKIE_SECRET.to_string())? {
+            str if str.len() < 64 => {
+                warn!("Cookie secret must be at least 64 characters, using default one");
+                DEFAULT_COOKIE_SECRET.to_string()
+            }
+            str => str,
+        };
 
     let db_pass = read_var_from_file("DB_PASS", "".to_string())?;
     let db_host = read_var_from_file("DB_HOST", "0.0.0.0".to_string())?;
