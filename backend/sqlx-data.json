@@ -82,6 +82,22 @@
     },
     "query": "\nUPDATE\n  preferences p\nSET\n  default_collection_layout = $1,\n  avatar_style = $2\nWHERE\n  p.user_id = $3\n"
   },
+  "294fd1b447bd22f8c4e3e90930f0ea0f4437101822bc2b73176f0d4269ffc02b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Text", "Int4"]
+      }
+    },
+    "query": "\n        SELECT id\n        FROM collections\n        WHERE url = $1 AND user_id = $2"
+  },
   "2c8ad759287953270eaa224710f5f465c8313179f9ce9b631cc3e8ff5ad82c4b": {
     "describe": {
       "columns": [
@@ -165,6 +181,22 @@
       }
     },
     "query": "\nSELECT parent_id\nFROM collections\nWHERE id = $1\n    "
+  },
+  "3ca229eb3eef340df94549e2fb00995afa35bc3616ff1083578a670ee9647711": {
+    "describe": {
+      "columns": [
+        {
+          "name": "default_collection_layout",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\n        SELECT default_collection_layout\n        FROM preferences \n        WHERE user_id = $1"
   },
   "3d7ebe93e552692fedc80e2c37f4ca0a0de12b835a6a47f1442609bd9291aa19": {
     "describe": {
@@ -339,6 +371,22 @@
       }
     },
     "query": "\n        SELECT id, password\n        FROM users\n        WHERE name = $1\n        "
+  },
+  "6f33db170506b3b5dbc23226222518a607f893cb6d58e22ed4c376e2a62c15d0": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4", "Text", "Text", "Int4", "Int4", "Text"]
+      }
+    },
+    "query": "\n    INSERT INTO collections (\n      \"user_id\",\n      \"title\",\n      \"icon\",\n      \"order\",\n      \"parent_id\",\n      \"layout\")\n    VALUES ($1, $2, $3, $4, $5, $6)\n    RETURNING id\n        "
   },
   "78600da980b492195ce57b52695b97c730f8618851f4f07ab5ddabf7b2ae67df": {
     "describe": {
@@ -562,6 +610,22 @@
     },
     "query": "\nSELECT\n  *\nFROM\n  collections\nWHERE\n  url = $1\n  AND user_id = $2\n    "
   },
+  "b129997455a3d916e9f7f1fa70074cecaf4d70313950fc732aa39a6175ba1e33": {
+    "describe": {
+      "columns": [
+        {
+          "name": "home_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4"]
+      }
+    },
+    "query": "\n    SELECT home_id\n    FROM users\n    WHERE id = $1"
+  },
   "b56c5a016f0f877fff742084e8e4f746d140ebda0601379796fed7d6aed51e63": {
     "describe": {
       "columns": [],
@@ -633,6 +697,16 @@
       }
     },
     "query": "\nINSERT INTO collections (\n  \"user_id\",\n  \"title\",\n  \"is_home\",\n  \"order\",\n  \"icon\",\n  \"layout\"\n  )\nVALUES (\n  $1, $2, $3, $4, $5, $6\n)\nRETURNING\n  id\n    "
+  },
+  "d932aabc9461ce82fb17852b355d1920aa655c8dc4192a7a50b095b3509099e7": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "CALL collections_recalculate_order()"
   },
   "e0b0c822468ec3941f43bed6e17eeeec9ba705fb0ff31db3be5523325c16bc56": {
     "describe": {
@@ -762,6 +836,22 @@
       }
     },
     "query": "UPDATE session\n              SET expire = $1\n              WHERE sid = $2"
+  },
+  "f13b094a067386aec2b14a19be304f859c4efd89a86992a1cd6790a045d95542": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [false],
+      "parameters": {
+        "Left": ["Int4", "Text", "Text", "Int4", "Int4", "Text", "Int4", "Text"]
+      }
+    },
+    "query": "\n    INSERT INTO collections (\n      \"user_id\",\n      \"title\",\n      \"icon\",\n      \"order\",\n      \"parent_id\",\n      \"url\",\n      \"refresh_interval\",\n      \"layout\")\n    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\n    RETURNING id\n        "
   },
   "f416893544611678917682e25adf9aea00b2f202d40febedfbe172777b68a956": {
     "describe": {
