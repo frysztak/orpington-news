@@ -21,29 +21,24 @@ runs:
       name: Setup Node.js
       with:
         node-version-file: '.nvmrc'
-        cache: 'yarn'
+        cache: 'npm'
 
     - name: Install dependencies
-      uses: cypress-io/github-action@v4
+      uses: cypress-io/github-action@v5
       with:
         # just perform install
         runTests: false
-        install-command: yarn --immutable
+        install-command: npm ci
 
     - name: Run linter
       shell: bash
       run: |
-        yarn lint
-
-    - name: Build shared package
-      shell: bash
-      run: |
-        yarn workspace @orpington-news/shared run build
+        npm run lint
 
     - name: Run unit tests
       shell: bash
       run: |
-        yarn test
+        npm run test
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2

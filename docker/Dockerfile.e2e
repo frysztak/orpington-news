@@ -1,13 +1,7 @@
-FROM node:18.12.1-alpine as web-builder
+FROM node:18.14.0-alpine as web-builder
 WORKDIR /app
-COPY package.json yarn.lock lerna.json .yarnrc.yml ./
-COPY .yarn/ ./.yarn/
-COPY packages/shared/package.json /app/packages/shared/package.json
-COPY packages/frontend/package.json /app/packages/frontend/package.json
-COPY packages/backend/package.json /app/packages/backend/package.json
-RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn install --immutable
-
-COPY . /app
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci && npm cache clean --force
 
 ENV INSTRUMENT_COVERAGE=true
 ENV DISABLE_SW=true
@@ -18,7 +12,8 @@ ENV NEXT_PUBLIC_GIT_COMMIT_HASH=${COMMIT_SHA}
 ARG BUILD_VERSION
 ENV NEXT_PUBLIC_VERSION=${BUILD_VERSION}
 
-RUN yarn build && cd /app/packages/frontend && yarn next export
+COPY frontend .
+RUN npm run build && npm run export
 
 # RUNTIME
 FROM rust:1.66.1 AS runtime 
@@ -29,7 +24,7 @@ WORKDIR /app
 COPY backend backend
 RUN cd backend && RUSTFLAGS="-C instrument-coverage" cargo build \
   --features e2e,spa
-COPY --from=web-builder /app/packages/frontend/out /app/web
+COPY --from=web-builder /app/out /app/web
 
 WORKDIR /app
 EXPOSE 8000
