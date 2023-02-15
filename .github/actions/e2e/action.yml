@@ -22,6 +22,7 @@ runs:
       with:
         node-version-file: '.nvmrc'
         cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
 
     - name: Install dependencies
       uses: cypress-io/github-action@v5
@@ -29,14 +30,17 @@ runs:
         # just perform install
         runTests: false
         install-command: npm ci
+        working-directory: frontend
 
     - name: Run linter
       shell: bash
+      working-directory: frontend
       run: |
         npm run lint
 
     - name: Run unit tests
       shell: bash
+      working-directory: frontend
       run: |
         npm run test
 
@@ -72,6 +76,7 @@ runs:
         install: false
         browser: chrome
         record: false
+        working-directory: frontend
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.cypress-key }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
@@ -88,7 +93,7 @@ runs:
       with:
         token: ${{ inputs.codecov-token }}
         flags: e2e-web
-        directory: coverage
+        directory: frontend/coverage
 
     - uses: codecov/codecov-action@v3
       name: Upload API coverage

@@ -99,6 +99,7 @@
     "zod": "^3.20.2"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.10.0",
     "@storybook/addon-a11y": "^6.5.14",
     "@storybook/addon-actions": "^6.5.14",
     "@storybook/addon-essentials": "^6.5.14",
