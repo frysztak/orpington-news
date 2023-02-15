@@ -1,6 +1,4 @@
-FROM clux/muslrust:stable AS chef
-USER root
-RUN cargo install cargo-chef
+FROM lukemathwalker/cargo-chef:latest-rust-1 AS chef
 WORKDIR /app
 
 FROM chef AS planner
@@ -10,24 +8,13 @@ RUN cargo chef prepare --recipe-path recipe.json
 FROM chef AS api-builder
 COPY --from=planner /app/recipe.json recipe.json
 # Build dependencies - this is the caching Docker layer!
-RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path recipe.json
+RUN cargo chef cook --release --recipe-path recipe.json
 # Build application
 COPY backend .
 
-ARG INSTRUMENT_COVERAGE
-ENV INSTRUMENT_COVERAGE=${INSTRUMENT_COVERAGE}
-
-RUN if [ "true" = "$INSTRUMENT_COVERAGE" ]; then \
-  RUSTFLAGS="-C instrument-coverage" cargo build \
+RUN cargo build \
   --release \
-  --features e2e,spa \
-  --target x86_64-unknown-linux-musl; \
- else \
-  cargo build \
-  --release \
-  --features spa \
-  --target x86_64-unknown-linux-musl; \
-fi
+  --features spa
 
 # BUILDER
 FROM node:18.12.1-alpine as web-builder
@@ -62,13 +49,13 @@ ENV NEXT_PUBLIC_VERSION=${BUILD_VERSION}
 RUN yarn build && cd /app/packages/frontend && yarn next export
 
 # RUNTIME
-FROM alpine as runtime
+FROM gcr.io/distroless/cc-debian11 as runtime
 
 # RUN apk add --no-cache nodejs>18.12.1-r0 icu-data-full yarn
 # RUN --mount=type=cache,target=/root/.yarn YARN_CACHE_FOLDER=/root/.yarn yarn global add pm2
 
 WORKDIR /app
-COPY --from=api-builder /app/target/x86_64-unknown-linux-musl/release/backend /app/backend
+COPY --from=api-builder /app/target/release/backend /app/backend
 COPY --from=web-builder /app/packages/frontend/out /app/web
 # COPY docker/apps.json docker/run.sh ./
 # COPY docker/nginx.conf /etc/nginx/nginx.conf
