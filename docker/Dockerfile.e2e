@@ -22,8 +22,12 @@ RUN cargo install grcov
 
 WORKDIR /app
 COPY backend backend
-RUN cd backend && RUSTFLAGS="-C instrument-coverage" cargo build \
-  --features e2e,spa
+RUN cd backend && \
+  RUSTFLAGS="-C instrument-coverage" cargo build \
+  --features e2e,spa && \
+  rm -rf target/debug/deps && \
+  rm -rf target/debug/incremental && \
+  rm -rf target/debug/build
 COPY --from=web-builder /app/out /app/web
 
 WORKDIR /app
