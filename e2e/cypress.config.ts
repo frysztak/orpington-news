@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv'
 
 dotenv.config({
   path: process.env.NODE_ENV === 'development' ? '.env.e2e.local' : '.env.e2e',
