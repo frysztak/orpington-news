@@ -52,4 +52,4 @@ COPY --from=web-builder /app/out /app/web
 
 EXPOSE 8000
 ENV PORT=8000
-CMD /app/backend
+CMD ["/app/backend"]
