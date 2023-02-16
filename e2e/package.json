@@ -1,0 +1,19 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "E2E tests for Orpington News",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cross-env NODE_ENV=development cypress open",
+    "cypress:run": "cross-env NODE_ENV=development cypress run -b chromium",
+    "cypress:open-docker": "cypress open",
+    "cypress:run-docker": "cypress run"
+  },
+  "author": "Sebastian Frysztak <sebastian@frysztak.dev>",
+  "license": "ISC",
+  "dependencies": {
+    "cypress": "^11.2.0",
+    "cypress-dark": "^1.8.3",
+    "@cypress/code-coverage": "^3.10.0"
+  }
+}

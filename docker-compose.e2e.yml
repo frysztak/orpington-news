@@ -34,7 +34,7 @@ services:
     ports:
       - '8002:8002'
     volumes:
-      - ./cypress/feeds:/public:ro
+      - ./e2e/cypress/feeds:/public:ro
     networks:
       - orpington-news
     restart: always

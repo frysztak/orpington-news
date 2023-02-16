@@ -21,28 +21,6 @@ runs:
       name: Setup Node.js
       with:
         node-version-file: '.nvmrc'
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
-
-    - name: Install dependencies
-      uses: cypress-io/github-action@v5
-      with:
-        # just perform install
-        runTests: false
-        install-command: npm ci
-        working-directory: frontend
-
-    - name: Run linter
-      shell: bash
-      working-directory: frontend
-      run: |
-        npm run lint
-
-    - name: Run unit tests
-      shell: bash
-      working-directory: frontend
-      run: |
-        npm run test
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -71,12 +49,11 @@ runs:
         sleep 10  # wait for database to be ready
 
     - name: Run E2E tests
-      uses: cypress-io/github-action@v4
+      uses: cypress-io/github-action@v5
       with:
-        install: false
         browser: chrome
         record: false
-        working-directory: frontend
+        working-directory: e2e
       env:
         CYPRESS_RECORD_KEY: ${{ inputs.cypress-key }}
         GITHUB_TOKEN: ${{ inputs.github-token }}

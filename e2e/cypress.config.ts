@@ -8,11 +8,6 @@ dotenv.config({
 export default defineConfig({
   projectId: '9fra5f',
   env: {
-    db_user: process.env.DB_USER,
-    db_pass: process.env.DB_PASS,
-    db_host: process.env.DB_HOST,
-    db_name: process.env.DB_NAME,
-    db_port: process.env.DB_PORT,
     api_url: process.env.NEXT_PUBLIC_API_URL,
     feeds_url: process.env.FEEDS_URL,
   },
