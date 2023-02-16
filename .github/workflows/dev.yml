@@ -71,8 +71,8 @@ jobs:
           build-args: |
             COMMIT_SHA=${{ github.sha }}
             BUILD_VERSION=${{ steps.package-version.outputs.current-version }}-dev
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-buildcache,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     name: Deploy to Dokku

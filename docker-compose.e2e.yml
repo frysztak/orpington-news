@@ -2,12 +2,7 @@ version: '3'
 services:
   orpington-news:
     container_name: orpington-news-e2e
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.e2e
-      args:
-        - INSTRUMENT_COVERAGE=true
-        - DISABLE_SW=true
+    image: orpington-news-e2e:latest
     environment:
       - APP_URL=http://localhost:8000
       - DB_HOST=db
@@ -39,7 +34,7 @@ services:
     ports:
       - '8002:8002'
     volumes:
-      - ./cypress/feeds:/public:ro
+      - ./e2e/cypress/feeds:/public:ro
     networks:
       - orpington-news
     restart: always

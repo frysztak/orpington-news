@@ -1,5 +1,0 @@
-[build]
-rustflags = [
-  "-C",
-  "instrument-coverage"
-]
