@@ -70,7 +70,7 @@ runs:
       with:
         token: ${{ inputs.codecov-token }}
         flags: e2e-web
-        directory: frontend/coverage
+        directory: e2e/coverage
 
     - uses: codecov/codecov-action@v3
       name: Upload API coverage
