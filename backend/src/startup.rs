@@ -36,7 +36,6 @@ impl Application {
             listener,
             db_pool,
             config.cookie_secret.clone(),
-            // config.application.base_url,
             task_queue,
             broadcaster,
         )
@@ -57,7 +56,6 @@ impl Application {
 async fn run(
     listener: TcpListener,
     db_pool: &PgPool,
-    // base_url: String,
     cookie_secret: Secret<String>,
     task_queue: Arc<dyn Queue>,
     broadcaster: Arc<Broadcaster>,
@@ -65,7 +63,6 @@ async fn run(
     let db_pool = Data::new(db_pool.to_owned());
     let task_queue = Data::from(task_queue.to_owned());
     let session_store = PostgresSessionStore::new(db_pool.clone());
-    // let base_url = Data::new(ApplicationBaseUrl(base_url));
     let secret_key = Key::from(cookie_secret.expose_secret().as_bytes());
 
     let server = HttpServer::new(move || {
@@ -104,9 +101,6 @@ async fn run(
             .app_data(db_pool.clone())
             .app_data(task_queue.clone())
             .app_data(Data::from(broadcaster.clone()))
-        //.app_data(email_client.clone())
-        //.app_data(base_url.clone())
-        //.app_data(Data::new(HmacSecret(hmac_secret.clone())))
     })
     .listen(listener)?
     .run();
