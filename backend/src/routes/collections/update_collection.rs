@@ -92,28 +92,23 @@ fn map_feed_items(
     feed.entries
         .iter()
         .filter_map(|entry| {
-            let title = html_escape::decode_html_entities(
-                &entry
-                    .title
-                    .as_ref()
-                    .and_then(|t| Some(&t.content))
-                    .unwrap_or(&"".to_string()),
-            )
-            .trim()
-            .to_string();
-
+            let title = match &entry.title {
+                Some(Text { content, .. }) => html_escape::decode_html_entities(content)
+                    .trim()
+                    .to_string(),
+                _ => "".to_string(),
+            };
             let url = entry.links.first()?.href.clone();
             let root_url = Url::parse(&url).ok()?.origin().ascii_serialization();
-            let raw_content = entry
-                .content
-                .as_ref()
-                .and_then(|c| match c {
-                    Content {
-                        body: Some(text), ..
-                    } => Some(text.clone()),
-                    _ => None,
-                })
-                .unwrap_or("".to_string());
+            let raw_content = match &entry.content {
+                Some(Content {
+                    body: Some(text), ..
+                }) => text.clone(),
+                _ => match &entry.summary {
+                    Some(Text { content, .. }) => content.clone(),
+                    _ => "".to_string(),
+                },
+            };
             let content = clean_html(&raw_content, &root_url).ok()?;
             let pure_text = strip_html_tags(&content);
             let full_text = ammonia::clean(&content);
