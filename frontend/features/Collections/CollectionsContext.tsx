@@ -1,6 +1,6 @@
 import { useContext, createContext, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import type { ID, Msg } from '@shared';
+import type { Collection, ID, Msg } from '@shared';
 import { useSet } from '@utils';
 import { collectionKeys } from '@features/queryKeys';
 import { useAddEventListener } from '@features/EventListener';
@@ -34,7 +34,27 @@ export const CollectionsContextProvider: ReactFCC = ({ children }) => {
           for (const feedId of msg.data.feedIds) {
             queryClient.invalidateQueries(collectionKeys.allForId(feedId));
           }
-          queryClient.invalidateQueries(collectionKeys.tree);
+
+          if (msg.data.unreadCount) {
+            const counts = msg.data.unreadCount.counts;
+            queryClient.setQueryData(
+              collectionKeys.tree,
+              (old?: Collection[]) => {
+                if (!old) {
+                  return old;
+                }
+
+                return old.map((collection) => ({
+                  ...collection,
+                  unreadCount: counts[collection.id] ?? collection.unreadCount,
+                }));
+              },
+              {
+                updatedAt: msg.data.unreadCount.updatedAt,
+              }
+            );
+          }
+
           return currentlyUpdatedCollections.remove(msg.data.feedIds);
         }
       }

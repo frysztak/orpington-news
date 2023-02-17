@@ -6,7 +6,7 @@ use self::verify_owner::verify_owner_mw;
 mod clean_html;
 mod date_read;
 mod delete;
-mod get;
+pub mod get;
 mod get_item;
 mod get_items;
 mod import_opml;

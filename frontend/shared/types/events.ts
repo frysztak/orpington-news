@@ -15,6 +15,10 @@ export interface UpdatedFeedsMsg {
   type: 'updatedFeeds';
   data: {
     feedIds: Array<ID>;
+    unreadCount?: {
+      counts: Record<ID, number>;
+      updatedAt: number;
+    };
   };
 }
 

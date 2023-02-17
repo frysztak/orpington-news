@@ -166,7 +166,7 @@ export const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
         </p>
 
         {isLoading ? (
-          <Spinner className="m-1" />
+          <Spinner className="flex-shrink-0 m-1" />
         ) : noMenu ? (
           <div className="h-8 w-8" />
         ) : (

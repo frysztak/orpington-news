@@ -1,8 +1,15 @@
 use crate::{
     queue::queue::{Job, Message, Queue},
-    routes::collections::{types::CollectionToRefresh, update_collection::update_collection},
-    sse::{broadcast::Broadcaster, messages::SSEMessage},
+    routes::collections::{
+        get::get_collections_impl, types::CollectionToRefresh, update_collection::update_collection,
+    },
+    session_state::ID,
+    sse::{
+        broadcast::Broadcaster,
+        messages::{SSEMessage, UnreadCount},
+    },
 };
+use chrono::Utc;
 use futures::{stream, StreamExt};
 use sqlx::PgPool;
 use std::{sync::Arc, time::Duration};
@@ -82,17 +89,40 @@ async fn handle_job(
                     url: url.clone(),
                     etag: etag.clone(),
                 },
-                pool,
+                pool.clone(),
             )
             .await;
+
+            let unread_count = match get_unread_map(*feed_id, &pool).await {
+                Ok(unread_count) => Some(unread_count),
+                _ => None,
+            };
 
             broadcaster
                 .broadcast(SSEMessage::UpdatedFeeds {
                     feed_ids: vec![*feed_id],
+                    unread_count,
                 })
                 .await;
 
             update_result.map_err(Into::into)
         }
     }
+}
+
+async fn get_unread_map(feed_id: ID, pool: &PgPool) -> Result<UnreadCount, sqlx::Error> {
+    let collection_owner =
+        sqlx::query_scalar!(r#"SELECT user_id FROM collections WHERE id = $1"#, feed_id)
+            .fetch_one(pool)
+            .await?;
+
+    let updated_at = Utc::now();
+    let collections = get_collections_impl(pool, collection_owner).await?;
+
+    let counts = collections
+        .into_iter()
+        .map(|c| (c.id, c.unread_count))
+        .collect();
+
+    Ok(UnreadCount { counts, updated_at })
 }
