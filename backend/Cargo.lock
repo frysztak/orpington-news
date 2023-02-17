@@ -1964,9 +1964,9 @@ dependencies = [
 
 [[package]]
 name = "normalize-url-rs"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ea8c147865bbac37f6b36185cfb5402822b93075d935e90c70a6ce6a23d8b09"
+checksum = "9396f98f3f8e1022d8d527b0dccc012025b2858609b7682309206689fca9db4d"
 dependencies = [
  "anyhow",
  "derive_builder",

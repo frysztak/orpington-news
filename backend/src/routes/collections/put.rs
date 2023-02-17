@@ -76,7 +76,7 @@ WHERE id = $1
     }
 
     let normalized_url = normalize_url_rs::normalize_url(
-        body.url.to_string(),
+        &body.url,
         normalize_url_rs::OptionsBuilder::default().build().unwrap(),
     )
     .map_err(Into::into)

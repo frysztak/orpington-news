@@ -55,7 +55,6 @@ pub async fn import_opml(
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;
 
-    // let opml = OPML::from_reader(&mut opml_bytes.as_slice())
     let opml = OPML::from_str(&opml_str)
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;
@@ -188,7 +187,7 @@ async fn insert_outlines(
         let title = &outline.text;
         let url = match outline.xml_url {
             Some(url) => normalize_url(
-                url,
+                &url,
                 normalize_url_rs::OptionsBuilder::default().build().unwrap(),
             )
             .ok(),

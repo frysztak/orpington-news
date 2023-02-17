@@ -35,18 +35,15 @@ pub async fn verify_url(
 ) -> Result<HttpResponse, InternalError<VerifyUrlError>> {
     let user_id: ID = user_id.into();
 
-    let url = normalize_url(
-        body.url.to_string(),
-        OptionsBuilder::default().build().unwrap(),
-    )
-    .map_err(Into::into)
-    .map_err(VerifyUrlError::UnexpectedError)?;
+    let url = normalize_url(&body.url, OptionsBuilder::default().build().unwrap())
+        .map_err(Into::into)
+        .map_err(VerifyUrlError::UnexpectedError)?;
 
     let extraction_result = extract_feed_url(&url).await;
 
     match extraction_result {
         Ok(ExtractFeedUrlSuccess::Ok(feed_url)) => {
-            let url = normalize_url(feed_url, OptionsBuilder::default().build().unwrap())
+            let url = normalize_url(&feed_url, OptionsBuilder::default().build().unwrap())
                 .map_err(Into::into)
                 .map_err(VerifyUrlError::UnexpectedError)?;
             let feed = attempt_feed_parsing(pool.as_ref(), user_id, &url).await?;
