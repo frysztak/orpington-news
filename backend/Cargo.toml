@@ -46,7 +46,7 @@ voca_rs = "1.15.2"
 lol_html = "0.3.2"
 html5ever = "0.26.0"
 markup5ever_rcdom = "0.2.0"
-feed-rs = { git = "https://github.com/feed-rs/feed-rs", rev = "3a26dbb3cc4f2e695e86e20c9cc59f4b22b79d11" }
+feed-rs = "1.3.0"
 actix-files = "0.6.2"
 actix-service = "2.0.2"
 futures-util = { version = "0.3.26", default-features = false, features = ["std"] }
