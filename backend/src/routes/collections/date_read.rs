@@ -1,5 +1,5 @@
 use actix_web::{error::InternalError, web, HttpResponse};
-use chrono::{serde::ts_seconds, DateTime, Utc};
+use chrono::{serde::ts_seconds_option, DateTime, Utc};
 use serde::Deserialize;
 use sqlx::PgPool;
 
@@ -18,8 +18,8 @@ pub struct PathParams {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Body {
-    #[serde(with = "ts_seconds")]
-    date_read: DateTime<Utc>,
+    #[serde(with = "ts_seconds_option")]
+    date_read: Option<DateTime<Utc>>,
 }
 
 #[tracing::instrument(skip(pool, path, body))]
