@@ -19,6 +19,8 @@ jobs:
       - name: Extract version
         uses: martinbeentjes/npm-get-version-action@main
         id: package-version
+        with:
+          path: frontend
 
       - name: Extract release notes
         id: extract_release_notes

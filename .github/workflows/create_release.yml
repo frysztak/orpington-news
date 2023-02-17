@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version-file: '.nvmrc'
 
       - name: Create release branch
         run: git checkout -b release/v${{ github.event.inputs.versionName }}
@@ -30,6 +30,7 @@ jobs:
 
       - name: Change version number and name
         run: npm version ${{ github.event.inputs.versionName }} --no-git-tag-version
+        working-directory: frontend
 
       - name: Update Changelog
         uses: thomaseizinger/keep-a-changelog-new-release@v1
@@ -39,7 +40,7 @@ jobs:
       - name: Commit changelog and manifest files
         id: make-commit
         run: |
-          git add package.json
+          git add frontend/package.json
           git add CHANGELOG.md
           git commit --message "chore(release): ${{ github.event.inputs.versionName }}"
           echo "::set-output name=commit::$(git rev-parse HEAD)"
