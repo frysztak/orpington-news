@@ -58,3 +58,8 @@ actix-multipart = "0.5.0"
 [features]
 e2e = []
 spa = []
+
+[profile.release]
+lto = true
+strip = true
+panic = "abort"
