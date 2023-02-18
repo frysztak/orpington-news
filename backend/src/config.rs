@@ -4,6 +4,7 @@ use std::env::var;
 use std::fs::read_to_string;
 use std::io;
 use std::num::ParseIntError;
+use std::str::ParseBoolError;
 use tracing::warn;
 
 #[derive(Debug)]
@@ -13,6 +14,7 @@ pub struct AppConfig {
     pub port: u16,
     pub cookie_secret: Secret<String>,
     pub app_url: String,
+    pub disable_secure_cookie: bool,
 }
 
 #[derive(Debug)]
@@ -28,12 +30,19 @@ pub struct DBConfig {
 pub enum AppConfigError {
     ExclusiveOptions(String),
     PortParseError(ParseIntError),
+    BoolParseError(ParseBoolError),
     IOError(io::Error),
 }
 
 impl From<ParseIntError> for AppConfigError {
     fn from(err: ParseIntError) -> Self {
         AppConfigError::PortParseError(err)
+    }
+}
+
+impl From<ParseBoolError> for AppConfigError {
+    fn from(err: ParseBoolError) -> Self {
+        AppConfigError::BoolParseError(err)
     }
 }
 
@@ -54,6 +63,7 @@ pub fn read_config() -> Result<AppConfig, AppConfigError> {
         };
 
     let app_url = var("APP_URL").expect("Missing APP_URL env var");
+    let disable_secure_cookie = read_var("DISABLE_SECURE_COOKIE", "false".to_string()).parse()?;
 
     let db_pass = read_var_from_file("DB_PASS", "".to_string())?;
     let db_host = read_var_from_file("DB_HOST", "0.0.0.0".to_string())?;
@@ -64,6 +74,7 @@ pub fn read_config() -> Result<AppConfig, AppConfigError> {
         port,
         cookie_secret: Secret::new(cookie_secret),
         app_url,
+        disable_secure_cookie,
         database: DBConfig {
             username: read_var("DB_USER", "postgres".to_string()),
             password: Secret::new(db_pass),

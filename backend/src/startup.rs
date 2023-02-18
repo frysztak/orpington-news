@@ -59,6 +59,7 @@ async fn run(
     let session_store = PostgresSessionStore::new(db_pool.clone());
     let secret_key = Key::from(config.cookie_secret.expose_secret().as_bytes());
     let app_url = config.app_url.clone();
+    let disable_secure_cookie = config.disable_secure_cookie;
 
     let server = HttpServer::new(move || {
         App::new()
@@ -74,7 +75,7 @@ async fn run(
             .wrap(
                 SessionMiddleware::builder(session_store.clone(), secret_key.clone())
                     .cookie_name("sessionId".to_string())
-                    .cookie_secure(false)
+                    .cookie_secure(!disable_secure_cookie)
                     .session_lifecycle(
                         PersistentSession::default().session_ttl(cookie::time::Duration::weeks(1)),
                     )
@@ -96,5 +97,6 @@ async fn run(
     })
     .listen(listener)?
     .run();
+
     Ok(server)
 }
