@@ -9,9 +9,10 @@ use actix_session::config::PersistentSession;
 use actix_session::SessionMiddleware;
 use actix_web::cookie::{self, Key};
 use actix_web::dev::Server;
+use actix_web::http::header;
 use actix_web::web::{self, Data};
 use actix_web::{App, HttpServer};
-use secrecy::{ExposeSecret, Secret};
+use secrecy::ExposeSecret;
 use sqlx::PgPool;
 use std::net::TcpListener;
 use std::sync::Arc;
@@ -32,14 +33,7 @@ impl Application {
         let address = format!("{}:{}", config.host, config.port);
         let listener = TcpListener::bind(&address)?;
         let port = listener.local_addr().unwrap().port();
-        let server = run(
-            listener,
-            db_pool,
-            config.cookie_secret.clone(),
-            task_queue,
-            broadcaster,
-        )
-        .await?;
+        let server = run(listener, db_pool, config, task_queue, broadcaster).await?;
 
         Ok(Self { port, server })
     }
@@ -56,27 +50,25 @@ impl Application {
 async fn run(
     listener: TcpListener,
     db_pool: &PgPool,
-    cookie_secret: Secret<String>,
+    config: &AppConfig,
     task_queue: Arc<dyn Queue>,
     broadcaster: Arc<Broadcaster>,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool.to_owned());
     let task_queue = Data::from(task_queue.to_owned());
     let session_store = PostgresSessionStore::new(db_pool.clone());
-    let secret_key = Key::from(cookie_secret.expose_secret().as_bytes());
+    let secret_key = Key::from(config.cookie_secret.expose_secret().as_bytes());
+    let app_url = config.app_url.clone();
 
     let server = HttpServer::new(move || {
         App::new()
             .wrap(
-                Cors::permissive(), //.allowed_origin("http://localhost:3000")
-                                    //.allowed_methods(vec!["GET", "POST"])
-                                    //.allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
-                                    //.allowed_header(header::CONTENT_TYPE)
-                                    //.supports_credentials()
-                                    // .allowed_headers(&[header::AUTHORIZATION, header::ACCEPT])
-                                    // .allowed_header(header::CONTENT_TYPE)
-                                    // .expose_headers(&[header::CONTENT_DISPOSITION])
-                                    // .supports_credentials(), // .max_age(3600),
+                Cors::default()
+                    .allowed_origin(&app_url)
+                    .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+                    .allowed_header(header::CONTENT_TYPE)
+                    .supports_credentials(),
             )
             .wrap(IdentityMiddleware::default())
             .wrap(

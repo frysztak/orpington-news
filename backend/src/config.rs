@@ -12,6 +12,7 @@ pub struct AppConfig {
     pub host: String,
     pub port: u16,
     pub cookie_secret: Secret<String>,
+    pub app_url: String,
 }
 
 #[derive(Debug)]
@@ -52,6 +53,8 @@ pub fn read_config() -> Result<AppConfig, AppConfigError> {
             str => str,
         };
 
+    let app_url = var("APP_URL").expect("Missing APP_URL env var");
+
     let db_pass = read_var_from_file("DB_PASS", "".to_string())?;
     let db_host = read_var_from_file("DB_HOST", "0.0.0.0".to_string())?;
     let db_port = read_var("DB_PORT", "5432".to_string()).parse()?;
@@ -60,6 +63,7 @@ pub fn read_config() -> Result<AppConfig, AppConfigError> {
         host,
         port,
         cookie_secret: Secret::new(cookie_secret),
+        app_url,
         database: DBConfig {
             username: read_var("DB_USER", "postgres".to_string()),
             password: Secret::new(db_pass),
