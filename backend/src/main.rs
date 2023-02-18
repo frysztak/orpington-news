@@ -1,5 +1,6 @@
 use backend::config::read_config;
 use backend::queue::postgres::PostgresQueue;
+use backend::queue::queue::Queue;
 use backend::sse::broadcast::Broadcaster;
 use backend::startup::Application;
 use backend::tasks::queue_task::run_queue_until_stopped;
@@ -29,6 +30,9 @@ async fn main() -> anyhow::Result<()> {
     sqlx::migrate!("./migrations").run(&db_pool).await?;
 
     let queue = Arc::new(PostgresQueue::new(db_pool.clone()));
+    // clear jobs stuck in 'running' state (because e.g. backend process got killed)
+    queue.clear_running_jobs().await?;
+
     let broadcaster = Broadcaster::create();
     let queue_task = tokio::spawn(run_queue_until_stopped(
         queue.clone(),

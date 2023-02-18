@@ -220,4 +220,20 @@ SELECT * FROM UNNEST(
         sqlx::query(query).execute(&self.db).await?;
         Ok(())
     }
+
+    async fn clear_running_jobs(&self) -> Result<(), anyhow::Error> {
+        sqlx::query(
+            r#"
+UPDATE queue
+SET status = $1
+WHERE status = $2
+        "#,
+        )
+        .bind(PostgresJobStatus::Queued)
+        .bind(PostgresJobStatus::Running)
+        .execute(&self.db)
+        .await?;
+
+        Ok(())
+    }
 }

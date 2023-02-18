@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::{PgHasArrayType, PgTypeInfo};
 use std::fmt::Debug;
@@ -38,13 +39,13 @@ pub trait Queue: Send + Sync + Debug {
     async fn push(
         &self,
         job: Message,
-        scheduled_for: Option<chrono::DateTime<chrono::Utc>>,
+        scheduled_for: Option<DateTime<Utc>>,
         priority: Option<TaskPriority>,
     ) -> Result<(), anyhow::Error>;
     async fn push_bulk(
         &self,
         jobs: Vec<Message>,
-        scheduled_for: Option<chrono::DateTime<chrono::Utc>>,
+        scheduled_for: Option<DateTime<Utc>>,
         priority: Option<TaskPriority>,
     ) -> Result<(), anyhow::Error>;
     /// pull fetches at most `number_of_jobs` from the queue.
@@ -52,4 +53,5 @@ pub trait Queue: Send + Sync + Debug {
     async fn delete_job(&self, job_id: Uuid) -> Result<(), anyhow::Error>;
     async fn fail_job(&self, job_id: Uuid) -> Result<(), anyhow::Error>;
     async fn clear(&self) -> Result<(), anyhow::Error>;
+    async fn clear_running_jobs(&self) -> Result<(), anyhow::Error>;
 }
