@@ -23,7 +23,9 @@ export const SidebarFooter: React.FC<SidebarFooterProps> = (props) => {
 
   const url =
     user.avatarUrl &&
-    new URL(user.avatarUrl, process.env.NEXT_PUBLIC_API_URL).toString();
+    (process.env.NEXT_PUBLIC_API_URL
+      ? new URL(user.avatarUrl, process.env.NEXT_PUBLIC_API_URL).toString()
+      : user.avatarUrl);
 
   return (
     <HStack justify="space-between">
