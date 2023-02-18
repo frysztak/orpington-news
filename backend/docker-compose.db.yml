@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: orpington-news-local-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=orpington
+      - POSTGRES_PASSWORD=pass1234
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - orpington-news-local-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: orpington-news-local-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@example.com'
+      PGADMIN_DEFAULT_PASSWORD: 'pass1234'
+    ports:
+      - '8080:80'
+    networks:
+      - orpington-news-local-net
+
+volumes:
+  postgres:
+
+networks:
+  orpington-news-local-net:
