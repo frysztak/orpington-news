@@ -5,7 +5,6 @@ import {
   Alert,
   AlertIcon,
   Box,
-  Container,
   useToast,
   VStack,
   Text,
@@ -51,7 +50,7 @@ const Page: NextPageWithLayout = () => {
         <title>Change password</title>
       </Head>
 
-      <Container maxW="container.sm" py={4}>
+      <VStack w="full" maxW="container.sm" align="flex-start" p={4}>
         <VStack w="full" align="stretch">
           <Box as="h2" textStyle="settings.header">
             Change password
@@ -75,7 +74,7 @@ const Page: NextPageWithLayout = () => {
             </Box>
           )}
         </VStack>
-      </Container>
+      </VStack>
     </>
   );
 };

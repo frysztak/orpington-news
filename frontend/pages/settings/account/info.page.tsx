@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import Head from 'next/head';
 import type { NextPageWithLayout } from '@pages/types';
-import { Box, Container, useToast, VStack } from '@chakra-ui/react';
+import { Box, useToast, VStack } from '@chakra-ui/react';
 import { useGetUser, useSetUser } from '@features/Auth';
 import { SettingsLayout } from '../SettingsLayout';
 import {
@@ -34,7 +34,7 @@ const Page: NextPageWithLayout = () => {
         <title>Account info</title>
       </Head>
 
-      <Container maxW="container.sm" py={4}>
+      <VStack w="full" maxW="container.sm" align="flex-start" p={4}>
         <VStack w="full" align="stretch">
           <Box as="h2" textStyle="settings.header">
             Account info
@@ -46,7 +46,7 @@ const Page: NextPageWithLayout = () => {
             isLoading={isLoading || isSaving}
           />
         </VStack>
-      </Container>
+      </VStack>
     </>
   );
 };
