@@ -93,6 +93,16 @@
     },
     "query": "\nCALL preferences_prune_expanded_collections($1)\n    "
   },
+  "1d4a09a9ca80cd427bacaed76086d6a3f9ba1a81a6012fc7dc19e46a56bdbe8c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        DELETE FROM queue a\n        USING queue b\n        WHERE\n            a.id < b.id\n            AND a.message = b.message\n        "
+  },
   "20168dc99a934e98984a489442684961fb55914e032d3abe4c9eaa9d306ea165": {
     "describe": {
       "columns": [],
@@ -357,16 +367,6 @@
       }
     },
     "query": "\nCALL preferences_prune_expanded_collections($1)\n            "
-  },
-  "6076db689ecb249e14fce825a7d6a85355cf63f982d122c34b59f43d704edb50": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n        DELETE FROM queue a\n        USING queue b\n        WHERE\n            a.id > b.id\n            AND a.message = b.message\n        "
   },
   "6731b5cbb4901c40637bed0fa7de064b23b2e45ab035e40e909ae85d93e95434": {
     "describe": {

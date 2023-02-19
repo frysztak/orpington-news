@@ -154,7 +154,7 @@ SELECT * FROM UNNEST(
         DELETE FROM queue a
         USING queue b
         WHERE
-            a.id > b.id
+            a.id < b.id
             AND a.message = b.message
         "#
         )
