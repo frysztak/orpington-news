@@ -5,7 +5,15 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Text", "Text", "Int4", "Text", "Text", "Int4", "Int4"]
+        "Left": [
+          "Text",
+          "Text",
+          "Int4",
+          "Text",
+          "Text",
+          "Int4",
+          "Int4"
+        ]
       }
     },
     "query": "\nUPDATE\n  collections\nSET\n  title = $1,\n  icon = $2,\n  parent_id = $3,\n  description = $4,\n  url = $5,\n  refresh_interval = $6\nWHERE\n  id = $7\n            "
@@ -25,7 +33,10 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4", "Int4"]
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
       }
     },
     "query": "UPDATE preferences\n            SET active_collection_id = $1\n            WHERE user_id = $2"
@@ -39,9 +50,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [null],
+      "nullable": [
+        null
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "SELECT id as \"id!\" FROM get_collection_children_ids($1)"
@@ -55,9 +70,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [null],
+      "nullable": [
+        null
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\n    SELECT id as \"id!\" FROM get_collection_children_ids($1)"
@@ -67,7 +86,9 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nCALL preferences_prune_expanded_collections($1)\n    "
@@ -77,7 +98,11 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Text", "Text", "Int4"]
+        "Left": [
+          "Text",
+          "Text",
+          "Int4"
+        ]
       }
     },
     "query": "\nUPDATE\n  preferences p\nSET\n  default_collection_layout = $1,\n  avatar_style = $2\nWHERE\n  p.user_id = $3\n"
@@ -91,9 +116,14 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Text", "Int4"]
+        "Left": [
+          "Text",
+          "Int4"
+        ]
       }
     },
     "query": "\n        SELECT id\n        FROM collections\n        WHERE url = $1 AND user_id = $2"
@@ -107,9 +137,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4Array"]
+        "Left": [
+          "Int4Array"
+        ]
       }
     },
     "query": "\n    DELETE FROM collections\n    WHERE id = ANY($1)\n    RETURNING id"
@@ -123,9 +157,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [true],
+      "nullable": [
+        true
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\n    SELECT active_collection_id FROM preferences WHERE user_id = $1"
@@ -135,7 +173,11 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Text", "Int4", "Int4"]
+        "Left": [
+          "Text",
+          "Int4",
+          "Int4"
+        ]
       }
     },
     "query": "UPDATE\n  preferences p\nSET\n  expanded_collection_ids = subquery.ids || '{}'\nFROM (\n  SELECT\n    CASE\n      WHEN $1 = 'add' THEN\n        uniq(array_append(COALESCE(expanded_collection_ids, '{}'::int4[]), $2))\n      ELSE\n        uniq(array_remove(COALESCE(expanded_collection_ids, '{}'::int4[]), $2))\n    END AS ids\n  FROM\n    preferences\n  WHERE\n    \"user_id\" = $3\n) as subquery\nWHERE\n  p.user_id = $3\n"
@@ -149,9 +191,15 @@
           "type_info": "Int8"
         }
       ],
-      "nullable": [null],
+      "nullable": [
+        null
+      ],
       "parameters": {
-        "Left": ["Timestamptz", "Int4", "Int4"]
+        "Left": [
+          "Timestamptz",
+          "Int4",
+          "Int4"
+        ]
       }
     },
     "query": "\nWITH rows AS (\n  UPDATE\n    collection_items\n  SET\n    date_read = $1 \n  WHERE\n    id = $2\n    AND collection_id = $3\n  RETURNING 1\n)\nSELECT count(*) as \"count!\" FROM rows\n"
@@ -161,7 +209,10 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Text", "Int4"]
+        "Left": [
+          "Text",
+          "Int4"
+        ]
       }
     },
     "query": "\nUPDATE\n  collections\nSET\n  etag = $1\nWHERE\n  id = $2\n"
@@ -175,9 +226,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [true],
+      "nullable": [
+        true
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nSELECT parent_id\nFROM collections\nWHERE id = $1\n    "
@@ -191,9 +246,13 @@
           "type_info": "Text"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\n        SELECT default_collection_layout\n        FROM preferences \n        WHERE user_id = $1"
@@ -207,9 +266,13 @@
           "type_info": "Text"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "SELECT password FROM users WHERE id = $1"
@@ -223,9 +286,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "SELECT user_id FROM collections WHERE id = $1"
@@ -235,7 +302,10 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4", "Int4"]
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
       }
     },
     "query": "\nUPDATE\n  users\nSET\n  home_id = $1\nWHERE\n  users.id = $2\n        "
@@ -249,9 +319,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\n            SELECT home_id\n            FROM users\n            WHERE id = $1"
@@ -261,27 +335,25 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4", "Text", "Text", "Text", "Text"]
+        "Left": [
+          "Int4",
+          "Text",
+          "Text",
+          "Text",
+          "Text"
+        ]
       }
     },
     "query": "\nWITH old AS (\n  SELECT * FROM collections WHERE id = $1\n)\nUPDATE collections\nSET\n  layout   = COALESCE($2, old.layout),\n  filter   = COALESCE($3, old.filter),\n  grouping = COALESCE($4, old.grouping),\n  sort_by  = COALESCE($5, old.sort_by)\nFROM old\nWHERE collections.id = $1\n"
-  },
-  "5d2f4e18afb8d30e6e7b6adedfe054ea5efc103856795ef4cfeea4b70b0bed57": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": ["Int4", "Text", "Bytea"]
-      }
-    },
-    "query": "\nWITH old AS (\n  SELECT *\n  FROM users\n  WHERE id = $1\n)\nUPDATE\n  users\nSET\n  display_name = COALESCE($2, old.display_name),\n  avatar = COALESCE($3, old.avatar)\nFROM old\nWHERE users.id = $1\n    "
   },
   "5d7c5f3bd774a79ea6bf2fdf4f35d60041c5b6a0e391e55d74cb5605cf48c964": {
     "describe": {
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nCALL preferences_prune_expanded_collections($1)\n            "
@@ -305,9 +377,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Text"]
+        "Left": [
+          "Text"
+        ]
       }
     },
     "query": "SELECT id FROM users WHERE name = $1"
@@ -317,7 +393,13 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4", "Int4", "Int4Array", "Text", "Text"]
+        "Left": [
+          "Int4",
+          "Int4",
+          "Int4Array",
+          "Text",
+          "Text"
+        ]
       }
     },
     "query": "\nINSERT INTO preferences (\n  \"user_id\",\n  \"active_collection_id\",\n  \"expanded_collection_ids\",\n  \"default_collection_layout\",\n  \"avatar_style\")\nVALUES (\n  $1, $2, $3, $4, $5\n)\n    "
@@ -327,7 +409,11 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4", "Int4", "Int4"]
+        "Left": [
+          "Int4",
+          "Int4",
+          "Int4"
+        ]
       }
     },
     "query": "\n            CALL move_collection($1, $2, $3)\n            "
@@ -365,9 +451,14 @@
           "type_info": "Text"
         }
       ],
-      "nullable": [false, false],
+      "nullable": [
+        false,
+        false
+      ],
       "parameters": {
-        "Left": ["Text"]
+        "Left": [
+          "Text"
+        ]
       }
     },
     "query": "\n        SELECT id, password\n        FROM users\n        WHERE name = $1\n        "
@@ -381,12 +472,36 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4", "Text", "Text", "Int4", "Int4", "Text"]
+        "Left": [
+          "Int4",
+          "Text",
+          "Text",
+          "Int4",
+          "Int4",
+          "Text"
+        ]
       }
     },
     "query": "\n    INSERT INTO collections (\n      \"user_id\",\n      \"title\",\n      \"icon\",\n      \"order\",\n      \"parent_id\",\n      \"layout\")\n    VALUES ($1, $2, $3, $4, $5, $6)\n    RETURNING id\n        "
+  },
+  "701cf200aa54075031519337cad7aaf4419432e0577a00e368093f32841d7255": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text",
+          "Bool",
+          "Bytea"
+        ]
+      }
+    },
+    "query": "\nWITH old AS (\n  SELECT *\n  FROM users\n  WHERE id = $1\n)\nUPDATE\n  users\nSET\n  display_name = COALESCE($2, old.display_name),\n  avatar = CASE\n    WHEN $3 = TRUE THEN COALESCE($4, old.avatar)\n    WHEN $3 = FALSE THEN NULL\n    END\nFROM old\nWHERE users.id = $1\n    "
   },
   "78600da980b492195ce57b52695b97c730f8618851f4f07ab5ddabf7b2ae67df": {
     "describe": {
@@ -407,7 +522,11 @@
           "type_info": "Text"
         }
       ],
-      "nullable": [false, true, true],
+      "nullable": [
+        false,
+        true,
+        true
+      ],
       "parameters": {
         "Left": []
       }
@@ -419,7 +538,10 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Timestamptz", "Int4Array"]
+        "Left": [
+          "Timestamptz",
+          "Int4Array"
+        ]
       }
     },
     "query": "\nUPDATE\n  collection_items\nSET\n  date_read = $1\nWHERE\n  collection_id = ANY($2)\n"
@@ -429,7 +551,11 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4", "Int4", "Int4"]
+        "Left": [
+          "Int4",
+          "Int4",
+          "Int4"
+        ]
       }
     },
     "query": "\nCALL move_collection($1, $2, $3)\n    "
@@ -439,7 +565,10 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4", "Int4"]
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
       }
     },
     "query": "\nUPDATE\n  preferences p\nSET\n  active_collection_id = $1\nWHERE\n  p.user_id = $2\n    "
@@ -453,9 +582,17 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Text", "Text", "Text", "Bytea", "Int4"]
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Bytea",
+          "Int4"
+        ]
       }
     },
     "query": "\nINSERT INTO \"users\" (\n  name,\n  password,\n  display_name,\n  avatar,\n  home_id)\nVALUES (\n  $1,\n  $2,\n  $3,\n  $4,\n  $5)\nRETURNING\n  id\n    "
@@ -465,7 +602,9 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nCALL preferences_prune_expanded_collections($1)\n"
@@ -479,9 +618,13 @@
           "type_info": "Text"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nSELECT\n  default_collection_layout\nFROM\n  preferences\nWHERE\n  user_id = $1\n    "
@@ -495,9 +638,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nSELECT\n  home_id\nFROM\n  users\nWHERE\n  id = $1\n    "
@@ -605,7 +752,10 @@
         true
       ],
       "parameters": {
-        "Left": ["Text", "Int4"]
+        "Left": [
+          "Text",
+          "Int4"
+        ]
       }
     },
     "query": "\nSELECT\n  *\nFROM\n  collections\nWHERE\n  url = $1\n  AND user_id = $2\n    "
@@ -619,9 +769,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\n    SELECT home_id\n    FROM users\n    WHERE id = $1"
@@ -641,7 +795,9 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Text"]
+        "Left": [
+          "Text"
+        ]
       }
     },
     "query": "DELETE FROM session WHERE sid = $1"
@@ -651,7 +807,10 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Timestamptz", "Int4"]
+        "Left": [
+          "Timestamptz",
+          "Int4"
+        ]
       }
     },
     "query": "\nUPDATE\n  collections\nSET\n  date_updated = $1\nWHERE\n  id = $2\n"
@@ -675,9 +834,15 @@
           "type_info": "Text"
         }
       ],
-      "nullable": [false, true, true],
+      "nullable": [
+        false,
+        true,
+        true
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nWITH children_ids AS (\n    SELECT * FROM get_collection_children_ids($1)\n  )\n  SELECT\n    collections.id, url as \"url!\", etag\n  FROM\n    collections, children_ids\n  WHERE\n    url IS NOT NULL\n    AND collections.id = children_ids.id\n"
@@ -691,9 +856,18 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4", "Text", "Bool", "Int4", "Text", "Text"]
+        "Left": [
+          "Int4",
+          "Text",
+          "Bool",
+          "Int4",
+          "Text",
+          "Text"
+        ]
       }
     },
     "query": "\nINSERT INTO collections (\n  \"user_id\",\n  \"title\",\n  \"is_home\",\n  \"order\",\n  \"icon\",\n  \"layout\"\n  )\nVALUES (\n  $1, $2, $3, $4, $5, $6\n)\nRETURNING\n  id\n    "
@@ -713,7 +887,11 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Varchar", "Json", "Timestamp"]
+        "Left": [
+          "Varchar",
+          "Json",
+          "Timestamp"
+        ]
       }
     },
     "query": "INSERT INTO session(sid, sess, expire) VALUES ($1, $2, $3)"
@@ -737,9 +915,15 @@
           "type_info": "Timestamp"
         }
       ],
-      "nullable": [false, false, false],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
       "parameters": {
-        "Left": ["Text"]
+        "Left": [
+          "Text"
+        ]
       }
     },
     "query": "SELECT * FROM session WHERE sid = $1"
@@ -749,7 +933,11 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Json", "Timestamp", "Text"]
+        "Left": [
+          "Json",
+          "Timestamp",
+          "Text"
+        ]
       }
     },
     "query": "UPDATE session\n              SET sess = $1,\n                  expire = $2\n              WHERE sid = $3 AND expire < now()"
@@ -763,9 +951,13 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "SELECT home_id FROM users WHERE id = $1"
@@ -779,9 +971,13 @@
           "type_info": "Bytea"
         }
       ],
-      "nullable": [true],
+      "nullable": [
+        true
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nSELECT\n  avatar\nFROM\n  \"users\"\nWHERE\n  id = $1\n    "
@@ -810,9 +1006,16 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false, true, null, false],
+      "nullable": [
+        false,
+        true,
+        null,
+        false
+      ],
       "parameters": {
-        "Left": ["Int4"]
+        "Left": [
+          "Int4"
+        ]
       }
     },
     "query": "\nSELECT\n  name as username,\n  display_name,\n  (\n    CASE WHEN avatar IS NULL THEN\n     NULL \n    ELSE\n      '/api/auth/user/avatar'\n    END) as avatar_url,\n  home_id\nFROM\n  \"users\"\nWHERE\n  id = $1\n    "
@@ -822,7 +1025,9 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Jsonb"]
+        "Left": [
+          "Jsonb"
+        ]
       }
     },
     "query": "\nINSERT INTO collection_items (\n  \"url\",\n  title,\n  summary,\n  full_text,\n  thumbnail_url,\n  date_published,\n  date_updated,\n  categories,\n  reading_time,\n  collection_id)\nSELECT\n  \"url\",\n  title,\n  summary,\n  full_text,\n  thumbnail_url,\n  to_timestamp(date_published) as date_published,\n  to_timestamp(date_updated) as date_updated,\n  categories,\n  reading_time,\n  collection_id\nFROM jsonb_to_recordset($1) AS t(\n    \"url\" text,\n    title text,\n    summary text,\n    full_text text,\n    thumbnail_url text,\n    date_published integer,\n    date_updated integer,\n    categories text[],\n    reading_time float4,\n    collection_id integer)\nON CONFLICT (collection_id, \"url\")\nDO UPDATE SET\n    \"url\" = EXCLUDED. \"url\",\n    title = EXCLUDED.title,\n    summary = EXCLUDED.summary,\n    full_text = EXCLUDED.full_text,\n    thumbnail_url = EXCLUDED.thumbnail_url,\n    date_published = GREATEST (collection_items.date_published, EXCLUDED.date_published),\n    date_updated = GREATEST (collection_items.date_updated, EXCLUDED.date_updated),\n    categories = EXCLUDED.categories,\n    reading_time = EXCLUDED.reading_time\n"
@@ -832,7 +1037,10 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Timestamp", "Text"]
+        "Left": [
+          "Timestamp",
+          "Text"
+        ]
       }
     },
     "query": "UPDATE session\n              SET expire = $1\n              WHERE sid = $2"
@@ -846,9 +1054,20 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
-        "Left": ["Int4", "Text", "Text", "Int4", "Int4", "Text", "Int4", "Text"]
+        "Left": [
+          "Int4",
+          "Text",
+          "Text",
+          "Int4",
+          "Int4",
+          "Text",
+          "Int4",
+          "Text"
+        ]
       }
     },
     "query": "\n    INSERT INTO collections (\n      \"user_id\",\n      \"title\",\n      \"icon\",\n      \"order\",\n      \"parent_id\",\n      \"url\",\n      \"refresh_interval\",\n      \"layout\")\n    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\n    RETURNING id\n        "
@@ -858,7 +1077,10 @@
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Left": ["Text", "Int4"]
+        "Left": [
+          "Text",
+          "Int4"
+        ]
       }
     },
     "query": "\n    UPDATE users\n    SET password = $1\n    WHERE id = $2"
@@ -872,7 +1094,9 @@
           "type_info": "Int4"
         }
       ],
-      "nullable": [false],
+      "nullable": [
+        false
+      ],
       "parameters": {
         "Left": [
           "Int4",

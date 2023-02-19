@@ -19,6 +19,20 @@ export interface AvatarProps {
   onDeleteAvatar?: () => void;
 }
 
+const getAvatarUrl = (url?: string) => {
+  if (!url) {
+    return '';
+  }
+
+  if (url.startsWith('data:image')) {
+    return url;
+  }
+
+  return process.env.NEXT_PUBLIC_API_URL
+    ? new URL(url, process.env.NEXT_PUBLIC_API_URL).toString()
+    : url;
+};
+
 export const Avatar: React.FC<AvatarProps> = (props) => {
   const {
     name,
@@ -33,7 +47,7 @@ export const Avatar: React.FC<AvatarProps> = (props) => {
 
   return (
     <ChakraAvatar
-      src={src}
+      src={getAvatarUrl(src)}
       name={avatarStyle === 'initials' ? name : undefined}
       bg={bg}
       color="white"

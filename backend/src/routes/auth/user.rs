@@ -171,12 +171,16 @@ UPDATE
   users
 SET
   display_name = COALESCE($2, old.display_name),
-  avatar = COALESCE($3, old.avatar)
+  avatar = CASE
+    WHEN $3 = TRUE THEN COALESCE($4, old.avatar)
+    WHEN $3 = FALSE THEN NULL
+    END
 FROM old
 WHERE users.id = $1
     "#,
         user_id,
         body.display_name,
+        body.avatar_url.is_some(),
         map_avatar(body.avatar_url.as_ref())
     )
     .execute(pool.as_ref())

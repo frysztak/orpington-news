@@ -34,7 +34,7 @@ export const AvatarField = forwardRef<AvatarFieldProps, 'input'>(
     );
 
     const handleDelete = useCallback(() => {
-      helpers.setValue(undefined);
+      helpers.setValue(null);
     }, [helpers]);
 
     const { getInputProps, open } = useDropzone({
@@ -66,3 +66,5 @@ export const AvatarField = forwardRef<AvatarFieldProps, 'input'>(
     );
   }
 );
+
+AvatarField.displayName = 'AvatarField';

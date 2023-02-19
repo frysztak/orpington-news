@@ -21,17 +21,11 @@ export const SidebarFooter: React.FC<SidebarFooterProps> = (props) => {
   const fg = useIconFill();
   const hoverBg = useColorModeValue('purple.10', 'gray.600');
 
-  const url =
-    user.avatarUrl &&
-    (process.env.NEXT_PUBLIC_API_URL
-      ? new URL(user.avatarUrl, process.env.NEXT_PUBLIC_API_URL).toString()
-      : user.avatarUrl);
-
   return (
     <HStack justify="space-between">
       <Avatar
         name={user.displayName}
-        src={url}
+        src={user.avatarUrl}
         avatarStyle={preferences.avatarStyle}
       />
 
