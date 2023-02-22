@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde_json::{json, Value};
 use sqlx::{
-    postgres::{PgHasArrayType, PgTypeInfo},
+    postgres::{PgHasArrayType, PgListener, PgTypeInfo},
     types::{Json, Uuid},
     Pool, Postgres,
 };
@@ -69,6 +69,10 @@ impl PostgresQueue {
 
 #[async_trait::async_trait]
 impl Queue for PostgresQueue {
+    async fn get_listener(&self) -> Result<PgListener, anyhow::Error> {
+        PgListener::connect_with(&self.db).await.map_err(Into::into)
+    }
+
     async fn push(
         &self,
         job: Message,

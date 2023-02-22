@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::postgres::{PgHasArrayType, PgTypeInfo};
+use sqlx::postgres::{PgHasArrayType, PgListener, PgTypeInfo};
 use std::fmt::Debug;
 use uuid::Uuid;
 
@@ -48,6 +48,7 @@ pub trait Queue: Send + Sync + Debug {
         scheduled_for: Option<DateTime<Utc>>,
         priority: Option<TaskPriority>,
     ) -> Result<(), anyhow::Error>;
+    async fn get_listener(&self) -> Result<PgListener, anyhow::Error>;
     /// pull fetches at most `number_of_jobs` from the queue.
     async fn pull(&self, number_of_jobs: u32) -> Result<Vec<Job>, anyhow::Error>;
     async fn delete_job(&self, job_id: Uuid) -> Result<(), anyhow::Error>;

@@ -10,10 +10,10 @@ use crate::{
     },
 };
 use chrono::Utc;
-use futures::{stream, StreamExt};
+use futures::StreamExt;
 use sqlx::PgPool;
-use std::{sync::Arc, time::Duration};
-use tracing::{info, span, warn, Level};
+use std::sync::Arc;
+use tracing::warn;
 
 pub async fn run_queue_until_stopped(
     queue: Arc<dyn Queue>,
@@ -30,50 +30,51 @@ async fn run_queue(
 ) -> Result<(), anyhow::Error> {
     let concurrency = num_cpus::get();
 
-    loop {
-        {
-            let span = span!(Level::INFO, "Queue Task");
-            let _enter = span.enter();
+    let mut listener = queue.get_listener().await?;
+    listener.listen("queue.new_task").await?;
 
-            let jobs = match queue.pull(concurrency as u32 * 2).await {
-                Ok(jobs) => jobs,
+    listener
+        .into_stream()
+        .filter_map(|notification| async move {
+            match notification {
+                Ok(n) => match serde_json::from_str::<Job>(n.payload()) {
+                    Ok(job) => Some(job),
+                    Err(e) => {
+                        warn!(
+                            "Failed to parse notification: {}. Payload: {}",
+                            e,
+                            n.payload()
+                        );
+                        None
+                    }
+                },
+                Err(e) => {
+                    warn!("Failed to read notification: {}", e);
+                    None
+                }
+            }
+        })
+        .for_each_concurrent(concurrency, |job| async {
+            let job_id = job.id;
+
+            let res = match handle_job(job, broadcaster.clone(), pool.clone()).await {
+                Ok(_) => queue.delete_job(job_id).await,
                 Err(err) => {
-                    warn!("Failed to pull jobs: {}", err);
-                    tokio::time::sleep(Duration::from_millis(500)).await;
-                    Vec::new()
+                    warn!("Job failed: {}", err);
+                    queue.fail_job(job_id).await
                 }
             };
 
-            let number_of_jobs = jobs.len();
-            if number_of_jobs > 0 {
-                info!("Fetched {} jobs", number_of_jobs);
+            match res {
+                Ok(_) => {}
+                Err(err) => {
+                    warn!("Deleting job failed: {}", err);
+                }
             }
+        })
+        .await;
 
-            stream::iter(jobs)
-                .for_each_concurrent(concurrency, |job| async {
-                    let job_id = job.id;
-
-                    let res = match handle_job(job, broadcaster.clone(), pool.clone()).await {
-                        Ok(_) => queue.delete_job(job_id).await,
-                        Err(err) => {
-                            warn!("Job failed: {}", err);
-                            queue.fail_job(job_id).await
-                        }
-                    };
-
-                    match res {
-                        Ok(_) => {}
-                        Err(err) => {
-                            warn!("Deleting job failed: {}", err);
-                        }
-                    }
-                })
-                .await;
-        }
-
-        // sleep not to overload our database
-        tokio::time::sleep(Duration::from_secs(1)).await;
-    }
+    Ok(())
 }
 
 async fn handle_job(
