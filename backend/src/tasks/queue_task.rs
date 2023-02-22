@@ -15,8 +15,6 @@ use sqlx::PgPool;
 use std::{sync::Arc, time::Duration};
 use tracing::{info, span, warn, Level};
 
-const CONCURRENCY: usize = 8;
-
 pub async fn run_queue_until_stopped(
     queue: Arc<dyn Queue>,
     broadcaster: Arc<Broadcaster>,
@@ -30,12 +28,14 @@ async fn run_queue(
     broadcaster: Arc<Broadcaster>,
     pool: PgPool,
 ) -> Result<(), anyhow::Error> {
+    let concurrency = num_cpus::get();
+
     loop {
         {
             let span = span!(Level::INFO, "Queue Task");
             let _enter = span.enter();
 
-            let jobs = match queue.pull(CONCURRENCY as u32).await {
+            let jobs = match queue.pull(concurrency as u32 * 2).await {
                 Ok(jobs) => jobs,
                 Err(err) => {
                     warn!("Failed to pull jobs: {}", err);
@@ -50,7 +50,7 @@ async fn run_queue(
             }
 
             stream::iter(jobs)
-                .for_each_concurrent(CONCURRENCY, |job| async {
+                .for_each_concurrent(concurrency, |job| async {
                     let job_id = job.id;
 
                     let res = match handle_job(job, broadcaster.clone(), pool.clone()).await {

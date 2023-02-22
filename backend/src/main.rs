@@ -1,4 +1,5 @@
 use backend::config::read_config;
+use backend::dedicated_executor::DedicatedExecutor;
 use backend::queue::postgres::PostgresQueue;
 use backend::queue::queue::Queue;
 use backend::sse::broadcast::Broadcaster;
@@ -10,7 +11,6 @@ use dotenvy::dotenv;
 use sqlx::postgres::PgPoolOptions;
 use std::fmt::{Debug, Display};
 use std::sync::Arc;
-use tokio::task::JoinError;
 
 #[actix_web::main]
 async fn main() -> anyhow::Result<()> {
@@ -34,7 +34,8 @@ async fn main() -> anyhow::Result<()> {
     queue.clear_running_jobs().await?;
 
     let broadcaster = Broadcaster::create();
-    let queue_task = tokio::spawn(run_queue_until_stopped(
+    let queue_exec = DedicatedExecutor::new("TaskQueue DedicatedExecutor", num_cpus::get());
+    let queue_task = queue_exec.spawn(run_queue_until_stopped(
         queue.clone(),
         broadcaster.clone(),
         db_pool.clone(),
@@ -54,7 +55,10 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn report_exit(task_name: &str, outcome: Result<Result<(), impl Debug + Display>, JoinError>) {
+fn report_exit(
+    task_name: &str,
+    outcome: Result<Result<(), impl Debug + Display>, impl Debug + Display>,
+) {
     match outcome {
         Ok(Ok(())) => {
             tracing::info!("{} has exited", task_name)

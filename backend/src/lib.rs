@@ -10,3 +10,4 @@ pub mod tasks;
 pub mod telemetry;
 pub mod utils;
 pub mod sse;
+pub mod dedicated_executor;
