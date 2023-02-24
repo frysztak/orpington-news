@@ -10,7 +10,9 @@ use crate::{
 };
 
 use super::{
-    get::get_collections_impl, types::CollectionToRefresh, update_collection::update_collection,
+    get::get_collections_impl,
+    types::CollectionToRefresh,
+    update_collection::{commit_update_collection, update_collection},
 };
 
 #[derive(Deserialize)]
@@ -132,23 +134,25 @@ CALL preferences_prune_expanded_collections($1)
         .map_err(GenericError::UnexpectedError)?;
     }
 
+    let update_result = update_collection(CollectionToRefresh {
+        id: collection_id,
+        url: body.url.clone(),
+        etag: None,
+    })
+    .await
+    .map_err(Into::into)
+    .map_err(GenericError::UnexpectedError)?;
+
+    commit_update_collection(update_result, &mut transaction)
+        .await
+        .map_err(Into::into)
+        .map_err(GenericError::UnexpectedError)?;
+
     transaction
         .commit()
         .await
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;
-
-    update_collection(
-        CollectionToRefresh {
-            id: collection_id,
-            url: body.url.clone(),
-            etag: None,
-        },
-        pool.as_ref().clone(),
-    )
-    .await
-    .map_err(Into::into)
-    .map_err(GenericError::UnexpectedError)?;
 
     let collections = get_collections_impl(pool.as_ref(), user_id)
         .await

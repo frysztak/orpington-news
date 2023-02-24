@@ -58,6 +58,7 @@ console-subscriber = "0.1.8"
 tokio-util = "0.7.7"
 pin-project = "1.0.12"
 num_cpus = "1.15.0"
+futures-batch = "0.6.1"
 
 [features]
 e2e = []

@@ -1,7 +1,9 @@
 use crate::{
     queue::queue::{Job, Message, Queue},
     routes::collections::{
-        get::get_collections_impl, types::CollectionToRefresh, update_collection::update_collection,
+        get::get_collections_impl,
+        types::CollectionToRefresh,
+        update_collection::{commit_update_collection, update_collection, UpdateCollectionResult},
     },
     session_state::ID,
     sse::{
@@ -11,9 +13,12 @@ use crate::{
 };
 use chrono::Utc;
 use futures::StreamExt;
+use futures_batch::ChunksTimeoutStreamExt;
 use sqlx::PgPool;
 use std::sync::Arc;
-use tracing::warn;
+use std::time::Duration;
+use tracing::{info, warn};
+use uuid::Uuid;
 
 pub async fn run_queue_until_stopped(
     queue: Arc<dyn Queue>,
@@ -22,6 +27,8 @@ pub async fn run_queue_until_stopped(
 ) -> Result<(), anyhow::Error> {
     run_queue(queue, broadcaster, pool).await
 }
+
+struct UpdateResultWithJobId(Uuid, UpdateCollectionResult);
 
 async fn run_queue(
     queue: Arc<dyn Queue>,
@@ -54,22 +61,27 @@ async fn run_queue(
                 }
             }
         })
-        .for_each_concurrent(concurrency, |job| async {
-            let job_id = job.id;
+        .map(|job| async move {
+            match &job.message {
+                Message::RefreshFeed { feed_id, etag, url } => {
+                    info!("Updating {}", feed_id);
+                    let update_result = update_collection(CollectionToRefresh {
+                        id: *feed_id,
+                        url: url.clone(),
+                        etag: etag.clone(),
+                    })
+                    .await;
 
-            let res = match handle_job(job, broadcaster.clone(), pool.clone()).await {
-                Ok(_) => queue.delete_job(job_id).await,
-                Err(err) => {
-                    warn!("Job failed: {}", err);
-                    queue.fail_job(job_id).await
+                    UpdateResultWithJobId(job.id, update_result)
                 }
-            };
-
-            match res {
-                Ok(_) => {}
-                Err(err) => {
-                    warn!("Deleting job failed: {}", err);
-                }
+            }
+        })
+        .buffer_unordered(concurrency)
+        .chunks_timeout(20, Duration::from_millis(500))
+        .for_each(|results| async {
+            match commit_batch(results, &pool, broadcaster.clone(), queue.clone()).await {
+                Err(e) => warn!("Failed to commit updates: {}", e),
+                _ => {}
             }
         })
         .await;
@@ -77,48 +89,52 @@ async fn run_queue(
     Ok(())
 }
 
-async fn handle_job(
-    job: Job,
+async fn commit_batch(
+    results: Vec<UpdateResultWithJobId>,
+    pool: &PgPool,
     broadcaster: Arc<Broadcaster>,
-    pool: PgPool,
+    queue: Arc<dyn Queue>,
 ) -> Result<(), anyhow::Error> {
-    match &job.message {
-        Message::RefreshFeed { feed_id, etag, url } => {
-            let update_result = update_collection(
-                CollectionToRefresh {
-                    id: *feed_id,
-                    url: url.clone(),
-                    etag: etag.clone(),
-                },
-                pool.clone(),
-            )
-            .await;
+    let mut transaction = pool.begin().await?;
+    let mut feed_ids = vec![];
 
-            let unread_count = match get_unread_map(*feed_id, &pool).await {
-                Ok(unread_count) => Some(unread_count),
-                _ => None,
-            };
-
-            broadcaster
-                .broadcast(SSEMessage::UpdatedFeeds {
-                    feed_ids: vec![*feed_id],
-                    unread_count,
-                })
-                .await;
-
-            update_result.map_err(Into::into)
+    for UpdateResultWithJobId(job_id, result) in results {
+        match result {
+            Ok(data) => {
+                let collection_id = (&data).get_collection_id();
+                commit_update_collection(data, &mut transaction).await?;
+                queue.delete_job(job_id).await?;
+                feed_ids.push(collection_id);
+            }
+            Err(e) => {
+                warn!("Feed failed to update: {}", e);
+                queue.fail_job(job_id).await?;
+                feed_ids.push(e.get_collection_id());
+            }
         }
     }
+
+    let unread_count = match get_unread_map(2, &pool).await {
+        Ok(unread_count) => Some(unread_count),
+        _ => None,
+    };
+
+    info!("Commiting {:#?}", feed_ids);
+    transaction.commit().await?;
+
+    broadcaster
+        .broadcast(SSEMessage::UpdatedFeeds {
+            feed_ids,
+            unread_count,
+        })
+        .await;
+
+    Ok(())
 }
 
-async fn get_unread_map(feed_id: ID, pool: &PgPool) -> Result<UnreadCount, sqlx::Error> {
-    let collection_owner =
-        sqlx::query_scalar!(r#"SELECT user_id FROM collections WHERE id = $1"#, feed_id)
-            .fetch_one(pool)
-            .await?;
-
+async fn get_unread_map(user_id: ID, pool: &PgPool) -> Result<UnreadCount, sqlx::Error> {
     let updated_at = Utc::now();
-    let collections = get_collections_impl(pool, collection_owner).await?;
+    let collections = get_collections_impl(pool, user_id).await?;
 
     let counts = collections
         .into_iter()

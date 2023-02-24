@@ -7,7 +7,7 @@ use feed_rs::{
 };
 use reqwest::{header::HeaderValue, StatusCode};
 use serde_json::json;
-use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, PgPool};
+use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, Postgres, Transaction};
 use thiserror::Error;
 use tracing::{info, warn};
 use url::Url;
@@ -89,7 +89,8 @@ fn map_feed_items(
     collection_id: ID,
     date_updated: DateTime<Utc>,
 ) -> Vec<InsertCollectionItem> {
-    feed.entries
+    let mut items: Vec<InsertCollectionItem> = feed
+        .entries
         .iter()
         .filter_map(|entry| {
             let title = match &entry.title {
@@ -151,7 +152,22 @@ fn map_feed_items(
                 collection_id,
             })
         })
-        .collect()
+        .collect();
+
+    let len_before = items.len();
+    items.sort_by(|a, b| a.url.cmp(&b.url));
+    items.dedup_by(|a, b| a.url == b.url);
+    let len_after = items.len();
+
+    if len_after != len_before {
+        warn!(
+            "Collection ID {}: dropped {} items with identical URLs",
+            collection_id,
+            len_before - len_after
+        );
+    }
+
+    items
 }
 
 #[tracing::instrument(skip(conn))]
@@ -263,37 +279,72 @@ DO UPDATE SET
 #[derive(Error, Debug)]
 #[allow(dead_code)]
 pub enum UpdateCollectionError {
-    #[error("Failed to fetch feed")]
-    FetchError(#[source] anyhow::Error),
+    #[error("Failed to fetch feed, collection ID {}", collection_id)]
+    FetchError {
+        collection_id: ID,
+        #[source]
+        source: anyhow::Error,
+    },
     #[error("Unexpected error")]
-    UnexpectedError(#[source] anyhow::Error),
+    UnexpectedError {
+        collection_id: ID,
+        #[source]
+        source: anyhow::Error,
+    },
 }
 
-#[tracing::instrument(skip(pool))]
-pub async fn update_collection(
-    collection: CollectionToRefresh,
-    pool: PgPool,
-) -> Result<(), UpdateCollectionError> {
-    let fetch_result = fetch_feed(&collection)
-        .await
-        .map_err(Into::into)
-        .map_err(UpdateCollectionError::FetchError)?;
+impl UpdateCollectionError {
+    pub fn get_collection_id(self) -> ID {
+        match self {
+            UpdateCollectionError::FetchError { collection_id, .. } => collection_id,
+            UpdateCollectionError::UnexpectedError { collection_id, .. } => collection_id,
+        }
+    }
+}
 
+pub enum UpdateCollectionData {
+    NoChanges {
+        collection_id: ID,
+        date: DateTime<Utc>,
+    },
+    Insert {
+        collection_id: ID,
+        items: Vec<InsertCollectionItem>,
+        etag: Option<String>,
+        date: DateTime<Utc>,
+    },
+}
+
+impl UpdateCollectionData {
+    pub fn get_collection_id(&self) -> ID {
+        match self {
+            UpdateCollectionData::NoChanges { collection_id, .. } => *collection_id,
+            UpdateCollectionData::Insert { collection_id, .. } => *collection_id,
+        }
+    }
+}
+
+pub type UpdateCollectionResult = Result<UpdateCollectionData, UpdateCollectionError>;
+
+#[tracing::instrument()]
+pub async fn update_collection(collection: CollectionToRefresh) -> UpdateCollectionResult {
     let now = Utc::now();
 
-    let mut conn = pool
-        .acquire()
-        .await
-        .map_err(Into::into)
-        .map_err(UpdateCollectionError::UnexpectedError)?;
+    let fetch_result =
+        fetch_feed(&collection)
+            .await
+            .map_err(|e| UpdateCollectionError::FetchError {
+                collection_id: collection.id,
+                source: e.into(),
+            })?;
 
     match &fetch_result {
         FetchFeedSuccess::NotModified => {
             info!("Received 304");
-            set_collection_date_updated(&mut *conn, collection.id, now)
-                .await
-                .map_err(Into::into)
-                .map_err(UpdateCollectionError::UnexpectedError)?;
+            Ok(UpdateCollectionData::NoChanges {
+                collection_id: collection.id,
+                date: now,
+            })
         }
         FetchFeedSuccess::Fetched { feed, etag } => {
             let items = map_feed_items(feed, collection.id, now);
@@ -301,36 +352,43 @@ pub async fn update_collection(
                 warn!("Dropped {} feed entries", feed.entries.len() - items.len());
             }
 
-            let mut transaction = pool
-                .begin()
-                .await
-                .map_err(Into::into)
-                .map_err(UpdateCollectionError::UnexpectedError)?;
+            Ok(UpdateCollectionData::Insert {
+                collection_id: collection.id,
+                date: now,
+                etag: etag.clone(),
+                items,
+            })
+        }
+    }
+}
 
-            insert_collection_items(&mut transaction, &items)
-                .await
-                .map_err(Into::into)
-                .map_err(UpdateCollectionError::UnexpectedError)?;
+#[tracing::instrument(skip(transaction, update_result))]
+pub async fn commit_update_collection(
+    update_result: UpdateCollectionData,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<(), sqlx::Error> {
+    match update_result {
+        UpdateCollectionData::NoChanges {
+            collection_id,
+            date,
+        } => {
+            set_collection_date_updated(transaction, collection_id, date).await?;
+        }
+        UpdateCollectionData::Insert {
+            collection_id,
+            items,
+            etag,
+            date,
+        } => {
+            insert_collection_items(transaction, &items).await?;
 
             if let Some(etag) = etag {
-                set_collection_etag(&mut transaction, collection.id, etag)
-                    .await
-                    .map_err(Into::into)
-                    .map_err(UpdateCollectionError::UnexpectedError)?;
+                set_collection_etag(transaction, collection_id, &etag).await?;
             }
 
-            set_collection_date_updated(&mut transaction, collection.id, now)
-                .await
-                .map_err(Into::into)
-                .map_err(UpdateCollectionError::UnexpectedError)?;
-
-            transaction
-                .commit()
-                .await
-                .map_err(Into::into)
-                .map_err(UpdateCollectionError::UnexpectedError)?;
+            set_collection_date_updated(transaction, collection_id, date).await?;
         }
-    };
+    }
 
     Ok(())
 }
