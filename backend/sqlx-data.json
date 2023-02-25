@@ -93,6 +93,20 @@
     },
     "query": "\nCALL preferences_prune_expanded_collections($1)\n    "
   },
+  "1720aea0caf90ffdc34ea71c0e3b265b90e5281d5f47f4766e2c27330a2203c9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Timestamptz",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\nUPDATE queue\nSET\n  status = $1,\n  updated_at = $2,\n  failed_attempts = failed_attempts + 1\nWHERE id = $3\n"
+  },
   "1d4a09a9ca80cd427bacaed76086d6a3f9ba1a81a6012fc7dc19e46a56bdbe8c": {
     "describe": {
       "columns": [],
@@ -546,6 +560,19 @@
     },
     "query": "\nUPDATE\n  collection_items\nSET\n  date_read = $1\nWHERE\n  collection_id = ANY($2)\n"
   },
+  "79583e5e8f31ea84c111ca9d02f7c223653e039bcd29d1c844ee573d42c0b423": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\nUPDATE queue\nSET status = $1\nWHERE status = $2\n        "
+  },
   "89fef0d95e009e14c52a23f9e98b551c6e25ec83d947c8edceccfb040a1af776": {
     "describe": {
       "columns": [],
@@ -882,6 +909,16 @@
     },
     "query": "CALL collections_recalculate_order()"
   },
+  "dc276d814bd5220630b60d6de5fce4b3400ded0a05cbf2032caa4cad4acb1e83": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\nDELETE FROM queue\n"
+  },
   "e0b0c822468ec3941f43bed6e17eeeec9ba705fb0ff31db3be5523325c16bc56": {
     "describe": {
       "columns": [],
@@ -1031,6 +1068,18 @@
       }
     },
     "query": "\nINSERT INTO collection_items (\n  \"url\",\n  title,\n  summary,\n  full_text,\n  thumbnail_url,\n  date_published,\n  date_updated,\n  categories,\n  reading_time,\n  collection_id)\nSELECT\n  \"url\",\n  title,\n  summary,\n  full_text,\n  thumbnail_url,\n  to_timestamp(date_published) as date_published,\n  to_timestamp(date_updated) as date_updated,\n  categories,\n  reading_time,\n  collection_id\nFROM jsonb_to_recordset($1) AS t(\n    \"url\" text,\n    title text,\n    summary text,\n    full_text text,\n    thumbnail_url text,\n    date_published integer,\n    date_updated integer,\n    categories text[],\n    reading_time float4,\n    collection_id integer)\nON CONFLICT (collection_id, \"url\")\nDO UPDATE SET\n    \"url\" = EXCLUDED. \"url\",\n    title = EXCLUDED.title,\n    summary = EXCLUDED.summary,\n    full_text = EXCLUDED.full_text,\n    thumbnail_url = EXCLUDED.thumbnail_url,\n    date_published = GREATEST (collection_items.date_published, EXCLUDED.date_published),\n    date_updated = GREATEST (collection_items.date_updated, EXCLUDED.date_updated),\n    categories = EXCLUDED.categories,\n    reading_time = EXCLUDED.reading_time\n"
+  },
+  "e80dcb8c2fe4429d50be57d4df7c90215eb595c896b49b7e361ec7f580bdcae9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\nDELETE FROM queue WHERE id = $1\n"
   },
   "e9873c049adf7bea72cb2d1f976a64126e9e601c2bbb906baf5cb7467bd8bf9c": {
     "describe": {

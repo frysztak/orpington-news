@@ -3,7 +3,7 @@ use serde_json::{json, Value};
 use sqlx::{
     postgres::{PgHasArrayType, PgListener, PgTypeInfo},
     types::{Json, Uuid},
-    Pool, Postgres,
+    Pool, Postgres, Transaction,
 };
 use ulid::Ulid;
 
@@ -73,37 +73,6 @@ impl Queue for PostgresQueue {
         PgListener::connect_with(&self.db).await.map_err(Into::into)
     }
 
-    async fn push(
-        &self,
-        job: Message,
-        date: Option<chrono::DateTime<chrono::Utc>>,
-        priority: Option<TaskPriority>,
-    ) -> Result<(), anyhow::Error> {
-        let scheduled_for = date.unwrap_or(chrono::Utc::now());
-        let failed_attempts: i32 = 0;
-        let message = Json(job);
-        let status = PostgresJobStatus::Queued;
-        let priority = priority.unwrap_or(TaskPriority::Regular);
-        let now = chrono::Utc::now();
-        let job_id: Uuid = Ulid::new().into(); // ULID to UUID
-        let query = "INSERT INTO queue
-            (id, created_at, updated_at, scheduled_for, failed_attempts, status, priority, message)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
-
-        sqlx::query(query)
-            .bind(job_id)
-            .bind(now)
-            .bind(now)
-            .bind(scheduled_for)
-            .bind(failed_attempts)
-            .bind(status)
-            .bind(priority)
-            .bind(message)
-            .execute(&self.db)
-            .await?;
-        Ok(())
-    }
-
     async fn push_bulk(
         &self,
         jobs: Vec<Message>,
@@ -170,71 +139,105 @@ SELECT * FROM UNNEST(
         Ok(())
     }
 
-    async fn pull(&self, number_of_jobs: u32) -> Result<Vec<Job>, anyhow::Error> {
+    async fn pull(&self) -> Result<Vec<Job>, anyhow::Error> {
         let now = chrono::Utc::now();
-        let query = "UPDATE queue
-            SET status = $1, updated_at = $2
-            WHERE id IN (
-                SELECT id
-                FROM queue
-                WHERE status = $3 AND scheduled_for <= $4 AND failed_attempts < $5
-                ORDER BY priority DESC, scheduled_for
-                FOR UPDATE SKIP LOCKED
-                LIMIT $6
-            )
-            RETURNING *";
 
-        let jobs: Vec<PostgresJob> = sqlx::query_as::<_, PostgresJob>(query)
-            .bind(PostgresJobStatus::Running)
-            .bind(now)
-            .bind(PostgresJobStatus::Queued)
-            .bind(now)
-            .bind(MAX_FAILED_ATTEMPTS)
-            .bind(number_of_jobs as i32)
-            .fetch_all(&self.db)
-            .await?;
+        let jobs: Vec<PostgresJob> = sqlx::query_as::<_, PostgresJob>(
+            r#"
+UPDATE queue
+SET status = $1, updated_at = $2
+WHERE id IN (
+    SELECT id
+    FROM queue
+    WHERE status = $3 AND scheduled_for <= $4 AND failed_attempts < $5
+    ORDER BY priority DESC, scheduled_for
+    FOR UPDATE SKIP LOCKED
+)
+RETURNING *
+"#,
+        )
+        .bind(PostgresJobStatus::Running)
+        .bind(now)
+        .bind(PostgresJobStatus::Queued)
+        .bind(now)
+        .bind(MAX_FAILED_ATTEMPTS)
+        .fetch_all(&self.db)
+        .await?;
+
         Ok(jobs.into_iter().map(Into::into).collect())
     }
 
-    async fn delete_job(&self, job_id: Uuid) -> Result<(), anyhow::Error> {
-        let query = "DELETE FROM queue WHERE id = $1";
+    async fn delete_job(
+        &self,
+        job_id: Uuid,
+        transaction: Option<&mut Transaction<'_, Postgres>>,
+    ) -> Result<(), anyhow::Error> {
+        let query = sqlx::query!(
+            r#"
+DELETE FROM queue WHERE id = $1
+"#,
+            job_id
+        );
 
-        sqlx::query(query).bind(job_id).execute(&self.db).await?;
+        match transaction {
+            Some(t) => query.execute(t).await,
+            None => query.execute(&self.db).await,
+        }?;
+
         Ok(())
     }
 
-    async fn fail_job(&self, job_id: Uuid) -> Result<(), anyhow::Error> {
+    async fn fail_job(
+        &self,
+        job_id: Uuid,
+        transaction: Option<&mut Transaction<'_, Postgres>>,
+    ) -> Result<(), anyhow::Error> {
         let now = chrono::Utc::now();
-        let query = "UPDATE queue
-            SET status = $1, updated_at = $2, failed_attempts = failed_attempts + 1
-            WHERE id = $3";
 
-        sqlx::query(query)
-            .bind(PostgresJobStatus::Queued)
-            .bind(now)
-            .bind(job_id)
-            .execute(&self.db)
-            .await?;
+        let query = sqlx::query!(
+            r#"
+UPDATE queue
+SET
+  status = $1,
+  updated_at = $2,
+  failed_attempts = failed_attempts + 1
+WHERE id = $3
+"#,
+            PostgresJobStatus::Queued as i32,
+            now,
+            job_id
+        );
+
+        match transaction {
+            Some(t) => query.execute(t).await,
+            None => query.execute(&self.db).await,
+        }?;
+
         Ok(())
     }
 
     async fn clear(&self) -> Result<(), anyhow::Error> {
-        let query = "DELETE FROM queue";
+        sqlx::query!(
+            r#"
+DELETE FROM queue
+"#
+        )
+        .execute(&self.db)
+        .await?;
 
-        sqlx::query(query).execute(&self.db).await?;
         Ok(())
     }
 
     async fn clear_running_jobs(&self) -> Result<(), anyhow::Error> {
-        sqlx::query(
+        sqlx::query!(
             r#"
 UPDATE queue
 SET status = $1
 WHERE status = $2
         "#,
+            PostgresJobStatus::Queued as i32,
+            PostgresJobStatus::Running as i32
         )
-        .bind(PostgresJobStatus::Queued)
-        .bind(PostgresJobStatus::Running)
         .execute(&self.db)
         .await?;
 

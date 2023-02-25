@@ -14,6 +14,7 @@ use crate::{
 use chrono::Utc;
 use futures::StreamExt;
 use futures_batch::ChunksTimeoutStreamExt;
+use futures_util::stream;
 use sqlx::PgPool;
 use std::sync::Arc;
 use std::time::Duration;
@@ -40,7 +41,11 @@ async fn run_queue(
     let mut listener = queue.get_listener().await?;
     listener.listen("queue.new_task").await?;
 
-    listener
+    let existing_tasks_vec = queue.pull().await?;
+    info!("Pulled {} existing queue tasks", existing_tasks_vec.len());
+
+    let existing_tasks = stream::iter(existing_tasks_vec);
+    let incoming_tasks = listener
         .into_stream()
         .filter_map(|notification| async move {
             match notification {
@@ -60,7 +65,10 @@ async fn run_queue(
                     None
                 }
             }
-        })
+        });
+
+    existing_tasks
+        .chain(incoming_tasks)
         .map(|job| async move {
             match &job.message {
                 Message::RefreshFeed { feed_id, etag, url } => {
@@ -103,17 +111,18 @@ async fn commit_batch(
             Ok(data) => {
                 let collection_id = (&data).get_collection_id();
                 commit_update_collection(data, &mut transaction).await?;
-                queue.delete_job(job_id).await?;
+                queue.delete_job(job_id, Some(&mut transaction)).await?;
                 feed_ids.push(collection_id);
             }
             Err(e) => {
                 warn!("Feed failed to update: {}", e);
-                queue.fail_job(job_id).await?;
+                queue.fail_job(job_id, Some(&mut transaction)).await?;
                 feed_ids.push(e.get_collection_id());
             }
         }
     }
 
+    // TODO: user ID
     let unread_count = match get_unread_map(2, &pool).await {
         Ok(unread_count) => Some(unread_count),
         _ => None,
