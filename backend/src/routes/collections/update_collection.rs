@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use feed_rs::{
     model::{Content, Feed, Text},
     parser,
@@ -89,6 +89,8 @@ fn map_feed_items(
     collection_id: ID,
     date_updated: DateTime<Utc>,
 ) -> Vec<InsertCollectionItem> {
+    let epoch = Utc.with_ymd_and_hms(1970, 1, 1, 0, 0, 0).unwrap();
+
     let mut items: Vec<InsertCollectionItem> = feed
         .entries
         .iter()
@@ -138,6 +140,13 @@ fn map_feed_items(
             };
 
             let date_published = entry.published.or(entry.updated)?;
+            if date_published < epoch {
+                warn!(
+                    "Article published before epoch. Article URL: {}, publish date: {}",
+                    url, date_published
+                );
+                return None;
+            }
 
             Some(InsertCollectionItem {
                 title,
