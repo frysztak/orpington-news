@@ -279,13 +279,13 @@ DO UPDATE SET
 #[derive(Error, Debug)]
 #[allow(dead_code)]
 pub enum UpdateCollectionError {
-    #[error("Failed to fetch feed, collection ID {}", collection_id)]
+    #[error("Failed to fetch feed (ID {}) with error {}", collection_id, source)]
     FetchError {
         collection_id: ID,
         #[source]
         source: anyhow::Error,
     },
-    #[error("Unexpected error")]
+    #[error("Unexpected error (ID {}): {}", collection_id, source)]
     UnexpectedError {
         collection_id: ID,
         #[source]

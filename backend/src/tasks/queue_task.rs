@@ -64,7 +64,6 @@ async fn run_queue(
         .map(|job| async move {
             match &job.message {
                 Message::RefreshFeed { feed_id, etag, url } => {
-                    info!("Updating {}", feed_id);
                     let update_result = update_collection(CollectionToRefresh {
                         id: *feed_id,
                         url: url.clone(),
@@ -89,6 +88,7 @@ async fn run_queue(
     Ok(())
 }
 
+#[tracing::instrument(skip(results, pool, broadcaster, queue))]
 async fn commit_batch(
     results: Vec<UpdateResultWithJobId>,
     pool: &PgPool,
@@ -119,7 +119,7 @@ async fn commit_batch(
         _ => None,
     };
 
-    info!("Commiting {:#?}", feed_ids);
+    info!("Committing {:#?}", feed_ids);
     transaction.commit().await?;
 
     broadcaster
