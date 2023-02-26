@@ -1,9 +1,12 @@
-use std::{sync::Arc, time::Duration};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 
 use actix_web::rt::time::interval;
 use actix_web_lab::sse::{self, ChannelStream, Sse};
 use futures_util::future;
 use parking_lot::Mutex;
+use tracing::warn;
+
+use crate::session_state::ID;
 
 use super::messages::SSEMessage;
 
@@ -11,9 +14,11 @@ pub struct Broadcaster {
     inner: Mutex<BroadcasterInner>,
 }
 
+type ClientMap = HashMap<ID, sse::Sender>;
+
 #[derive(Debug, Clone, Default)]
 struct BroadcasterInner {
-    clients: Vec<sse::Sender>,
+    clients: ClientMap,
 }
 
 impl Broadcaster {
@@ -45,15 +50,15 @@ impl Broadcaster {
     async fn remove_stale_clients(&self) {
         let clients = self.inner.lock().clients.clone();
 
-        let mut ok_clients = Vec::new();
+        let mut ok_clients = ClientMap::new();
 
-        for client in clients {
+        for (id, client) in clients {
             if client
                 .send(sse::Data::new_json(SSEMessage::Ping).unwrap())
                 .await
                 .is_ok()
             {
-                ok_clients.push(client.clone());
+                ok_clients.insert(id, client.clone());
             }
         }
 
@@ -61,14 +66,14 @@ impl Broadcaster {
     }
 
     /// Registers client with broadcaster, returning an SSE response body.
-    pub async fn new_client(&self) -> Sse<ChannelStream> {
+    pub async fn new_client(&self, user_id: ID) -> Sse<ChannelStream> {
         let (tx, rx) = sse::channel(10);
 
         tx.send(sse::Data::new_json(SSEMessage::Ping).unwrap())
             .await
             .unwrap();
 
-        self.inner.lock().clients.push(tx);
+        self.inner.lock().clients.insert(user_id, tx);
 
         rx
     }
@@ -78,11 +83,29 @@ impl Broadcaster {
         let clients = self.inner.lock().clients.clone();
 
         let send_futures = clients
-            .iter()
+            .values()
             .map(|client| client.send(sse::Data::new_json(&msg).unwrap()));
 
         // try to send to all clients, ignoring failures
         // disconnected clients will get swept up by `remove_stale_clients`
         let _x = future::join_all(send_futures).await;
+    }
+
+    /// Send `msg` to a specific client.
+    pub async fn send(&self, user_id: ID, msg: SSEMessage) {
+        let clients = self.inner.lock().clients.clone();
+        let client = clients.get(&user_id).clone();
+
+        match client {
+            Some(c) => {
+                let result = c.send(sse::Data::new_json(&msg).unwrap()).await;
+                if let Err(e) = result {
+                    warn!("Failed to send SSE message: {}", e);
+                };
+            }
+            None => {
+                warn!("SSE client with user ID {} not found", user_id);
+            }
+        };
     }
 }

@@ -55,6 +55,7 @@ pub struct InsertCollectionItem {
 #[serde(rename_all = "camelCase")]
 #[allow(dead_code)]
 pub struct CollectionToRefresh {
+    pub owner_id: ID,
     pub id: ID,
     pub url: String,
     pub etag: Option<String>,

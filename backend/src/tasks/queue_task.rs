@@ -16,8 +16,8 @@ use futures::StreamExt;
 use futures_batch::ChunksTimeoutStreamExt;
 use futures_util::stream;
 use sqlx::PgPool;
-use std::sync::Arc;
 use std::time::Duration;
+use std::{collections::HashMap, sync::Arc};
 use tracing::{info, warn};
 use uuid::Uuid;
 
@@ -29,7 +29,7 @@ pub async fn run_queue_until_stopped(
     run_queue(queue, broadcaster, pool).await
 }
 
-struct UpdateResultWithJobId(Uuid, UpdateCollectionResult);
+struct UpdateResultWithJobId(Uuid, ID, UpdateCollectionResult);
 
 async fn run_queue(
     queue: Arc<dyn Queue>,
@@ -71,15 +71,21 @@ async fn run_queue(
         .chain(incoming_tasks)
         .map(|job| async move {
             match &job.message {
-                Message::RefreshFeed { feed_id, etag, url } => {
+                Message::RefreshFeed {
+                    user_id,
+                    feed_id,
+                    etag,
+                    url,
+                } => {
                     let update_result = update_collection(CollectionToRefresh {
+                        owner_id: *user_id,
                         id: *feed_id,
                         url: url.clone(),
                         etag: etag.clone(),
                     })
                     .await;
 
-                    UpdateResultWithJobId(job.id, update_result)
+                    UpdateResultWithJobId(job.id, *user_id, update_result)
                 }
             }
         })
@@ -104,39 +110,55 @@ async fn commit_batch(
     queue: Arc<dyn Queue>,
 ) -> Result<(), anyhow::Error> {
     let mut transaction = pool.begin().await?;
-    let mut feed_ids = vec![];
+    // let mut feed_ids = vec![];
 
-    for UpdateResultWithJobId(job_id, result) in results {
+    let mut unread_counts = HashMap::<ID, Option<UnreadCount>>::new();
+    let mut feed_ids = HashMap::<ID, Vec<ID>>::new();
+
+    for UpdateResultWithJobId(job_id, user_id, result) in results {
+        let collection_id: ID;
+
         match result {
             Ok(data) => {
-                let collection_id = (&data).get_collection_id();
+                collection_id = (&data).get_collection_id();
                 commit_update_collection(data, &mut transaction).await?;
                 queue.delete_job(job_id, Some(&mut transaction)).await?;
-                feed_ids.push(collection_id);
             }
             Err(e) => {
+                collection_id = e.get_collection_id();
                 warn!("Feed failed to update: {}", e);
                 queue.fail_job(job_id, Some(&mut transaction)).await?;
-                feed_ids.push(e.get_collection_id());
             }
         }
+
+        unread_counts.insert(user_id, None);
+        feed_ids
+            .entry(user_id)
+            .or_insert(vec![])
+            .push(collection_id);
     }
 
-    // TODO: user ID
-    let unread_count = match get_unread_map(2, &pool).await {
-        Ok(unread_count) => Some(unread_count),
-        _ => None,
-    };
+    let user_ids: Vec<ID> = unread_counts.keys().cloned().collect();
+    for user_id in user_ids {
+        unread_counts.insert(user_id, get_unread_map(user_id, &pool).await.ok());
+    }
 
     info!("Committing {:#?}", feed_ids);
     transaction.commit().await?;
 
-    broadcaster
-        .broadcast(SSEMessage::UpdatedFeeds {
-            feed_ids,
-            unread_count,
-        })
-        .await;
+    for ((user_id, unread_count), (_, feed_ids)) in
+        unread_counts.into_iter().zip(feed_ids.into_iter())
+    {
+        broadcaster
+            .send(
+                user_id,
+                SSEMessage::UpdatedFeeds {
+                    feed_ids,
+                    unread_count,
+                },
+            )
+            .await;
+    }
 
     Ok(())
 }

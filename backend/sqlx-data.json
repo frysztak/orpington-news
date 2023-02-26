@@ -321,6 +321,42 @@
     },
     "query": "SELECT user_id FROM collections WHERE id = $1"
   },
+  "458db6648377bfa256fe266de7af0955f157df6296f875f9be1b1f1bd0625c7a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "owner_id",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "url!",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "etag",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\nSELECT\n  id,\n  user_id as \"owner_id\",\n  url as \"url!\",\n  etag\nFROM\n  collections\nWHERE\n  url IS NOT NULL\n  AND (date_updated + refresh_interval * interval '1 minute' <= now()\n    OR date_updated IS NULL);\n        "
+  },
   "49bfcf02b564e2ab7820b4d182038d881666cd3e657e6b631d237c2e854fc8f2": {
     "describe": {
       "columns": [],
@@ -517,36 +553,6 @@
     },
     "query": "\nWITH old AS (\n  SELECT *\n  FROM users\n  WHERE id = $1\n)\nUPDATE\n  users\nSET\n  display_name = COALESCE($2, old.display_name),\n  avatar = CASE\n    WHEN $3 = TRUE THEN COALESCE($4, old.avatar)\n    WHEN $3 = FALSE THEN NULL\n    END\nFROM old\nWHERE users.id = $1\n    "
   },
-  "78600da980b492195ce57b52695b97c730f8618851f4f07ab5ddabf7b2ae67df": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "url!",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "etag",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\nSELECT\n  id, url as \"url!\", etag\nFROM\n  collections\nWHERE\n  url IS NOT NULL\n  AND (date_updated + refresh_interval * interval '1 minute' <= now()\n    OR date_updated IS NULL);\n        "
-  },
   "788be55774dd4e60b8ae7206b5c527f5878eb5b3f8d8b65879d75df8ce8907e9": {
     "describe": {
       "columns": [],
@@ -572,6 +578,44 @@
       }
     },
     "query": "\nUPDATE queue\nSET status = $1\nWHERE status = $2\n        "
+  },
+  "897ebaa1f51ec25666316afb0030ac200f2b8382460179be3a69387e33ed020b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "owner_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "id",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "url!",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "etag",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "\nWITH children_ids AS (\n    SELECT * FROM get_collection_children_ids($1)\n  )\n  SELECT\n    collections.user_id as \"owner_id\",\n    collections.id,\n    url as \"url!\",\n    etag\n  FROM\n    collections, children_ids\n  WHERE\n    url IS NOT NULL\n    AND collections.id = children_ids.id\n"
   },
   "89fef0d95e009e14c52a23f9e98b551c6e25ec83d947c8edceccfb040a1af776": {
     "describe": {
@@ -841,38 +885,6 @@
       }
     },
     "query": "\nUPDATE\n  collections\nSET\n  date_updated = $1\nWHERE\n  id = $2\n"
-  },
-  "d6f9c229ec809ac7642fe03d5c69357be0c996435e2a8fc1bfa29df4c4d67031": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "url!",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "etag",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Int4"
-        ]
-      }
-    },
-    "query": "\nWITH children_ids AS (\n    SELECT * FROM get_collection_children_ids($1)\n  )\n  SELECT\n    collections.id, url as \"url!\", etag\n  FROM\n    collections, children_ids\n  WHERE\n    url IS NOT NULL\n    AND collections.id = children_ids.id\n"
   },
   "d879f699406c058e8bea3701635e45130f3815b7e2b9f8d328ab6d02ac196c06": {
     "describe": {

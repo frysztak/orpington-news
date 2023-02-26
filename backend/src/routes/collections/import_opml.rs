@@ -154,6 +154,7 @@ pub async fn import_opml(
     let jobs = inserted_collections
         .iter()
         .map(|c| Message::RefreshFeed {
+            user_id,
             feed_id: c.id,
             url: c.url.clone(),
             etag: c.etag.clone(),
@@ -168,7 +169,7 @@ pub async fn import_opml(
 
     let feed_ids = inserted_collections.iter().map(|c| c.id).collect();
     broadcaster
-        .broadcast(SSEMessage::UpdatingFeeds { feed_ids })
+        .send(user_id, SSEMessage::UpdatingFeeds { feed_ids })
         .await;
 
     Ok(HttpResponse::Ok().json(collections))
@@ -239,6 +240,7 @@ async fn insert_outlines(
 
         if let Some(url) = url {
             inserted_collections.push(CollectionToRefresh {
+                owner_id: user_id,
                 id: collection_id,
                 url,
                 etag: None,

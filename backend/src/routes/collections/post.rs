@@ -135,6 +135,7 @@ CALL preferences_prune_expanded_collections($1)
     }
 
     let update_result = update_collection(CollectionToRefresh {
+        owner_id: user_id,
         id: collection_id,
         url: body.url.clone(),
         etag: None,

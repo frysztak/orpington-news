@@ -25,7 +25,10 @@ async fn run_refresh(queue: Arc<dyn Queue>, pool: PgPool) -> Result<(), anyhow::
                 CollectionToRefresh,
                 r#"
 SELECT
-  id, url as "url!", etag
+  id,
+  user_id as "owner_id",
+  url as "url!",
+  etag
 FROM
   collections
 WHERE
@@ -54,6 +57,7 @@ WHERE
             let jobs: Vec<Message> = collections
                 .into_iter()
                 .map(|c| Message::RefreshFeed {
+                    user_id: c.owner_id,
                     feed_id: c.id,
                     url: c.url,
                     etag: c.etag,

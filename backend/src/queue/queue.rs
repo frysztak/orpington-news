@@ -18,6 +18,7 @@ pub struct Job {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Message {
     RefreshFeed {
+        user_id: ID,
         feed_id: ID,
         url: String,
         etag: Option<String>,

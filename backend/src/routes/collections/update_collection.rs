@@ -303,10 +303,10 @@ pub enum UpdateCollectionError {
 }
 
 impl UpdateCollectionError {
-    pub fn get_collection_id(self) -> ID {
+    pub fn get_collection_id(&self) -> ID {
         match self {
-            UpdateCollectionError::FetchError { collection_id, .. } => collection_id,
-            UpdateCollectionError::UnexpectedError { collection_id, .. } => collection_id,
+            UpdateCollectionError::FetchError { collection_id, .. } => *collection_id,
+            UpdateCollectionError::UnexpectedError { collection_id, .. } => *collection_id,
         }
     }
 }

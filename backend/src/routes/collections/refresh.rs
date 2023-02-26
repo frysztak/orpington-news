@@ -6,7 +6,7 @@ use crate::{
     queue::queue::{Message, Queue, TaskPriority},
     routes::{collections::types::CollectionToRefresh, error::GenericError},
     session_state::ID,
-    sse::{broadcast::Broadcaster, messages::SSEMessage},
+    sse::{broadcast::Broadcaster, messages::SSEMessage}, authentication::UserId,
 };
 
 #[derive(Deserialize)]
@@ -25,7 +25,10 @@ pub async fn refresh_collection(
     pool: web::Data<PgPool>,
     broadcaster: web::Data<Broadcaster>,
     task_queue: web::Data<dyn Queue>,
+    user_id: UserId,
 ) -> Result<HttpResponse, InternalError<GenericError>> {
+    let user_id: ID = user_id.into();
+
     let collections = sqlx::query_as!(
         CollectionToRefresh,
         r#"
@@ -33,7 +36,10 @@ WITH children_ids AS (
     SELECT * FROM get_collection_children_ids($1)
   )
   SELECT
-    collections.id, url as "url!", etag
+    collections.user_id as "owner_id",
+    collections.id,
+    url as "url!",
+    etag
   FROM
     collections, children_ids
   WHERE
@@ -49,12 +55,13 @@ WITH children_ids AS (
 
     let feed_ids = collections.iter().map(|c| c.id).collect();
     broadcaster
-        .broadcast(SSEMessage::UpdatingFeeds { feed_ids })
+        .send(user_id, SSEMessage::UpdatingFeeds { feed_ids })
         .await;
 
     let jobs = collections
         .iter()
         .map(|c| Message::RefreshFeed {
+            user_id,
             feed_id: c.id,
             etag: c.etag.clone(),
             url: c.url.clone(),
