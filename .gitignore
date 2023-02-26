@@ -31,8 +31,8 @@ reports
 .nyc_output
 
 # cypress
-cypress/videos
-cypress/screenshots
+e2e/cypress/videos
+e2e/cypress/screenshots
 
 # Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
