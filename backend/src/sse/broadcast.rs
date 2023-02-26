@@ -94,7 +94,7 @@ impl Broadcaster {
     /// Send `msg` to a specific client.
     pub async fn send(&self, user_id: ID, msg: SSEMessage) {
         let clients = self.inner.lock().clients.clone();
-        let client = clients.get(&user_id).clone();
+        let client = clients.get(&user_id);
 
         match client {
             Some(c) => {

@@ -110,7 +110,6 @@ async fn commit_batch(
     queue: Arc<dyn Queue>,
 ) -> Result<(), anyhow::Error> {
     let mut transaction = pool.begin().await?;
-    // let mut feed_ids = vec![];
 
     let mut unread_counts = HashMap::<ID, Option<UnreadCount>>::new();
     let mut feed_ids = HashMap::<ID, Vec<ID>>::new();
