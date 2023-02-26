@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{time::Duration, collections::HashSet};
 
 use chrono::{DateTime, TimeZone, Utc};
 use feed_rs::{
@@ -163,9 +163,9 @@ fn map_feed_items(
         })
         .collect();
 
+    let mut uniques = HashSet::new();
     let len_before = items.len();
-    items.sort_by(|a, b| a.url.cmp(&b.url));
-    items.dedup_by(|a, b| a.url == b.url);
+    items.retain(|e| uniques.insert(e.url.clone()));
     let len_after = items.len();
 
     if len_after != len_before {
