@@ -26,11 +26,11 @@ use super::{
 #[derive(Error, Debug)]
 #[allow(dead_code)]
 enum FetchFeedError {
-    #[error("Failed to fetch feed")]
+    #[error("Failed to fetch feed: {0}")]
     FetchError(#[source] anyhow::Error),
     #[error("Failed to parse feed: {0}")]
     ParseError(#[source] anyhow::Error),
-    #[error("Unexpected error")]
+    #[error("Unexpected error: {0}")]
     UnexpectedError(#[source] anyhow::Error),
 }
 
@@ -61,6 +61,9 @@ async fn fetch_feed(collection: &CollectionToRefresh) -> Result<FetchFeedSuccess
         )
         .send()
         .await
+        .map_err(Into::into)
+        .map_err(FetchFeedError::FetchError)?
+        .error_for_status()
         .map_err(Into::into)
         .map_err(FetchFeedError::FetchError)?;
 
