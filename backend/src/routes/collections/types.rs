@@ -48,7 +48,7 @@ pub struct InsertCollectionItem {
     pub date_updated: DateTime<Utc>,
     pub reading_time: f32,
     pub categories: Option<Vec<String>>,
-    pub collection_id: ID
+    pub collection_id: ID,
 }
 
 #[derive(Debug, sqlx::FromRow, Serialize, Clone)]
@@ -59,4 +59,14 @@ pub struct CollectionToRefresh {
     pub id: ID,
     pub url: String,
     pub etag: Option<String>,
+}
+
+impl std::fmt::Display for CollectionToRefresh {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "Collection {{ id: {}, owner_id: {}, url: {}, etag: {:?} }}",
+            self.id, self.owner_id, self.url, self.etag
+        )
+    }
 }

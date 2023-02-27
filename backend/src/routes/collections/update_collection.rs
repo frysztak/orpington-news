@@ -96,7 +96,7 @@ async fn fetch_feed(collection: &CollectionToRefresh) -> Result<FetchFeedSuccess
 #[tracing::instrument(skip(feed))]
 fn map_feed_items(
     feed: &Feed,
-    collection_id: ID,
+    collection: &CollectionToRefresh,
     date_updated: DateTime<Utc>,
 ) -> Vec<InsertCollectionItem> {
     let epoch = Utc.with_ymd_and_hms(1970, 1, 1, 0, 0, 0).unwrap();
@@ -168,7 +168,7 @@ fn map_feed_items(
                 categories,
                 reading_time,
                 date_updated,
-                collection_id,
+                collection_id: collection.id,
             })
         })
         .collect();
@@ -180,8 +180,8 @@ fn map_feed_items(
 
     if len_after != len_before {
         warn!(
-            "Collection ID {}: dropped {} items with identical URLs",
-            collection_id,
+            "{}: dropped {} items with identical URLs",
+            collection,
             len_before - len_after
         );
     }
@@ -366,11 +366,11 @@ pub async fn update_collection(collection: CollectionToRefresh) -> UpdateCollect
             })
         }
         FetchFeedSuccess::Fetched { feed, etag } => {
-            let items = map_feed_items(feed, collection.id, now);
+            let items = map_feed_items(feed, &collection, now);
             if items.len() != feed.entries.len() {
                 warn!(
-                    "Collection ID {}: dropped {} feed entries",
-                    collection.id,
+                    "{}: dropped {} feed entries",
+                    collection,
                     feed.entries.len() - items.len()
                 );
             }
