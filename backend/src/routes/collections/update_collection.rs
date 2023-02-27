@@ -1,11 +1,14 @@
-use std::{time::Duration, collections::HashSet};
+use std::{collections::HashSet, time::Duration};
 
 use chrono::{DateTime, TimeZone, Utc};
 use feed_rs::{
     model::{Content, Feed, Text},
     parser,
 };
-use reqwest::{header::HeaderValue, StatusCode};
+use reqwest::{
+    header::{HeaderMap, HeaderValue, USER_AGENT},
+    StatusCode,
+};
 use serde_json::json;
 use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, Postgres, Transaction};
 use thiserror::Error;
@@ -25,7 +28,7 @@ use super::{
 enum FetchFeedError {
     #[error("Failed to fetch feed")]
     FetchError(#[source] anyhow::Error),
-    #[error("Failed to parse feed")]
+    #[error("Failed to parse feed: {0}")]
     ParseError(#[source] anyhow::Error),
     #[error("Unexpected error")]
     UnexpectedError(#[source] anyhow::Error),
@@ -38,8 +41,12 @@ enum FetchFeedSuccess {
 
 #[tracing::instrument()]
 async fn fetch_feed(collection: &CollectionToRefresh) -> Result<FetchFeedSuccess, FetchFeedError> {
+    let mut headers = HeaderMap::new();
+    headers.insert(USER_AGENT, "Orpington News".parse().unwrap());
+
     let client = reqwest::Client::builder()
         .timeout(Duration::from_secs(60))
+        .default_headers(headers)
         .build()
         .map_err(Into::into)
         .map_err(FetchFeedError::UnexpectedError)?;
