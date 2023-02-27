@@ -368,7 +368,11 @@ pub async fn update_collection(collection: CollectionToRefresh) -> UpdateCollect
         FetchFeedSuccess::Fetched { feed, etag } => {
             let items = map_feed_items(feed, collection.id, now);
             if items.len() != feed.entries.len() {
-                warn!("Dropped {} feed entries", feed.entries.len() - items.len());
+                warn!(
+                    "Collection ID {}: dropped {} feed entries",
+                    collection.id,
+                    feed.entries.len() - items.len()
+                );
             }
 
             Ok(UpdateCollectionData::Insert {
