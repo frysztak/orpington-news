@@ -47,6 +47,7 @@ SET
   date_read = $1
 WHERE
   collection_id = ANY($2)
+  AND date_read IS NULL
 "#,
         timestamp,
         &ids

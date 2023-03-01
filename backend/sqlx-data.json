@@ -553,19 +553,6 @@
     },
     "query": "\nWITH old AS (\n  SELECT *\n  FROM users\n  WHERE id = $1\n)\nUPDATE\n  users\nSET\n  display_name = COALESCE($2, old.display_name),\n  avatar = CASE\n    WHEN $3 = TRUE THEN COALESCE($4, old.avatar)\n    WHEN $3 = FALSE THEN NULL\n    END\nFROM old\nWHERE users.id = $1\n    "
   },
-  "788be55774dd4e60b8ae7206b5c527f5878eb5b3f8d8b65879d75df8ce8907e9": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Timestamptz",
-          "Int4Array"
-        ]
-      }
-    },
-    "query": "\nUPDATE\n  collection_items\nSET\n  date_read = $1\nWHERE\n  collection_id = ANY($2)\n"
-  },
   "79583e5e8f31ea84c111ca9d02f7c223653e039bcd29d1c844ee573d42c0b423": {
     "describe": {
       "columns": [],
@@ -667,6 +654,19 @@
       }
     },
     "query": "\nINSERT INTO \"users\" (\n  name,\n  password,\n  display_name,\n  avatar,\n  home_id)\nVALUES (\n  $1,\n  $2,\n  $3,\n  $4,\n  $5)\nRETURNING\n  id\n    "
+  },
+  "8f7864aa5520e929bc243f6bcc37e00b80286452dd90fb1949804e7b4dd56dcf": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Timestamptz",
+          "Int4Array"
+        ]
+      }
+    },
+    "query": "\nUPDATE\n  collection_items\nSET\n  date_read = $1\nWHERE\n  collection_id = ANY($2)\n  AND date_read IS NULL\n"
   },
   "93a92a8879a5a6b0e44bb121cab24a979981525dd7d2f30c3fb9f418f16c0bc4": {
     "describe": {
