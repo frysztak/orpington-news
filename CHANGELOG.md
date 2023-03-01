@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Backend: rewrite in Rust
+- Rewrite backend in Rust
+  - tiny Docker image, no Node.js runtime
+  - new task queue implementation
+  - more efficient feed refresh
+  - `COOKIE_SECRET` now must be at least 64 characters (if it's shorter, default value is used)
+  - dropped ARM64 image
 
 ## [0.11.1] - 2022-12-19
 
