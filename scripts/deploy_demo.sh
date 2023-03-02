@@ -8,7 +8,7 @@ IMAGE_NAME="frysztak/orpington-news:demo"
 git checkout master
 git pull
 
-VERSION=$(cat package.json | jq '.version' | tr -d '"')-demo
+VERSION=$(cat frontend/package.json | jq '.version' | tr -d '"')-demo
 COMMIT_SHA=$(git rev-parse HEAD)
 
 echo "Building with args:"
