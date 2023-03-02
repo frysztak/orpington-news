@@ -38,6 +38,8 @@ jobs:
       - name: Extract version
         uses: martinbeentjes/npm-get-version-action@main
         id: package-version
+        with:
+          path: frontend
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -71,8 +73,8 @@ jobs:
           build-args: |
             COMMIT_SHA=${{ github.sha }}
             BUILD_VERSION=${{ steps.package-version.outputs.current-version }}-dev
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev-buildcache,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     name: Deploy to Dokku

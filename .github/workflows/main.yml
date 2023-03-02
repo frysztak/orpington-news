@@ -65,7 +65,7 @@ jobs:
         with:
           context: .
           file: ./docker/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           pull: true
           tags: ${{ steps.meta.outputs.tags }}
@@ -73,5 +73,5 @@ jobs:
           build-args: |
             COMMIT_SHA=${{ github.sha }}
             BUILD_VERSION=${{ steps.package-version.outputs.current-version }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-buildcache,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

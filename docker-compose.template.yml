@@ -1,7 +1,7 @@
 version: '3'
 services:
   orpington-news:
-    image: ghcr.io/frysztak/orpington-news-api:latest
+    image: ghcr.io/frysztak/orpington-news:latest
     container_name: orpington-news
     environment:
       - APP_URL=https://news.my.domain # please change to your actual domain

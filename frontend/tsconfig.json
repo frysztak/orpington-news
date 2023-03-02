@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared": ["shared/index.ts"],
+      "@shared/*": ["shared/*"],
+
+      "@components": ["components/index.ts"],
+      "@components/*": ["components/*"],
+
+      "@utils": ["utils/index.ts"],
+      "@utils/*": ["utils/*"],
+
+      "@api": ["api/index.ts"],
+      "@api/*": ["api/*"],
+
+      "@pages/*": ["pages/*"],
+
+      "@features": ["features/index.ts"],
+      "@features/*": ["features/*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "**/*.stories.tsx", "**/*.cy.ts"]
+}
