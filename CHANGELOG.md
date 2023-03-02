@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2023-03-02
+
 ### Changed
 
-- Rewrite backend in Rust
-  - tiny Docker image, no Node.js runtime
-  - new task queue implementation
-  - more efficient feed refresh
-  - `COOKIE_SECRET` now must be at least 64 characters (if it's shorter, default value is used)
-  - dropped ARM64 image
+-   Rewrite backend in Rust
+    -   tiny Docker image, no Node.js runtime
+    -   new task queue implementation
+    -   more efficient feed refresh
+    -   `COOKIE_SECRET` now must be at least 64 characters (if it's shorter, default value is used)
+    -   dropped ARM64 image
 
 ## [0.11.1] - 2022-12-19
 
@@ -309,7 +311,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.11.1...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.0...HEAD
+
+[0.12.0]: https://github.com/frysztak/orpington-news/compare/0.11.1...0.12.0
 
 [0.11.1]: https://github.com/frysztak/orpington-news/compare/0.11.0...0.11.1
 
