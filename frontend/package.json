@@ -81,7 +81,7 @@
     "react-icons": "^4.8.0",
     "react-number-format": "^5.1.4",
     "react-test-renderer": "^18.2.0",
-    "react-virtuoso": "^3.1.5",
+    "react-virtuoso": "^4.1.0",
     "sass": "^1.58.3",
     "storybook-addon-next-router": "^4.0.2",
     "string-to-color": "^2.2.2",
