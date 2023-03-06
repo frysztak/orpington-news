@@ -73,9 +73,9 @@ const LoginPage: NextPageWithLayout = () => {
               <VStack align="flex-start">
                 <Text>
                   Don&apos;t have an account yet?{' '}
-                  <NextLink href="/signup" passHref>
-                    <Link fontWeight="bold">Sign up</Link>
-                  </NextLink>
+                  <Link as={NextLink} href="/signup" fontWeight="bold">
+                    Sign up
+                  </Link>
                 </Text>
               </VStack>
             </Alert>

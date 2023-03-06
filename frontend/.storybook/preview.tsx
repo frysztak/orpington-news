@@ -5,12 +5,12 @@ import { Global } from '@emotion/react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { RouterContext } from 'next/dist/shared/lib/router-context';
-import { withPerformance } from 'storybook-addon-performance';
+// import { withPerformance } from 'storybook-addon-performance';
 import { theme } from '../theme';
 import { fontFaces } from '../theme/fonts';
 import '../styles/global.scss';
 
-addDecorator(withPerformance);
+// addDecorator(withPerformance);
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },

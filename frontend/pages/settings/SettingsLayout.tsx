@@ -24,16 +24,16 @@ export const SettingsLayout: ReactFCC<SettingsLayoutProps> = ({ children }) => {
           'h-full w-full pt-4 px-2'
         )}
       >
-        <NextLink href="/settings" passHref>
-          <Button
-            mx={4}
-            height={8}
-            leftIcon={<IoReturnUpBack />}
-            variant="link"
-          >
-            Go back
-          </Button>
-        </NextLink>
+        <Button
+          as={NextLink}
+          href="/settings"
+          mx={4}
+          height={8}
+          leftIcon={<IoReturnUpBack />}
+          variant="link"
+        >
+          Go back
+        </Button>
         {children}
       </div>
     </>

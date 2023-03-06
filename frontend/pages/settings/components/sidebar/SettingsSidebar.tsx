@@ -9,11 +9,16 @@ export type SettingsSidebarProps = BoxProps;
 export const SettingsSidebar: React.FC<SettingsSidebarProps> = (props) => {
   return (
     <VStack w="full" align="flex-start" spacing={3} {...props}>
-      <NextLink href="/" passHref>
-        <Button mx={4} height={8} leftIcon={<IoReturnUpBack />} variant="link">
-          Go back
-        </Button>
-      </NextLink>
+      <Button
+        as={NextLink}
+        href="/"
+        mx={4}
+        height={8}
+        leftIcon={<IoReturnUpBack />}
+        variant="link"
+      >
+        Go back
+      </Button>
 
       <Box as="h2" px={4} pt={4} textStyle="settings.header">
         Settings
