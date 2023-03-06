@@ -9,7 +9,7 @@ module.exports = {
     '@storybook/addon-a11y',
     'storybook-addon-next-router',
     '@chakra-ui/storybook-addon',
-    'storybook-addon-performance/register',
+    // 'storybook-addon-performance/register',
     {
       name: '@storybook/addon-postcss',
       options: {
