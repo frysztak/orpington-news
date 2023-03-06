@@ -56,42 +56,40 @@ export const ListItem = forwardRef<HTMLAnchorElement, ListItemProps>(
     );
 
     return (
-      <NextLink href={`/collection/${collection.id}/article/${id}`}>
-        <a
-          ref={ref}
-          className={cx(
-            'block mr-3 border rounded hover:bg-purple-50 hover:dark:bg-gray-700',
-            {
-              'border-transparent': !isActive,
-              'border-purple-300 dark:border-gray-500': isActive,
-            }
-          )}
-          {...rest}
-        >
-          {/* Desktop */}
-          <div className="hidden lg:flex items-center gap-x-2 w-full py-3 px-2">
-            <div className="flex items-center flex-shrink-0 flex-grow-0 w-1/5 gap-x-1 break-all dark:text-gray-300 text-gray-700">
+      <NextLink
+        href={`/collection/${collection.id}/article/${id}`}
+        ref={ref}
+        className={cx(
+          'block mr-3 border rounded hover:bg-purple-50 hover:dark:bg-gray-700',
+          {
+            'border-transparent': !isActive,
+            'border-purple-300 dark:border-gray-500': isActive,
+          }
+        )}
+        {...rest}
+      >
+        {/* Desktop */}
+        <div className="hidden lg:flex items-center gap-x-2 w-full py-3 px-2">
+          <div className="flex items-center flex-shrink-0 flex-grow-0 w-1/5 gap-x-1 break-all dark:text-gray-300 text-gray-700">
+            <NewspaperIcon className="h-4 w-4 flex-shrink-0" />
+            <p className="line-clamp-1">{collection.title}</p>
+          </div>
+          {titleEl}
+          {publishedEl}
+          {readingTimeEl}
+        </div>
+        {/* Mobile */}
+        <div className="lg:hidden flex-row w-full py-3 px-2 gap-2">
+          {titleEl}
+          <div className="flex gap-2 w-full justify-between">
+            <div className="flex items-center gap-x-2 dark:text-gray-300 text-gray-700">
               <NewspaperIcon className="h-4 w-4 flex-shrink-0" />
               <p className="line-clamp-1">{collection.title}</p>
             </div>
-            {titleEl}
             {publishedEl}
             {readingTimeEl}
           </div>
-
-          {/* Mobile */}
-          <div className="lg:hidden flex-row w-full py-3 px-2 gap-2">
-            {titleEl}
-            <div className="flex gap-2 w-full justify-between">
-              <div className="flex items-center gap-x-2 dark:text-gray-300 text-gray-700">
-                <NewspaperIcon className="h-4 w-4 flex-shrink-0" />
-                <p className="line-clamp-1">{collection.title}</p>
-              </div>
-              {publishedEl}
-              {readingTimeEl}
-            </div>
-          </div>
-        </a>
+        </div>
       </NextLink>
     );
   }

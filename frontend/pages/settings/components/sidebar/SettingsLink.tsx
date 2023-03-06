@@ -45,7 +45,7 @@ export const SettingsLink: React.FC<SettingsLinkProps> = (props) => {
 
   return (
     <div className="select-none flex items-center leading-6" {...rest}>
-      <NextLink href={href} passHref>
+      <NextLink href={href} passHref legacyBehavior>
         <StyledLink isActive={isActive}>{children}</StyledLink>
       </NextLink>
     </div>
