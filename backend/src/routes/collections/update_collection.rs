@@ -126,7 +126,7 @@ fn map_feed_items(
             let pure_text = strip_html_tags(&content);
             let full_text = ammonia::clean(&content);
             let summary = match &entry.summary {
-                Some(Text { content, .. }) => content.trim().to_string(),
+                Some(Text { content, .. }) => strip_html_tags(content).trim().to_string(),
                 None => limit_words(&pure_text, 20, ""),
             };
             let thumbnail_url = match entry.media.first() {
