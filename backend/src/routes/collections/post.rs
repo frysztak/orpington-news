@@ -22,7 +22,7 @@ pub struct PostCollectionData {
     icon: Option<String>,
     parent_id: Option<ID>,
     description: Option<String>,
-    url: String,
+    url: Option<String>,
     refresh_interval: Option<i32>,
     layout: Option<String>,
     order: Option<i32>,
@@ -134,20 +134,22 @@ CALL preferences_prune_expanded_collections($1)
         .map_err(GenericError::UnexpectedError)?;
     }
 
-    let update_result = update_collection(CollectionToRefresh {
-        owner_id: user_id,
-        id: collection_id,
-        url: body.url.clone(),
-        etag: None,
-    })
-    .await
-    .map_err(Into::into)
-    .map_err(GenericError::UnexpectedError)?;
-
-    commit_update_collection(update_result, &mut transaction)
+    if let Some(url) = body.url.clone() {
+        let update_result = update_collection(CollectionToRefresh {
+            owner_id: user_id,
+            id: collection_id,
+            url,
+            etag: None,
+        })
         .await
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;
+
+        commit_update_collection(update_result, &mut transaction)
+            .await
+            .map_err(Into::into)
+            .map_err(GenericError::UnexpectedError)?;
+    }
 
     transaction
         .commit()
