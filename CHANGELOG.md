@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix HTML tags appearing in entry summary
 - Fix not being able to add Collection without URL
+- Fix parent collection items not being refetched when children were either marked as read or refreshed
 
 ### Changed
 

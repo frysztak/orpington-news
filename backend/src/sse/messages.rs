@@ -15,7 +15,10 @@ pub enum SSEMessage {
     },
     #[serde(rename_all = "camelCase")]
     UpdatedFeeds {
-        feed_ids: Vec<ID>,
+        // those feeds finished refreshing
+        refreshed_feed_ids: Vec<ID>,
+        // those feeds where affected by refreshing - frontend needs to reload collection items for those
+        affected_feed_ids: Vec<ID>,
         unread_count: Option<UnreadCount>,
     },
 }
