@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
-import { CookieSerializeOptions } from 'next/dist/server/web/types';
+import { CookieSerializeOptions } from 'cookie';
 
 const defaultOptions: CookieSerializeOptions = {
   path: '/',

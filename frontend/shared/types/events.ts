@@ -14,7 +14,8 @@ export const makeUpdatingFeedsMsg = (
 export interface UpdatedFeedsMsg {
   type: 'updatedFeeds';
   data: {
-    feedIds: Array<ID>;
+    refreshedFeedIds: Array<ID>;
+    affectedFeedIds: Array<ID>;
     unreadCount?: {
       counts: Record<ID, number>;
       updatedAt: number;

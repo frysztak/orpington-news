@@ -41,26 +41,6 @@
     },
     "query": "UPDATE preferences\n            SET active_collection_id = $1\n            WHERE user_id = $2"
   },
-  "0cf206d2b37f97f40f96e6313890cb4c6d7858f9b8a6dac97955f59e23b75d8c": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id!",
-          "ordinal": 0,
-          "type_info": "Int4"
-        }
-      ],
-      "nullable": [
-        null
-      ],
-      "parameters": {
-        "Left": [
-          "Int4"
-        ]
-      }
-    },
-    "query": "SELECT id as \"id!\" FROM get_collection_children_ids($1)"
-  },
   "0f42f0d361d6be0bb51ab2d0a7a096d651cf619a2ee46801f2d14833976c320d": {
     "describe": {
       "columns": [
@@ -320,6 +300,26 @@
       }
     },
     "query": "SELECT user_id FROM collections WHERE id = $1"
+  },
+  "45065f7d56c1f99541356a35330759aedca0bafff7244472b1d8328a3d9ed0c1": {
+    "describe": {
+      "columns": [
+        {
+          "name": "ids!",
+          "ordinal": 0,
+          "type_info": "Int4Array"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "SELECT get_ascendants_and_descendants(ARRAY[$1]::INT[]) as \"ids!\""
   },
   "458db6648377bfa256fe266de7af0955f157df6296f875f9be1b1f1bd0625c7a": {
     "describe": {
@@ -655,19 +655,6 @@
     },
     "query": "\nINSERT INTO \"users\" (\n  name,\n  password,\n  display_name,\n  avatar,\n  home_id)\nVALUES (\n  $1,\n  $2,\n  $3,\n  $4,\n  $5)\nRETURNING\n  id\n    "
   },
-  "8f7864aa5520e929bc243f6bcc37e00b80286452dd90fb1949804e7b4dd56dcf": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": [
-          "Timestamptz",
-          "Int4Array"
-        ]
-      }
-    },
-    "query": "\nUPDATE\n  collection_items\nSET\n  date_read = $1\nWHERE\n  collection_id = ANY($2)\n  AND date_read IS NULL\n"
-  },
   "93a92a8879a5a6b0e44bb121cab24a979981525dd7d2f30c3fb9f418f16c0bc4": {
     "describe": {
       "columns": [],
@@ -885,6 +872,26 @@
       }
     },
     "query": "\nUPDATE\n  collections\nSET\n  date_updated = $1\nWHERE\n  id = $2\n"
+  },
+  "d15a2a3a3909d97bc6d91f70f9251b1ad36bfacdca93072e39b387ed3bceed47": {
+    "describe": {
+      "columns": [
+        {
+          "name": "ids!",
+          "ordinal": 0,
+          "type_info": "Int4Array"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Int4Array"
+        ]
+      }
+    },
+    "query": "SELECT get_ascendants_and_descendants($1::INT[]) as \"ids!\""
   },
   "d879f699406c058e8bea3701635e45130f3815b7e2b9f8d328ab6d02ac196c06": {
     "describe": {
@@ -1173,5 +1180,18 @@
       }
     },
     "query": "\nINSERT INTO collections (\n  \"user_id\",\n  \"title\",\n  \"icon\",\n  \"order\",\n  \"parent_id\",\n  \"description\",\n  \"url\",\n  \"refresh_interval\",\n  \"layout\")\nVALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)\nRETURNING id\n    "
+  },
+  "fbe997725cab9f255c5734fcdfc06a39ce63ea223c3e9f6a1739b6c549e75773": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Timestamptz",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\nUPDATE\n  collection_items\nSET\n  date_read = $1\nWHERE\n  collection_id IN (SELECT * FROM get_collection_children_ids($2))\n  AND date_read IS NULL\n"
   }
 }

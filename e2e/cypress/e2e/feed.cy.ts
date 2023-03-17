@@ -292,11 +292,11 @@ sizes.forEach((size) => {
           expect(response.statusCode).to.eq(200);
         });
 
-        cy.getBySel('collection-id-2').within(() => {
+        cy.getBySelVisible('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
 
-        cy.getBySel('collectionItemList').within((itemList) => {
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getReadItems().should('have.length', 3);
         });
       });
@@ -329,7 +329,7 @@ sizes.forEach((size) => {
         cy.visit('/');
 
         // all unread
-        cy.getBySel('collectionItemList').within((itemList) => {
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getUnreadItems().should('have.length', 3);
         });
 
@@ -346,11 +346,11 @@ sizes.forEach((size) => {
         });
 
         cy.openDrawerIfExists();
-        cy.getBySel('collection-id-2').within(() => {
+        cy.getBySelVisible('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
 
-        cy.getBySel('collectionItemList').within((itemList) => {
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getReadItems().should('have.length', 3);
         });
       });
@@ -378,7 +378,7 @@ sizes.forEach((size) => {
         cy.visit('/');
 
         // all unread
-        cy.getBySel('collectionItemList').within((itemList) => {
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getUnreadItems().should('have.length', 3);
         });
 
@@ -393,11 +393,11 @@ sizes.forEach((size) => {
           expect(response.statusCode).to.eq(200);
         });
 
-        cy.getBySel('collection-id-2').within(() => {
+        cy.getBySelVisible('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
 
-        cy.getBySel('collectionItemList').within((itemList) => {
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getReadItems().should('have.length', 3);
         });
       });
@@ -424,7 +424,7 @@ sizes.forEach((size) => {
         cy.visit('/');
 
         // all unread
-        cy.getBySel('collectionItemList').within((itemList) => {
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getUnreadItems().should('have.length', 3);
         });
 
@@ -440,11 +440,73 @@ sizes.forEach((size) => {
         });
 
         cy.openDrawerIfExists();
-        cy.getBySel('collection-id-2').within(() => {
+        cy.getBySelVisible('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
 
-        cy.getBySel('collectionItemList').within((itemList) => {
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
+          cy.wrap(itemList).getReadItems().should('have.length', 3);
+        });
+      });
+
+      it('from sidebar, while viewing parent collection', () => {
+        cy.intercept({
+          method: 'POST',
+          url: getApiPath('/collections/3/markAsRead'),
+        }).as('apiMarkAsRead');
+
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(
+            '/collections/2/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst'
+          ),
+        }).as('apiGetParentItems');
+
+        cy.addFeedByApi({
+          title: 'Parent',
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+          parentId: 2,
+        });
+
+        cy.visit('/');
+
+        // all unread
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
+          cy.wrap(itemList).getUnreadItems().should('have.length', 3);
+        });
+
+        cy.openDrawerIfExists();
+        // make parent collection active
+        cy.clickCollection('2');
+        cy.wait('@apiGetParentItems');
+
+        // mark child collection as read
+        cy.openDrawerIfExists();
+        cy.clickSidebarAction('3', 'markAsRead');
+        cy.closeDrawerIfExists();
+        cy.wait('@apiMarkAsRead').then(({ request, response }) => {
+          expect(response.statusCode).to.eq(200);
+        });
+        cy.wait('@apiGetParentItems').then(({ request, response }) => {
+          expect(response.statusCode).to.eq(200);
+        });
+
+        cy.getBySelVisible('collection-id-2').within(() => {
+          cy.getBySel('badge').should('not.exist');
+        });
+        cy.getBySelVisible('collection-id-3').within(() => {
+          cy.getBySel('badge').should('not.exist');
+        });
+
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getReadItems().should('have.length', 3);
         });
       });
@@ -902,7 +964,7 @@ sizes.forEach((size) => {
         cy.clickCollectionHeaderMenuAction('sortBy-oldestFirst');
         cy.wait('@apiGetItemsOldestFirst');
 
-        cy.getBySel('collectionItemList')
+        cy.getBySelVisible('collectionItemList')
           .within(() => {
             cy.get('[data-index=0]')
               .within(() => {

@@ -62,9 +62,9 @@ const SignupPage: NextPageWithLayout = () => {
               <VStack align="flex-start">
                 <Text>
                   This is a demo instance. Account creation is disabled.{' '}
-                  <NextLink href="/login" passHref>
-                    <Link fontWeight="bold">Log in</Link>
-                  </NextLink>
+                  <Link as={NextLink} href="/login" fontWeight="bold">
+                    Log in
+                  </Link>
                 </Text>
               </VStack>
             </Alert>
@@ -74,9 +74,9 @@ const SignupPage: NextPageWithLayout = () => {
               <VStack align="flex-start">
                 <Text>
                   Have an account already?{' '}
-                  <NextLink href="/login" passHref>
-                    <Link fontWeight="bold">Log in</Link>
-                  </NextLink>
+                  <Link as={NextLink} href="/login" fontWeight="bold">
+                    Log in
+                  </Link>
                 </Text>
               </VStack>
             </Alert>

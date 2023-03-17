@@ -3,7 +3,10 @@ use crate::{
     routes::collections::{
         get::get_collections_impl,
         types::CollectionToRefresh,
-        update_collection::{commit_update_collection, update_collection, UpdateCollectionResult},
+        update_collection::{
+            commit_update_collection, get_affected_collection_ids, update_collection,
+            UpdateCollectionResult,
+        },
     },
     session_state::ID,
     sse::{
@@ -112,7 +115,7 @@ async fn commit_batch(
     let mut transaction = pool.begin().await?;
 
     let mut unread_counts = HashMap::<ID, Option<UnreadCount>>::new();
-    let mut feed_ids = HashMap::<ID, Vec<ID>>::new();
+    let mut refreshed_feed_ids = HashMap::<ID, Vec<ID>>::new();
 
     for UpdateResultWithJobId(job_id, user_id, result) in results {
         let collection_id: ID;
@@ -131,7 +134,7 @@ async fn commit_batch(
         }
 
         unread_counts.insert(user_id, None);
-        feed_ids
+        refreshed_feed_ids
             .entry(user_id)
             .or_insert(vec![])
             .push(collection_id);
@@ -142,17 +145,21 @@ async fn commit_batch(
         unread_counts.insert(user_id, get_unread_map(user_id, &pool).await.ok());
     }
 
-    info!("Committing {:#?}", feed_ids);
+    info!("Committing {:#?}", refreshed_feed_ids);
     transaction.commit().await?;
 
-    for ((user_id, unread_count), (_, feed_ids)) in
-        unread_counts.into_iter().zip(feed_ids.into_iter())
+    for ((user_id, unread_count), (_, refreshed_feed_ids)) in unread_counts
+        .into_iter()
+        .zip(refreshed_feed_ids.into_iter())
     {
+        let affected_feed_ids = get_affected_collection_ids(&refreshed_feed_ids, &pool).await?;
+
         broadcaster
             .send(
                 user_id,
                 SSEMessage::UpdatedFeeds {
-                    feed_ids,
+                    refreshed_feed_ids,
+                    affected_feed_ids,
                     unread_count,
                 },
             )

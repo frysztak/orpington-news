@@ -29,10 +29,8 @@ export const SidebarFooter: React.FC<SidebarFooterProps> = (props) => {
         avatarStyle={preferences.avatarStyle}
       />
 
-      <NextLink href="/settings" passHref>
-        <Link
-          aria-label="Open settings"
-          as={Center}
+      <Link as={NextLink} href="/settings" aria-label="Open settings">
+        <Center
           p={2}
           borderRadius="md"
           _hover={{
@@ -40,8 +38,8 @@ export const SidebarFooter: React.FC<SidebarFooterProps> = (props) => {
           }}
         >
           <Icon as={RiSettingsLine} w={8} h={8} color={fg} />
-        </Link>
-      </NextLink>
+        </Center>
+      </Link>
     </HStack>
   );
 };

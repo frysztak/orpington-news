@@ -28,15 +28,6 @@ pub async fn mark_as_read(
 ) -> Result<HttpResponse, InternalError<GenericError>> {
     let user_id: ID = user_id.into();
 
-    let ids = sqlx::query_scalar!(
-        r#"SELECT id as "id!" FROM get_collection_children_ids($1)"#,
-        path.collection_id
-    )
-    .fetch_all(pool.as_ref())
-    .await
-    .map_err(Into::into)
-    .map_err(GenericError::UnexpectedError)?;
-
     let timestamp = Utc::now();
 
     sqlx::query!(
@@ -46,13 +37,22 @@ UPDATE
 SET
   date_read = $1
 WHERE
-  collection_id = ANY($2)
+  collection_id IN (SELECT * FROM get_collection_children_ids($2))
   AND date_read IS NULL
 "#,
         timestamp,
-        &ids
+        path.collection_id
     )
     .execute(pool.as_ref())
+    .await
+    .map_err(Into::into)
+    .map_err(GenericError::UnexpectedError)?;
+
+    let ids = sqlx::query_scalar!(
+        r#"SELECT get_ascendants_and_descendants(ARRAY[$1]::INT[]) as "ids!""#,
+        path.collection_id
+    )
+    .fetch_one(pool.as_ref())
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;

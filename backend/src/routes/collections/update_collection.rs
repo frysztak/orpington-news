@@ -10,7 +10,7 @@ use reqwest::{
     StatusCode,
 };
 use serde_json::json;
-use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, Postgres, Transaction};
+use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, Postgres, Transaction, PgPool};
 use thiserror::Error;
 use tracing::{info, warn};
 use url::Url;
@@ -126,7 +126,7 @@ fn map_feed_items(
             let pure_text = strip_html_tags(&content);
             let full_text = ammonia::clean(&content);
             let summary = match &entry.summary {
-                Some(Text { content, .. }) => content.trim().to_string(),
+                Some(Text { content, .. }) => strip_html_tags(content).trim().to_string(),
                 None => limit_words(&pure_text, 20, ""),
             };
             let thumbnail_url = match entry.media.first() {
@@ -414,4 +414,17 @@ pub async fn commit_update_collection(
     }
 
     Ok(())
+}
+
+#[tracing::instrument(skip(pool))]
+pub async fn get_affected_collection_ids(
+    refreshed_feed_ids: &Vec<ID>,
+    pool: &PgPool
+) -> Result<Vec<ID>, sqlx::Error> {
+    sqlx::query_scalar!(
+        r#"SELECT get_ascendants_and_descendants($1::INT[]) as "ids!""#,
+        refreshed_feed_ids
+    )
+    .fetch_one(pool)
+    .await
 }

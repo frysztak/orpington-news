@@ -37,7 +37,7 @@ export const ArticleSkeleton: React.FC<ArticleSkeletonProps> = ({
         />
       </HStack>
 
-      <div className="flex flex-col w-full items-start gap-2 px-4">
+      <div className="flex flex-col w-full items-start gap-2 px-4 pb-4">
         <div className="skeleton w-full h-10" />
         <div className="skeleton h-5 w-full" />
         <div className="skeleton h-5 w-4/5" />

@@ -68,21 +68,20 @@ export const MagazineItem = forwardRef((props: MagazineItemProps, ref) => {
         )}
 
         <VStack align="flex-start">
-          <NextLink
+          <LinkOverlay
+            as={NextLink}
             href={`/collection/${collection.id}/article/${id}`}
             passHref
           >
-            <LinkOverlay>
-              <Heading
-                fontSize={['lg', '2xl']}
-                fontWeight={Boolean(dateRead) ? 500 : 700}
-                data-test="title"
-                data-test-read={Boolean(dateRead)}
-              >
-                {title}
-              </Heading>
-            </LinkOverlay>
-          </NextLink>
+            <Heading
+              fontSize={['lg', '2xl']}
+              fontWeight={Boolean(dateRead) ? 500 : 700}
+              data-test="title"
+              data-test-read={Boolean(dateRead)}
+            >
+              {title}
+            </Heading>
+          </LinkOverlay>
           <Text noOfLines={[2, 3]} overflowWrap="anywhere">
             {summary}
           </Text>

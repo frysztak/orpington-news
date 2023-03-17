@@ -31,7 +31,7 @@ export const CollectionsContextProvider: ReactFCC = ({ children }) => {
           return currentlyUpdatedCollections.add(msg.data.feedIds);
         }
         case 'updatedFeeds': {
-          for (const feedId of msg.data.feedIds) {
+          for (const feedId of msg.data.affectedFeedIds) {
             queryClient.invalidateQueries(collectionKeys.allForId(feedId));
           }
 
@@ -55,7 +55,7 @@ export const CollectionsContextProvider: ReactFCC = ({ children }) => {
             );
           }
 
-          return currentlyUpdatedCollections.remove(msg.data.feedIds);
+          return currentlyUpdatedCollections.remove(msg.data.refreshedFeedIds);
         }
       }
     },
