@@ -7,16 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.1] - 2023-03-17
+
 ### Fixed
 
-- Fix HTML tags appearing in entry summary
-- Fix not being able to add Collection without URL
-- Fix parent collection items not being refetched when children were either marked as read or refreshed
-- Fix Article skeleton padding in expandable view
+-   Fix HTML tags appearing in entry summary
+-   Fix not being able to add Collection without URL
+-   Fix parent collection items not being refetched when children were either marked as read or refreshed
+-   Fix Article skeleton padding in expandable view
 
 ### Changed
 
-- Migrate to Next.js 13
+-   Migrate to Next.js 13
 
 ## [0.12.0] - 2023-03-02
 
@@ -322,7 +324,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.0...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.1...HEAD
+
+[0.12.1]: https://github.com/frysztak/orpington-news/compare/0.12.0...0.12.1
 
 [0.12.0]: https://github.com/frysztak/orpington-news/compare/0.11.1...0.12.0
 
