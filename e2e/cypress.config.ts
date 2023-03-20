@@ -1,9 +1,7 @@
 import { defineConfig } from 'cypress';
 import * as dotenv from 'dotenv'
 
-dotenv.config({
-  path: process.env.NODE_ENV === 'development' ? '.env.e2e.local' : '.env.e2e',
-});
+dotenv.config();
 
 export default defineConfig({
   projectId: '9fra5f',
