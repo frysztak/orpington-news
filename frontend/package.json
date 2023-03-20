@@ -5,8 +5,7 @@
   "author": "Sebastian Frysztak <sebastian@frysztak.dev>",
   "scripts": {
     "prepare": "cd .. && husky install frontend/.husky",
-    "dev": "cp ../.env.local .env && next dev",
-    "dev:e2e": "cp ../.env.e2e.local .env && next dev",
+    "dev": "next dev",
     "build": "next build",
     "build:profile": "cross-env SOURCE_MAPS=true next build --profile",
     "export": "next export",

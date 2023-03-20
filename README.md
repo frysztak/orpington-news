@@ -147,6 +147,9 @@ Orpington News backend is written in Rust, frontend is written in TypeScript usi
 
 - Node 18 (if you're using [nvm](https://github.com/nvm-sh/nvm), `.nvmrc` is provided)
 - Rust toolchain (`rustup` is recommended)
+- [Just](https://github.com/casey/just) command runner
+- [bunyan-rs](https://github.com/LukeMathWalker/bunyan) log formatter
+- [cargo watch](https://github.com/watchexec/cargo-watch)
 - (optional) Docker, if you want to easily setup Postgres
 
 Step-by-step guide:
@@ -164,36 +167,15 @@ $ docker compose -f backend/docker-compose.db.yml up -d
 
 You should be able now to access pgAdmin at `http://localhost:8080`.
 
-3. Create `.env` file in both `frontend` and `backend` directories with the following content:
-
-```
-DB_USER="orpington"
-DB_PASS="pass1234"
-DB_HOST="localhost"
-APP_URL="http://localhost:3000"
-NEXT_PUBLIC_API_URL="http://localhost:5000/api"
-NEXT_PUBLIC_GIT_COMMIT_HASH="dev"
-NEXT_PUBLIC_VERSION="dev
-```
-
-if you ran the DB using provided compose file, you shouldn't have to change anything.
-
-
-4. Run API
-
-```sh
-$ cd backend
-$ cargo run
-```
-
-(I recommend using [bunyan-rs](https://github.com/LukeMathWalker/bunyan) as logs formatter)
-
-4. Run frontend
-
+3. Install frontend dependencies:
 ```sh
 $ cd frontend
 $ npm ci
-$ npm run dev
+```
+
+4. Orpington News uses `just` as a command runner, so running both frontend and API in watch mode is as simple as:
+```sh
+$ just
 ```
 
 5. You should be able to access the app on `http://localhost:3000`, API will be available on `http://localhost:5000/api`. You'll need to create your user account. That's it!
