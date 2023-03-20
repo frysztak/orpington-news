@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>fettblog.eu | TypeScript, JavaScript, Jamstack</title>
+	<link href="https://fettblog.eu/feed.xml" rel="self" />
+	<link href="https://fettblog.eu/" />
+	<updated>2023-03-17T08:09:31.049Z</updated>
+	<id>https://fettblog.eu</id>
+	<author>
+		<name>Stefan Baumgartner</name>
+		<email>stefan@scriptconf.org</email>
+	</author>
+
+	<entry>
+		<title>Refactoring in Rust: Introducing Traits</title>
+		<link href="https://fettblog.eu/refactoring-rust-introducing-traits/" />
+		<updated>2023-03-02T00:00:00.000Z</updated>
+		<id>https://fettblog.eu/refactoring-rust-introducing-traits/</id>>
+		<content type="html">&lt;p&gt;In the same codebase as &lt;a href=&quot;/refactoring-rust-abstraction-newtype/&quot;&gt;last time&lt;/a&gt;, we extract data from a &lt;code&gt;HashMap&amp;lt;String, String&amp;gt;&lt;/code&gt; called &lt;code&gt;headers&lt;/code&gt;, presumably dealing with something similar to HTTP headers.&lt;/p&gt;</content>
+	</entry>
+	
+	
+	
+	<entry>
+		<title>Refactoring in Rust: Abstraction with the Newtype Pattern</title>
+		<link href="https://fettblog.eu/refactoring-rust-abstraction-newtype/" />
+		<updated>2023-02-21T00:00:00.000Z</updated>
+		<id>https://fettblog.eu/refactoring-rust-abstraction-newtype/</id>>
+		<content type="html">&lt;p&gt;The following piece of code takes a &lt;code&gt;PathBuf&lt;/code&gt; and extracts the file name, eventually converting it to an &lt;em&gt;owned&lt;/em&gt; &lt;code&gt;String&lt;/code&gt;.&lt;/p&gt;</content>
+	</entry>
+	
+	
+	
+	<entry>
+		<title>Announcing the TypeScript Cookbook</title>
+		<link href="https://fettblog.eu/announcing-the-typescript-cookbook/" />
+		<updated>2022-11-07T00:00:00.000Z</updated>
+		<id>https://fettblog.eu/announcing-the-typescript-cookbook/</id>>
+		<content type="html">&lt;p&gt;Oops, I did it again! I’m writing another book, and it’s again about TypeScript. I’m happy to announce &lt;em&gt;The TypeScript Cookbook&lt;/em&gt;, to be published in 2023 by O’Reilly. You can check it out in Early Release on the &lt;a href=&quot;https://www.oreilly.com/library/view/typescript-cookbook/9781098136642/&quot;&gt;O’Reilly website&lt;/a&gt;.&lt;/p&gt;</content>
+	</entry>
+</feed>

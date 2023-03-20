@@ -1,9 +1,9 @@
-import { join } from 'path';
+import urlJoin from 'url-join';
 
 export const getApiPath = (endpoint: string): string => {
-  return join(Cypress.env('api_url'), endpoint);
+  return urlJoin(Cypress.env('api_url'), endpoint);
 };
 
 export const getFeedUrl = (filename: string): string => {
-  return new URL(filename, Cypress.env('feeds_url')).toString();
+  return urlJoin(Cypress.env('feeds_url'), 'feed', filename);
 };
