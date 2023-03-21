@@ -8,6 +8,7 @@ export default defineConfig({
   env: {
     api_url: process.env.NEXT_PUBLIC_API_URL,
     feeds_url: process.env.FEEDS_URL,
+    feeds_url_cypress: process.env.FEEDS_URL_CYPRESS,
   },
   e2e: {
     baseUrl: process.env.APP_URL,

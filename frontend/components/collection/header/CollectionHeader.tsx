@@ -79,6 +79,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
         aria-label="Refresh"
         variant="ghost"
         onClick={() => onMenuActionClicked?.('refresh')}
+        data-test="refreshButton"
       />
       {/*<IconButton
               icon={<CgSearch />}

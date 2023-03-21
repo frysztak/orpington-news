@@ -29,12 +29,9 @@ services:
   feeds:
     container_name: orpington-news-e2e-feeds
     build:
-      context: .
-      dockerfile: docker/Dockerfile.e2e.feeds
+      context: e2e/feeds
     ports:
       - '8002:8002'
-    volumes:
-      - ./e2e/cypress/feeds:/public:ro
     networks:
       - orpington-news
     restart: always

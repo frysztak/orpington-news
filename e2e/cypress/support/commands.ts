@@ -55,14 +55,17 @@ Cypress.Commands.add('openDrawerIfExists', () => {
 
 Cypress.Commands.add('closeDrawerIfExists', () => {
   const selector = '[data-test=closeDrawer]:visible';
-  return cy.getBySel('panesMobile').then(($body) => {
-    if ($body.find(selector).length > 0) {
-      cy.get(selector).then(($button) => {
-        $button.trigger('click');
-        cy.getBySel('drawer').should('not.exist');
-      });
-    }
-  });
+  return cy
+    .getBySel('drawer')
+    .should(Cypress._.noop)
+    .then(($drawer) => {
+      if ($drawer.find(selector).length > 0) {
+        cy.get(selector).then(($button) => {
+          $button.trigger('click', { force: true });
+          cy.getBySel('drawer').should('not.exist');
+        });
+      }
+    });
 });
 
 Cypress.Commands.add('waitForDrawerToClose', () => {
@@ -142,6 +145,10 @@ Cypress.Commands.add('resetDatabaseByApi', () => {
   return cy.request('POST', `${Cypress.env('api_url')}/e2e/reset_db`);
 });
 
+Cypress.Commands.add('resetFeedPages', () => {
+  return cy.request('PUT', `${Cypress.env('feeds_url_cypress')}/feed/reset_pages`);
+});
+
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {
   return cy.request('POST', `${Cypress.env('api_url')}/auth/register`, {
     username,
@@ -184,3 +191,10 @@ Cypress.Commands.add(
     );
   }
 );
+
+Cypress.Commands.add('putFeedPageByApi', ({ feedName, page }) => {
+  return cy.request(
+    'PUT',
+    `${Cypress.env('feeds_url_cypress')}/feed/${feedName}/page/${page}`
+  );
+});
