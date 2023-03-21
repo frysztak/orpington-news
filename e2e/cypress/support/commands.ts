@@ -55,14 +55,17 @@ Cypress.Commands.add('openDrawerIfExists', () => {
 
 Cypress.Commands.add('closeDrawerIfExists', () => {
   const selector = '[data-test=closeDrawer]:visible';
-  return cy.getBySel('panesMobile').then(($body) => {
-    if ($body.find(selector).length > 0) {
-      cy.get(selector).then(($button) => {
-        $button.trigger('click');
-        cy.getBySel('drawer').should('not.exist');
-      });
-    }
-  });
+  return cy
+    .getBySel('drawer')
+    .should(Cypress._.noop)
+    .then(($drawer) => {
+      if ($drawer.find(selector).length > 0) {
+        cy.get(selector).then(($button) => {
+          $button.trigger('click', { force: true });
+          cy.getBySel('drawer').should('not.exist');
+        });
+      }
+    });
 });
 
 Cypress.Commands.add('waitForDrawerToClose', () => {
