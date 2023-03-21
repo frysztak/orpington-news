@@ -499,12 +499,14 @@ sizes.forEach((size) => {
           expect(response.statusCode).to.eq(200);
         });
 
+        cy.openDrawerIfExists();
         cy.getBySelVisible('collection-id-2').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
         cy.getBySelVisible('collection-id-3').within(() => {
           cy.getBySel('badge').should('not.exist');
         });
+        cy.closeDrawerIfExists();
 
         cy.getBySelVisible('collectionItemList').within((itemList) => {
           cy.wrap(itemList).getReadItems().should('have.length', 3);
