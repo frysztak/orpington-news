@@ -21,6 +21,7 @@ require('cypress-dark');
 
 beforeEach(() => {
   cy.resetDatabaseByApi();
+  cy.resetFeedPages();
 });
 
 // Alternatively you can use CommonJS syntax:

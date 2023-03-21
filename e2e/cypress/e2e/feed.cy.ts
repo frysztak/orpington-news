@@ -996,5 +996,82 @@ sizes.forEach((size) => {
           .should('exist');
       });
     });
+
+    describe('collection refresh', () => {
+      beforeEach(() => {
+        cy.addFeedByApi({
+          title: 'Parent',
+          icon: 'React',
+          refreshInterval: 120,
+        });
+
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'React',
+          refreshInterval: 120,
+          parentId: 2,
+        });
+
+        cy.addFeedByApi({
+          title: 'Fettblog',
+          url: getFeedUrl('fettblog.xml'),
+          icon: 'React',
+          refreshInterval: 120,
+          parentId: 2,
+        });
+      });
+
+      it('refreshes child collections', () => {
+        cy.intercept({
+          method: 'GET',
+          url: getApiPath(
+            '/collections/1/items?pageIndex=0&filter=all&grouping=none&sortBy=newestFirst'
+          ),
+        }).as('apiGetParentItems');
+
+        cy.visit('/');
+        cy.wait('@apiGetParentItems');
+
+        cy.openDrawerIfExists();
+        cy.getBySel('collection-id-2')
+          .within(() => {
+            cy.getBySel('title').should('have.text', 'Parent');
+            cy.getBySel('chevron').should('exist');
+            cy.getBySel('badge').should('exist').and('have.text', '6');
+          })
+          .should('exist');
+        cy.closeDrawerIfExists();
+
+        cy.getBySelVisible('collectionItemList').within((itemList) => {
+          cy.wrap(itemList).getUnreadItems().should('have.length', 6);
+        });
+
+        // refresh
+        cy.putFeedPageByApi({ feedName: 'fettblog', page: 1 });
+        cy.getBySelVisible('collectionHeader').within(() => {
+          cy.getBySelVisible('refreshButton').click();
+        });
+        cy.wait('@apiGetParentItems');
+
+        // assert
+        cy.openDrawerIfExists();
+        cy.getBySel('collection-id-2')
+          .within(() => {
+            cy.getBySel('badge').should('exist').and('have.text', '9');
+          })
+          .should('exist');
+        cy.closeDrawerIfExists();
+
+        cy.getBySelVisible('collectionItemList').within(() => {
+          cy.get('[data-test-id="virtuoso-scroller"]:visible').scrollTo(
+            'bottom',
+            { ensureScrollable: false }
+          );
+          cy.get('[data-index=8]').should('exist');
+          cy.get('[data-index=9]').should('not.exist');
+        });
+      });
+    });
   });
 });
