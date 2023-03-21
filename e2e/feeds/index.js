@@ -30,6 +30,11 @@ app.put('/feed/:name/page/:page', function (req, res, next) {
   res.status(200).send();
 });
 
+app.put('/feed/reset_pages', function (req, res, next) {
+  feedPages.clear();
+  res.status(200).send();
+});
+
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
