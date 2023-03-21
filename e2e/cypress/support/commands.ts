@@ -146,7 +146,7 @@ Cypress.Commands.add('resetDatabaseByApi', () => {
 });
 
 Cypress.Commands.add('resetFeedPages', () => {
-  return cy.request('PUT', `${Cypress.env('feeds_url')}/feed/reset_pages`);
+  return cy.request('PUT', `${Cypress.env('feeds_url_cypress')}/feed/reset_pages`);
 });
 
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {
@@ -195,6 +195,6 @@ Cypress.Commands.add(
 Cypress.Commands.add('putFeedPageByApi', ({ feedName, page }) => {
   return cy.request(
     'PUT',
-    `${Cypress.env('feeds_url')}/feed/${feedName}/page/${page}`
+    `${Cypress.env('feeds_url_cypress')}/feed/${feedName}/page/${page}`
   );
 });
