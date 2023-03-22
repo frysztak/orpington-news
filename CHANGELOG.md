@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix incorrect unread count being returned after refreshing collection
+- Fix session TTL not being refreshed
+- Fix API code coverage reporting incorrect numbers
 
 ### Added
 
