@@ -77,7 +77,11 @@ async fn run(
                     .cookie_name("sessionId".to_string())
                     .cookie_secure(!disable_secure_cookie)
                     .session_lifecycle(
-                        PersistentSession::default().session_ttl(cookie::time::Duration::weeks(1)),
+                        PersistentSession::default()
+                            .session_ttl(cookie::time::Duration::weeks(1))
+                            .session_ttl_extension_policy(
+                                actix_session::config::TtlExtensionPolicy::OnEveryRequest,
+                            ),
                     )
                     .build(),
             )
