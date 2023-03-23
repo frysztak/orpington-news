@@ -6,7 +6,7 @@ use crate::{
     queue::queue::{Message, Queue, TaskPriority},
     routes::{collections::types::CollectionToRefresh, error::GenericError},
     session_state::ID,
-    sse::{broadcast::Broadcaster, messages::SSEMessage}, authentication::UserId,
+    ws::{broadcast::Broadcaster, messages::WSMessage}, authentication::UserId,
 };
 
 #[derive(Deserialize)]
@@ -55,7 +55,7 @@ WITH children_ids AS (
 
     let feed_ids = collections.iter().map(|c| c.id).collect();
     broadcaster
-        .send(user_id, SSEMessage::UpdatingFeeds { feed_ids })
+        .send(user_id, WSMessage::UpdatingFeeds { feed_ids })
         .await;
 
     let jobs = collections

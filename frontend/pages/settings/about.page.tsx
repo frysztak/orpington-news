@@ -1,34 +1,21 @@
-import { useState } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import { useInterval } from 'usehooks-ts';
-import { formatDistanceToNowStrict } from 'date-fns';
 import Head from 'next/head';
 import { Heading, Text, HStack, VStack, Code, Box } from '@chakra-ui/react';
 import type { NextPageWithLayout } from '@pages/types';
 import { EventListenerContext } from '@features/EventListener';
 import { SettingsLayout } from './SettingsLayout';
+import { ReadyState } from 'react-use-websocket';
 
-const formatLastPingText = (lastPing: number | null): string => {
-  if (lastPing === null) {
-    return 'N/A';
-  }
-  return formatDistanceToNowStrict(lastPing, { addSuffix: true });
+const connectionStatuLabel = {
+  [ReadyState.CONNECTING]: 'Connecting',
+  [ReadyState.OPEN]: 'Open',
+  [ReadyState.CLOSING]: 'Closing',
+  [ReadyState.CLOSED]: 'Closed',
+  [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
 };
 
 const Page: NextPageWithLayout = () => {
   const status = useContextSelector(EventListenerContext, (ctx) => ctx.status);
-  const lastPing = useContextSelector(
-    EventListenerContext,
-    (ctx) => ctx.lastPing
-  );
-
-  const [lastPingText, setLastPingText] = useState<string>(
-    formatLastPingText(lastPing)
-  );
-
-  useInterval(() => {
-    setLastPingText(formatLastPingText(lastPing));
-  }, 500);
 
   return (
     <>
@@ -58,15 +45,11 @@ const Page: NextPageWithLayout = () => {
 
         <section>
           <Heading as="h3" fontSize="xl">
-            SSE
+            WebSocket
           </Heading>
           <HStack>
             <Text>Status:</Text>
-            <Code>{status}</Code>
-          </HStack>
-          <HStack>
-            <Text>Last message:</Text>
-            <Code>{lastPingText}</Code>
+            <Code>{connectionStatuLabel[status]}</Code>
           </HStack>
         </section>
       </VStack>

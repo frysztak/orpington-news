@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `justfile`
 
+### Changed
+
+- Changed from Server-Sent Events to WebSockets
+
 ## [0.12.1] - 2023-03-17
 
 ### Fixed

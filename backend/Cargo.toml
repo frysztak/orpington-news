@@ -62,6 +62,7 @@ futures-batch = "0.6.1"
 opentelemetry = { version = "0.18.0", features = ["rt-tokio"], optional = true }
 opentelemetry-jaeger = { version = "0.17.0", features = ["rt-tokio"], optional = true }
 tracing-opentelemetry = { version = "0.18.0", optional = true }
+actix-ws = "0.2.5"
 
 [features]
 e2e = []

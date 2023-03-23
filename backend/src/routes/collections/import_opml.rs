@@ -17,7 +17,7 @@ use crate::{
     queue::queue::{Message, Queue, TaskPriority},
     routes::{collections::get::get_collections_impl, error::GenericError},
     session_state::ID,
-    sse::{broadcast::Broadcaster, messages::SSEMessage},
+    ws::{broadcast::Broadcaster, messages::WSMessage},
 };
 
 use super::types::CollectionToRefresh;
@@ -169,7 +169,7 @@ pub async fn import_opml(
 
     let feed_ids = inserted_collections.iter().map(|c| c.id).collect();
     broadcaster
-        .send(user_id, SSEMessage::UpdatingFeeds { feed_ids })
+        .send(user_id, WSMessage::UpdatingFeeds { feed_ids })
         .await;
 
     Ok(HttpResponse::Ok().json(collections))
