@@ -1,39 +1,37 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createContext, useContextSelector } from 'use-context-selector';
-import {
-  EventStreamContentType,
-  fetchEventSource,
-} from '@microsoft/fetch-event-source';
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { getUrl } from '@api';
 import { ReactFCC } from '@utils/react';
 import { Msg, noop } from '@shared';
 
 type EventListener = (msg: Msg) => void;
-type Status = 'connecting' | 'connected' | 'error';
 
 export interface EventListenerContextData {
   addEventListener: (listener: EventListener) => void;
   removeEventListener: (listener: EventListener) => void;
-  attemptToConnect: () => void;
+  triggerReconnect: () => void;
 
-  lastPing: number | null;
-  status: Status;
+  status: ReadyState;
 }
 
 export const EventListenerContext = createContext<EventListenerContextData>({
   addEventListener: noop,
   removeEventListener: noop,
-  attemptToConnect: noop,
-  lastPing: null,
-  status: 'connecting',
+  triggerReconnect: noop,
+  status: ReadyState.UNINSTANTIATED,
 });
 
-class RetriableError extends Error {}
-class FatalError extends Error {}
+const isValidUrl = (str: string): boolean => {
+  try {
+    new URL(str);
+  } catch {
+    return false;
+  }
+  return true;
+};
 
 export const EventListenerContextProvider: ReactFCC = ({ children }) => {
-  const [status, setStatus] = useState<Status>('connecting');
-  const [lastPing, setLastPing] = useState<number | null>(null);
   const listeners = useRef<Array<EventListener>>([]);
   const addEventListener = useCallback((listener: EventListener) => {
     listeners.current = [...listeners.current, listener];
@@ -42,34 +40,30 @@ export const EventListenerContextProvider: ReactFCC = ({ children }) => {
     listeners.current = listeners.current.filter((l) => l !== listener);
   }, []);
 
-  function connectToEventSource() {
+  const getWebSocketUrl = useCallback(() => {
     const apiUrl = getUrl();
-    fetchEventSource(`${apiUrl}/events`, {
-      openWhenHidden: true,
-      keepalive: true,
-      credentials: 'include',
-      mode: 'cors',
-      async onopen(response) {
-        if (
-          response.ok &&
-          response.headers.get('content-type') === EventStreamContentType
-        ) {
-          setStatus('connected');
-          return; // everything's good
-        } else if (
-          response.status >= 400 &&
-          response.status < 500 &&
-          response.status !== 429
-        ) {
-          // client-side errors are usually non-retriable:
-          throw new FatalError();
-        } else {
-          throw new RetriableError();
-        }
-      },
-      onmessage(ev) {
-        console.debug(`[SSE] Received new message:`, ev);
-        setLastPing(Date.now());
+    if (isValidUrl(apiUrl)) {
+      return `${apiUrl}/events`.replace('http', 'ws');
+    }
+
+    const url = new URL('/api/events', window.location.href);
+    url.protocol = url.protocol.replace('http', 'ws');
+    return url.href;
+  }, []);
+
+  const [shouldConnect, setShouldConnect] = useState(true);
+  const triggerReconnect = useCallback(() => {
+    setShouldConnect(false);
+    setTimeout(() => {
+      setShouldConnect(true);
+    }, 10);
+  }, []);
+
+  const { readyState } = useWebSocket(
+    getWebSocketUrl,
+    {
+      shouldReconnect: () => true,
+      onMessage: (ev) => {
         if (ev.data) {
           const msg: Msg = JSON.parse(ev.data);
           for (const listener of listeners.current) {
@@ -77,48 +71,17 @@ export const EventListenerContextProvider: ReactFCC = ({ children }) => {
           }
         }
       },
-      onclose() {
-        // if the server closes the connection unexpectedly, retry:
-        throw new RetriableError();
-      },
-      onerror(err) {
-        if (err instanceof FatalError) {
-          setStatus('error');
-          throw err;
-        } else {
-          // do nothing to automatically retry. You can also
-          // return a specific retry interval here.
-        }
-      },
-    }).catch((err) => {
-      console.error(err);
-    });
-  }
-
-  useEffect(() => {
-    connectToEventSource();
-
-    return () => {
-      listeners.current.length = 0;
-    };
-  }, []);
-
-  const attemptToConnect = useCallback(() => {
-    if (status === 'connected') {
-      return;
-    }
-    setStatus('connecting');
-    connectToEventSource();
-  }, [status]);
+    },
+    shouldConnect
+  );
 
   return (
     <EventListenerContext.Provider
       value={{
         addEventListener,
         removeEventListener,
-        attemptToConnect,
-        lastPing,
-        status,
+        triggerReconnect,
+        status: readyState,
       }}
     >
       {children}

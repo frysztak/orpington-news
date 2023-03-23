@@ -25,9 +25,9 @@ const LoginPage: NextPageWithLayout = () => {
   const { isLoading, mutate } = useLogin();
   const demoMode = isDemoMode();
 
-  const attemptToConnect = useContextSelector(
+  const triggerReconnect = useContextSelector(
     EventListenerContext,
-    (ctx) => ctx.attemptToConnect
+    (ctx) => ctx.triggerReconnect
   );
   const handleSubmit = useCallback(
     (data: LoginFormData) => {
@@ -36,11 +36,11 @@ const LoginPage: NextPageWithLayout = () => {
           await window.caches?.delete('next-data');
           await window.caches?.delete('apis');
           router.push('/');
-          attemptToConnect();
+          triggerReconnect();
         },
       });
     },
-    [attemptToConnect, mutate, router]
+    [triggerReconnect, mutate, router]
   );
 
   return (

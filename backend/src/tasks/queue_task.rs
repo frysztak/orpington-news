@@ -9,9 +9,9 @@ use crate::{
         },
     },
     session_state::ID,
-    sse::{
+    ws::{
         broadcast::Broadcaster,
-        messages::{SSEMessage, UnreadCount},
+        messages::{WSMessage, UnreadCount},
     },
 };
 use chrono::Utc;
@@ -148,7 +148,7 @@ async fn commit_batch(
         broadcaster
             .send(
                 user_id,
-                SSEMessage::UpdatedFeeds {
+                WSMessage::UpdatedFeeds {
                     refreshed_feed_ids,
                     affected_feed_ids,
                     unread_count,

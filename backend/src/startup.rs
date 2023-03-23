@@ -2,7 +2,7 @@ use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
 use crate::queue::queue::Queue;
 use crate::routes::{auth, collections, e2e, events, preferences, spa};
-use crate::sse::broadcast::Broadcaster;
+use crate::ws::broadcast::Broadcaster;
 use actix_cors::Cors;
 use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;

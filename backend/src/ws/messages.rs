@@ -7,12 +7,9 @@ use crate::session_state::ID;
 
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "type", content = "data", rename_all = "camelCase")]
-pub enum SSEMessage {
-    Ping,
+pub enum WSMessage {
     #[serde(rename_all = "camelCase")]
-    UpdatingFeeds {
-        feed_ids: Vec<ID>,
-    },
+    UpdatingFeeds { feed_ids: Vec<ID> },
     #[serde(rename_all = "camelCase")]
     UpdatedFeeds {
         // those feeds finished refreshing
