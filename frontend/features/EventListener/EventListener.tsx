@@ -22,6 +22,15 @@ export const EventListenerContext = createContext<EventListenerContextData>({
   status: ReadyState.UNINSTANTIATED,
 });
 
+const isValidUrl = (str: string): boolean => {
+  try {
+    new URL(str);
+  } catch {
+    return false;
+  }
+  return true;
+};
+
 export const EventListenerContextProvider: ReactFCC = ({ children }) => {
   const listeners = useRef<Array<EventListener>>([]);
   const addEventListener = useCallback((listener: EventListener) => {
@@ -33,7 +42,13 @@ export const EventListenerContextProvider: ReactFCC = ({ children }) => {
 
   const getWebSocketUrl = useCallback(() => {
     const apiUrl = getUrl();
-    return `${apiUrl}/events`.replace('http', 'ws');
+    if (isValidUrl(apiUrl)) {
+      return `${apiUrl}/events`.replace('http', 'ws');
+    }
+
+    const url = new URL('/api/events', window.location.href);
+    url.protocol = url.protocol.replace('http', 'ws');
+    return url.href;
   }, []);
 
   const [shouldConnect, setShouldConnect] = useState(true);
