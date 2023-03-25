@@ -143,10 +143,12 @@ export const SidebarItem = React.forwardRef<HTMLDivElement, SidebarItemProps>(
         {chevron && (
           <IconButton
             className="bg-transparent dark:bg-transparent ml-1 -mr-3 h-4 w-4 px-1"
-            aria-label={chevron === 'top' ? 'Collapse menu' : 'Expand menu'}
+            aria-label={chevron === 'bottom' ? 'Collapse menu' : 'Expand menu'}
             onKeyDown={(e) => e.stopPropagation()}
             onClick={handleChevronClick}
-            data-test="chevron"
+            data-test={
+              chevron === 'bottom' ? 'chevronCollapse' : 'chevronExpand'
+            }
           >
             <Chevron pointTo={chevron} />
           </IconButton>

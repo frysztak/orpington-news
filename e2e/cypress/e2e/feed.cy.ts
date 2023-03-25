@@ -44,7 +44,7 @@ sizes.forEach((size) => {
         cy.getBySel('collection-id-2')
           .within(() => {
             cy.getBySel('title').should('have.text', 'Kent C. Dodds Blog');
-            cy.getBySel('chevron').should('not.exist');
+            cy.getBySelLike('chevron').should('not.exist');
             cy.getBySel('badge').should('exist').and('have.text', '3');
           })
           .should('exist');
@@ -78,7 +78,7 @@ sizes.forEach((size) => {
         cy.getBySel('collection-id-2')
           .within(() => {
             cy.getBySel('title').should('have.text', 'Kent');
-            cy.getBySel('chevron').should('not.exist');
+            cy.getBySelLike('chevron').should('not.exist');
             cy.getBySel('badge').should('exist').and('have.text', '3');
           })
           .should('exist')
@@ -1039,7 +1039,7 @@ sizes.forEach((size) => {
         cy.getBySel('collection-id-2')
           .within(() => {
             cy.getBySel('title').should('have.text', 'Parent');
-            cy.getBySel('chevron').should('exist');
+            cy.getBySelLike('chevron').should('exist');
             cy.getBySel('badge').should('exist').and('have.text', '6');
           })
           .should('exist');

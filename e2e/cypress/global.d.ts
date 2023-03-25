@@ -39,6 +39,9 @@ declare namespace Cypress {
 
     changeActiveCollection(id: string): Chainable<JQuery<HTMLElement>>;
 
+    expandCollection(id: string): Chainable<JQuery<HTMLElement>>;
+    collapseCollection(id: string): Chainable<JQuery<HTMLElement>>;
+
     resetDatabaseByApi(): Chainable<Response<void>>;
     resetFeedPages(): Chainable<Response<void>>;
 

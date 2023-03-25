@@ -141,12 +141,47 @@ Cypress.Commands.add('changeActiveCollection', (id: string) => {
   cy.wait('@apiGetItems');
 });
 
+Cypress.Commands.add('expandCollection', (id: string) => {
+  cy.intercept({
+    method: 'PUT',
+    url: getApiPath(`preferences/expand/${id}`),
+  }).as('apiExpandCollection');
+
+  cy.openDrawerIfExists();
+  cy.getBySel(`collection-id-${id}`).within(() => {
+    cy.getBySel('chevronExpand').click();
+  });
+  cy.closeDrawerIfExists();
+
+  cy.wait('@apiExpandCollection').its('response.statusCode').should('eq', 200);
+});
+
+Cypress.Commands.add('collapseCollection', (id: string) => {
+  cy.intercept({
+    method: 'PUT',
+    url: getApiPath(`preferences/collapse/${id}`),
+  }).as('apiCollapseCollection');
+
+  cy.openDrawerIfExists();
+  cy.getBySel(`collection-id-${id}`).within(() => {
+    cy.getBySel('chevronCollapse').click();
+  });
+  cy.closeDrawerIfExists();
+
+  cy.wait('@apiCollapseCollection')
+    .its('response.statusCode')
+    .should('eq', 200);
+});
+
 Cypress.Commands.add('resetDatabaseByApi', () => {
   return cy.request('POST', `${Cypress.env('api_url')}/e2e/reset_db`);
 });
 
 Cypress.Commands.add('resetFeedPages', () => {
-  return cy.request('PUT', `${Cypress.env('feeds_url_cypress')}/feed/reset_pages`);
+  return cy.request(
+    'PUT',
+    `${Cypress.env('feeds_url_cypress')}/feed/reset_pages`
+  );
 });
 
 Cypress.Commands.add('signupByApi', (username, password, displayName) => {

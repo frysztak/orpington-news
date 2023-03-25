@@ -57,6 +57,7 @@ pub async fn import_opml(
 
     let opml = OPML::from_str(&opml_str)
         .map_err(Into::into)
+        // TODO: use BadRequest
         .map_err(GenericError::UnexpectedError)?;
 
     let home_id = sqlx::query_scalar!(
