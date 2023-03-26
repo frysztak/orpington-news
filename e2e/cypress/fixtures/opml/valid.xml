@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<opml version='1.1'>
+    <head>
+        <title>OPML Import Test</title>
+        <dateCreated>Fri, 26 Jul 2013 10:29:38 GMT</dateCreated>
+        <dateModified>Fri, 9 Aug 2019</dateModified>
+    </head>
+    <body>
+        <outline text="Parent">
+            <outline htmlUrl="https://fettblog.eu/" xmlUrl="{{baseUrl}}/feed/fettblog.xml"
+                type="rss" description="" text="Fettblog" />
+            <outline htmlUrl="https://kentcdodds.com/blog" xmlUrl="{{baseUrl}}/feed/kentcdodds.xml"
+                type="rss" description="" text="Kent C. Dodds" />
+        </outline>
+    </body>
+</opml>

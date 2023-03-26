@@ -22,14 +22,14 @@ async fn ws(
             match msg {
                 Message::Ping(bytes) => {
                     if let Err(e) = session.pong(&bytes).await {
-                        warn!("Failed to pong, {}", e);
+                        warn!("WS: Failed to pong, {}", e);
                         return;
                     }
                 }
                 Message::Close(reason) => {
-                    info!("Got close, bailing");
+                    info!("WS: Got `Close` message");
                     if let Err(e) = session.close(reason).await {
-                        warn!("Failed to close session, {}", e);
+                        warn!("WS: Failed to close session, {}", e);
                     }
                     return;
                 }

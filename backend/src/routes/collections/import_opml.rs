@@ -57,6 +57,7 @@ pub async fn import_opml(
 
     let opml = OPML::from_str(&opml_str)
         .map_err(Into::into)
+        // TODO: use BadRequest
         .map_err(GenericError::UnexpectedError)?;
 
     let home_id = sqlx::query_scalar!(
@@ -191,9 +192,22 @@ async fn insert_outlines(
                 &url,
                 normalize_url_rs::OptionsBuilder::default().build().unwrap(),
             )
-            .ok(),
+            .ok()
+            /* `url` crates accepts URLs with `{{}}` inside, but `reqwest` panics
+             * at those (https://github.com/seanmonstar/reqwest/issues/530).
+             * additionally parse URL as `http::Uri` and discard if parsing fails.
+             * */
+            .and_then(|url| match url.parse::<actix_web::http::Uri>() {
+                Ok(_) => Some(url),
+                Err(_) => None,
+            }),
             None => None,
         };
+
+        if url.is_none() && outline.outlines.is_empty() {
+            // don't add childless collections without URL
+            continue;
+        }
 
         if url.is_some() {
             let is_url_already_used = sqlx::query_scalar!(

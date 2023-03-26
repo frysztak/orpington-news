@@ -37,6 +37,12 @@ WithChevron.args = {
   chevron: 'top',
 };
 
+export const WithChevronExpanded = Template.bind({});
+WithChevronExpanded.args = {
+  ...Default.args,
+  chevron: 'bottom',
+};
+
 export const Counter = Template.bind({});
 Counter.args = {
   ...Default.args,

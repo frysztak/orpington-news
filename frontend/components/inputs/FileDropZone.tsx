@@ -34,8 +34,9 @@ export const FileDropZone: React.FC<FileDropZoneProps> = (props) => {
       }}
       opacity={isLoading ? 0.7 : 1}
       {...getRootProps()}
+      data-test="fileDropzoneContainer"
     >
-      <input {...getInputProps()} />
+      <input {...getInputProps()} data-test="fileDropzoneInput" />
       <Text align="center">Drag &apos;n&apos; drop or select OPML file</Text>
     </Box>
   );
