@@ -99,5 +99,67 @@ sizes.forEach((size) => {
 
       cy.wait('@apiImportOPML').its('response.statusCode').should('eq', 500);
     });
+
+    it("doesn't add feeds with invalid URLs", () => {
+      cy.intercept({
+        method: 'POST',
+        url: getApiPath('/collections/import/opml'),
+      }).as('apiImportOPML');
+
+      // purposefully don't replace `{{baseUrl}}`
+      cy.fixture('opml/valid.xml').as('opmlFile');
+
+      cy.visit('/settings/collections/import');
+      cy.getBySelVisible('fileDropzoneContainer').within(() => {
+        cy.getBySel('fileDropzoneInput').selectFile(
+          {
+            contents: '@opmlFile',
+            fileName: 'feeds.xml',
+            mimeType: 'text/xml',
+          },
+          { force: true }
+        );
+      });
+
+      cy.wait('@apiImportOPML').its('response.statusCode').should('eq', 200);
+
+      cy.visit('/');
+      cy.openDrawerIfExists();
+      cy.expandCollection('2').expandCollection('3');
+
+      cy.getBySel('collection-id-2')
+        .within(() => {
+          cy.getBySel('title')
+            .should('exist')
+            .and('have.text', 'OPML Import Test');
+          cy.getBySel('badge').should('not.exist');
+        })
+        .should('exist');
+
+      cy.getBySel('collection-id-3')
+        .within(() => {
+          cy.getBySel('title').should('exist').and('have.text', 'Parent');
+          cy.getBySel('badge').should('not.exist');
+        })
+        .should('exist');
+
+      cy.getBySel('collection-id-4')
+        .within(() => {
+          cy.getBySel('title').should('exist').and('have.text', 'Fettblog');
+          cy.getBySel('badge').should('not.exist');
+        })
+        .should('exist');
+
+      cy.getBySel('collection-id-5')
+        .within(() => {
+          cy.getBySel('title')
+            .should('exist')
+            .and('have.text', 'Kent C. Dodds');
+          cy.getBySel('badge').should('not.exist');
+        })
+        .should('exist');
+        
+        cy.getBySelVisible('thisFeedHasNoItems').should('exist')
+    });
   });
 });

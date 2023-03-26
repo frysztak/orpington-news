@@ -192,7 +192,15 @@ async fn insert_outlines(
                 &url,
                 normalize_url_rs::OptionsBuilder::default().build().unwrap(),
             )
-            .ok(),
+            .ok()
+            /* `url` crates accepts URLs with `{{}}` inside, but `reqwest` panics
+             * at those (https://github.com/seanmonstar/reqwest/issues/530).
+             * additionally parse URL as `http::Uri` and discard if parsing fails.
+             * */
+            .and_then(|url| match url.parse::<actix_web::http::Uri>() {
+                Ok(_) => Some(url),
+                Err(_) => None
+            }),
             None => None,
         };
 
