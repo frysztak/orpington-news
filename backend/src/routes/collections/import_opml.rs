@@ -199,10 +199,15 @@ async fn insert_outlines(
              * */
             .and_then(|url| match url.parse::<actix_web::http::Uri>() {
                 Ok(_) => Some(url),
-                Err(_) => None
+                Err(_) => None,
             }),
             None => None,
         };
+
+        if url.is_none() && outline.outlines.is_empty() {
+            // don't add childless collections without URL
+            continue;
+        }
 
         if url.is_some() {
             let is_url_already_used = sqlx::query_scalar!(

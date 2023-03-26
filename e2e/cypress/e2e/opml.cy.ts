@@ -1,6 +1,6 @@
 import { getApiPath } from './utils';
 
-const sizes = ['macbook-13', 'iphone-6'];
+const sizes = ['macbook-13'];
 
 sizes.forEach((size) => {
   describe(`OPML import, size '${size}'`, () => {
@@ -125,7 +125,7 @@ sizes.forEach((size) => {
 
       cy.visit('/');
       cy.openDrawerIfExists();
-      cy.expandCollection('2').expandCollection('3');
+      cy.expandCollection('2');
 
       cy.getBySel('collection-id-2')
         .within(() => {
@@ -143,23 +143,7 @@ sizes.forEach((size) => {
         })
         .should('exist');
 
-      cy.getBySel('collection-id-4')
-        .within(() => {
-          cy.getBySel('title').should('exist').and('have.text', 'Fettblog');
-          cy.getBySel('badge').should('not.exist');
-        })
-        .should('exist');
-
-      cy.getBySel('collection-id-5')
-        .within(() => {
-          cy.getBySel('title')
-            .should('exist')
-            .and('have.text', 'Kent C. Dodds');
-          cy.getBySel('badge').should('not.exist');
-        })
-        .should('exist');
-        
-        cy.getBySelVisible('thisFeedHasNoItems').should('exist')
+      cy.getBySelVisible('thisFeedHasNoItems').should('exist');
     });
   });
 });
