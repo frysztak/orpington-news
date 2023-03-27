@@ -1,22 +1,23 @@
 use std::{collections::HashMap, sync::Arc, time::Duration};
 
 use actix_web::rt::time::interval;
-use actix_web_lab::sse::{self, ChannelStream, Sse};
-use futures_util::future;
+use actix_ws::Session;
+use futures_util::{stream::FuturesUnordered, StreamExt};
 use parking_lot::Mutex;
-use tracing::warn;
+use serde_json::json;
+use tracing::{info, warn};
 
 use crate::session_state::ID;
 
-use super::messages::SSEMessage;
+use super::messages::WSMessage;
 
 pub struct Broadcaster {
     inner: Mutex<BroadcasterInner>,
 }
 
-type ClientMap = HashMap<ID, sse::Sender>;
+type ClientMap = HashMap<ID, Session>;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Clone, Default)]
 struct BroadcasterInner {
     clients: ClientMap,
 }
@@ -52,12 +53,8 @@ impl Broadcaster {
 
         let mut ok_clients = ClientMap::new();
 
-        for (id, client) in clients {
-            if client
-                .send(sse::Data::new_json(SSEMessage::Ping).unwrap())
-                .await
-                .is_ok()
-            {
+        for (id, mut client) in clients {
+            if client.ping(b"").await.is_ok() {
                 ok_clients.insert(id, client.clone());
             }
         }
@@ -66,45 +63,47 @@ impl Broadcaster {
     }
 
     /// Registers client with broadcaster, returning an SSE response body.
-    pub async fn new_client(&self, user_id: ID) -> Sse<ChannelStream> {
-        let (tx, rx) = sse::channel(10);
-
-        tx.send(sse::Data::new_json(SSEMessage::Ping).unwrap())
-            .await
-            .unwrap();
-
-        self.inner.lock().clients.insert(user_id, tx);
-
-        rx
+    pub async fn new_client(&self, user_id: ID, session: Session) {
+        self.inner.lock().clients.insert(user_id, session);
     }
 
     /// Broadcasts `msg` to all clients.
-    pub async fn broadcast(&self, msg: SSEMessage) {
-        let clients = self.inner.lock().clients.clone();
+    pub async fn broadcast(&self, msg: WSMessage) {
+        let mut inner = self.inner.lock();
 
-        let send_futures = clients
-            .values()
-            .map(|client| client.send(sse::Data::new_json(&msg).unwrap()));
+        let mut unordered = FuturesUnordered::new();
+        let msg = json!(msg).to_string();
 
-        // try to send to all clients, ignoring failures
-        // disconnected clients will get swept up by `remove_stale_clients`
-        let _x = future::join_all(send_futures).await;
+        for (user_id, mut session) in inner.clients.drain() {
+            let msg = msg.clone();
+            unordered.push(async move {
+                let res = session.text(msg).await;
+                res.map(|_| (user_id, session))
+                    .map_err(|_| info!("Dropping session"))
+            });
+        }
+
+        while let Some(res) = unordered.next().await {
+            if let Ok((user_id, session)) = res {
+                inner.clients.insert(user_id, session);
+            }
+        }
     }
 
     /// Send `msg` to a specific client.
-    pub async fn send(&self, user_id: ID, msg: SSEMessage) {
-        let clients = self.inner.lock().clients.clone();
-        let client = clients.get(&user_id);
+    pub async fn send(&self, user_id: ID, msg: WSMessage) {
+        let mut clients = self.inner.lock().clients.clone();
+        let client = clients.get_mut(&user_id);
 
         match client {
             Some(c) => {
-                let result = c.send(sse::Data::new_json(&msg).unwrap()).await;
+                let result = c.text(json!(&msg).to_string()).await;
                 if let Err(e) = result {
-                    warn!("Failed to send SSE message: {}", e);
+                    warn!("Failed to send WS message: {}", e);
                 };
             }
             None => {
-                warn!("SSE client with user ID {} not found", user_id);
+                warn!("WS client with user ID {} not found", user_id);
             }
         };
     }

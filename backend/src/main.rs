@@ -2,7 +2,7 @@ use backend::config::read_config;
 use backend::dedicated_executor::DedicatedExecutor;
 use backend::queue::postgres::PostgresQueue;
 use backend::queue::queue::Queue;
-use backend::sse::broadcast::Broadcaster;
+use backend::ws::broadcast::Broadcaster;
 use backend::startup::Application;
 use backend::tasks::queue_task::run_queue_until_stopped;
 use backend::tasks::refresh_task::run_refresh_until_stopped;
@@ -75,7 +75,7 @@ async fn main() -> anyhow::Result<()> {
     queue.clear_running_jobs().await?;
 
     let broadcaster = Broadcaster::create();
-    let queue_exec = DedicatedExecutor::new("TaskQueue DedicatedExecutor", num_cpus::get());
+    let queue_exec = DedicatedExecutor::new("Orpington News Task Queue", num_cpus::get());
     let queue_task = queue_exec.spawn(run_queue_until_stopped(
         queue.clone(),
         broadcaster.clone(),

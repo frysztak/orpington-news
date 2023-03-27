@@ -8,8 +8,6 @@ sizes.forEach((size) => {
       cy.viewport(size as any);
     });
 
-    const baseUrl = Cypress.config('baseUrl');
-
     describe('account', () => {
       beforeEach(() => {
         cy.signupByApi('end2end', 'end2endpass', 'E2E').loginByApi(

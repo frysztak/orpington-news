@@ -17,7 +17,7 @@ use crate::{
     queue::queue::{Message, Queue, TaskPriority},
     routes::{collections::get::get_collections_impl, error::GenericError},
     session_state::ID,
-    sse::{broadcast::Broadcaster, messages::SSEMessage},
+    ws::{broadcast::Broadcaster, messages::WSMessage},
 };
 
 use super::types::CollectionToRefresh;
@@ -57,6 +57,7 @@ pub async fn import_opml(
 
     let opml = OPML::from_str(&opml_str)
         .map_err(Into::into)
+        // TODO: use BadRequest
         .map_err(GenericError::UnexpectedError)?;
 
     let home_id = sqlx::query_scalar!(
@@ -169,7 +170,7 @@ pub async fn import_opml(
 
     let feed_ids = inserted_collections.iter().map(|c| c.id).collect();
     broadcaster
-        .send(user_id, SSEMessage::UpdatingFeeds { feed_ids })
+        .send(user_id, WSMessage::UpdatingFeeds { feed_ids })
         .await;
 
     Ok(HttpResponse::Ok().json(collections))
@@ -191,9 +192,22 @@ async fn insert_outlines(
                 &url,
                 normalize_url_rs::OptionsBuilder::default().build().unwrap(),
             )
-            .ok(),
+            .ok()
+            /* `url` crates accepts URLs with `{{}}` inside, but `reqwest` panics
+             * at those (https://github.com/seanmonstar/reqwest/issues/530).
+             * additionally parse URL as `http::Uri` and discard if parsing fails.
+             * */
+            .and_then(|url| match url.parse::<actix_web::http::Uri>() {
+                Ok(_) => Some(url),
+                Err(_) => None,
+            }),
             None => None,
         };
+
+        if url.is_none() && outline.outlines.is_empty() {
+            // don't add childless collections without URL
+            continue;
+        }
 
         if url.is_some() {
             let is_url_already_used = sqlx::query_scalar!(

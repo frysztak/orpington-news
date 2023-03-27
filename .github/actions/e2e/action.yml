@@ -48,6 +48,11 @@ runs:
         docker compose -f docker-compose.e2e.yml up -d
         sleep 10  # wait for database to be ready
 
+    - name: Copy .env
+      shell: bash
+      run: |
+        cp .env.e2e e2e/.env
+
     - name: Run E2E tests
       uses: cypress-io/github-action@v5
       with:
@@ -62,7 +67,22 @@ runs:
       shell: bash
       run: |
         docker exec orpington-news-e2e curl --silent -X POST http://localhost:8000/api/e2e/exit || true
-        docker exec orpington-news-e2e grcov . -s backend --binary-path backend/target/debug --branch --ignore-not-existing -t lcov -o coverage.info
+        docker exec orpington-news-e2e grcov . \
+          -s backend \
+          --binary-path backend/target/debug \
+          --branch \
+          --ignore-not-existing \
+          --excl-start 'mod test* \{' \
+          --ignore 'tests/*' \
+          --ignore "*test.rs" \
+          --ignore "*tests.rs" \
+          --ignore "*github.com*" \
+          --ignore "*libcore*" \
+          --ignore "*rustc*" \
+          --ignore "*liballoc*" \
+          --ignore "*cargo*" \
+          -t lcov \
+          -o coverage.info
         docker cp orpington-news-e2e:/app/coverage.info api_coverage.info
 
     - uses: codecov/codecov-action@v3

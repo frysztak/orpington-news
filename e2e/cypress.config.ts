@@ -1,15 +1,14 @@
 import { defineConfig } from 'cypress';
 import * as dotenv from 'dotenv'
 
-dotenv.config({
-  path: process.env.NODE_ENV === 'development' ? '.env.e2e.local' : '.env.e2e',
-});
+dotenv.config();
 
 export default defineConfig({
   projectId: '9fra5f',
   env: {
     api_url: process.env.NEXT_PUBLIC_API_URL,
     feeds_url: process.env.FEEDS_URL,
+    feeds_url_cypress: process.env.FEEDS_URL_CYPRESS,
   },
   e2e: {
     baseUrl: process.env.APP_URL,

@@ -2,7 +2,7 @@ use crate::authentication::store::PostgresSessionStore;
 use crate::config::AppConfig;
 use crate::queue::queue::Queue;
 use crate::routes::{auth, collections, e2e, events, preferences, spa};
-use crate::sse::broadcast::Broadcaster;
+use crate::ws::broadcast::Broadcaster;
 use actix_cors::Cors;
 use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;
@@ -77,7 +77,11 @@ async fn run(
                     .cookie_name("sessionId".to_string())
                     .cookie_secure(!disable_secure_cookie)
                     .session_lifecycle(
-                        PersistentSession::default().session_ttl(cookie::time::Duration::weeks(1)),
+                        PersistentSession::default()
+                            .session_ttl(cookie::time::Duration::weeks(1))
+                            .session_ttl_extension_policy(
+                                actix_session::config::TtlExtensionPolicy::OnEveryRequest,
+                            ),
                     )
                     .build(),
             )

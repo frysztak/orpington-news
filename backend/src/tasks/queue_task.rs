@@ -9,9 +9,9 @@ use crate::{
         },
     },
     session_state::ID,
-    sse::{
+    ws::{
         broadcast::Broadcaster,
-        messages::{SSEMessage, UnreadCount},
+        messages::{WSMessage, UnreadCount},
     },
 };
 use chrono::Utc;
@@ -114,7 +114,6 @@ async fn commit_batch(
 ) -> Result<(), anyhow::Error> {
     let mut transaction = pool.begin().await?;
 
-    let mut unread_counts = HashMap::<ID, Option<UnreadCount>>::new();
     let mut refreshed_feed_ids = HashMap::<ID, Vec<ID>>::new();
 
     for UpdateResultWithJobId(job_id, user_id, result) in results {
@@ -133,31 +132,23 @@ async fn commit_batch(
             }
         }
 
-        unread_counts.insert(user_id, None);
         refreshed_feed_ids
             .entry(user_id)
             .or_insert(vec![])
             .push(collection_id);
     }
 
-    let user_ids: Vec<ID> = unread_counts.keys().cloned().collect();
-    for user_id in user_ids {
-        unread_counts.insert(user_id, get_unread_map(user_id, &pool).await.ok());
-    }
-
     info!("Committing {:#?}", refreshed_feed_ids);
     transaction.commit().await?;
 
-    for ((user_id, unread_count), (_, refreshed_feed_ids)) in unread_counts
-        .into_iter()
-        .zip(refreshed_feed_ids.into_iter())
-    {
+    for (user_id, refreshed_feed_ids) in refreshed_feed_ids {
         let affected_feed_ids = get_affected_collection_ids(&refreshed_feed_ids, &pool).await?;
+        let unread_count = get_unread_map(user_id, &pool).await?.into();
 
         broadcaster
             .send(
                 user_id,
-                SSEMessage::UpdatedFeeds {
+                WSMessage::UpdatedFeeds {
                     refreshed_feed_ids,
                     affected_feed_ids,
                     unread_count,

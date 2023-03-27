@@ -39,7 +39,11 @@ declare namespace Cypress {
 
     changeActiveCollection(id: string): Chainable<JQuery<HTMLElement>>;
 
+    expandCollection(id: string): Chainable<JQuery<HTMLElement>>;
+    collapseCollection(id: string): Chainable<JQuery<HTMLElement>>;
+
     resetDatabaseByApi(): Chainable<Response<void>>;
+    resetFeedPages(): Chainable<Response<void>>;
 
     /**
      * Signs user up by using API request
@@ -84,5 +88,13 @@ declare namespace Cypress {
       collectionId: number;
       preferences: object;
     }): Chainable<Response<void>>;
+    
+    /**
+     * Set feed page by API
+     */
+     putFeedPageByApi(data: {
+      feedName: string,
+      page: number,
+     }): Chainable<Response<void>>;
   }
 }
