@@ -7,19 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.2] - 2023-03-27
+
 ### Fixed
 
-- Fix incorrect unread count being returned after refreshing collection
-- Fix session TTL not being refreshed
-- Fix API code coverage reporting incorrect numbers
+-   Fix incorrect unread count being returned after refreshing collection
+-   Fix session TTL not being refreshed
+-   Fix API code coverage reporting incorrect numbers
 
 ### Added
 
-- Added `justfile`
+-   Added `justfile`
 
 ### Changed
 
-- Changed from Server-Sent Events to WebSockets
+-   Changed from Server-Sent Events to WebSockets
 
 ## [0.12.1] - 2023-03-17
 
@@ -338,7 +340,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.1...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.2...HEAD
+
+[0.12.2]: https://github.com/frysztak/orpington-news/compare/0.12.1...0.12.2
 
 [0.12.1]: https://github.com/frysztak/orpington-news/compare/0.12.0...0.12.1
 
