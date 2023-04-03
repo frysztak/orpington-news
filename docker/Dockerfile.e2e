@@ -29,7 +29,9 @@ WORKDIR /app
 COPY backend backend
 RUN cd backend && \
   RUSTFLAGS="-C instrument-coverage" cargo build \
-  --features e2e,spa && \
+    --features e2e,spa && \
+  RUSTFLAGS="-C instrument-coverage" LLVM_PROFILE_FILE="api-unit-%p-%m.profraw" cargo test \
+    --features e2e,spa && \
   rm -rf target/debug/deps && \
   rm -rf target/debug/incremental && \
   rm -rf target/debug/build
@@ -39,4 +41,5 @@ WORKDIR /app
 EXPOSE 8000
 ENV PORT=8000
 ENV LLVM_PROFILE_FILE="api-%p-%m.profraw"
+RUN mv /app/backend/*.profraw .
 CMD /app/backend/target/debug/backend
