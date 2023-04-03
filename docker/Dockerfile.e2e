@@ -26,12 +26,27 @@ RUN wget -q https://github.com/mozilla/grcov/releases/download/v0.8.13/grcov-x86
   mv grcov /usr/local/bin/grcov
 
 WORKDIR /app
+ENV RUSTFLAGS="-C instrument-coverage"
 COPY backend backend
-RUN cd backend && \
-  RUSTFLAGS="-C instrument-coverage" cargo build \
-    --features e2e,spa && \
-  RUSTFLAGS="-C instrument-coverage" LLVM_PROFILE_FILE="api-unit-%p-%m.profraw" cargo test \
-    --features e2e,spa && \
+WORKDIR /app/backend
+RUN LLVM_PROFILE_FILE="api-unit-%p-%m.profraw" cargo test --tests --features e2e,spa && \
+  grcov . \
+   -s . \
+   --binary-path target/debug \
+   --branch \
+   --ignore-not-existing \
+   --excl-start 'mod test* \{' \
+   --ignore 'tests/*' \
+   --ignore "*test.rs" \
+   --ignore "*tests.rs" \
+   --ignore "*github.com*" \
+   --ignore "*libcore*" \
+   --ignore "*rustc*" \
+   --ignore "*liballoc*" \
+   --ignore "*cargo*" \
+   -t lcov \
+   -o unit_coverage.info && \
+  cargo build --features e2e,spa && \
   rm -rf target/debug/deps && \
   rm -rf target/debug/incremental && \
   rm -rf target/debug/build
@@ -41,5 +56,4 @@ WORKDIR /app
 EXPOSE 8000
 ENV PORT=8000
 ENV LLVM_PROFILE_FILE="api-%p-%m.profraw"
-RUN mv /app/backend/*.profraw .
 CMD /app/backend/target/debug/backend
