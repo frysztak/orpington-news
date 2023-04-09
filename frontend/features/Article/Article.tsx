@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Text, Icon, useToast, VStack } from '@chakra-ui/react';
+import { Text, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
 import { motion, PanInfo, useMotionValue } from 'framer-motion';
@@ -10,6 +10,7 @@ import {
   ArticleHeader,
   ArticleMenuAction,
   ArticleSkeleton,
+  ArticleSidebar,
 } from '@components/article';
 import { useIsTouchscreen } from '@utils';
 import {
@@ -219,27 +220,36 @@ export const Article: React.FC<ArticleProps> = (props) => {
           </VStack>
         ) : (
           query.status === 'success' && (
-            <Box
-              sx={{
-                '--article-font-size-scale': `${ArticleFontSizeValues[articleFontSize]}`,
-                '--article-font-family':
-                  ArticleFontFamiliesNames[articleFontFamily],
-                '--article-mono-font-family':
-                  ArticleMonoFontFamiliesNames[articleMonoFontFamily],
-              }}
+            <div
+              style={
+                {
+                  '--article-font-size-scale': `${ArticleFontSizeValues[articleFontSize]}`,
+                  '--article-font-family':
+                    ArticleFontFamiliesNames[articleFontFamily],
+                  '--article-mono-font-family':
+                    ArticleMonoFontFamiliesNames[articleMonoFontFamily],
+                } as any
+              }
+              className="flex flex-row"
             >
-              <ArticleHeader
-                article={query.data}
+              <ArticleSidebar
                 onGoBackClicked={onGoBackClicked}
-                onMenuItemClicked={handleMenuItemClicked}
-                articleWidth={articleWidth}
-                onArticleWidthChanged={setArticleWidth}
                 showGoBackButtonForDesktop={showGoBackButtonForDesktop}
               />
-              <Box w="full" px={4} py={4}>
-                <ArticleContent html={query.data.fullText} />
-              </Box>
-            </Box>
+              <div>
+                <ArticleHeader
+                  article={query.data}
+                  onGoBackClicked={onGoBackClicked}
+                  onMenuItemClicked={handleMenuItemClicked}
+                  articleWidth={articleWidth}
+                  onArticleWidthChanged={setArticleWidth}
+                  showGoBackButtonForDesktop={showGoBackButtonForDesktop}
+                />
+                <div className="w-full p-4">
+                  <ArticleContent html={query.data.fullText} />
+                </div>
+              </div>
+            </div>
           )
         )}
       </motion.div>
