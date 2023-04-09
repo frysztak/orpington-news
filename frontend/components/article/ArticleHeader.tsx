@@ -6,7 +6,6 @@ import {
   Heading,
   HStack,
   IconButton,
-  Link,
   VStack,
   Wrap,
   WrapItem,
@@ -80,15 +79,6 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
   const actions = useMemo(
     () => (
       <HStack>
-        <IconButton
-          icon={<HiOutlineExternalLink />}
-          as={Link}
-          isExternal
-          href={url}
-          aria-label="Open external link"
-          variant="ghost"
-          isDisabled={disableActionButtons}
-        />
         {/*<IconButton
           icon={onReadingList ? <BsBookmarkDash /> : <BsBookmarkPlus />}
           aria-label={
@@ -110,6 +100,12 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               />
             </MenuTrigger>
             <MenuContent>
+              <MenuItem icon={<HiOutlineExternalLink />}>
+                <a href={url} target="_blank">
+                  Open in browser
+                </a>
+              </MenuItem>
+
               <MenuItem
                 icon={<IconifyIcon icon={radioboxBlank} />}
                 onClick={handleMenuItemClick('markAsUnread')}
