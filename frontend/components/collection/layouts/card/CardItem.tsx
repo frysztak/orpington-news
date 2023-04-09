@@ -58,21 +58,31 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
         transition="border-color 0.2s"
       >
         <HStack w="full" justifyContent="space-between" alignItems="flex-start">
-          <LinkOverlay
-            as={NextLink}
-            href={`/collection/${collection.id}/article/${id}`}
+          <NextLink
             passHref
+            legacyBehavior
+            href={{
+              pathname: '/collection/[collectionId]/article/[itemId]',
+              query: {
+                collectionId: collection.id,
+                itemId: id,
+                twoPane: false,
+              },
+            }}
+            as={`/collection/${collection.id}/article/${id}`}
           >
-            <Heading
-              fontSize={['lg', '2xl']}
-              p={3}
-              fontWeight={Boolean(dateRead) ? 500 : 700}
-              data-test="title"
-              data-test-read={Boolean(dateRead)}
-            >
-              {title}
-            </Heading>
-          </LinkOverlay>
+            <LinkOverlay>
+              <Heading
+                fontSize={['lg', '2xl']}
+                p={3}
+                fontWeight={Boolean(dateRead) ? 500 : 700}
+                data-test="title"
+                data-test-read={Boolean(dateRead)}
+              >
+                {title}
+              </Heading>
+            </LinkOverlay>
+          </NextLink>
 
           {/*<IconButton
             icon={onReadingList ? <BsBookmarkDash /> : <BsBookmarkPlus />}

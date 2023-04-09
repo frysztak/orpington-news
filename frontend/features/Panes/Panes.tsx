@@ -22,6 +22,11 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
     router.route === '/collection/[collectionId]/article/[itemId]';
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);
+  // on Article page, force two pane layout unless `twoPane` is set to `false`
+  const forceTwoPaneLayout =
+    router.query?.twoPane !== undefined
+      ? !Boolean(router.query.twoPane)
+      : articlePage;
 
   const handleGoBack = useCallback(() => {
     router.push('/');
@@ -40,6 +45,8 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
     'panesLayout',
     PanesLayouts[0]
   );
+
+  const layout = forceTwoPaneLayout ? 'twoPane' : panesLayout;
 
   usePrefetchPreferences();
 
@@ -69,6 +76,7 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
                 itemId={router.isReady ? itemId : undefined}
                 onGoBackClicked={handleGoBack}
                 isRouterReady={router.isReady}
+                showGoBackButtonForDesktop={layout === 'twoPane'}
               />
             )
           }
@@ -78,7 +86,7 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
           onCollectionItemsWidthChanged={setCollectionItemsWidth}
           collectionItemsHeight={collectionItemsHeight}
           onCollectionItemsHeightChanged={setCollectionItemsHeight}
-          layout={panesLayout}
+          layout={layout}
         />
       </ClientRender>
 

@@ -30,6 +30,7 @@ export interface ArticleProps {
   itemId?: ID;
   isRouterReady?: boolean;
   fullHeight?: boolean;
+  showGoBackButtonForDesktop?: boolean;
 
   onGoBackClicked?: () => void;
 }
@@ -51,6 +52,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
     itemId,
     isRouterReady,
     fullHeight = true,
+    showGoBackButtonForDesktop = false,
     onGoBackClicked,
   } = props;
 
@@ -232,6 +234,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
                 onMenuItemClicked={handleMenuItemClicked}
                 articleWidth={articleWidth}
                 onArticleWidthChanged={setArticleWidth}
+                showGoBackButtonForDesktop={showGoBackButtonForDesktop}
               />
               <Box w="full" px={4} py={4}>
                 <ArticleContent html={query.data.fullText} />

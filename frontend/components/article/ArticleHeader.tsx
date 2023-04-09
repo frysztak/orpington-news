@@ -42,6 +42,7 @@ export interface ArticleHeaderProps {
   articleWidth?: ArticleWidth;
 
   disableActionButtons?: boolean;
+  showGoBackButtonForDesktop?: boolean;
   onGoBackClicked?: () => void;
   onReadingListToggle?: () => void;
   onMenuItemClicked?: (action: ArticleMenuAction) => void;
@@ -62,6 +63,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
     articleWidth,
 
     disableActionButtons,
+    showGoBackButtonForDesktop,
     onGoBackClicked,
     onReadingListToggle,
     onMenuItemClicked,
@@ -167,6 +169,18 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
       <VStack w="full" align="flex-start" spacing={1} px={4} pt={4}>
         <HStack h="full" w="full" justify="space-between" align="stretch">
           <Flex align="center">
+            {showGoBackButtonForDesktop && (
+              <IconButton
+                display={{ base: 'none', lg: 'flex' }}
+                icon={<IoReturnUpBack />}
+                aria-label="Go back to collection"
+                variant="ghost"
+                onClick={onGoBackClicked}
+                isDisabled={disableActionButtons}
+                data-test="goBack"
+                mr={2}
+              />
+            )}
             <Heading
               overflowWrap="anywhere"
               fontFamily="var(--article-font-family)"

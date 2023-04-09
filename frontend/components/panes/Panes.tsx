@@ -1,15 +1,17 @@
 import React, { ReactNode, useCallback } from 'react';
 import { Box, BoxProps, Divider, HStack, VStack } from '@chakra-ui/react';
 import { Resizable, ResizeCallback } from 're-resizable';
+import { useMediaQuery } from 'usehooks-ts';
 import { PanesLayout } from '@components/collection/types';
 import { EmptyMain } from './EmptyMain';
 
 export interface PanesProps {
-  layout?: PanesLayout;
+  layout?: PanesLayout | 'twoPane';
   sidebar?: ReactNode;
   collectionItemHeader?: ReactNode;
   collectionItemList?: ReactNode;
   mainContent?: ReactNode;
+  noCollectionItemList?: boolean;
 
   sidebarWidth: number;
   onSidebarWidthChanged?: (width: number) => void;
@@ -21,24 +23,141 @@ export interface PanesProps {
   onCollectionItemsHeightChanged?: (height: number) => void;
 }
 
+const PanesMobile: React.FC<PanesProps> = ({
+  mainContent,
+  collectionItemHeader,
+  collectionItemList,
+}) => {
+  return (
+    <Box h="100vh" data-test="panesMobile" flexGrow={1}>
+      {mainContent && (
+        <Box position="absolute" top={0} left={0} h="full" w="full">
+          {mainContent}
+        </Box>
+      )}
+      <VStack
+        spacing={0}
+        h="full"
+        w="full"
+        visibility={mainContent ? 'hidden' : 'visible'}
+      >
+        {collectionItemHeader}
+
+        <Divider pt={3} />
+
+        {collectionItemList}
+      </VStack>
+    </Box>
+  );
+};
+
+const PanesDesktop: React.FC<
+  PanesProps & {
+    onSidebarResize: ResizeCallback;
+    onCollectionItemsResize: ResizeCallback;
+  }
+> = ({
+  layout,
+  sidebarWidth,
+  sidebar,
+  collectionItemsWidth,
+  collectionItemHeader,
+  collectionItemList,
+  collectionItemsHeight,
+  mainContent,
+  onSidebarResize,
+  onCollectionItemsResize,
+}) => {
+  return (
+    <HStack
+      alignItems="stretch"
+      h="full"
+      data-test="panesDesktop"
+      data-test-layout={layout}
+      flexGrow={1}
+    >
+      <Resizable
+        enable={{ right: true }}
+        minWidth={275}
+        size={{ width: sidebarWidth, height: 'auto' }}
+        onResizeStop={onSidebarResize}
+      >
+        <HStack h="full" maxH="100vh">
+          {sidebar}
+          <Divider orientation="vertical" h="full" />
+        </HStack>
+      </Resizable>
+
+      {layout === 'horizontal' ? (
+        <>
+          <Resizable
+            enable={{ right: true }}
+            minWidth={400}
+            size={{ width: collectionItemsWidth, height: 'auto' }}
+            onResizeStop={onCollectionItemsResize}
+          >
+            <HStack h="full">
+              <VStack spacing={0} h="full" w="full">
+                {collectionItemHeader}
+
+                <Divider pt={4} />
+
+                {collectionItemList}
+              </VStack>
+              <Divider orientation="vertical" h="full" />
+            </HStack>
+          </Resizable>
+
+          {mainContent || <EmptyMain h="auto" />}
+        </>
+      ) : layout === 'vertical' ? (
+        <VStack h="100vh" w="full" spacing={0}>
+          <Resizable
+            enable={{ bottom: true }}
+            minHeight={100}
+            size={{ width: '100%', height: collectionItemsHeight }}
+            onResizeStop={onCollectionItemsResize}
+          >
+            <VStack spacing={0} h="full" w="full">
+              {collectionItemHeader}
+
+              <Divider pt={4} />
+
+              {collectionItemList}
+            </VStack>
+          </Resizable>
+
+          <Divider data-test="handleHorizontal" />
+
+          {mainContent || <EmptyMain h="full" />}
+        </VStack>
+      ) : layout === 'twoPane' ? (
+        <VStack spacing={0} h="100vh" w="full">
+          {mainContent ?? (
+            <>
+              {collectionItemHeader}
+              <Divider pt={4} />
+              {collectionItemList}
+            </>
+          )}
+        </VStack>
+      ) : (
+        <VStack spacing={0} h="100vh" w="full">
+          {collectionItemHeader}
+          <Divider pt={4} />
+          {collectionItemList}
+        </VStack>
+      )}
+    </HStack>
+  );
+};
+
 export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
   const {
     layout = 'horizontal',
-    sidebar,
-    collectionItemHeader,
-    collectionItemList,
-    mainContent,
-
-    sidebarWidth,
     onSidebarWidthChanged,
-
-    collectionItemsWidth,
     onCollectionItemsWidthChanged,
-
-    collectionItemsHeight,
     onCollectionItemsHeightChanged,
-
-    ...rest
   } = props;
 
   const handleSidebarResize: ResizeCallback = useCallback(
@@ -58,108 +177,15 @@ export const Panes: React.FC<PanesProps & BoxProps> = (props) => {
     [layout, onCollectionItemsHeightChanged, onCollectionItemsWidthChanged]
   );
 
-  return (
-    <>
-      {/* Desktop view */}
-      <HStack
-        alignItems="stretch"
-        h="full"
-        display={{ base: 'none', lg: 'flex' }}
-        data-test="panesDesktop"
-        data-test-layout={layout}
-        {...rest}
-      >
-        <Resizable
-          enable={{ right: true }}
-          minWidth={275}
-          size={{ width: sidebarWidth, height: 'auto' }}
-          onResizeStop={handleSidebarResize}
-        >
-          <HStack h="full" maxH="100vh">
-            {sidebar}
-            <Divider orientation="vertical" h="full" />
-          </HStack>
-        </Resizable>
+  const isDesktop = useMediaQuery('(min-width: 62em)');
 
-        {layout === 'horizontal' ? (
-          <>
-            <Resizable
-              enable={{ right: true }}
-              minWidth={400}
-              size={{ width: collectionItemsWidth, height: 'auto' }}
-              onResizeStop={handleCollectionItemsResize}
-            >
-              <HStack h="full">
-                <VStack spacing={0} h="full" w="full">
-                  {collectionItemHeader}
-
-                  <Divider pt={4} />
-
-                  {collectionItemList}
-                </VStack>
-                <Divider orientation="vertical" h="full" />
-              </HStack>
-            </Resizable>
-
-            {mainContent || <EmptyMain h="auto" />}
-          </>
-        ) : layout === 'vertical' ? (
-          <VStack h="100vh" w="full" spacing={0}>
-            <Resizable
-              enable={{ bottom: true }}
-              minHeight={100}
-              size={{ width: '100%', height: collectionItemsHeight }}
-              onResizeStop={handleCollectionItemsResize}
-            >
-              <VStack spacing={0} h="full" w="full">
-                {collectionItemHeader}
-
-                <Divider pt={4} />
-
-                {collectionItemList}
-              </VStack>
-            </Resizable>
-
-            <Divider />
-
-            {mainContent || <EmptyMain h="full" />}
-          </VStack>
-        ) : (
-          <VStack spacing={0} h="100vh" w="full">
-            {collectionItemHeader}
-
-            <Divider pt={4} />
-
-            {collectionItemList}
-          </VStack>
-        )}
-      </HStack>
-
-      {/* Mobile view */}
-      <Box
-        display={{ base: 'flex', lg: 'none' }}
-        h="100vh"
-        data-test="panesMobile"
-        {...rest}
-      >
-        {mainContent && (
-          <Box position="absolute" top={0} left={0} h="full" w="full">
-            {mainContent}
-          </Box>
-        )}
-        <VStack
-          spacing={0}
-          h="full"
-          w="full"
-          visibility={mainContent ? 'hidden' : 'visible'}
-        >
-          {collectionItemHeader}
-
-          <Divider pt={3} />
-
-          {collectionItemList}
-        </VStack>
-      </Box>
-    </>
+  return isDesktop ? (
+    <PanesDesktop
+      {...props}
+      onSidebarResize={handleSidebarResize}
+      onCollectionItemsResize={handleCollectionItemsResize}
+    />
+  ) : (
+    <PanesMobile {...props} />
   );
 };
