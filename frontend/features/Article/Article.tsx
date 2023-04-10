@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Text, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
+import cx from 'classnames';
 import { motion, PanInfo, useMotionValue } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { RiErrorWarningFill } from '@react-icons/all-files/ri/RiErrorWarningFill';
@@ -32,6 +33,7 @@ export interface ArticleProps {
   isRouterReady?: boolean;
   fullHeight?: boolean;
   showGoBackButtonForDesktop?: boolean;
+  showBorder?: boolean;
 
   onGoBackClicked?: () => void;
 }
@@ -54,6 +56,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
     isRouterReady,
     fullHeight = true,
     showGoBackButtonForDesktop = false,
+    showBorder,
     onGoBackClicked,
   } = props;
 
@@ -187,56 +190,57 @@ export const Article: React.FC<ArticleProps> = (props) => {
   }, [x]);
 
   return (
-    <VStack
-      flexGrow={1}
-      overflow="auto"
-      overflowX="hidden"
-      h={fullHeight ? '100vh' : undefined}
-      w="full"
-      spacing={1}
-      ref={ref}
-      maxWidth={getWidth(articleWidth)}
-    >
-      <motion.div
-        drag={isTouchscreen ? 'x' : false}
-        dragConstraints={{
-          left: allowDragToNextArticle ? undefined : 0,
-          right: allowDragToPrevArticle ? undefined : 0,
+    <div className="flex flex-row flex-grow">
+      <ArticleSidebar
+        onGoBackClicked={onGoBackClicked}
+        showGoBackButtonForDesktop={showGoBackButtonForDesktop}
+      />
+      <div
+        className={cx(
+          showBorder && 'lg:border rounded border-whiteAlpha-300',
+          'flex flex-grow flex-gap-1 w-full lg:m-2',
+          'overflow-auto overflow-x-hidden'
+        )}
+        ref={ref}
+        style={{
+          maxWidth: getWidth(articleWidth),
+          height: fullHeight ? 'calc(100vh - 1rem)' : undefined,
         }}
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
-        style={{ x, width: '100%', height: '100%' }}
       >
-        {!isRouterReady || query.isLoading ? (
-          <ArticleSkeleton />
-        ) : query.status === 'error' ? (
-          <VStack spacing={6} h="full" w="full" justify="center">
-            <Icon as={RiErrorWarningFill} w={12} h="auto" fill="red.300" />
-            <Text fontSize="xl" fontWeight="bold">
-              {query.error.status === 404
-                ? 'Article not found.'
-                : 'Unexpected error'}
-            </Text>
-          </VStack>
-        ) : (
-          query.status === 'success' && (
-            <div
-              style={
-                {
-                  '--article-font-size-scale': `${ArticleFontSizeValues[articleFontSize]}`,
-                  '--article-font-family':
-                    ArticleFontFamiliesNames[articleFontFamily],
-                  '--article-mono-font-family':
-                    ArticleMonoFontFamiliesNames[articleMonoFontFamily],
-                } as any
-              }
-              className="flex flex-row"
-            >
-              <ArticleSidebar
-                onGoBackClicked={onGoBackClicked}
-                showGoBackButtonForDesktop={showGoBackButtonForDesktop}
-              />
-              <div>
+        <motion.div
+          drag={isTouchscreen ? 'x' : false}
+          dragConstraints={{
+            left: allowDragToNextArticle ? undefined : 0,
+            right: allowDragToPrevArticle ? undefined : 0,
+          }}
+          onDrag={handleDrag}
+          onDragEnd={handleDragEnd}
+          style={{ x, width: '100%', height: '100%' }}
+        >
+          {!isRouterReady || query.isLoading ? (
+            <ArticleSkeleton />
+          ) : query.status === 'error' ? (
+            <VStack spacing={6} h="full" w="full" justify="center">
+              <Icon as={RiErrorWarningFill} w={12} h="auto" fill="red.300" />
+              <Text fontSize="xl" fontWeight="bold">
+                {query.error.status === 404
+                  ? 'Article not found.'
+                  : 'Unexpected error'}
+              </Text>
+            </VStack>
+          ) : (
+            query.status === 'success' && (
+              <div
+                style={
+                  {
+                    '--article-font-size-scale': `${ArticleFontSizeValues[articleFontSize]}`,
+                    '--article-font-family':
+                      ArticleFontFamiliesNames[articleFontFamily],
+                    '--article-mono-font-family':
+                      ArticleMonoFontFamiliesNames[articleMonoFontFamily],
+                  } as any
+                }
+              >
                 <ArticleHeader
                   article={query.data}
                   onGoBackClicked={onGoBackClicked}
@@ -249,10 +253,10 @@ export const Article: React.FC<ArticleProps> = (props) => {
                   <ArticleContent html={query.data.fullText} />
                 </div>
               </div>
-            </div>
-          )
-        )}
-      </motion.div>
-    </VStack>
+            )
+          )}
+        </motion.div>
+      </div>
+    </div>
   );
 };

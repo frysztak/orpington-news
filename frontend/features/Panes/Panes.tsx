@@ -77,6 +77,7 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
                 onGoBackClicked={handleGoBack}
                 isRouterReady={router.isReady}
                 showGoBackButtonForDesktop={layout === 'twoPane'}
+                showBorder={layout === 'twoPane'}
               />
             )
           }

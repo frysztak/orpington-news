@@ -14,7 +14,7 @@ export const ArticleSidebar: React.FC<ArticleSidebarProps> = ({
   onGoBackClicked,
 }) => {
   return showGoBackButtonForDesktop ? (
-    <div className="hidden lg:flex flex-row m-4 max-h-40 border-r border-r-whiteAlpha-300">
+    <div className="hidden lg:flex flex-row m-2 mt-6">
       <IconButton
         icon={<IoReturnUpBack />}
         aria-label="Go back to collection"
