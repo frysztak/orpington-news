@@ -48,6 +48,11 @@ runs:
         docker compose -f docker-compose.e2e.yml up -d
         sleep 10  # wait for database to be ready
 
+    - name: Copy API unit test coverage data
+      shell: bash
+      run: |
+        docker cp orpington-news-e2e:/app/backend/unit_coverage.info api_unit_coverage.info
+
     - name: Copy .env
       shell: bash
       run: |
@@ -86,15 +91,22 @@ runs:
         docker cp orpington-news-e2e:/app/coverage.info api_coverage.info
 
     - uses: codecov/codecov-action@v3
-      name: Upload Web coverage
+      name: Upload Web E2E coverage
       with:
         token: ${{ inputs.codecov-token }}
         flags: e2e-web
         directory: e2e/coverage
 
     - uses: codecov/codecov-action@v3
-      name: Upload API coverage
+      name: Upload API E2e coverage
       with:
         token: ${{ inputs.codecov-token }}
         flags: e2e-api
         files: ./api_coverage.info
+
+    - uses: codecov/codecov-action@v3
+      name: Upload API unit test coverage
+      with:
+        token: ${{ inputs.codecov-token }}
+        flags: unit-api
+        files: ./api_unit_coverage.info
