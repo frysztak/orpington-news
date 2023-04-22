@@ -84,6 +84,13 @@ jobs:
             BUILD_VERSION=${{ steps.package-version.outputs.current-version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          outputs: type=docker,dest=/tmp/amd64.tar
+
+      - name: Upload image
+        uses: actions/upload-artifact@v3
+        with:
+          name: amd64
+          path: /tmp/amd64.tar
 
   build-arm64:
     name: Build ARM64 image
@@ -139,6 +146,13 @@ jobs:
             BUILD_VERSION=${{ steps.package-version.outputs.current-version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          outputs: type=docker,dest=/tmp/arm64.tar
+
+      - name: Upload image
+        uses: actions/upload-artifact@v3
+        with:
+          name: arm64
+          path: /tmp/arm64.tar
 
   publish:
     runs-on: ubuntu-latest
@@ -165,6 +179,24 @@ jobs:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Download AMD64 artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: amd64
+        path: /tmp
+
+    - name: Download ARM64 artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: arm64
+        path: /tmp
+
+    - name: Load images
+      run: |
+        docker load --input /tmp/amd64.tar
+        docker load --input /tmp/arm64.tar
+        docker image ls -a
 
     - name: Create version manifest and push
       run: |
