@@ -62,8 +62,11 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=auto
+            suffix=-amd64,onlatest=true
           tags: |
-            type=semver,pattern={{version}},value=v${{ steps.package-version.outputs.current-version }},suffix=-amd64
+            type=semver,pattern={{version}},value=v${{ steps.package-version.outputs.current-version }}
 
       - name: Build and push
         uses: docker/build-push-action@v3
@@ -114,8 +117,11 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=auto
+            suffix=-arm64,onlatest=true
           tags: |
-            type=semver,pattern={{version}},value=v${{ steps.package-version.outputs.current-version }},suffix=-arm64
+            type=semver,pattern={{version}},value=v${{ steps.package-version.outputs.current-version }}
 
       - name: Build and push
         uses: docker/build-push-action@v3
