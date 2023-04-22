@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.3] - 2023-04-22
+
 ### Added
 
-- ARM64 image
+-   ARM64 image
 
 ## [0.12.2] - 2023-03-27
 
@@ -344,7 +346,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.2...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.3...HEAD
+
+[0.12.3]: https://github.com/frysztak/orpington-news/compare/0.12.2...0.12.3
 
 [0.12.2]: https://github.com/frysztak/orpington-news/compare/0.12.1...0.12.2
 
