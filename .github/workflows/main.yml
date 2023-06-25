@@ -1,3 +1,5 @@
+# multiplatform build heavily borrowed from https://github.com/TECH7Fox/asterisk-hass-addons/blob/main/.github/workflows/ci.yaml, thank you
+
 name: CD Master
 
 on:
@@ -6,17 +8,50 @@ on:
       - 'master'
   workflow_dispatch:
     inputs:
-      skip_push:
-        description: 'Skip pushing Docker images'
-        required: true
-        default: false
+      e2e:
+        description: 'Run E2E tests'
+        default: true
         type: boolean
+        required: true
+      push:
+        description: 'Push images to GHCR'
+        default: true
+        type: boolean
+        required: true
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    name: Prepare
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Extract version
+        uses: martinbeentjes/npm-get-version-action@main
+        id: package-version
+        with:
+          path: frontend
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}},value=v${{ steps.package-version.outputs.current-version }}
+
+    outputs:
+      version: ${{ steps.package-version.outputs.current-version }}
+      meta-version: ${{ steps.meta.outputs.version }}
+      meta-labels: ${{ steps.meta.outputs.labels }}
+      meta-json: ${{ steps.meta.outputs.json }}
+
   e2e:
     runs-on: ubuntu-latest
     name: E2E tests
@@ -25,27 +60,24 @@ jobs:
         name: Checkout
       - uses: ./.github/actions/e2e
         name: Run E2E tests
+        if: github.event.inputs.e2e == 'true'
         with:
           cypress-key: ${{ secrets.CYPRESS_RECORD_KEY }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           codecov-token: ${{ secrets.CODECOV_TOKEN }}
 
-  build-amd64:
-    name: Build AMD64 image
-    runs-on: ubuntu-latest
-    needs: [e2e]
-    outputs:
-      image_sha: ${{ steps.buildDocker.outputs.digest }}
+  docker:
+    name: Push to Docker Registry
+    needs: [prepare, e2e]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'buildjet-4vcpu-ubuntu-2204-arm']
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Extract version
-        uses: martinbeentjes/npm-get-version-action@main
-        id: package-version
-        with:
-          path: frontend
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -57,127 +89,89 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          flavor: |
-            latest=auto
-            suffix=-amd64,onlatest=true
-          tags: |
-            type=semver,pattern={{version}},value=v${{ steps.package-version.outputs.current-version }}
+      - name: Set cache flags
+        id: cache-flags
+        run: |
+          # Set the cache-to output
+          echo 'cache-to=type=gha,scope=${{ github.ref_name }}-${{ matrix.os }}' >> "${GITHUB_OUTPUT}"
 
-      - name: Build and push
-        uses: docker/build-push-action@v3
+          # Set the cache-from output
+          if [[ '${{ github.event_name }}' == 'push' ]]; then
+            echo 'cache-from=type=gha,scope=${{ github.ref_name }}-${{ matrix.os }}' >> "${GITHUB_OUTPUT}"
+          else
+            # Use cache from target branch too when building a pull request
+
+            # In this case, it has to be a multiline string
+            # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+            EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+
+            echo "cache-from<<${EOF}" >> "${GITHUB_OUTPUT}"
+
+            printf '%s\n' \
+              "type=gha,scope=${{ github.ref_name }}-${{ matrix.os }}" \
+              "type=gha,scope=${{ github.base_ref }}-${{ matrix.os }}" \
+              >> "${GITHUB_OUTPUT}"
+
+            echo "${EOF}" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Build and push by digest
+        uses: docker/build-push-action@v4
         id: buildDocker
         with:
           context: .
           file: ./docker/Dockerfile
-          platforms: linux/amd64
-          push: false
           pull: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ needs.prepare.outputs.meta-labels }}
           build-args: |
             COMMIT_SHA=${{ github.sha }}
-            BUILD_VERSION=${{ steps.package-version.outputs.current-version }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            BUILD_VERSION=${{ needs.prepare.outputs.version }}
+          cache-from: |
+            ${{ steps.cache-flags.outputs.cache-from }}
+          cache-to: |
+            ${{ steps.cache-flags.outputs.cache-to }}
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
 
-  build-arm64:
-    name: Build ARM64 image
-    runs-on: buildjet-4vcpu-ubuntu-2204-arm
-    needs: [e2e]
-    outputs:
-      image_sha: ${{ steps.buildDocker.outputs.digest }}
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.buildDocker.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v3
+        with:
+          name: digests
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    runs-on: ubuntu-latest
+    needs: [prepare, docker]
+    name: Merge Docker images
     steps:
-      - uses: actions/checkout@v3
+      - name: Download digests
+        uses: actions/download-artifact@v3
         with:
-          fetch-depth: 0
-
-      - name: Extract version
-        uses: martinbeentjes/npm-get-version-action@main
-        id: package-version
-        with:
-          path: frontend
-
+          name: digests
+          path: /tmp/digests
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
       - name: Login to GHCR
         uses: docker/login-action@v2
+        if: github.event.inputs.push == 'true'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          flavor: |
-            latest=auto
-            suffix=-arm64,onlatest=true
-          tags: |
-            type=semver,pattern={{version}},value=v${{ steps.package-version.outputs.current-version }}
-
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        id: buildDocker
-        with:
-          context: .
-          file: ./docker/Dockerfile
-          platforms: linux/arm64
-          push: false
-          pull: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            COMMIT_SHA=${{ github.sha }}
-            BUILD_VERSION=${{ steps.package-version.outputs.current-version }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  publish:
-    runs-on: ubuntu-latest
-    name: Publish images
-    needs: [build-amd64, build-arm64]
-    if: github.event.inputs.skip_push == false
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name: Extract version
-      uses: martinbeentjes/npm-get-version-action@main
-      id: package-version
-      with:
-        path: frontend
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-
-    - name: Login to GHCR
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Create version manifest and push
-      run: |
-        docker manifest create \
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.package-version.outputs.current-version }} \
-          --amend ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.package-version.outputs.current-version }}-amd64 \
-          --amend ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.package-version.outputs.current-version }}-arm64
-        docker manifest push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.package-version.outputs.current-version }}
-
-    - name: Create latest manifest and push
-      run: |
-        docker manifest create \
-          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-          --amend ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-amd64 \
-          --amend ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-arm64
-        docker manifest push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      - name: Create manifest list and push
+        if: github.event.inputs.push == 'true'
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -r '"-t " + (.tags | join(" -t "))' <<< '${{ needs.prepare.outputs.meta-json }}') \
+            $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
+      - name: Inspect image
+        if: github.event.inputs.push == 'true'
+        run: |
+          docker buildx imagetools inspect '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.prepare.outputs.meta-version }}'
