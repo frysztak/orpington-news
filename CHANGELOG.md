@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix renaming Collections without URL (#145)
 - Fix URL validation (#149)
 
 ### Changed
