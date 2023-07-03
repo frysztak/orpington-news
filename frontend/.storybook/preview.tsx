@@ -1,6 +1,5 @@
 import React from 'react';
 import { themes } from '@storybook/theming';
-import { addDecorator } from '@storybook/react';
 import { Global } from '@emotion/react';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
