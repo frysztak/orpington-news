@@ -10,7 +10,6 @@ import {
   Collection,
   ID,
   numberToString,
-  urlRegex,
 } from '@shared';
 import {
   FieldListener,
@@ -52,7 +51,15 @@ type InternalFormData = Omit<
 };
 
 const validationSchema = Yup.object({
-  url: Yup.string().matches(urlRegex, 'Please enter valid URL').nullable(),
+  url: Yup.string()
+    .test('isUrl', 'Please enter valid URL', (maybeUrl?: string) => {
+      try {
+        return Boolean(new URL(maybeUrl!));
+      } catch {
+        return false;
+      }
+    })
+    .nullable(),
   title: Yup.string().required('Please enter title'),
   description: Yup.string().nullable(),
   icon: Yup.string().oneOf(CollectionIcons.options),

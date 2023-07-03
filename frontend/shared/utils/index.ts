@@ -5,5 +5,4 @@ export * from './array';
 export * from './object';
 export * from './promise';
 export * from './inhibitUntilArgsChanged';
-export * from './regex';
 export * from './zod';
