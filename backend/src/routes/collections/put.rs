@@ -22,7 +22,7 @@ pub struct PutCollectionData {
     icon: Option<String>,
     parent_id: Option<ID>,
     description: Option<String>,
-    url: String,
+    url: Option<String>,
     refresh_interval: Option<i32>,
 }
 
@@ -75,12 +75,17 @@ WHERE id = $1
         .map_err(GenericError::UnexpectedError)?;
     }
 
-    let normalized_url = normalize_url_rs::normalize_url(
-        &body.url,
-        normalize_url_rs::OptionsBuilder::default().build().unwrap(),
-    )
-    .map_err(Into::into)
-    .map_err(GenericError::UnexpectedError)?;
+    let mut normalized_url: Option<String> = None;
+    if let Some(url) = &body.url {
+        normalized_url = Some(
+            normalize_url_rs::normalize_url(
+                url,
+                normalize_url_rs::OptionsBuilder::default().build().unwrap(),
+            )
+            .map_err(Into::into)
+            .map_err(GenericError::UnexpectedError)?,
+        );
+    };
 
     sqlx::query!(
         r#"

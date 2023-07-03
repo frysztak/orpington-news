@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.5] - 2023-07-03
+
+### Fixed
+
+-   Fix renaming Collections without URL (#145)
+-   Fix URL validation (#149)
+
+### Changed
+
+-   Upgrade to Storybook 7
+
 ## [0.12.4] - 2023-06-25
 
 ### Added
@@ -346,7 +357,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.4...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.5...HEAD
+
+[0.12.5]: https://github.com/frysztak/orpington-news/compare/0.12.4...0.12.5
 
 [0.12.4]: https://github.com/frysztak/orpington-news/compare/0.12.3...0.12.4
 
