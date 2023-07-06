@@ -27,7 +27,7 @@
     <img alt="Dev pipeline" src="https://github.com/frysztak/orpington-news/actions/workflows/dev.yml/badge.svg">
   </a>
   <a href="https://github.com/frysztak/orpington-news/actions/workflows/main.yml" target="_blank">
-    <img alt="Main pipeline" src="https://github.com/frysztak/orpington-news/actions/workflows/main.yml/badge.svg">
+    <img alt="Main pipeline" src="https://github.com/frysztak/orpington-news/actions/workflows/main.yml/badge.svg?event=push">
   </a>
 </p>
 
@@ -132,7 +132,7 @@ Sample Docker invocation:
 
 ```
 docker run -it --name orpington-news --restart=always \
--e APP_URL=[ your public URL ]  \
+-e APP_URL=[ your public URL, including protocol ]  \
 -e DB_HOST=[ your DB address ]  \
 -e DB_PASS=[ your DB password ]  \
 -p [ public port ]:8000  \

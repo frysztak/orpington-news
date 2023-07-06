@@ -1,6 +1,7 @@
 use actix_web::{error::InternalError, http::StatusCode, web, HttpResponse, HttpResponseBuilder};
 use feed_rs::{model::Feed, parser};
 use normalize_url_rs::{normalize_url, OptionsBuilder};
+
 use scraper::{Html, Selector};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
@@ -10,7 +11,7 @@ use crate::{
     authentication::UserId,
     routes::{error::JSONError, error_chain_fmt},
     session_state::ID,
-    utils::url::is_url_relative,
+    utils::{http_client::create_http_client, url::is_url_relative},
 };
 
 #[derive(Deserialize)]
@@ -134,7 +135,13 @@ WHERE
         return Err(VerifyUrlError::DuplicateFeedUrl().into());
     }
 
-    let xml = reqwest::get(url)
+    let client = create_http_client()
+        .map_err(Into::into)
+        .map_err(VerifyUrlError::UnexpectedError)?;
+
+    let xml = client
+        .get(url)
+        .send()
         .await
         .map_err(Into::into)
         .map_err(VerifyUrlError::UnexpectedError)?
@@ -170,7 +177,10 @@ enum ExtractFeedUrlError {
 }
 
 async fn extract_feed_url(url: &str) -> Result<ExtractFeedUrlSuccess, ExtractFeedUrlError> {
-    let client = reqwest::Client::new();
+    let client = create_http_client()
+        .map_err(Into::into)
+        .map_err(ExtractFeedUrlError::UnexpectedError)?;
+
     let head_response = client
         .head(url)
         .send()

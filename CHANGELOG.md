@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.6] - 2023-07-06
+
+### Fixed
+
+-   Fix User-Agent not always being set when fetching feeds (#149)
+
 ## [0.12.5] - 2023-07-03
 
 ### Fixed
@@ -357,7 +363,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.5...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.6...HEAD
+
+[0.12.6]: https://github.com/frysztak/orpington-news/compare/0.12.5...0.12.6
 
 [0.12.5]: https://github.com/frysztak/orpington-news/compare/0.12.4...0.12.5
 
