@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix User-Agent not always being set when fetching feeds (#149)
+
 ## [0.12.5] - 2023-07-03
 
 ### Fixed

@@ -1,22 +1,22 @@
-use std::{collections::HashSet, time::Duration};
+use std::collections::HashSet;
 
 use chrono::{DateTime, TimeZone, Utc};
 use feed_rs::{
     model::{Content, Feed, Text},
     parser,
 };
-use reqwest::{
-    header::{HeaderMap, HeaderValue, USER_AGENT},
-    StatusCode,
-};
+use reqwest::{header::HeaderValue, StatusCode};
 use serde_json::json;
-use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, Postgres, Transaction, PgPool};
+use sqlx::{postgres::PgQueryResult, Acquire, PgConnection, PgPool, Postgres, Transaction};
 use thiserror::Error;
 use tracing::{info, warn};
 use url::Url;
 use voca_rs::chop::limit_words;
 
-use crate::{session_state::ID, utils::strip_html_tags::strip_html_tags};
+use crate::{
+    session_state::ID,
+    utils::{http_client::create_http_client, strip_html_tags::strip_html_tags},
+};
 
 use super::{
     clean_html::clean_html,
@@ -41,13 +41,7 @@ enum FetchFeedSuccess {
 
 #[tracing::instrument()]
 async fn fetch_feed(collection: &CollectionToRefresh) -> Result<FetchFeedSuccess, FetchFeedError> {
-    let mut headers = HeaderMap::new();
-    headers.insert(USER_AGENT, "Orpington News".parse().unwrap());
-
-    let client = reqwest::Client::builder()
-        .timeout(Duration::from_secs(60))
-        .default_headers(headers)
-        .build()
+    let client = create_http_client()
         .map_err(Into::into)
         .map_err(FetchFeedError::UnexpectedError)?;
 
@@ -419,7 +413,7 @@ pub async fn commit_update_collection(
 #[tracing::instrument(skip(pool))]
 pub async fn get_affected_collection_ids(
     refreshed_feed_ids: &Vec<ID>,
-    pool: &PgPool
+    pool: &PgPool,
 ) -> Result<Vec<ID>, sqlx::Error> {
     sqlx::query_scalar!(
         r#"SELECT get_ascendants_and_descendants($1::INT[]) as "ids!""#,
