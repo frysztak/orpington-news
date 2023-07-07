@@ -114,7 +114,7 @@ pub async fn import_opml(
         home_id,
         default_collection_layout,
     )
-    .fetch_one(&mut transaction)
+    .fetch_one(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;
@@ -134,7 +134,7 @@ pub async fn import_opml(
     .map_err(GenericError::UnexpectedError)?;
 
     sqlx::query!("CALL collections_recalculate_order()")
-        .execute(&mut transaction)
+        .execute(&mut *transaction)
         .await
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;

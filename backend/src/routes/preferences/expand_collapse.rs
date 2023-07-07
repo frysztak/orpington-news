@@ -61,7 +61,7 @@ where
         collection_id,
         user_id
     )
-    .execute(&mut transaction)
+    .execute(&mut *transaction)
     .await?;
 
     sqlx::query!(
@@ -70,10 +70,10 @@ CALL preferences_prune_expanded_collections($1)
 "#,
         user_id
     )
-    .execute(&mut transaction)
+    .execute(&mut *transaction)
     .await?;
 
-    let preferences = get_preferences_impl(&mut transaction, user_id).await?;
+    let preferences = get_preferences_impl(&mut *transaction, user_id).await?;
 
     transaction.commit().await?;
 

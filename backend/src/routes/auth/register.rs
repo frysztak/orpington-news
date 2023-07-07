@@ -72,7 +72,7 @@ RETURNING
         map_avatar(body.avatar.as_ref()),
         2137
     )
-    .fetch_one(&mut transaction)
+    .fetch_one(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(RegisterError::UnexpectedError)?;
@@ -100,7 +100,7 @@ RETURNING
         DEFAULT_COLLECTION_ICON,
         default_preferences.default_collection_layout.to_string(),
     )
-    .fetch_one(&mut transaction)
+    .fetch_one(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(RegisterError::UnexpectedError)?;
@@ -123,7 +123,7 @@ VALUES (
         default_preferences.default_collection_layout.to_string(),
         default_preferences.avatar_style.to_string(),
     )
-    .execute(&mut transaction)
+    .execute(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(RegisterError::UnexpectedError)?;
@@ -140,7 +140,7 @@ WHERE
         home_collection_id,
         user_id
     )
-    .execute(&mut transaction)
+    .execute(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(RegisterError::UnexpectedError)?;
