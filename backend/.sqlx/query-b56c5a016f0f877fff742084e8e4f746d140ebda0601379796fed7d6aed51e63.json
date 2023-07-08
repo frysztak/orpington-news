@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nTRUNCATE TABLE users, session, queue, preferences, collections, collection_items\nRESTART IDENTITY\nCASCADE",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "b56c5a016f0f877fff742084e8e4f746d140ebda0601379796fed7d6aed51e63"
+}

@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nUPDATE\n  preferences p\nSET\n  default_collection_layout = $1,\n  avatar_style = $2\nWHERE\n  p.user_id = $3\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "20168dc99a934e98984a489442684961fb55914e032d3abe4c9eaa9d306ea165"
+}

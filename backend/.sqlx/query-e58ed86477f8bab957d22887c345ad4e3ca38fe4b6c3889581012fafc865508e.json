@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nINSERT INTO collection_items (\n  \"url\",\n  title,\n  summary,\n  full_text,\n  thumbnail_url,\n  date_published,\n  date_updated,\n  categories,\n  reading_time,\n  collection_id)\nSELECT\n  \"url\",\n  title,\n  summary,\n  full_text,\n  thumbnail_url,\n  to_timestamp(date_published) as date_published,\n  to_timestamp(date_updated) as date_updated,\n  categories,\n  reading_time,\n  collection_id\nFROM jsonb_to_recordset($1) AS t(\n    \"url\" text,\n    title text,\n    summary text,\n    full_text text,\n    thumbnail_url text,\n    date_published integer,\n    date_updated integer,\n    categories text[],\n    reading_time float4,\n    collection_id integer)\nON CONFLICT (collection_id, \"url\")\nDO UPDATE SET\n    \"url\" = EXCLUDED. \"url\",\n    title = EXCLUDED.title,\n    summary = EXCLUDED.summary,\n    full_text = EXCLUDED.full_text,\n    thumbnail_url = EXCLUDED.thumbnail_url,\n    date_published = GREATEST (collection_items.date_published, EXCLUDED.date_published),\n    date_updated = GREATEST (collection_items.date_updated, EXCLUDED.date_updated),\n    categories = EXCLUDED.categories,\n    reading_time = EXCLUDED.reading_time\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Jsonb"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e58ed86477f8bab957d22887c345ad4e3ca38fe4b6c3889581012fafc865508e"
+}

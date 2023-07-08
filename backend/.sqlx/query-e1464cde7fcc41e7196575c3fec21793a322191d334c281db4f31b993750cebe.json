@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE session\n              SET sess = $1,\n                  expire = $2\n              WHERE sid = $3 AND expire < now()",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Json",
+        "Timestamp",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e1464cde7fcc41e7196575c3fec21793a322191d334c281db4f31b993750cebe"
+}

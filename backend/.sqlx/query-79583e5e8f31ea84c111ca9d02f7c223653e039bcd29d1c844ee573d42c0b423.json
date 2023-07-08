@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nUPDATE queue\nSET status = $1\nWHERE status = $2\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "79583e5e8f31ea84c111ca9d02f7c223653e039bcd29d1c844ee573d42c0b423"
+}

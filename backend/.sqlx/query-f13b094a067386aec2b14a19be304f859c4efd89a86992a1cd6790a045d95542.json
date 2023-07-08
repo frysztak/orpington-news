@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n    INSERT INTO collections (\n      \"user_id\",\n      \"title\",\n      \"icon\",\n      \"order\",\n      \"parent_id\",\n      \"url\",\n      \"refresh_interval\",\n      \"layout\")\n    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)\n    RETURNING id\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Text",
+        "Int4",
+        "Int4",
+        "Text",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "f13b094a067386aec2b14a19be304f859c4efd89a86992a1cd6790a045d95542"
+}

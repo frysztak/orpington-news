@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nUPDATE\n  collection_items\nSET\n  date_read = $1\nWHERE\n  collection_id IN (SELECT * FROM get_collection_children_ids($2))\n  AND date_read IS NULL\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Timestamptz",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fbe997725cab9f255c5734fcdfc06a39ce63ea223c3e9f6a1739b6c549e75773"
+}
