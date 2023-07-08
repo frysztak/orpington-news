@@ -1,8 +1,7 @@
-use chrono::{DateTime, Utc};
 use serde_json::{json, Value};
 use sqlx::{
     postgres::{PgHasArrayType, PgListener, PgTypeInfo},
-    types::{Json, Uuid},
+    types::{chrono::NaiveDateTime, Json, Uuid},
     Pool, Postgres, Transaction,
 };
 use ulid::Ulid;
@@ -81,16 +80,20 @@ impl Queue for PostgresQueue {
     ) -> Result<(), anyhow::Error> {
         let n = jobs.len();
 
-        let scheduled_for = date.unwrap_or(chrono::Utc::now());
-        let scheduled_for_vec: Vec<DateTime<Utc>> = (0..n).map(|_| scheduled_for).collect();
+        let scheduled_for = NaiveDateTime::from_timestamp_millis(
+            date.unwrap_or(chrono::Utc::now()).timestamp_millis(),
+        )
+        .unwrap();
+        let scheduled_for_vec = vec![scheduled_for; n];
 
         let failed_attempts: Vec<i32> = (0..n).map(|_| 0).collect();
         let messages: Vec<Value> = jobs.iter().map(|job| json!(job)).collect();
-        let statuses: Vec<PostgresJobStatus> = (0..n).map(|_| PostgresJobStatus::Queued).collect();
+        let statuses = vec![PostgresJobStatus::Queued as i32; n];
         let priority = priority.unwrap_or(TaskPriority::Regular);
-        let priorities: Vec<TaskPriority> = (0..n).map(|_| priority.clone()).collect();
-        let now = chrono::Utc::now();
-        let now_vec: Vec<DateTime<Utc>> = (0..n).map(|_| now).collect();
+        let priorities = vec![priority as i32; n];
+        let now =
+            NaiveDateTime::from_timestamp_millis(chrono::Utc::now().timestamp_millis()).unwrap();
+        let now_vec = vec![now; n];
         let job_ids: Vec<Uuid> = (0..n).map(|_| Ulid::new().into()).collect(); // ULID to UUID
 
         let mut transaction = self.db.begin().await?;
@@ -111,12 +114,12 @@ SELECT * FROM UNNEST(
 )
         "#,
             &job_ids[..],
-            &now_vec[..]: Vec<NaiveDateTime>,
-            &now_vec[..]: Vec<NaiveDateTime>,
-            &scheduled_for_vec[..]: Vec<NaiveDateTime>,
+            &now_vec[..],
+            &now_vec[..],
+            &scheduled_for_vec[..],
             &failed_attempts[..],
-            &statuses[..]: Vec<i32>,
-            &priorities[..]: Vec<i32>,
+            &statuses[..],
+            &priorities[..],
             &messages[..]
         )
         .execute(&mut *transaction)
