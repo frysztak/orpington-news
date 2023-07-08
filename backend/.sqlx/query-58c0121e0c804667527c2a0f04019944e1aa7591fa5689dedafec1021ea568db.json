@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nWITH old AS (\n  SELECT * FROM collections WHERE id = $1\n)\nUPDATE collections\nSET\n  layout   = COALESCE($2, old.layout),\n  filter   = COALESCE($3, old.filter),\n  grouping = COALESCE($4, old.grouping),\n  sort_by  = COALESCE($5, old.sort_by)\nFROM old\nWHERE collections.id = $1\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "58c0121e0c804667527c2a0f04019944e1aa7591fa5689dedafec1021ea568db"
+}

@@ -62,7 +62,7 @@ pub async fn delete_collection(
     let deleting_currently_active_collection = ids_to_delete.contains(&active_collection_id);
     if deleting_currently_active_collection {
         let home_id = sqlx::query_scalar!(r#"SELECT home_id FROM users WHERE id = $1"#, user_id)
-            .fetch_one(&mut transaction)
+            .fetch_one(&mut *transaction)
             .await
             .map_err(Into::into)
             .map_err(GenericError::UnexpectedError)?;
@@ -74,7 +74,7 @@ pub async fn delete_collection(
             home_id,
             user_id
         )
-        .execute(&mut transaction)
+        .execute(&mut *transaction)
         .await
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;
@@ -87,7 +87,7 @@ pub async fn delete_collection(
     RETURNING id"#,
         &ids_to_delete
     )
-    .fetch_all(&mut transaction)
+    .fetch_all(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;
@@ -97,7 +97,7 @@ pub async fn delete_collection(
 CALL collections_recalculate_order()
     "#
     )
-    .execute(&mut transaction)
+    .execute(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;
@@ -108,7 +108,7 @@ CALL preferences_prune_expanded_collections($1)
     "#,
         user_id
     )
-    .execute(&mut transaction)
+    .execute(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;

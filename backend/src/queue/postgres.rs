@@ -119,7 +119,7 @@ SELECT * FROM UNNEST(
             &priorities[..]: Vec<i32>,
             &messages[..]
         )
-        .execute(&mut transaction)
+        .execute(&mut *transaction)
         .await?;
 
         sqlx::query!(
@@ -131,7 +131,7 @@ SELECT * FROM UNNEST(
             AND a.message = b.message
         "#
         )
-        .execute(&mut transaction)
+        .execute(&mut *transaction)
         .await?;
 
         transaction.commit().await?;
@@ -180,7 +180,7 @@ DELETE FROM queue WHERE id = $1
         );
 
         match transaction {
-            Some(t) => query.execute(t).await,
+            Some(t) => query.execute(&mut **t).await,
             None => query.execute(&self.db).await,
         }?;
 
@@ -209,7 +209,7 @@ WHERE id = $3
         );
 
         match transaction {
-            Some(t) => query.execute(t).await,
+            Some(t) => query.execute(&mut **t).await,
             None => query.execute(&self.db).await,
         }?;
 

@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nCALL move_collection($1, $2, $3)\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "89fef0d95e009e14c52a23f9e98b551c6e25ec83d947c8edceccfb040a1af776"
+}

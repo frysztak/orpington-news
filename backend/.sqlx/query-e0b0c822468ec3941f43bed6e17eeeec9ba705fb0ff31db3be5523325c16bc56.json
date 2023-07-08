@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO session(sid, sess, expire) VALUES ($1, $2, $3)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Json",
+        "Timestamp"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e0b0c822468ec3941f43bed6e17eeeec9ba705fb0ff31db3be5523325c16bc56"
+}

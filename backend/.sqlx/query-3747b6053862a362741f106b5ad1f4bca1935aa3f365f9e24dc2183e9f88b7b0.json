@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nUPDATE\n  collections\nSET\n  etag = $1\nWHERE\n  id = $2\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3747b6053862a362741f106b5ad1f4bca1935aa3f365f9e24dc2183e9f88b7b0"
+}

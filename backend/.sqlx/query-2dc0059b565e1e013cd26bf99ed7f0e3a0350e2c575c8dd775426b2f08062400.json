@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE\n  preferences p\nSET\n  expanded_collection_ids = subquery.ids || '{}'\nFROM (\n  SELECT\n    CASE\n      WHEN $1 = 'add' THEN\n        uniq(array_append(COALESCE(expanded_collection_ids, '{}'::int4[]), $2))\n      ELSE\n        uniq(array_remove(COALESCE(expanded_collection_ids, '{}'::int4[]), $2))\n    END AS ids\n  FROM\n    preferences\n  WHERE\n    \"user_id\" = $3\n) as subquery\nWHERE\n  p.user_id = $3\n",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "2dc0059b565e1e013cd26bf99ed7f0e3a0350e2c575c8dd775426b2f08062400"
+}

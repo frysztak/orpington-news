@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nSELECT\n  name as username,\n  display_name,\n  (\n    CASE WHEN avatar IS NULL THEN\n     NULL \n    ELSE\n      '/api/auth/user/avatar'\n    END) as avatar_url,\n  home_id\nFROM\n  \"users\"\nWHERE\n  id = $1\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "username",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 1,
+        "name": "display_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "avatar_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "home_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      null,
+      false
+    ]
+  },
+  "hash": "e4eedb1eaefb30f6860deda9bc695635ef5e8e0ecf8f06694099ac2310e108a1"
+}

@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT * FROM session WHERE sid = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "sid",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "sess",
+        "type_info": "Json"
+      },
+      {
+        "ordinal": 2,
+        "name": "expire",
+        "type_info": "Timestamp"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "e13ea37d18989e04352b0fcc0ef0f018b385e2ed900833d6fb041bb21fa92ae3"
+}

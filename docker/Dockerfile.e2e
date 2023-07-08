@@ -16,7 +16,7 @@ COPY frontend .
 RUN npm run build && npm run export
 
 # RUNTIME
-FROM rust:1.68.1 AS runtime
+FROM rust:1.70.0 AS runtime
 ENV CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 
 RUN rustup component add llvm-tools-preview

@@ -1,0 +1,20 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nUPDATE\n  collections\nSET\n  title = $1,\n  icon = $2,\n  parent_id = $3,\n  description = $4,\n  url = $5,\n  refresh_interval = $6\nWHERE\n  id = $7\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Int4",
+        "Text",
+        "Text",
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "004d5637ab06d5e73e3ae3e89021e889c476e872b3d748614847c856b50e866f"
+}

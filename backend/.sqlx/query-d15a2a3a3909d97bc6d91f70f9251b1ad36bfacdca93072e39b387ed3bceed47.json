@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT get_ascendants_and_descendants($1::INT[]) as \"ids!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "ids!",
+        "type_info": "Int4Array"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4Array"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "d15a2a3a3909d97bc6d91f70f9251b1ad36bfacdca93072e39b387ed3bceed47"
+}
