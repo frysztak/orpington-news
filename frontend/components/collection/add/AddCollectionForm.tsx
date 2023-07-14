@@ -56,7 +56,7 @@ const validationSchema = Yup.object({
       try {
         return Boolean(new URL(maybeUrl!));
       } catch {
-        return false;
+        return maybeUrl ? false : true;
       }
     })
     .nullable(),
