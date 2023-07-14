@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nUPDATE\n  preferences p\nSET\n  active_collection_id = $1\nWHERE\n  p.user_id = $2\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8b1398a7277539f663eeedd0099f840919abe69b9fca0fa1318b8af9ef4db3f0"
+}

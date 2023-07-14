@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nWITH old AS (\n  SELECT *\n  FROM users\n  WHERE id = $1\n)\nUPDATE\n  users\nSET\n  display_name = COALESCE($2, old.display_name),\n  avatar = CASE\n    WHEN $3 = TRUE THEN COALESCE($4, old.avatar)\n    WHEN $3 = FALSE THEN NULL\n    END\nFROM old\nWHERE users.id = $1\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Text",
+        "Bool",
+        "Bytea"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "701cf200aa54075031519337cad7aaf4419432e0577a00e368093f32841d7255"
+}

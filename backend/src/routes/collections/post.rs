@@ -101,7 +101,7 @@ RETURNING id
         body.refresh_interval.unwrap_or(DEFAULT_REFRESH_INTERVAL),
         body.layout.to_owned().unwrap_or(default_collection_layout)
     )
-    .fetch_one(&mut transaction)
+    .fetch_one(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;
@@ -111,13 +111,13 @@ RETURNING id
 CALL collections_recalculate_order()
     "#
     )
-    .execute(&mut transaction)
+    .execute(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;
 
     if let Some(parent_id) = body.parent_id {
-        expand_collapse_impl(&mut transaction, "add", user_id, parent_id)
+        expand_collapse_impl(&mut *transaction, "add", user_id, parent_id)
             .await
             .map_err(Into::into)
             .map_err(GenericError::UnexpectedError)?;
@@ -128,7 +128,7 @@ CALL preferences_prune_expanded_collections($1)
             "#,
             user_id
         )
-        .execute(&mut transaction)
+        .execute(&mut *transaction)
         .await
         .map_err(Into::into)
         .map_err(GenericError::UnexpectedError)?;

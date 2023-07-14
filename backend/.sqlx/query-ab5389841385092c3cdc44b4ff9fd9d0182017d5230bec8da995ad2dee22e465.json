@@ -1,0 +1,113 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nSELECT\n  *\nFROM\n  collections\nWHERE\n  url = $1\n  AND user_id = $2\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "parent_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "icon",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "order",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 6,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "date_updated",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 9,
+        "name": "refresh_interval",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "layout",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "filter",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 12,
+        "name": "grouping",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 13,
+        "name": "sort_by",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 14,
+        "name": "is_home",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 15,
+        "name": "etag",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "ab5389841385092c3cdc44b4ff9fd9d0182017d5230bec8da995ad2dee22e465"
+}

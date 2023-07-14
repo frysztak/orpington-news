@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nWITH children_ids AS (\n    SELECT * FROM get_collection_children_ids($1)\n  )\n  SELECT\n    collections.user_id as \"owner_id\",\n    collections.id,\n    url as \"url!\",\n    etag\n  FROM\n    collections, children_ids\n  WHERE\n    url IS NOT NULL\n    AND collections.id = children_ids.id\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "owner_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "url!",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "etag",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "897ebaa1f51ec25666316afb0030ac200f2b8382460179be3a69387e33ed020b"
+}

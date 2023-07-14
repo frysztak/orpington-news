@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        DELETE FROM queue a\n        USING queue b\n        WHERE\n            a.id < b.id\n            AND a.message = b.message\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "1d4a09a9ca80cd427bacaed76086d6a3f9ba1a81a6012fc7dc19e46a56bdbe8c"
+}

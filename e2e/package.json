@@ -10,11 +10,11 @@
   "author": "Sebastian Frysztak <sebastian@frysztak.dev>",
   "license": "ISC",
   "dependencies": {
-    "@cypress/code-coverage": "^3.10.0",
-    "cypress": "^12.7.0",
+    "@cypress/code-coverage": "^3.10.8",
+    "cypress": "^12.17.0",
     "cypress-dark": "^1.8.3",
-    "dotenv": "^16.0.3",
-    "typescript": "^4.9.5",
+    "dotenv": "^16.3.1",
+    "typescript": "^5.1.6",
     "url-join": "^5.0.0"
   }
 }

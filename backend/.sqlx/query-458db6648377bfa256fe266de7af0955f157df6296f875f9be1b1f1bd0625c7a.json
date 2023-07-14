@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nSELECT\n  id,\n  user_id as \"owner_id\",\n  url as \"url!\",\n  etag\nFROM\n  collections\nWHERE\n  url IS NOT NULL\n  AND (date_updated + refresh_interval * interval '1 minute' <= now()\n    OR date_updated IS NULL);\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "owner_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "url!",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "etag",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "458db6648377bfa256fe266de7af0955f157df6296f875f9be1b1f1bd0625c7a"
+}

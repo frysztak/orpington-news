@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nCALL preferences_prune_expanded_collections($1)\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "12ec41df634edc2ace1f340a5b2904c1b3a739a182f9a6e8e9f13d40a32604d3"
+}

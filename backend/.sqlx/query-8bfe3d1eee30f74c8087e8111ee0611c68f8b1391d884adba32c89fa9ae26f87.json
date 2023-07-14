@@ -1,0 +1,26 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nINSERT INTO \"users\" (\n  name,\n  password,\n  display_name,\n  avatar,\n  home_id)\nVALUES (\n  $1,\n  $2,\n  $3,\n  $4,\n  $5)\nRETURNING\n  id\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Bytea",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "8bfe3d1eee30f74c8087e8111ee0611c68f8b1391d884adba32c89fa9ae26f87"
+}

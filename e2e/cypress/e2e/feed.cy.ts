@@ -50,6 +50,32 @@ sizes.forEach((size) => {
           .should('exist');
       });
 
+      it('can add new feed without URL', () => {
+        cy.intercept({
+          method: 'POST',
+          url: getApiPath('/collections'),
+        }).as('apiCollections');
+
+        cy.visit('/');
+        cy.openDrawerIfExists();
+        cy.getBySel('addFeed').filter(':visible').click();
+        cy.getBySel('addCollectionModal').should('be.visible');
+        cy.getBySel('feedName').type('Collection without URL').blur();
+        cy.getBySel('collectionIconButton').click();
+        cy.getBySel('collectionIcon-React').click();
+        cy.getBySel('addFeedButton').click();
+        cy.wait('@apiCollections').its('response.statusCode').should('eq', 200);
+        cy.getBySel('addCollectionModal').should('not.exist');
+
+        cy.getBySel('collection-id-2')
+          .within(() => {
+            cy.getBySel('title').should('have.text', 'Collection without URL');
+            cy.getBySelLike('chevron').should('not.exist');
+            cy.getBySel('badge').should('not.exist');
+          })
+          .should('exist');
+      });
+
       it('can edit existing collection', () => {
         cy.addFeedByApi({
           title: 'Kent C. Dodds Blog',

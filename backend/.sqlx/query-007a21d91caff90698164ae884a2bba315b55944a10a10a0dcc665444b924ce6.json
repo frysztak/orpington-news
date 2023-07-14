@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nCALL collections_recalculate_order()\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "007a21d91caff90698164ae884a2bba315b55944a10a10a0dcc665444b924ce6"
+}

@@ -17,7 +17,11 @@ import {
   setCollectionPreferences,
   Wretch,
 } from '@api';
-import { collectionKeys, preferencesKeys } from '@features/queryKeys';
+import {
+  collectionKeys,
+  matchesCollectionWithUnreadFilter,
+  preferencesKeys,
+} from '@features/queryKeys';
 import { useGetUserHomeId } from '@features/Auth';
 import {
   CollectionItem,
@@ -32,7 +36,7 @@ import {
   CollectionSortBy,
   defaultCollectionSortBy,
 } from '@shared';
-import { mutatePageData } from '@utils';
+import { emptyOutPages, mutatePageData } from '@utils';
 import { useCollectionsContext } from './CollectionsContext';
 import {
   getGroupCounts,
@@ -144,8 +148,10 @@ export const useMarkCollectionAsRead = () => {
       beingMarkedAsRead.add([id]);
     },
     onError,
-    onSuccess: ({ ids, collections, timestamp }) => {
+    onSuccess: ({ ids, collections, timestamp }, { id }) => {
+      // update Collections tree
       queryClient.setQueryData(collectionKeys.tree, collections);
+      queryClient.invalidateQueries(collectionKeys.tree);
 
       for (const id of ids) {
         queryClient.setQueriesData(
@@ -170,7 +176,14 @@ export const useMarkCollectionAsRead = () => {
         );
         queryClient.invalidateQueries(collectionKeys.allForId(homeId));
       }
-      queryClient.invalidateQueries(collectionKeys.tree);
+
+      queryClient.setQueriesData(
+        {
+          predicate: ({ queryKey }) =>
+            matchesCollectionWithUnreadFilter(queryKey, id),
+        },
+        emptyOutPages
+      );
     },
     onSettled: (_, __, { id }) => {
       beingMarkedAsRead.remove([id]);

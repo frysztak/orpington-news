@@ -41,7 +41,7 @@ WHERE
         body.avatar_style,
         user_id,
     )
-    .execute(&mut transaction)
+    .execute(&mut *transaction)
     .await
     .map_err(Into::into)
     .map_err(GenericError::UnexpectedError)?;
