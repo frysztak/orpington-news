@@ -7,17 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.7] - 2023-07-14
+
 ### Added
 
-- Specific optimistic update for "mark all as read" operation for Collections with "unread" filter applied
+-   Specific optimistic update for "mark all as read" operation for Collections with "unread" filter applied
 
 ### Fixed
 
-- Fix adding Collections without URL (#160)
+-   Fix adding Collections without URL (#160)
 
 ### Changed
 
-- Update dependencies
+-   Update dependencies
 
 ## [0.12.6] - 2023-07-06
 
@@ -375,7 +377,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.6...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.7...HEAD
+
+[0.12.7]: https://github.com/frysztak/orpington-news/compare/0.12.6...0.12.7
 
 [0.12.6]: https://github.com/frysztak/orpington-news/compare/0.12.5...0.12.6
 
