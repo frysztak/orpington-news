@@ -1,3 +1,4 @@
+import type { QueryKey } from '@tanstack/react-query';
 import {
   CollectionFilter,
   CollectionGrouping,
@@ -25,6 +26,15 @@ export const collectionKeys = {
   detail: (collectionId: ID, itemId: ID) =>
     [...collectionKeys.base, collectionId, 'detail', { itemId }] as const,
 };
+
+export const matchesCollectionWithUnreadFilter = (
+  queryKey: QueryKey,
+  collectionId: ID
+) =>
+  queryKey[0] === 'collection' &&
+  queryKey[1] === collectionId &&
+  queryKey[2] === 'list' &&
+  (queryKey[3] as any)?.filter === 'unread';
 
 export const preferencesKeys = {
   base: ['preferences'] as const,
