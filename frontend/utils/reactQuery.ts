@@ -13,3 +13,17 @@ export const mutatePageData =
       }
     );
   };
+
+export const emptyOutPages = <T>(
+  oldData: InfiniteData<{ items: T[] }> | undefined
+) => {
+  return (
+    oldData && {
+      ...oldData,
+      pages: oldData.pages.map((page) => ({
+        ...page,
+        items: [],
+      })),
+    }
+  );
+};

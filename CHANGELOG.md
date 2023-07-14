@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Specific optimistic update for "mark all as read" operation for Collections with "unread" filter applied
+
 ### Fixed
 
 - Fix adding Collections without URL (#160)
