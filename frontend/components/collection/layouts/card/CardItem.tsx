@@ -61,14 +61,7 @@ export const CardItem = forwardRef((props: CardItemProps, ref) => {
           <NextLink
             passHref
             legacyBehavior
-            href={{
-              pathname: '/collection/[collectionId]/article/[itemId]',
-              query: {
-                collectionId: collection.id,
-                itemId: id,
-                twoPane: false,
-              },
-            }}
+            href={`/?collectionId=${collection.id}&itemId=${id}`}
             as={`/collection/${collection.id}/article/${id}`}
           >
             <LinkOverlay>

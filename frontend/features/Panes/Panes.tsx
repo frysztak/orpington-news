@@ -14,19 +14,18 @@ import { AddModal } from './AddModal';
 import { DeleteModal } from './DeleteModal';
 import { PanesLayout, PanesLayouts } from '@components/collection/types';
 
-interface PanesProps {}
+interface PanesProps {
+  standaloneArticle?: boolean;
+}
 
-export const Panes: ReactFCC<PanesProps> = ({ children }) => {
+export const Panes: ReactFCC<PanesProps> = ({
+  standaloneArticle = false,
+  children,
+}) => {
   const router = useRouter();
-  const articlePage =
-    router.route === '/collection/[collectionId]/article/[itemId]';
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);
-  // on Article page, force two pane layout unless `twoPane` is set to `false`
-  const forceTwoPaneLayout =
-    router.query?.twoPane !== undefined
-      ? !Boolean(router.query.twoPane)
-      : articlePage;
+  const showArticle = Boolean(collectionId) && Boolean(itemId);
 
   const handleGoBack = useCallback(() => {
     router.push('/');
@@ -46,7 +45,7 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
     PanesLayouts[0]
   );
 
-  const layout = forceTwoPaneLayout ? 'twoPane' : panesLayout;
+  const layout = standaloneArticle ? 'twoPane' : panesLayout;
 
   usePrefetchPreferences();
 
@@ -69,7 +68,7 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
             />
           }
           mainContent={
-            articlePage && (
+            showArticle && (
               <Article
                 key={itemId}
                 collectionId={router.isReady ? collectionId : undefined}

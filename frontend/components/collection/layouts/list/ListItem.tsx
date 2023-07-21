@@ -57,14 +57,7 @@ export const ListItem = forwardRef<HTMLAnchorElement, ListItemProps>(
 
     return (
       <NextLink
-        href={{
-          pathname: '/collection/[collectionId]/article/[itemId]',
-          query: {
-            collectionId: collection.id,
-            itemId: id,
-            twoPane: false,
-          },
-        }}
+        href={`/?collectionId=${collection.id}&itemId=${id}`}
         as={`/collection/${collection.id}/article/${id}`}
         ref={ref}
         className={cx(
