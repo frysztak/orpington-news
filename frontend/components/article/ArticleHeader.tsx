@@ -41,7 +41,7 @@ export interface ArticleHeaderProps {
   articleWidth?: ArticleWidth;
 
   disableActionButtons?: boolean;
-  showGoBackButtonForDesktop?: boolean;
+  mobileLayout?: boolean;
   onGoBackClicked?: () => void;
   onReadingListToggle?: () => void;
   onMenuItemClicked?: (action: ArticleMenuAction) => void;
@@ -62,7 +62,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
     articleWidth,
 
     disableActionButtons,
-    showGoBackButtonForDesktop,
+    mobileLayout,
     onGoBackClicked,
     onReadingListToggle,
     onMenuItemClicked,
@@ -147,7 +147,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
       <HStack
         w="full"
         justify="space-between"
-        display={{ base: 'flex', lg: 'none' }}
+        display={{ base: 'flex', lg: mobileLayout ? 'flex' : 'none' }}
       >
         <IconButton
           icon={<IoReturnUpBack />}
@@ -175,7 +175,11 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
             </Heading>
           </Flex>
 
-          <Flex h="full" align="center" display={{ base: 'none', lg: 'flex' }}>
+          <Flex
+            h="full"
+            align="center"
+            display={{ base: 'none', lg: mobileLayout ? 'none' : 'flex' }}
+          >
             {actions}
           </Flex>
         </HStack>
