@@ -45,7 +45,7 @@ export const Panes: ReactFCC<PanesProps> = ({
     PanesLayouts[0]
   );
 
-  const layout = standaloneArticle ? 'twoPane' : panesLayout;
+  const layout = standaloneArticle ? 'standaloneArticle' : panesLayout;
 
   usePrefetchPreferences();
 
@@ -75,7 +75,7 @@ export const Panes: ReactFCC<PanesProps> = ({
                 itemId={router.isReady ? itemId : undefined}
                 onGoBackClicked={handleGoBack}
                 isRouterReady={router.isReady}
-                mobileLayout={layout === 'twoPane'}
+                mobileLayout={layout === 'standaloneArticle'}
               />
             )
           }

@@ -6,7 +6,7 @@ import { PanesLayout } from '@components/collection/types';
 import { EmptyMain } from './EmptyMain';
 
 export interface PanesProps {
-  layout?: PanesLayout | 'twoPane';
+  layout?: PanesLayout | 'standaloneArticle';
   sidebar?: ReactNode;
   collectionItemHeader?: ReactNode;
   collectionItemList?: ReactNode;
@@ -131,7 +131,7 @@ const PanesDesktop: React.FC<
 
           {mainContent || <EmptyMain h="full" />}
         </VStack>
-      ) : layout === 'twoPane' ? (
+      ) : layout === 'standaloneArticle' ? (
         <VStack spacing={0} h="100vh" w="full">
           {mainContent ?? (
             <>
