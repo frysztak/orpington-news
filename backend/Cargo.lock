@@ -321,6 +321,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "actix-web-nextjs-spa"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7df725def169a1b3f69a5165f1b4b48adc92a223b183859ebb4971e7da27e89f"
+dependencies = [
+ "actix-files",
+ "actix-service",
+ "actix-web",
+ "glob",
+ "path-tree",
+ "regex",
+ "tracing",
+]
+
+[[package]]
 name = "actix-ws"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -600,6 +615,7 @@ dependencies = [
  "actix-session",
  "actix-web",
  "actix-web-lab",
+ "actix-web-nextjs-spa",
  "actix-ws",
  "ammonia",
  "anyhow",
@@ -1572,6 +1588,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6c80984affa11d98d1b88b66ac8853f143217b399d3c74116778ff8fdb4ed2e"
 
 [[package]]
+name = "glob"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
+
+[[package]]
 name = "h2"
 version = "0.3.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2542,6 +2564,15 @@ name = "paste"
 version = "1.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4b27ab7be369122c218afc2079489cdcb4b517c0a3fc386ff11e1fedfcc2b35"
+
+[[package]]
+name = "path-tree"
+version = "0.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a5ef1f7028c80ba69f73828b4024feabd06e99f444bc001162b29a9c5541b23"
+dependencies = [
+ "smallvec",
+]
 
 [[package]]
 name = "pem-rfc7468"
