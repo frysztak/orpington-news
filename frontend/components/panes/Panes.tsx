@@ -27,9 +27,10 @@ const PanesMobile: React.FC<PanesProps> = ({
   mainContent,
   collectionItemHeader,
   collectionItemList,
+  layout,
 }) => {
   return (
-    <Box h="100vh" data-test="panesMobile" flexGrow={1}>
+    <Box h="100vh" data-test="panes" data-test-layout={layout} flexGrow={1}>
       {mainContent && (
         <Box position="absolute" top={0} left={0} h="full" w="full">
           {mainContent}
@@ -72,7 +73,7 @@ const PanesDesktop: React.FC<
     <HStack
       alignItems="stretch"
       h="full"
-      data-test="panesDesktop"
+      data-test="panes"
       data-test-layout={layout}
       flexGrow={1}
     >

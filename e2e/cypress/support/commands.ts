@@ -43,7 +43,7 @@ Cypress.Commands.add('getBySelLike', (selector, ...args) => {
 
 Cypress.Commands.add('openDrawerIfExists', () => {
   const selector = '[data-test=hamburgerButton]:visible';
-  return cy.getBySel('panesMobile').then(($body) => {
+  return cy.getBySel('panes').then(($body) => {
     if ($body.find(selector).length > 0) {
       cy.get(selector).then(($button) => {
         $button.trigger('click');
@@ -69,7 +69,7 @@ Cypress.Commands.add('closeDrawerIfExists', () => {
 });
 
 Cypress.Commands.add('waitForDrawerToClose', () => {
-  return cy.getBySel('panesMobile').then(($body) => {
+  return cy.getBySel('panes').then(($body) => {
     cy.getBySel('drawer').should('not.exist');
   });
 });
@@ -117,7 +117,7 @@ Cypress.Commands.add('clickCollectionHeaderLayout', (layout: string) => {
 
 Cypress.Commands.add('clickGoBackIfExists', () => {
   const selector = '[data-test=goBack]:visible';
-  return cy.getBySel('panesMobile').then(($body) => {
+  return cy.getBySel('panes').then(($body) => {
     if ($body.find(selector).length > 0) {
       cy.get(selector).then(($button) => {
         $button.trigger('click');
@@ -134,7 +134,6 @@ Cypress.Commands.add('changeActiveCollection', (id: string) => {
     ),
   }).as('apiGetItems');
 
-  cy.visit('/');
   cy.openDrawerIfExists();
   cy.clickCollection(id);
 
