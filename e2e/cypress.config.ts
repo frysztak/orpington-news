@@ -33,4 +33,5 @@ export default defineConfig({
     runMode: 3,
     openMode: 0,
   },
+  video: false
 });
