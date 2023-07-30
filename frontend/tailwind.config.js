@@ -201,7 +201,6 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/line-clamp'),
     require('tailwindcss-radix')(),
     require('tailwindcss-plugin-fancy'),
     require('@tailwindcss/typography'),
