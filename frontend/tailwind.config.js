@@ -191,7 +191,12 @@ module.exports = {
       },
       // fontFamily: fonts,
       fontFamily: {
+        article: 'var(--article-font-family)',
         articleMono: 'var(--article-mono-font-family)',
+      },
+      fontSize: {
+        articleHeader: 'calc(1.875rem * var(--article-font-size-scale, 1))',
+        article: 'calc(1rem * var(--article-font-size-scale, 1))',
       },
     },
   },

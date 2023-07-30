@@ -26,6 +26,10 @@
     @apply rounded;
     @apply animate-pulse motion-reduce:hidden;
   }
+  
+  .divider {
+    @apply w-full pt-3 border-solid opacity-60;
+  }
 }
 
 .prism-code {
