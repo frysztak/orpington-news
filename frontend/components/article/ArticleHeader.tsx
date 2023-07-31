@@ -1,9 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
 import { Icon, IconButton } from '@chakra-ui/react';
-import { ArticleWidth, CollectionItem, defaultArticleWidth } from '@shared';
+import { ArticleWidth, CollectionItem, defaultArticleWidth, ID } from '@shared';
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
+import { IoChevronBack } from '@react-icons/all-files/io5/IoChevronBack';
+import { IoChevronForward } from '@react-icons/all-files/io5/IoChevronForward';
 import {
   NewspaperIcon,
   CalendarDaysIcon,
@@ -32,10 +34,15 @@ export interface ArticleHeaderProps {
 
   disableActionButtons?: boolean;
   mobileLayout?: boolean;
+  hideAdjacentArticlesButtons?: boolean;
+  nextArticleId?: ID;
+  previousArticleId?: ID;
   onGoBackClicked?: () => void;
   onReadingListToggle?: () => void;
   onMenuItemClicked?: (action: ArticleMenuAction) => void;
   onArticleWidthChanged?: (width: ArticleWidth) => void;
+  onPreviousArticleClicked?: () => void;
+  onNextArticleClicked?: () => void;
 }
 
 export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
@@ -53,10 +60,15 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
 
     disableActionButtons,
     mobileLayout,
+    hideAdjacentArticlesButtons,
+    nextArticleId,
+    previousArticleId,
     onGoBackClicked,
     onReadingListToggle,
     onMenuItemClicked,
     onArticleWidthChanged,
+    onPreviousArticleClicked,
+    onNextArticleClicked,
   } = props;
 
   const handleMenuItemClick = useCallback(
@@ -134,11 +146,36 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
           icon={<IoReturnUpBack />}
           aria-label="Go back to collection"
           variant="ghost"
-          mr="auto"
           onClick={onGoBackClicked}
           isDisabled={disableActionButtons}
           data-test="goBack"
         />
+
+        {!hideAdjacentArticlesButtons && (
+          <div>
+            <IconButton
+              icon={<IoChevronBack />}
+              aria-label="Previous Article"
+              variant="ghost"
+              mr="auto"
+              onClick={onPreviousArticleClicked}
+              isDisabled={
+                disableActionButtons || previousArticleId === undefined
+              }
+              data-test="prevArticle"
+            />
+
+            <IconButton
+              icon={<IoChevronForward />}
+              aria-label="Next Article"
+              variant="ghost"
+              mr="auto"
+              onClick={onNextArticleClicked}
+              isDisabled={disableActionButtons || nextArticleId === undefined}
+              data-test="nextArticle"
+            />
+          </div>
+        )}
 
         {actions}
       </div>

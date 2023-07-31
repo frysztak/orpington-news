@@ -9,6 +9,7 @@ import { CollectionItem, ID } from '@shared';
 import { collectionKeys } from '@features';
 import { useActiveCollection } from '@features/Preferences';
 import { mutatePageData } from '@utils';
+import { useCollectionItems } from '@features/Collections/queries';
 
 export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
   const api = useApi();
@@ -131,4 +132,41 @@ export const useArticleDetails = (
       }
     },
   });
+};
+
+const NO_ADJACENT_ARTICLES = {
+  nextArticleId: undefined,
+  previousArticleId: undefined,
+};
+
+export const useAdjacentArticles = (
+  articleId?: ID
+): { previousArticleId?: ID; nextArticleId?: ID } => {
+  const activeCollection = useActiveCollection();
+
+  const { fetchNextPage, hasNextPage, allItems } = useCollectionItems(
+    activeCollection?.id,
+    activeCollection?.filter,
+    activeCollection?.grouping,
+    activeCollection?.sortBy
+  );
+
+  if (articleId === undefined) {
+    return NO_ADJACENT_ARTICLES;
+  }
+
+  const idx = allItems.findIndex(({ id }) => id === articleId);
+
+  if (idx === -1) {
+    return NO_ADJACENT_ARTICLES;
+  }
+
+  const previousArticleId = allItems[idx - 1]?.id;
+  const nextArticleId = allItems[idx + 1]?.id;
+
+  if (allItems.length - idx <= 4 && hasNextPage) {
+    fetchNextPage();
+  }
+
+  return { previousArticleId, nextArticleId };
 };

@@ -24,7 +24,11 @@ import {
   defaultArticleWidth,
   ID,
 } from '@shared';
-import { useArticleDateReadMutation, useArticleDetails } from './queries';
+import {
+  useAdjacentArticles,
+  useArticleDateReadMutation,
+  useArticleDetails,
+} from './queries';
 
 export interface ArticleProps {
   collectionId?: ID;
@@ -57,12 +61,16 @@ export const Article: React.FC<ArticleProps> = (props) => {
     onGoBackClicked,
   } = props;
 
+  const { nextArticleId, previousArticleId } = useAdjacentArticles(itemId);
+
   const router = useRouter();
   const toast = useToast();
   const { mutate: mutateDateRead } = useArticleDateReadMutation(
     collectionId,
     itemId
   );
+  const standaloneArticleMode =
+    router.pathname === '/collection/[collectionId]/article/[itemId]';
 
   useEffect(() => {
     setBlockDateReadMutation(false);
@@ -186,6 +194,20 @@ export const Article: React.FC<ArticleProps> = (props) => {
     }
   }, [x]);
 
+  const handlePreviousArticleClicked = useCallback(() => {
+    router.push(
+      `/?collectionId=${collectionId}&itemId=${previousArticleId}`,
+      `/collection/${collectionId}/article/${previousArticleId}`
+    );
+  }, [collectionId, previousArticleId, router]);
+
+  const handleNextArticleClicked = useCallback(() => {
+    router.push(
+      `/?collectionId=${collectionId}&itemId=${nextArticleId}`,
+      `/collection/${collectionId}/article/${nextArticleId}`
+    );
+  }, [collectionId, nextArticleId, router]);
+
   return (
     <div
       className={cx(
@@ -239,6 +261,11 @@ export const Article: React.FC<ArticleProps> = (props) => {
                 articleWidth={articleWidth}
                 onArticleWidthChanged={setArticleWidth}
                 mobileLayout={mobileLayout}
+                hideAdjacentArticlesButtons={standaloneArticleMode}
+                previousArticleId={previousArticleId}
+                nextArticleId={nextArticleId}
+                onPreviousArticleClicked={handlePreviousArticleClicked}
+                onNextArticleClicked={handleNextArticleClicked}
               />
               <div className="w-full p-4">
                 <ArticleContent html={query.data.fullText} />
