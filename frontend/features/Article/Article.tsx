@@ -3,7 +3,6 @@ import { Text, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
 import cx from 'classnames';
-import { motion, PanInfo, useMotionValue } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { RiErrorWarningFill } from '@react-icons/all-files/ri/RiErrorWarningFill';
 import {
@@ -12,7 +11,6 @@ import {
   ArticleMenuAction,
   ArticleSkeleton,
 } from '@components/article';
-import { useIsTouchscreen } from '@utils';
 import {
   ArticleFontFamiliesNames,
   ArticleFontSizeValues,
@@ -153,47 +151,6 @@ export const Article: React.FC<ArticleProps> = (props) => {
     defaultArticleMonoFontFamily
   );
 
-  const isTouchscreen = useIsTouchscreen();
-
-  const allowDragToNextArticle =
-    query.status === 'success' && Boolean(query.data.nextId);
-  const allowDragToPrevArticle =
-    query.status === 'success' && Boolean(query.data.previousId);
-
-  const x = useMotionValue(0);
-  const finishedDrag = useRef(false);
-  const handleDrag = useCallback(
-    (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-      if (finishedDrag.current) {
-        return;
-      }
-
-      const offset = info.offset.x;
-      if (query.status !== 'success') {
-        return;
-      }
-
-      const { previousId, nextId } = query.data;
-      const threshold = 0.35 * window.innerWidth;
-
-      if (offset < -threshold && nextId) {
-        router.push(`/collection/${collectionId}/article/${nextId}`);
-        finishedDrag.current = true;
-      } else if (offset > threshold && previousId) {
-        router.push(`/collection/${collectionId}/article/${previousId}`);
-        finishedDrag.current = true;
-      }
-    },
-    [collectionId, query.data, query.status, router]
-  );
-
-  const handleDragEnd = useCallback(() => {
-    if (!finishedDrag.current) {
-      x.stop();
-      x.set(0);
-    }
-  }, [x]);
-
   const handlePreviousArticleClicked = useCallback(() => {
     router.push(
       `/?collectionId=${collectionId}&itemId=${previousArticleId}`,
@@ -220,16 +177,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
         height: fullHeight ? 'calc(100vh - 1rem)' : undefined,
       }}
     >
-      <motion.div
-        drag={isTouchscreen ? 'x' : false}
-        dragConstraints={{
-          left: allowDragToNextArticle ? undefined : 0,
-          right: allowDragToPrevArticle ? undefined : 0,
-        }}
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
-        style={{ x, width: '100%', height: '100%' }}
-      >
+      <div className="h-full w-full">
         {!isRouterReady || query.isLoading ? (
           <ArticleSkeleton />
         ) : query.status === 'error' ? (
@@ -273,7 +221,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
             </div>
           )
         )}
-      </motion.div>
+      </div>
     </div>
   );
 };
