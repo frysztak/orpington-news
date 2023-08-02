@@ -8,6 +8,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import { HotkeysProvider } from 'react-hotkeys-hook';
 import { Panes } from '@features/Panes';
 import { CollectionsContextProvider } from '@features/Collections';
 import { EventListenerContextProvider } from '@features/EventListener';
@@ -15,6 +16,7 @@ import { useGetUser } from '@features/Auth';
 import { ApiContextProvider, useApiContext } from '@api';
 import { theme, fontFaces, MetaTheme } from 'theme';
 import Compose from '@utils/Compose';
+import { hotkeyScopeNone } from '@features/HotKeys/scopes';
 
 const AuthGuard: React.FC<PropsWithChildren> = ({ children }) => {
   const { showAppContent, setShowAppContent } = useApiContext();
@@ -59,12 +61,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               CollectionsContextProvider,
             ]}
           >
-            <Global styles={fontFaces} />
+            <HotkeysProvider initiallyActiveScopes={[hotkeyScopeNone]}>
+              <Global styles={fontFaces} />
 
-            <Flex minH="100vh" direction="column">
-              <MetaTheme />
-              <AuthGuard>{getLayout(<Component {...pageProps} />)}</AuthGuard>
-            </Flex>
+              <Flex minH="100vh" direction="column">
+                <MetaTheme />
+                <AuthGuard>{getLayout(<Component {...pageProps} />)}</AuthGuard>
+              </Flex>
+            </HotkeysProvider>
           </Compose>
         </ChakraProvider>
       </Hydrate>

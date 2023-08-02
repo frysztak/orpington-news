@@ -3,6 +3,7 @@ import { Text, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
 import cx from 'classnames';
+import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
 import { useRouter } from 'next/router';
 import { RiErrorWarningFill } from '@react-icons/all-files/ri/RiErrorWarningFill';
 import {
@@ -22,6 +23,7 @@ import {
   defaultArticleWidth,
   ID,
 } from '@shared';
+import { hotkeyScopeArticle } from '@features/HotKeys/scopes';
 import {
   useAdjacentArticles,
   useArticleDateReadMutation,
@@ -171,6 +173,28 @@ export const Article: React.FC<ArticleProps> = (props) => {
       `/collection/${nextArticle.collectionId}/article/${nextArticle.articleId}`
     );
   }, [nextArticle, router]);
+
+  const handleCloseArticle = useCallback(() => {
+    router.push('/');
+  }, [router]);
+
+  useHotkeys('j', handleNextArticleClicked, {
+    scopes: [hotkeyScopeArticle],
+  });
+  useHotkeys('k', handlePreviousArticleClicked, {
+    scopes: [hotkeyScopeArticle],
+  });
+  useHotkeys('Escape', handleCloseArticle, {
+    scopes: [hotkeyScopeArticle],
+  });
+
+  const { enableScope } = useHotkeysContext();
+
+  useEffect(() => {
+    if (itemId !== undefined) {
+      enableScope(hotkeyScopeArticle);
+    }
+  }, [enableScope, itemId]);
 
   return (
     <div

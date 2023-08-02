@@ -75,6 +75,7 @@
     "react-dnd-test-utils": "^16.0.1",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
+    "react-hotkeys-hook": "^4.4.1",
     "react-icons": "^4.10.1",
     "react-number-format": "^5.2.2",
     "react-test-renderer": "^18.2.0",

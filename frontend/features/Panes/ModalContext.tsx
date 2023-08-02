@@ -3,6 +3,7 @@ import { createContext } from 'use-context-selector';
 import { Collection, ID, noop } from '@shared';
 import { ReactFCC, useToggle } from '@utils';
 import { AddModalState } from './AddModal';
+import { useDisableHotKeys } from '@features/HotKeys/useDisableHotKeys';
 
 type Elements = 'Drawer' | 'AddModal' | 'DeleteModal';
 
@@ -71,13 +72,24 @@ export const ModalContextProvider: ReactFCC = ({ children }) => {
 };
 
 const useAddModal = () => {
+  const { disableHotkeys, enableHotkeys } = useDisableHotKeys();
   const [addModalState, setAddModalState] = useState<AddModalState>({});
   const {
     isOpen: isAddModalOpen,
-    open: openAddModal,
-    close: closeAddModal,
+    open,
+    close,
     toggle: toggleAddModal,
   } = useToggle();
+
+  const openAddModal = useCallback(() => {
+    open();
+    disableHotkeys();
+  }, [disableHotkeys, open]);
+
+  const closeAddModal = useCallback(() => {
+    close();
+    enableHotkeys();
+  }, [close, enableHotkeys]);
 
   const openAddModalWithData = useCallback(
     (initialData?: Collection) => {
@@ -107,14 +119,25 @@ const useAddModal = () => {
 };
 
 const useDeleteModal = () => {
+  const { disableHotkeys, enableHotkeys } = useDisableHotKeys();
   // state is just ID to remove
   const [deleteModalState, setDeleteModalState] = useState<ID>();
   const {
     isOpen: isDeleteModalOpen,
-    open: openDeleteModal,
-    close: closeDeleteModal,
+    open,
+    close,
     toggle: toggleDeleteModal,
   } = useToggle();
+
+  const openDeleteModal = useCallback(() => {
+    open();
+    disableHotkeys();
+  }, [disableHotkeys, open]);
+
+  const closeDeleteModal = useCallback(() => {
+    close();
+    enableHotkeys();
+  }, [close, enableHotkeys]);
 
   const openDeleteModalWithData = useCallback(
     (id: ID) => {
