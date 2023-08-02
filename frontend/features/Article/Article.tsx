@@ -59,7 +59,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
     onGoBackClicked,
   } = props;
 
-  const { nextArticleId, previousArticleId } = useAdjacentArticles(itemId);
+  const { nextArticle, previousArticle } = useAdjacentArticles(itemId);
 
   const router = useRouter();
   const toast = useToast();
@@ -152,18 +152,25 @@ export const Article: React.FC<ArticleProps> = (props) => {
   );
 
   const handlePreviousArticleClicked = useCallback(() => {
+    if (previousArticle === undefined) {
+      return;
+    }
     router.push(
-      `/?collectionId=${collectionId}&itemId=${previousArticleId}`,
-      `/collection/${collectionId}/article/${previousArticleId}`
+      `/?collectionId=${previousArticle.collectionId}&itemId=${previousArticle.articleId}`,
+      `/collection/${previousArticle.collectionId}/article/${previousArticle.articleId}`
     );
-  }, [collectionId, previousArticleId, router]);
+  }, [previousArticle, router]);
 
   const handleNextArticleClicked = useCallback(() => {
+    if (nextArticle === undefined) {
+      return;
+    }
+
     router.push(
-      `/?collectionId=${collectionId}&itemId=${nextArticleId}`,
-      `/collection/${collectionId}/article/${nextArticleId}`
+      `/?collectionId=${nextArticle.collectionId}&itemId=${nextArticle.articleId}`,
+      `/collection/${nextArticle.collectionId}/article/${nextArticle.articleId}`
     );
-  }, [collectionId, nextArticleId, router]);
+  }, [nextArticle, router]);
 
   return (
     <div
@@ -210,8 +217,8 @@ export const Article: React.FC<ArticleProps> = (props) => {
                 onArticleWidthChanged={setArticleWidth}
                 mobileLayout={mobileLayout}
                 hideAdjacentArticlesButtons={standaloneArticleMode}
-                previousArticleId={previousArticleId}
-                nextArticleId={nextArticleId}
+                previousArticle={previousArticle}
+                nextArticle={nextArticle}
                 onPreviousArticleClicked={handlePreviousArticleClicked}
                 onNextArticleClicked={handleNextArticleClicked}
               />

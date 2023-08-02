@@ -134,14 +134,19 @@ export const useArticleDetails = (
   });
 };
 
-const NO_ADJACENT_ARTICLES = {
-  nextArticleId: undefined,
-  previousArticleId: undefined,
-};
+export interface AdjacentArticle {
+  collectionId: ID;
+  articleId: ID;
+}
 
-export const useAdjacentArticles = (
-  articleId?: ID
-): { previousArticleId?: ID; nextArticleId?: ID } => {
+interface AdjacentArticles {
+  previousArticle?: AdjacentArticle;
+  nextArticle?: AdjacentArticle;
+}
+
+const NO_ADJACENT_ARTICLES: AdjacentArticles = {};
+
+export const useAdjacentArticles = (articleId?: ID): AdjacentArticles => {
   const activeCollection = useActiveCollection();
 
   const { fetchNextPage, hasNextPage, allItems } = useCollectionItems(
@@ -161,12 +166,21 @@ export const useAdjacentArticles = (
     return NO_ADJACENT_ARTICLES;
   }
 
-  const previousArticleId = allItems[idx - 1]?.id;
-  const nextArticleId = allItems[idx + 1]?.id;
+  const previousArticle = allItems[idx - 1];
+  const nextArticle = allItems[idx + 1];
 
   if (allItems.length - idx <= 4 && hasNextPage) {
     fetchNextPage();
   }
 
-  return { previousArticleId, nextArticleId };
+  return {
+    previousArticle: previousArticle && {
+      articleId: previousArticle.id,
+      collectionId: previousArticle.collection.id,
+    },
+    nextArticle: nextArticle && {
+      articleId: nextArticle.id,
+      collectionId: nextArticle.collection.id,
+    },
+  };
 };

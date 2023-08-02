@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Icon, IconButton } from '@chakra-ui/react';
-import { ArticleWidth, CollectionItem, defaultArticleWidth, ID } from '@shared';
+import { ArticleWidth, CollectionItem, defaultArticleWidth } from '@shared';
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
@@ -25,6 +25,7 @@ import {
   MenuRadioItem,
   MenuTrigger,
 } from '@components/menu';
+import type { AdjacentArticle } from '@features/Article/queries';
 
 export type ArticleMenuAction = 'markAsUnread';
 
@@ -35,8 +36,8 @@ export interface ArticleHeaderProps {
   disableActionButtons?: boolean;
   mobileLayout?: boolean;
   hideAdjacentArticlesButtons?: boolean;
-  nextArticleId?: ID;
-  previousArticleId?: ID;
+  nextArticle?: AdjacentArticle;
+  previousArticle?: AdjacentArticle;
   onGoBackClicked?: () => void;
   onReadingListToggle?: () => void;
   onMenuItemClicked?: (action: ArticleMenuAction) => void;
@@ -61,8 +62,8 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
     disableActionButtons,
     mobileLayout,
     hideAdjacentArticlesButtons,
-    nextArticleId,
-    previousArticleId,
+    nextArticle,
+    previousArticle,
     onGoBackClicked,
     onReadingListToggle,
     onMenuItemClicked,
@@ -159,9 +160,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               variant="ghost"
               mr="auto"
               onClick={onPreviousArticleClicked}
-              isDisabled={
-                disableActionButtons || previousArticleId === undefined
-              }
+              isDisabled={disableActionButtons || previousArticle === undefined}
               data-test="prevArticle"
             />
 
@@ -171,7 +170,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               variant="ghost"
               mr="auto"
               onClick={onNextArticleClicked}
-              isDisabled={disableActionButtons || nextArticleId === undefined}
+              isDisabled={disableActionButtons || nextArticle === undefined}
               data-test="nextArticle"
             />
           </div>
