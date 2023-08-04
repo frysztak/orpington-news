@@ -10,10 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Standalone Article page
+- Hotkeys
+- Previous/next Article buttons (mobile only)
 
 ### Fixed
 
 - Fix opening Article by URL
+- Fix previous/next Article calculations
+
+### Removed
+
+- Swiping left/right on Article page
 
 ## [0.12.7] - 2023-07-14
 
