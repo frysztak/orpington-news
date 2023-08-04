@@ -24,9 +24,7 @@ SELECT
   collection_items.reading_time,
   collections.collection_id,
   collections.collection_title,
-  collections.collection_icon,
-  NULL as previous_id,
-  NULL as next_id
+  collections.collection_icon
 FROM
   children_ids,
   collection_items

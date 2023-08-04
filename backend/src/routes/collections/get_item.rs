@@ -36,9 +36,7 @@ FROM (
     collection_items.*,
     collections.id as collection_id,
     collections.title as collection_title,
-    collections.icon as collection_icon,
-    lag(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) previous_id,
-    lead(collection_items.id, 1) OVER (PARTITION BY collection_items.collection_id ORDER BY date_published DESC) next_id
+    collections.icon as collection_icon
   FROM collections
   INNER JOIN (
   SELECT

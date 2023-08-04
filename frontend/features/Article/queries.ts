@@ -100,19 +100,7 @@ export const useArticleDetails = (
     enabled: Boolean(collectionId) && Boolean(itemId),
     retry: false,
     onError,
-    onSuccess: (data: CollectionItem) => {
-      const { nextId } = data;
-
-      // prefetch next article
-      if (nextId !== null) {
-        const key = collectionKeys.detail(collectionId!, nextId);
-        queryClient.prefetchQuery(key, () =>
-          getItemDetails(api, collectionId!, nextId)
-        );
-      }
-
-      options?.onSuccess?.(data);
-    },
+    onSuccess: options?.onSuccess,
     initialData: () => {
       const queries = queryClient.getQueriesData<
         InfiniteData<{ items: CollectionItem[] }>
