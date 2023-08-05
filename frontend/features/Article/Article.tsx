@@ -188,13 +188,17 @@ export const Article: React.FC<ArticleProps> = (props) => {
     scopes: [hotkeyScopeArticle],
   });
 
-  const { enableScope } = useHotkeysContext();
+  const { enableScope, disableScope } = useHotkeysContext();
 
   useEffect(() => {
     if (itemId !== undefined) {
       enableScope(hotkeyScopeArticle);
     }
-  }, [enableScope, itemId]);
+
+    return () => {
+      disableScope(hotkeyScopeArticle);
+    };
+  }, [disableScope, enableScope, itemId]);
 
   return (
     <div
