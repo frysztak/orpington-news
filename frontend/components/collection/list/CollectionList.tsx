@@ -145,7 +145,7 @@ export const CollectionList: React.FC<CollectionListProps & BoxProps> = (
       data-test-layout={layout}
       {...rest}
     >
-      <RefreshIndicator isRefreshing={isRefreshing} />
+      {/* <RefreshIndicator isRefreshing={isRefreshing} /> */}
       {items.type === 'list' ? (
         <Virtuoso
           key="flat"
