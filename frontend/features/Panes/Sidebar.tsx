@@ -23,7 +23,7 @@ import {
   defaultCollectionSortBy,
 } from '@shared';
 import { SidebarFooter } from './SidebarFooter';
-import { ModalContext } from './ModalContext';
+import { ModalContext } from './modals/ModalContext';
 import { CollectionMenuAction } from '@components/sidebar/SidebarItem';
 
 export const Sidebar: React.FC = () => {

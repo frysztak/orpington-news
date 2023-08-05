@@ -16,7 +16,7 @@ import { useGetUser } from '@features/Auth';
 import { ApiContextProvider, useApiContext } from '@api';
 import { theme, fontFaces, MetaTheme } from 'theme';
 import Compose from '@utils/Compose';
-import { hotkeyScopeNone } from '@features/HotKeys/scopes';
+import { hotkeyScopeGlobal, hotkeyScopeNone } from '@features/HotKeys/scopes';
 
 const AuthGuard: React.FC<PropsWithChildren> = ({ children }) => {
   const { showAppContent, setShowAppContent } = useApiContext();
@@ -61,7 +61,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               CollectionsContextProvider,
             ]}
           >
-            <HotkeysProvider initiallyActiveScopes={[hotkeyScopeNone]}>
+            <HotkeysProvider
+              initiallyActiveScopes={[hotkeyScopeNone, hotkeyScopeGlobal]}
+            >
               <Global styles={fontFaces} />
 
               <Flex minH="100vh" direction="column">

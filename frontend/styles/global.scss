@@ -30,6 +30,12 @@
   .divider {
     @apply w-full pt-3 border-solid opacity-60;
   }
+
+  .kbd {
+    @apply font-['Ubuntu_Mono'] font-bold leading-8 py-0.5 px-2 border rounded-md;
+    @apply border-purple-50 bg-purple-50;
+    @apply dark:border-gray-500 dark:bg-gray-500;
+  }
 }
 
 .prism-code {

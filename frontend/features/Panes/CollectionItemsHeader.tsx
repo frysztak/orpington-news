@@ -9,7 +9,7 @@ import {
 } from '@features/Collections';
 import { useActiveCollection } from '@features/Preferences';
 import { CollectionPreferences } from '@shared';
-import { ModalContext } from './ModalContext';
+import { ModalContext } from './modals/ModalContext';
 import { PanesLayout } from '@components/collection/types';
 
 export interface CollectionItemsHeaderProps {

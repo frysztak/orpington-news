@@ -5,7 +5,7 @@ import {
 } from '@components/drawer';
 import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
-import { ModalContext } from './ModalContext';
+import { ModalContext } from './modals/ModalContext';
 
 interface DrawerProps {
   sidebar: React.ReactNode;

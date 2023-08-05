@@ -5,14 +5,17 @@ import { Panes as PanesComponent } from '@components/panes';
 import { Article } from '@features/Article';
 import { usePrefetchPreferences } from '@features/Preferences';
 import { ReactFCC, getNumber, ClientRender } from '@utils';
+import { PanesLayout, PanesLayouts } from '@components/collection/types';
 import { CollectionItemsList } from './CollectionItemsList';
 import { Sidebar } from './Sidebar';
-import { ModalContextProvider } from './ModalContext';
 import { CollectionItemsHeader } from './CollectionItemsHeader';
 import { Drawer } from './Drawer';
-import { AddModal } from './AddModal';
-import { DeleteModal } from './DeleteModal';
-import { PanesLayout, PanesLayouts } from '@components/collection/types';
+import {
+  AddModal,
+  DeleteModal,
+  HotkeysModal,
+  ModalContextProvider,
+} from './modals';
 
 interface PanesProps {
   standaloneArticle?: boolean;
@@ -91,6 +94,7 @@ export const Panes: ReactFCC<PanesProps> = ({
 
       <AddModal />
       <DeleteModal />
+      <HotkeysModal />
 
       <Drawer sidebar={<Sidebar />} />
 
