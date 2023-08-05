@@ -121,6 +121,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
                 toast({
                   status: 'success',
                   description: 'Article marked as unread!',
+                  isClosable: true,
                 });
               },
             }
@@ -187,6 +188,20 @@ export const Article: React.FC<ArticleProps> = (props) => {
   useHotkeys('Escape', handleCloseArticle, {
     scopes: [hotkeyScopeArticle],
   });
+  useHotkeys(
+    'o',
+    () => {
+      window.open(query.data.url, '_blank');
+    },
+    { scopes: [hotkeyScopeArticle] }
+  );
+  useHotkeys(
+    'u',
+    () => {
+      handleMenuItemClicked('markAsUnread');
+    },
+    { scopes: [hotkeyScopeArticle] }
+  );
 
   const { enableScope, disableScope } = useHotkeysContext();
 

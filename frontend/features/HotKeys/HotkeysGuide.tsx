@@ -43,7 +43,7 @@ export const HotkeysGuide: React.FC<HotkeysGuideProps> = ({
               <kbd className="kbd">o</kbd> &mdash; open Article in browser
             </li>
             <li>
-              <kbd className="kbd">u</kbd> &mdash; mark Article read/unread
+              <kbd className="kbd">u</kbd> &mdash; mark Article unread
             </li>
             <li>
               <kbd className="kbd">Esc</kbd> &mdash; close Article
