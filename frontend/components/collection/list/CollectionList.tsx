@@ -11,7 +11,6 @@ import {
 } from '@shared';
 import { usePullToRefresh } from '@utils';
 import { CardItem, ListItem, MagazineItem, ExpandedItem } from '../layouts';
-import { RefreshIndicator } from './RefreshIndicator';
 import { GroupHeader } from './GroupHeader';
 import { PanesLayout } from '../types';
 
