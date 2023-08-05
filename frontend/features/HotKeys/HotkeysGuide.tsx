@@ -4,6 +4,7 @@ import {
   HotkeyScope,
   hotkeyScopeArticle,
   hotkeyScopeFeed,
+  hotkeyScopeGlobal,
 } from './scopes';
 
 export interface HotkeysGuideProps {
@@ -15,8 +16,19 @@ export const HotkeysGuide: React.FC<HotkeysGuideProps> = ({
 }) => {
   return (
     <div>
+      {scopes.includes(hotkeyScopeGlobal) && (
+        <section>
+          <h2 className="text-xl font-bold leading-loose">Global</h2>
+          <ul className="list-inside list-disc">
+            <li>
+              <kbd className="kbd">?</kbd> &mdash; show active hotkeys
+            </li>
+          </ul>
+        </section>
+      )}
+
       {scopes.includes(hotkeyScopeFeed) && (
-        <>
+        <section>
           <h2 className="text-xl font-bold leading-loose">Feed</h2>
           <ul className="list-inside list-disc">
             <li>
@@ -26,11 +38,11 @@ export const HotkeysGuide: React.FC<HotkeysGuideProps> = ({
               <kbd className="kbd">U</kbd> &mdash; mark Feed as read
             </li>
           </ul>
-        </>
+        </section>
       )}
 
       {scopes.includes(hotkeyScopeArticle) && (
-        <>
+        <section>
           <h2 className="text-xl font-bold leading-loose">Article</h2>
           <ul className="list-inside list-disc">
             <li>
@@ -49,7 +61,7 @@ export const HotkeysGuide: React.FC<HotkeysGuideProps> = ({
               <kbd className="kbd">Esc</kbd> &mdash; close Article
             </li>
           </ul>
-        </>
+        </section>
       )}
     </div>
   );
