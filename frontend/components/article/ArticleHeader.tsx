@@ -1,21 +1,11 @@
 import React, { useCallback, useMemo } from 'react';
-import {
-  Box,
-  Icon,
-  Divider,
-  Heading,
-  HStack,
-  IconButton,
-  Link,
-  VStack,
-  Wrap,
-  WrapItem,
-  Flex,
-} from '@chakra-ui/react';
+import { Icon, IconButton } from '@chakra-ui/react';
 import { ArticleWidth, CollectionItem, defaultArticleWidth } from '@shared';
 import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
+import { IoChevronBack } from '@react-icons/all-files/io5/IoChevronBack';
+import { IoChevronForward } from '@react-icons/all-files/io5/IoChevronForward';
 import {
   NewspaperIcon,
   CalendarDaysIcon,
@@ -24,6 +14,7 @@ import {
 import { Icon as IconifyIcon } from '@iconify/react';
 import radioboxBlank from '@iconify/icons-mdi/radiobox-blank';
 import { format, fromUnixTime } from 'date-fns';
+import cx from 'classnames';
 import {
   Menu,
   MenuContent,
@@ -34,6 +25,7 @@ import {
   MenuRadioItem,
   MenuTrigger,
 } from '@components/menu';
+import type { AdjacentArticle } from '@features/Article/queries';
 
 export type ArticleMenuAction = 'markAsUnread';
 
@@ -42,10 +34,16 @@ export interface ArticleHeaderProps {
   articleWidth?: ArticleWidth;
 
   disableActionButtons?: boolean;
+  mobileLayout?: boolean;
+  hideAdjacentArticlesButtons?: boolean;
+  nextArticle?: AdjacentArticle;
+  previousArticle?: AdjacentArticle;
   onGoBackClicked?: () => void;
   onReadingListToggle?: () => void;
   onMenuItemClicked?: (action: ArticleMenuAction) => void;
   onArticleWidthChanged?: (width: ArticleWidth) => void;
+  onPreviousArticleClicked?: () => void;
+  onNextArticleClicked?: () => void;
 }
 
 export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
@@ -62,10 +60,16 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
     articleWidth,
 
     disableActionButtons,
+    mobileLayout,
+    hideAdjacentArticlesButtons,
+    nextArticle,
+    previousArticle,
     onGoBackClicked,
     onReadingListToggle,
     onMenuItemClicked,
     onArticleWidthChanged,
+    onPreviousArticleClicked,
+    onNextArticleClicked,
   } = props;
 
   const handleMenuItemClick = useCallback(
@@ -77,26 +81,8 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
 
   const actions = useMemo(
     () => (
-      <HStack>
-        <IconButton
-          icon={<HiOutlineExternalLink />}
-          as={Link}
-          isExternal
-          href={url}
-          aria-label="Open external link"
-          variant="ghost"
-          isDisabled={disableActionButtons}
-        />
-        {/*<IconButton
-          icon={onReadingList ? <BsBookmarkDash /> : <BsBookmarkPlus />}
-          aria-label={
-            onReadingList ? 'Remove from reading list' : 'Add to reading list'
-          }
-          variant="ghost"
-          onClick={onReadingListToggle}
-        />*/}
-
-        <Box>
+      <div className="flex flex-row">
+        <div>
           <Menu>
             <MenuTrigger asChild>
               <IconButton
@@ -108,6 +94,12 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               />
             </MenuTrigger>
             <MenuContent>
+              <MenuItem icon={<HiOutlineExternalLink />}>
+                <a href={url} target="_blank">
+                  Open in browser
+                </a>
+              </MenuItem>
+
               <MenuItem
                 icon={<IconifyIcon icon={radioboxBlank} />}
                 onClick={handleMenuItemClick('markAsUnread')}
@@ -131,8 +123,8 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
               </div>
             </MenuContent>
           </Menu>
-        </Box>
-      </HStack>
+        </div>
+      </div>
     ),
     [
       articleWidth,
@@ -146,69 +138,90 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
 
   return (
     <>
-      <HStack
-        w="full"
-        justify="space-between"
-        display={{ base: 'flex', lg: 'none' }}
+      <div
+        className={cx('flex flex-row justify-between w-full', {
+          'lg:hidden': !mobileLayout,
+        })}
       >
         <IconButton
           icon={<IoReturnUpBack />}
           aria-label="Go back to collection"
           variant="ghost"
-          mr="auto"
           onClick={onGoBackClicked}
           isDisabled={disableActionButtons}
           data-test="goBack"
         />
 
-        {actions}
-      </HStack>
+        {!hideAdjacentArticlesButtons && (
+          <div>
+            <IconButton
+              icon={<IoChevronBack />}
+              aria-label="Previous Article"
+              variant="ghost"
+              mr="auto"
+              onClick={onPreviousArticleClicked}
+              isDisabled={disableActionButtons || previousArticle === undefined}
+              data-test="prevArticle"
+            />
 
-      <VStack w="full" align="flex-start" spacing={1} px={4} pt={4}>
-        <HStack h="full" w="full" justify="space-between" align="stretch">
-          <Flex align="center">
-            <Heading
-              overflowWrap="anywhere"
-              fontFamily="var(--article-font-family)"
-              fontSize="calc(var(--chakra-fontSizes-3xl) * var(--article-font-size-scale, 1))"
+            <IconButton
+              icon={<IoChevronForward />}
+              aria-label="Next Article"
+              variant="ghost"
+              mr="auto"
+              onClick={onNextArticleClicked}
+              isDisabled={disableActionButtons || nextArticle === undefined}
+              data-test="nextArticle"
+            />
+          </div>
+        )}
+
+        {actions}
+      </div>
+
+      <div className="flex flex-col w-full items-start gap-1 px-4 pt-4">
+        <div className="flex flex-row h-full w-full justify-between items-stretch">
+          <div className="flex items-center">
+            <h2
+              className="[overflow-wrap:anywhere] font-article text-articleHeader font-bold leading-snug"
               data-test="articleHeader"
             >
               {title}
-            </Heading>
-          </Flex>
+            </h2>
+          </div>
 
-          <Flex h="full" align="center" display={{ base: 'none', lg: 'flex' }}>
+          <div
+            className={cx('h-full items-center hidden', {
+              'lg:flex': !mobileLayout,
+            })}
+          >
             {actions}
-          </Flex>
-        </HStack>
+          </div>
+        </div>
 
-        <Wrap
-          color="gray.500"
-          fontFamily="var(--article-font-family)"
-          fontSize="calc(1rem * var(--article-font-size-scale, 1))"
-        >
-          <WrapItem display="flex" alignItems="center">
+        <div className="flex flex-wrap gap-2 text-gray-500 font-article text-article">
+          <div className="flex items-center">
             <Icon as={NewspaperIcon} mr={1} />
             <span title="Collection">{collectionTitle}</span>
-          </WrapItem>
+          </div>
 
-          <WrapItem display="flex" alignItems="center">
+          <div className="flex items-center">
             <Icon as={CalendarDaysIcon} mr={1} />
             <span title="Published on">
               {format(fromUnixTime(datePublished), 'dd/MM/yyyy')}
             </span>
-          </WrapItem>
+          </div>
 
-          <WrapItem display="flex" alignItems="center">
+          <div className="flex items-center">
             <Icon as={ClockIcon} mr={1} />
             <span title="Estimated reading time">
               {Math.ceil(readingTime)}m
             </span>
-          </WrapItem>
-        </Wrap>
+          </div>
+        </div>
 
-        <Divider pt={3} />
-      </VStack>
+        <hr className="divider" />
+      </div>
     </>
   );
 };

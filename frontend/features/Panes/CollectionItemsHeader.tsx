@@ -3,14 +3,16 @@ import { useContextSelector } from 'use-context-selector';
 import { CollectionHeader, MenuAction } from '@components/collection/header';
 import {
   useCollectionsContext,
-  useMarkCollectionAsRead,
-  useRefreshCollection,
   useSetCollectionPreferences,
 } from '@features/Collections';
 import { useActiveCollection } from '@features/Preferences';
 import { CollectionPreferences } from '@shared';
-import { ModalContext } from './ModalContext';
 import { PanesLayout } from '@components/collection/types';
+import { ModalContext } from './modals';
+import {
+  useMarkActiveCollectionAsRead,
+  useRefreshActiveCollection,
+} from './hooks';
 
 export interface CollectionItemsHeaderProps {
   panesLayout?: PanesLayout;
@@ -36,16 +38,8 @@ export const CollectionItemsHeader: React.FC<CollectionItemsHeaderProps> = ({
     ? currentlyUpdatedCollections.set.has(activeCollection.id)
     : false;
 
-  const { mutate: refreshCollection } = useRefreshCollection();
-  const handleRefreshClick = useCallback(() => {
-    if (activeCollection) {
-      const collectionId = activeCollection.id;
-
-      refreshCollection({ id: collectionId });
-    } else {
-      console.error(`handleRefreshClick() without active collection`);
-    }
-  }, [activeCollection, refreshCollection]);
+  const { handleRefreshClick } = useRefreshActiveCollection();
+  const { handleMarkAsRead } = useMarkActiveCollectionAsRead();
 
   const { mutate: setCollectionPreferences } = useSetCollectionPreferences();
   const handlePreferenceChange = useCallback(
@@ -64,15 +58,6 @@ export const CollectionItemsHeader: React.FC<CollectionItemsHeaderProps> = ({
     },
     [activeCollection?.id, setCollectionPreferences]
   );
-
-  const { mutate: markCollectionAsRead } = useMarkCollectionAsRead();
-  const handleMarkAsRead = useCallback(() => {
-    if (activeCollection) {
-      markCollectionAsRead({ id: activeCollection.id });
-    } else {
-      console.error(`handleMarkAsRead() without active collection`);
-    }
-  }, [activeCollection, markCollectionAsRead]);
 
   const handleMenuActionClicked = useCallback(
     (action: MenuAction) => {

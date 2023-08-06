@@ -13,9 +13,7 @@ export const generateSampleCollectionItem = (
   const title = faker.hacker.phrase();
 
   return {
-    id: faker.datatype.number(),
-    previousId: faker.datatype.number(),
-    nextId: faker.datatype.number(),
+    id: faker.number.int(),
     url: faker.internet.url(),
     summary: faker.lorem.words(30),
     datePublished: getUnixTime(faker.date.recent()),

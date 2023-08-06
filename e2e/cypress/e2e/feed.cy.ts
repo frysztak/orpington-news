@@ -3,6 +3,8 @@ import { getApiPath, getFeedUrl } from './utils';
 const sizes = ['macbook-13', 'iphone-6'];
 
 sizes.forEach((size) => {
+  const isMobile = size === 'iphone-6';
+
   describe(`feed page, size '${size}'`, () => {
     const baseUrl = Cypress.config('baseUrl');
 
@@ -276,8 +278,8 @@ sizes.forEach((size) => {
         "Remix: The Yang to React's Yin"
       );
 
-      cy.clickGoBackIfExists();
-      if (size.includes('iphone')) {
+      if (isMobile) {
+        cy.clickGoBackIfExists();
         cy.url().should('equal', `${baseUrl}/`);
       }
       cy.getBySel('collectionItemList').should('exist').and('be.visible');
@@ -518,6 +520,7 @@ sizes.forEach((size) => {
         cy.openDrawerIfExists();
         cy.clickSidebarAction('3', 'markAsRead');
         cy.closeDrawerIfExists();
+
         cy.wait('@apiMarkAsRead').then(({ request, response }) => {
           expect(response.statusCode).to.eq(200);
         });
@@ -712,6 +715,7 @@ sizes.forEach((size) => {
         }).as('apiPreferencesActiveView');
 
         cy.getBySel('action').click();
+
         cy.closeDrawerIfExists();
 
         cy.wait('@apiDeleteCollection').then(({ response }) => {

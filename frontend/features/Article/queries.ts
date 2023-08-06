@@ -9,6 +9,7 @@ import { CollectionItem, ID } from '@shared';
 import { collectionKeys } from '@features';
 import { useActiveCollection } from '@features/Preferences';
 import { mutatePageData } from '@utils';
+import { useCollectionItems } from '@features/Collections/queries';
 
 export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
   const api = useApi();
@@ -99,19 +100,7 @@ export const useArticleDetails = (
     enabled: Boolean(collectionId) && Boolean(itemId),
     retry: false,
     onError,
-    onSuccess: (data: CollectionItem) => {
-      const { nextId } = data;
-
-      // prefetch next article
-      if (nextId !== null) {
-        const key = collectionKeys.detail(collectionId!, nextId);
-        queryClient.prefetchQuery(key, () =>
-          getItemDetails(api, collectionId!, nextId)
-        );
-      }
-
-      options?.onSuccess?.(data);
-    },
+    onSuccess: options?.onSuccess,
     initialData: () => {
       const queries = queryClient.getQueriesData<
         InfiniteData<{ items: CollectionItem[] }>
@@ -131,4 +120,55 @@ export const useArticleDetails = (
       }
     },
   });
+};
+
+export interface AdjacentArticle {
+  collectionId: ID;
+  articleId: ID;
+}
+
+interface AdjacentArticles {
+  previousArticle?: AdjacentArticle;
+  nextArticle?: AdjacentArticle;
+}
+
+const NO_ADJACENT_ARTICLES: AdjacentArticles = {};
+
+export const useAdjacentArticles = (articleId?: ID): AdjacentArticles => {
+  const activeCollection = useActiveCollection();
+
+  const { fetchNextPage, hasNextPage, allItems } = useCollectionItems(
+    activeCollection?.id,
+    activeCollection?.filter,
+    activeCollection?.grouping,
+    activeCollection?.sortBy
+  );
+
+  if (articleId === undefined) {
+    return NO_ADJACENT_ARTICLES;
+  }
+
+  const idx = allItems.findIndex(({ id }) => id === articleId);
+
+  if (idx === -1) {
+    return NO_ADJACENT_ARTICLES;
+  }
+
+  const previousArticle = allItems[idx - 1];
+  const nextArticle = allItems[idx + 1];
+
+  if (allItems.length - idx <= 4 && hasNextPage) {
+    fetchNextPage();
+  }
+
+  return {
+    previousArticle: previousArticle && {
+      articleId: previousArticle.id,
+      collectionId: previousArticle.collection.id,
+    },
+    nextArticle: nextArticle && {
+      articleId: nextArticle.id,
+      collectionId: nextArticle.collection.id,
+    },
+  };
 };

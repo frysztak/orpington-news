@@ -131,8 +131,6 @@ export type UpdateCollection = z.infer<typeof UpdateCollection>;
 
 export const CollectionItem = z.object({
   id: ID,
-  previousId: z.nullable(ID),
-  nextId: z.nullable(ID),
   url: z.string(),
   title: z.string(),
   summary: z.string(),

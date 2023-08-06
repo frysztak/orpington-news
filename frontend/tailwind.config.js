@@ -4,6 +4,7 @@ module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
+    './features/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
@@ -190,13 +191,18 @@ module.exports = {
       },
       // fontFamily: fonts,
       fontFamily: {
+        article: 'var(--article-font-family)',
         articleMono: 'var(--article-mono-font-family)',
+      },
+      fontSize: {
+        articleHeader: 'calc(1.875rem * var(--article-font-size-scale, 1))',
+        article: 'calc(1rem * var(--article-font-size-scale, 1))',
       },
     },
   },
   plugins: [
-    require('@tailwindcss/line-clamp'),
     require('tailwindcss-radix')(),
     require('tailwindcss-plugin-fancy'),
+    require('@tailwindcss/typography'),
   ],
 };

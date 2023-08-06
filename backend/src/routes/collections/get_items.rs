@@ -13,8 +13,6 @@ use crate::{authentication::UserId, routes::error::GenericError, session_state::
 #[allow(dead_code)]
 pub struct DBCollectionItem {
     pub id: ID,
-    pub previous_id: Option<ID>,
-    pub next_id: Option<ID>,
     pub url: String,
     pub title: String,
     pub full_text: String,
@@ -46,8 +44,6 @@ pub struct CollectionItemCollection {
 #[allow(dead_code)]
 pub struct CollectionItem {
     id: ID,
-    previous_id: Option<ID>,
-    next_id: Option<ID>,
     url: String,
     title: String,
     full_text: String,
@@ -67,8 +63,6 @@ impl From<&DBCollectionItem> for CollectionItem {
     fn from(value: &DBCollectionItem) -> Self {
         CollectionItem {
             id: value.id,
-            previous_id: value.previous_id,
-            next_id: value.next_id,
             url: value.url.clone(),
             title: value.title.clone(),
             full_text: value.full_text.clone(),

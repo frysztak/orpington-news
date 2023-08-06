@@ -5,23 +5,30 @@ import { Panes as PanesComponent } from '@components/panes';
 import { Article } from '@features/Article';
 import { usePrefetchPreferences } from '@features/Preferences';
 import { ReactFCC, getNumber, ClientRender } from '@utils';
+import { PanesLayout, PanesLayouts } from '@components/collection/types';
 import { CollectionItemsList } from './CollectionItemsList';
 import { Sidebar } from './Sidebar';
-import { ModalContextProvider } from './ModalContext';
 import { CollectionItemsHeader } from './CollectionItemsHeader';
 import { Drawer } from './Drawer';
-import { AddModal } from './AddModal';
-import { DeleteModal } from './DeleteModal';
-import { PanesLayout, PanesLayouts } from '@components/collection/types';
+import {
+  AddModal,
+  DeleteModal,
+  HotkeysModal,
+  ModalContextProvider,
+} from './modals';
 
-interface PanesProps {}
+interface PanesProps {
+  standaloneArticle?: boolean;
+}
 
-export const Panes: ReactFCC<PanesProps> = ({ children }) => {
+export const Panes: ReactFCC<PanesProps> = ({
+  standaloneArticle = false,
+  children,
+}) => {
   const router = useRouter();
-  const articlePage =
-    router.route === '/collection/[collectionId]/article/[itemId]';
   const collectionId = getNumber(router.query?.collectionId);
   const itemId = getNumber(router.query?.itemId);
+  const showArticle = Boolean(collectionId) && Boolean(itemId);
 
   const handleGoBack = useCallback(() => {
     router.push('/');
@@ -40,6 +47,8 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
     'panesLayout',
     PanesLayouts[0]
   );
+
+  const layout = standaloneArticle ? 'standaloneArticle' : panesLayout;
 
   usePrefetchPreferences();
 
@@ -62,13 +71,14 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
             />
           }
           mainContent={
-            articlePage && (
+            showArticle && (
               <Article
                 key={itemId}
                 collectionId={router.isReady ? collectionId : undefined}
                 itemId={router.isReady ? itemId : undefined}
                 onGoBackClicked={handleGoBack}
                 isRouterReady={router.isReady}
+                mobileLayout={layout === 'standaloneArticle'}
               />
             )
           }
@@ -78,12 +88,13 @@ export const Panes: ReactFCC<PanesProps> = ({ children }) => {
           onCollectionItemsWidthChanged={setCollectionItemsWidth}
           collectionItemsHeight={collectionItemsHeight}
           onCollectionItemsHeightChanged={setCollectionItemsHeight}
-          layout={panesLayout}
+          layout={layout}
         />
       </ClientRender>
 
       <AddModal />
       <DeleteModal />
+      <HotkeysModal />
 
       <Drawer sidebar={<Sidebar />} />
 

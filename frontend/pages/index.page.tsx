@@ -5,6 +5,7 @@ import { useToast } from '@chakra-ui/react';
 import type { Workbox, WorkboxLifecycleWaitingEvent } from 'workbox-window';
 import { NewVersionToast } from '@components/toast';
 import { noop } from '@shared';
+import { usePageTitle } from './usePageTitle';
 
 declare global {
   interface Window {
@@ -74,10 +75,12 @@ const Home: NextPage = () => {
     }
   }, [toast]);
 
+  const title = usePageTitle();
+
   return (
     <>
       <Head>
-        <title>Orpington News</title>
+        <title>{title}</title>
       </Head>
     </>
   );
