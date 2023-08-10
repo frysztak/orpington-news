@@ -5,6 +5,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import cx from 'classnames';
 import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { RiErrorWarningFill } from '@react-icons/all-files/ri/RiErrorWarningFill';
 import {
   ArticleContent,
@@ -231,13 +232,22 @@ export const Article: React.FC<ArticleProps> = (props) => {
         {!isRouterReady || query.isLoading ? (
           <ArticleSkeleton />
         ) : query.status === 'error' ? (
-          <VStack spacing={6} h="full" w="full" justify="center">
+          <VStack
+            spacing={6}
+            h="full"
+            w="full"
+            justify="center"
+            data-test="fetchError"
+          >
             <Icon as={RiErrorWarningFill} w={12} h="auto" fill="red.300" />
-            <Text fontSize="xl" fontWeight="bold">
+            <Text fontSize="xl" fontWeight="bold" data-test="fetchErrorText">
               {query.error.status === 404
                 ? 'Article not found.'
                 : 'Unexpected error'}
             </Text>
+            <Link href="/" className="underline">
+              Home page
+            </Link>
           </VStack>
         ) : (
           query.status === 'success' && (

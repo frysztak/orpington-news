@@ -31,6 +31,31 @@ sizes.forEach((size) => {
           .should('exist')
           .and('be.visible');
       });
+
+      it('opening non-existent article page by URL shows error view', () => {
+        cy.addFeedByApi({
+          title: 'Kent C. Dodds Blog',
+          url: getFeedUrl('kentcdodds.xml'),
+          icon: 'Code',
+          refreshInterval: 120,
+        });
+
+        cy.visit('/collection/2/article/999');
+
+        cy.get(`[data-test-layout=standaloneArticle]`)
+          .should('exist')
+          .and('be.visible');
+
+        cy.getBySel('fetchError')
+          .within(() => {
+            cy.getBySel('fetchErrorText').should(
+              'have.text',
+              'Article not found.'
+            );
+          })
+          .should('exist')
+          .and('be.visible');
+      });
     });
 
     context('navigation', () => {
