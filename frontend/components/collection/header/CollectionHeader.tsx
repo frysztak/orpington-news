@@ -229,7 +229,8 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
     <VStack
       spacing={0}
       w="full"
-      pt={{ base: 0, lg: 4 }}
+      pt={{ base: 1, lg: 4 }}
+      px={1}
       data-test="collectionHeader"
     >
       <HStack
@@ -254,7 +255,7 @@ export const CollectionHeader: React.FC<CollectionHeaderProps> = (props) => {
         w="full"
         justify="space-between"
         align="stretch"
-        px={4}
+        px={3}
         minH={12}
       >
         {isLoading ? (
