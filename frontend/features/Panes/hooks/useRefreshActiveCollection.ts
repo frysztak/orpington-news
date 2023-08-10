@@ -18,8 +18,8 @@ export const useRefreshActiveCollection = () => {
         {
           onSuccess: () => {
             toast({
-              description: 'Feed updated',
-              status: 'success',
+              description: 'Updating feed...',
+              status: 'loading',
               isClosable: true,
             });
           },
