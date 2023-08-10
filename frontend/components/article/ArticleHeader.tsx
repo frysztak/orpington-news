@@ -139,7 +139,7 @@ export const ArticleHeader: React.FC<ArticleHeaderProps> = (props) => {
   return (
     <>
       <div
-        className={cx('flex flex-row justify-between w-full', {
+        className={cx('flex flex-row justify-between w-full px-1 pt-1', {
           'lg:hidden': !mobileLayout,
         })}
       >
