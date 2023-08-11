@@ -29,6 +29,7 @@ import {
   useAdjacentArticles,
   useArticleDateReadMutation,
   useArticleDetails,
+  usePrefetchArticleDetails,
 } from './queries';
 
 export interface ArticleProps {
@@ -104,6 +105,15 @@ export const Article: React.FC<ArticleProps> = (props) => {
       }
     },
   });
+  const { prefetchArticleDetails } = usePrefetchArticleDetails();
+
+  useEffect(() => {
+    if (!nextArticle) {
+      return;
+    }
+
+    prefetchArticleDetails(nextArticle.collectionId, nextArticle.articleId);
+  }, [nextArticle, prefetchArticleDetails]);
 
   const handleMenuItemClicked = useCallback(
     (action: ArticleMenuAction) => {

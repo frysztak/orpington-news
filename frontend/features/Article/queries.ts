@@ -4,6 +4,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import { getItemDetails, setDateRead, useApi, useHandleError } from '@api';
 import { CollectionItem, ID } from '@shared';
 import { collectionKeys } from '@features';
@@ -120,6 +121,23 @@ export const useArticleDetails = (
       }
     },
   });
+};
+
+export const usePrefetchArticleDetails = () => {
+  const api = useApi();
+  const queryClient = useQueryClient();
+
+  const prefetchArticleDetails = useCallback(
+    (collectionId: ID, articleId: ID) => {
+      const key = collectionKeys.detail(collectionId, articleId);
+      queryClient.prefetchQuery(key, () =>
+        getItemDetails(api, collectionId, articleId)
+      );
+    },
+    [api, queryClient]
+  );
+
+  return { prefetchArticleDetails };
 };
 
 export interface AdjacentArticle {
