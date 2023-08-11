@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Box, Text, Icon, useToast, VStack } from '@chakra-ui/react';
+import { Text, Icon, useToast, VStack } from '@chakra-ui/react';
 import { getUnixTime } from 'date-fns';
 import { useLocalStorage } from 'usehooks-ts';
-import { motion, PanInfo, useMotionValue } from 'framer-motion';
+import cx from 'classnames';
+import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { RiErrorWarningFill } from '@react-icons/all-files/ri/RiErrorWarningFill';
 import {
   ArticleContent,
@@ -11,7 +13,6 @@ import {
   ArticleMenuAction,
   ArticleSkeleton,
 } from '@components/article';
-import { useIsTouchscreen } from '@utils';
 import {
   ArticleFontFamiliesNames,
   ArticleFontSizeValues,
@@ -23,13 +24,20 @@ import {
   defaultArticleWidth,
   ID,
 } from '@shared';
-import { useArticleDateReadMutation, useArticleDetails } from './queries';
+import { hotkeyScopeArticle } from '@features/HotKeys/scopes';
+import {
+  useAdjacentArticles,
+  useArticleDateReadMutation,
+  useArticleDetails,
+  usePrefetchArticleDetails,
+} from './queries';
 
 export interface ArticleProps {
   collectionId?: ID;
   itemId?: ID;
   isRouterReady?: boolean;
   fullHeight?: boolean;
+  mobileLayout?: boolean;
 
   onGoBackClicked?: () => void;
 }
@@ -51,8 +59,11 @@ export const Article: React.FC<ArticleProps> = (props) => {
     itemId,
     isRouterReady,
     fullHeight = true,
+    mobileLayout = false,
     onGoBackClicked,
   } = props;
+
+  const { nextArticle, previousArticle } = useAdjacentArticles(itemId);
 
   const router = useRouter();
   const toast = useToast();
@@ -60,6 +71,8 @@ export const Article: React.FC<ArticleProps> = (props) => {
     collectionId,
     itemId
   );
+  const standaloneArticleMode =
+    router.pathname === '/collection/[collectionId]/article/[itemId]';
 
   useEffect(() => {
     setBlockDateReadMutation(false);
@@ -92,6 +105,15 @@ export const Article: React.FC<ArticleProps> = (props) => {
       }
     },
   });
+  const { prefetchArticleDetails } = usePrefetchArticleDetails();
+
+  useEffect(() => {
+    if (!nextArticle) {
+      return;
+    }
+
+    prefetchArticleDetails(nextArticle.collectionId, nextArticle.articleId);
+  }, [nextArticle, prefetchArticleDetails]);
 
   const handleMenuItemClicked = useCallback(
     (action: ArticleMenuAction) => {
@@ -110,6 +132,7 @@ export const Article: React.FC<ArticleProps> = (props) => {
                 toast({
                   status: 'success',
                   description: 'Article marked as unread!',
+                  isClosable: true,
                 });
               },
             }
@@ -142,89 +165,112 @@ export const Article: React.FC<ArticleProps> = (props) => {
     defaultArticleMonoFontFamily
   );
 
-  const isTouchscreen = useIsTouchscreen();
+  const handlePreviousArticleClicked = useCallback(() => {
+    if (previousArticle === undefined) {
+      return;
+    }
+    router.push(
+      `/?collectionId=${previousArticle.collectionId}&itemId=${previousArticle.articleId}`,
+      `/collection/${previousArticle.collectionId}/article/${previousArticle.articleId}`
+    );
+  }, [previousArticle, router]);
 
-  const allowDragToNextArticle =
-    query.status === 'success' && Boolean(query.data.nextId);
-  const allowDragToPrevArticle =
-    query.status === 'success' && Boolean(query.data.previousId);
+  const handleNextArticleClicked = useCallback(() => {
+    if (nextArticle === undefined) {
+      return;
+    }
 
-  const x = useMotionValue(0);
-  const finishedDrag = useRef(false);
-  const handleDrag = useCallback(
-    (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-      if (finishedDrag.current) {
-        return;
-      }
+    router.push(
+      `/?collectionId=${nextArticle.collectionId}&itemId=${nextArticle.articleId}`,
+      `/collection/${nextArticle.collectionId}/article/${nextArticle.articleId}`
+    );
+  }, [nextArticle, router]);
 
-      const offset = info.offset.x;
-      if (query.status !== 'success') {
-        return;
-      }
+  const handleCloseArticle = useCallback(() => {
+    router.push('/');
+  }, [router]);
 
-      const { previousId, nextId } = query.data;
-      const threshold = 0.35 * window.innerWidth;
-
-      if (offset < -threshold && nextId) {
-        router.push(`/collection/${collectionId}/article/${nextId}`);
-        finishedDrag.current = true;
-      } else if (offset > threshold && previousId) {
-        router.push(`/collection/${collectionId}/article/${previousId}`);
-        finishedDrag.current = true;
-      }
+  useHotkeys('j', handleNextArticleClicked, {
+    scopes: [hotkeyScopeArticle],
+  });
+  useHotkeys('k', handlePreviousArticleClicked, {
+    scopes: [hotkeyScopeArticle],
+  });
+  useHotkeys('Escape', handleCloseArticle, {
+    scopes: [hotkeyScopeArticle],
+  });
+  useHotkeys(
+    'o',
+    () => {
+      window.open(query.data.url, '_blank');
     },
-    [collectionId, query.data, query.status, router]
+    { scopes: [hotkeyScopeArticle] }
+  );
+  useHotkeys(
+    'u',
+    () => {
+      handleMenuItemClicked('markAsUnread');
+    },
+    { scopes: [hotkeyScopeArticle] }
   );
 
-  const handleDragEnd = useCallback(() => {
-    if (!finishedDrag.current) {
-      x.stop();
-      x.set(0);
+  const { enableScope, disableScope } = useHotkeysContext();
+
+  useEffect(() => {
+    if (itemId !== undefined) {
+      enableScope(hotkeyScopeArticle);
     }
-  }, [x]);
+
+    return () => {
+      disableScope(hotkeyScopeArticle);
+    };
+  }, [disableScope, enableScope, itemId]);
 
   return (
-    <VStack
-      flexGrow={1}
-      overflow="auto"
-      overflowX="hidden"
-      h={fullHeight ? '100vh' : undefined}
-      w="full"
-      spacing={1}
+    <div
+      className={cx(
+        'flex flex-grow flex-gap-1 w-full lg:m-2',
+        'overflow-auto overflow-x-hidden'
+      )}
       ref={ref}
-      maxWidth={getWidth(articleWidth)}
+      style={{
+        maxWidth: getWidth(articleWidth),
+        height: fullHeight ? 'calc(100vh - 1rem)' : undefined,
+      }}
     >
-      <motion.div
-        drag={isTouchscreen ? 'x' : false}
-        dragConstraints={{
-          left: allowDragToNextArticle ? undefined : 0,
-          right: allowDragToPrevArticle ? undefined : 0,
-        }}
-        onDrag={handleDrag}
-        onDragEnd={handleDragEnd}
-        style={{ x, width: '100%', height: '100%' }}
-      >
+      <div className="h-full w-full">
         {!isRouterReady || query.isLoading ? (
           <ArticleSkeleton />
         ) : query.status === 'error' ? (
-          <VStack spacing={6} h="full" w="full" justify="center">
+          <VStack
+            spacing={6}
+            h="full"
+            w="full"
+            justify="center"
+            data-test="fetchError"
+          >
             <Icon as={RiErrorWarningFill} w={12} h="auto" fill="red.300" />
-            <Text fontSize="xl" fontWeight="bold">
+            <Text fontSize="xl" fontWeight="bold" data-test="fetchErrorText">
               {query.error.status === 404
                 ? 'Article not found.'
                 : 'Unexpected error'}
             </Text>
+            <Link href="/" className="underline">
+              Home page
+            </Link>
           </VStack>
         ) : (
           query.status === 'success' && (
-            <Box
-              sx={{
-                '--article-font-size-scale': `${ArticleFontSizeValues[articleFontSize]}`,
-                '--article-font-family':
-                  ArticleFontFamiliesNames[articleFontFamily],
-                '--article-mono-font-family':
-                  ArticleMonoFontFamiliesNames[articleMonoFontFamily],
-              }}
+            <div
+              style={
+                {
+                  '--article-font-size-scale': `${ArticleFontSizeValues[articleFontSize]}`,
+                  '--article-font-family':
+                    ArticleFontFamiliesNames[articleFontFamily],
+                  '--article-mono-font-family':
+                    ArticleMonoFontFamiliesNames[articleMonoFontFamily],
+                } as any
+              }
             >
               <ArticleHeader
                 article={query.data}
@@ -232,14 +278,20 @@ export const Article: React.FC<ArticleProps> = (props) => {
                 onMenuItemClicked={handleMenuItemClicked}
                 articleWidth={articleWidth}
                 onArticleWidthChanged={setArticleWidth}
+                mobileLayout={mobileLayout}
+                hideAdjacentArticlesButtons={standaloneArticleMode}
+                previousArticle={previousArticle}
+                nextArticle={nextArticle}
+                onPreviousArticleClicked={handlePreviousArticleClicked}
+                onNextArticleClicked={handleNextArticleClicked}
               />
-              <Box w="full" px={4} py={4}>
+              <div className="w-full p-4">
                 <ArticleContent html={query.data.fullText} />
-              </Box>
-            </Box>
+              </div>
+            </div>
           )
         )}
-      </motion.div>
-    </VStack>
+      </div>
+    </div>
   );
 };

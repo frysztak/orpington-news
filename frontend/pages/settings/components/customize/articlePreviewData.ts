@@ -5,8 +5,6 @@ export const articlePreviewData: CollectionItem = {
   title: 'Structures from Silence',
   id: 0,
   url: '#',
-  previousId: null,
-  nextId: null,
   fullText: `
     <p><i><b>Structures from Silence</i></b> is the third studio album by American ambient musician Steve Roach. It was released in 1984 on Fortuna.</p>
     <h3>Sample code:</h3>

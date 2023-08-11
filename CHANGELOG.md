@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2023-08-11
+
+### Added
+
+-   Standalone Article page
+-   Hotkeys
+-   Previous/next Article buttons (mobile only)
+
+### Fixed
+
+-   Fix opening Article by URL
+-   Fix previous/next Article calculations
+
+### Removed
+
+-   Swiping left/right on Article page
+
 ## [0.12.7] - 2023-07-14
 
 ### Added
@@ -377,7 +394,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.12.7...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.13.0...HEAD
+
+[0.13.0]: https://github.com/frysztak/orpington-news/compare/0.12.7...0.13.0
 
 [0.12.7]: https://github.com/frysztak/orpington-news/compare/0.12.6...0.12.7
 

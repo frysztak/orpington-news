@@ -36,6 +36,12 @@ Mobile.parameters = {
   },
 };
 
+export const ForceMobile = Template.bind({});
+ForceMobile.args = {
+  ...Default.args,
+  mobileLayout: true,
+};
+
 export const LongNameInline = Template.bind({});
 LongNameInline.args = {
   ...Default.args,

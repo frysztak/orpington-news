@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { useToast } from '@chakra-ui/react';
 import { DeleteCollectionModal } from '@components/collection/delete';
-import { useDeleteCollection } from './queries';
+import { useDeleteCollection } from '../queries';
 import { ModalContext } from './ModalContext';
 
 export const DeleteModal: React.FC = () => {

@@ -1,8 +1,6 @@
-import { useCallback, useMemo } from 'react';
-import {
-  useCollectionItems,
-  useRefreshCollection,
-} from '@features/Collections';
+import { useEffect, useMemo } from 'react';
+import { useHotkeys, useHotkeysContext } from 'react-hotkeys-hook';
+import { useCollectionItems } from '@features/Collections';
 import { useActiveCollection } from '@features/Preferences';
 import {
   CollectionList,
@@ -10,6 +8,11 @@ import {
 } from '@components/collection/list';
 import { ID } from '@shared';
 import { PanesLayout } from '@components/collection/types';
+import { hotkeyScopeFeed } from '@features/HotKeys/scopes';
+import {
+  useMarkActiveCollectionAsRead,
+  useRefreshActiveCollection,
+} from './hooks';
 
 interface CollectionItemsListProps {
   activeArticleId?: ID;
@@ -36,18 +39,6 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = ({
     activeCollection?.sortBy
   );
 
-  const { mutate: refreshCollection, isLoading: isRefreshing } =
-    useRefreshCollection();
-  const handleRefreshClick = useCallback(() => {
-    if (activeCollection) {
-      const collectionId = activeCollection.id;
-
-      refreshCollection({ id: collectionId });
-    } else {
-      console.error(`handleRefreshClick() without active collection`);
-    }
-  }, [activeCollection, refreshCollection]);
-
   const items: CollectionListItems = useMemo(() => {
     if (activeCollection?.grouping !== 'none') {
       return {
@@ -60,6 +51,21 @@ export const CollectionItemsList: React.FC<CollectionItemsListProps> = ({
 
     return { type: 'list', list: allItems };
   }, [activeCollection?.grouping, allItems, groupCounts, groupNames]);
+
+  const { handleRefreshClick, isRefreshing } = useRefreshActiveCollection();
+  const { handleMarkAsRead } = useMarkActiveCollectionAsRead();
+
+  const { enableScope, disableScope } = useHotkeysContext();
+  useEffect(() => {
+    enableScope(hotkeyScopeFeed);
+
+    return () => {
+      disableScope(hotkeyScopeFeed);
+    };
+  }, [disableScope, enableScope]);
+
+  useHotkeys('r', handleRefreshClick, { scopes: [hotkeyScopeFeed] });
+  useHotkeys('shift+u', handleMarkAsRead, { scopes: [hotkeyScopeFeed] });
 
   return (
     <CollectionList

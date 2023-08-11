@@ -12,7 +12,7 @@ import {
   useVerifyFeedURL,
   useSaveCollection,
   useEditCollection,
-} from './queries';
+} from '../queries';
 
 export interface AddModalState {
   verifiedUrl?: string;
