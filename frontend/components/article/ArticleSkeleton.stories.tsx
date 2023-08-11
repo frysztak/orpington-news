@@ -10,3 +10,11 @@ const Template: Story = (props) => <ArticleSkeleton {...props} />;
 
 export const Default = Template.bind({});
 Default.args = {};
+
+export const Mobile = Template.bind({});
+Mobile.args = {};
+Mobile.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
+};

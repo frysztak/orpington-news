@@ -1,5 +1,4 @@
-import { Divider, HStack, IconButton } from '@chakra-ui/react';
-import { HiOutlineExternalLink } from '@react-icons/all-files/hi/HiOutlineExternalLink';
+import { Divider, IconButton } from '@chakra-ui/react';
 import { IoReturnUpBack } from '@react-icons/all-files/io5/IoReturnUpBack';
 import { BsThreeDotsVertical } from '@react-icons/all-files/bs/BsThreeDotsVertical';
 
@@ -12,7 +11,7 @@ export const ArticleSkeleton: React.FC<ArticleSkeletonProps> = ({
 }) => {
   return (
     <>
-      <HStack w="full" justify="flex-end">
+      <div className="flex flex-row w-full px-1 pt-1">
         <IconButton
           icon={<IoReturnUpBack />}
           aria-label="Go back to collection"
@@ -23,19 +22,12 @@ export const ArticleSkeleton: React.FC<ArticleSkeletonProps> = ({
         />
 
         <IconButton
-          icon={<HiOutlineExternalLink />}
-          isDisabled
-          aria-label="Open external link"
-          variant="ghost"
-        />
-
-        <IconButton
           aria-label="Menu"
           icon={<BsThreeDotsVertical />}
           isDisabled
           variant="ghost"
         />
-      </HStack>
+      </div>
 
       <div className="flex flex-col w-full items-start gap-2 px-4 pb-4">
         <div className="skeleton w-full h-10" />
