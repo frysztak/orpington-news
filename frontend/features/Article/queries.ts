@@ -32,8 +32,14 @@ export const useArticleDateReadMutation = (collectionId?: ID, itemId?: ID) => {
     }) => setDateRead(api, collectionId, itemId, dateRead),
     {
       onMutate: async ({ dateRead }) => {
-        // Optimistically update article
         await queryClient.cancelQueries(detailKey);
+        if (activeCollection) {
+          await queryClient.cancelQueries(
+            collectionKeys.lists(activeCollection.id)
+          );
+        }
+
+        // Optimistically update article
         const previousDetails = queryClient.getQueryData<
           CollectionItem | undefined
         >(detailKey);
