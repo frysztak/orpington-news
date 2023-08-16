@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.1] - 2023-08-16
+
 ### Fixed
 
-- Fixed Articles being unreliably marked as read
+-   Fixed Articles being unreliably marked as read
 
 ## [0.13.0] - 2023-08-11
 
@@ -398,7 +400,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   The entire app!
 
-[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/frysztak/orpington-news/compare/0.13.1...HEAD
+
+[0.13.1]: https://github.com/frysztak/orpington-news/compare/0.13.0...0.13.1
 
 [0.13.0]: https://github.com/frysztak/orpington-news/compare/0.12.7...0.13.0
 
